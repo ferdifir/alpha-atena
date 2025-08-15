@@ -1,0 +1,634 @@
+{
+  "ReportVersion": "2020.1.1",
+  "ReportGuid": "33189d8893671433e68e5231e6506bfe",
+  "ReportName": "Report",
+  "ReportAlias": "Report",
+  "ReportFile": "hutang_rekappelunasanhutang.mrt",
+  "ReportCreated": "/Date(0+0700)/",
+  "ReportChanged": "/Date(0+0700)/",
+  "EngineVersion": "EngineV2",
+  "CalculationMode": "Interpretation",
+  "ReportUnit": "Centimeters",
+  "PreviewSettings": 268435455,
+  "Styles": {
+    "0": {
+      "Ident": "StiStyle",
+      "Name": "StyleHeader",
+      "Font": ";8.25;Bold;",
+      "Border": "All;;;;;;;solid:Silver",
+      "Brush": "solid:108,174,245",
+      "TextBrush": "solid:Black",
+      "NegativeTextBrush": "solid:Red"
+    },
+    "1": {
+      "Ident": "StiStyle",
+      "Name": "Style2",
+      "Border": ";;;;;;;solid:Black",
+      "Brush": "solid:255,241,191",
+      "TextBrush": "solid:Black",
+      "NegativeTextBrush": "solid:Red"
+    },
+    "2": {
+      "Ident": "StiStyle",
+      "Name": "StyleFooter",
+      "Font": ";8.25;Bold;",
+      "Border": "All;;;;;;;solid:Black",
+      "Brush": "solid:179,224,255",
+      "TextBrush": "solid:Black",
+      "NegativeTextBrush": "solid:Red"
+    }
+  },
+  "Dictionary": {
+    "Variables": {
+      "0": {
+        "Name": "namaperusahaan",
+        "Alias": "namaperusahaan",
+        "Type": "System.String"
+      },
+      "1": {
+        "Name": "userlogin",
+        "Alias": "userlogin",
+        "Type": "System.String"
+      },
+      "2": {
+        "Name": "periode",
+        "Alias": "periode",
+        "Type": "System.String"
+      }
+    },
+    "DataSources": {
+      "0": {
+        "Ident": "StiDataTableSource",
+        "Name": "root",
+        "Alias": "root",
+        "Key": "3f3bb1f82e4e4475a5834a8562d369b3",
+        "Columns": {
+          "0": {
+            "Name": "kodepelunasan",
+            "Index": -1,
+            "NameInSource": "kodepelunasan",
+            "Alias": "kodepelunasan",
+            "Type": "System.String"
+          },
+          "1": {
+            "Name": "tglpelunasan",
+            "Index": -1,
+            "NameInSource": "tglpelunasan",
+            "Alias": "tglpelunasan",
+            "Type": "System.DateTime"
+          },
+          "2": {
+            "Name": "user",
+            "Index": -1,
+            "NameInSource": "user",
+            "Alias": "user",
+            "Type": "System.String"
+          },
+          "3": {
+            "Name": "supplier",
+            "Index": -1,
+            "NameInSource": "supplier",
+            "Alias": "supplier",
+            "Type": "System.String"
+          },
+          "4": {
+            "Name": "pelunasan",
+            "Index": -1,
+            "NameInSource": "pelunasan",
+            "Alias": "pelunasan",
+            "Type": "System.Double"
+          }
+        },
+        "NameInSource": "Data.root"
+      }
+    },
+    "Databases": {
+      "0": {
+        "Ident": "StiJsonDatabase",
+        "Name": "Data",
+        "Alias": "Data"
+      }
+    }
+  },
+  "Pages": {
+    "0": {
+      "Ident": "StiPage",
+      "Name": "Page1",
+      "Guid": "b1cd97b8c4d64c9092737a6c2563915e",
+      "Interaction": {
+        "Ident": "StiInteraction"
+      },
+      "Border": ";;2;;;;;solid:Black",
+      "Brush": "solid:Transparent",
+      "Components": {
+        "0": {
+          "Ident": "StiPageFooterBand",
+          "Name": "PageFooterBand1",
+          "ClientRectangle": "0,27.2,19,0.5",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": "Top;;;;;;;solid:0,0,0",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text14",
+              "Guid": "7ee87a4a8887c7e396285ea37c1ffc64",
+              "ClientRectangle": "7.4,0,11.6,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Halaman {PageNumber} dari {TotalPageCount}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text35",
+              "Guid": "63e8a953c41c75aaa4b6f5644590cddf",
+              "ClientRectangle": "0,0,7.4,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Cetak oleh: {userlogin}"
+              },
+              "VertAlignment": "Center",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            }
+          }
+        },
+        "1": {
+          "Ident": "StiReportTitleBand",
+          "Name": "ReportTitleBand1",
+          "ClientRectangle": "0,0.4,19,2.4",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text5",
+              "Guid": "eaa845f7570ebe8ed2e308640b5181ac",
+              "ClientRectangle": "0,0.8,19,0.8",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Laporan Pelunasan Hutang - Rekap"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;14;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text18",
+              "Guid": "2a498aa08acdcb74770e0a9a5ec2b6c9",
+              "ClientRectangle": "0,0,19,0.8",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{namaperusahaan}"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;14;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text38",
+              "Guid": "4dd0b9393eb8b22f2d4c86cd857e9e9e",
+              "ClientRectangle": "0,1.6,19,0.6",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Periode : {periode}"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;10;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            }
+          }
+        },
+        "2": {
+          "Ident": "StiHeaderBand",
+          "Name": "HeaderBand1",
+          "ClientRectangle": "0,3.6,19,0.5",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text20",
+              "Guid": "6593f1a26f944a0393000d6669e9d5a6",
+              "ClientRectangle": "0,0,3.2,0.5",
+              "ComponentStyle": "StyleHeader",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "No. Pelunasan"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Silver",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text1",
+              "Guid": "40aadc39bfbf4cd9a7e25f4b87aacce2",
+              "ClientRectangle": "16.8,0,2.2,0.5",
+              "ComponentStyle": "StyleHeader",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Pelunasan"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Silver",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text16",
+              "Guid": "715a710a7dc44eb284b529ab664cf23c",
+              "ClientRectangle": "5.2,0,4.4,0.5",
+              "ComponentStyle": "StyleHeader",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "User"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Silver",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "3": {
+              "Ident": "StiText",
+              "Name": "Text28",
+              "Guid": "8a77076154064e9180929ec0d84d9bb9",
+              "ClientRectangle": "9.6,0,7.2,0.5",
+              "ComponentStyle": "StyleHeader",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Supplier"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Silver",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "4": {
+              "Ident": "StiText",
+              "Name": "Text8",
+              "Guid": "b523a8e7fa7248838c7ebbb90a243799",
+              "ClientRectangle": "3.2,0,2,0.5",
+              "ComponentStyle": "StyleHeader",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Pelunasan"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Silver",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            }
+          },
+          "PrintIfEmpty": true
+        },
+        "3": {
+          "Ident": "StiHeaderBand",
+          "Name": "HeaderBand2",
+          "ClientRectangle": "0,4.9,19,0.5",
+          "Conditions": {
+            "0": {
+              "Ident": "StiCondition",
+              "Item": "Expression",
+              "Expression": {
+                "Value": "{Count(root) > 0}"
+              },
+              "Enabled": false,
+              "BorderSides": "None"
+            }
+          },
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text26",
+              "Guid": "b1129f94acb242e5b0697d857dd4e014",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "0,0,19,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Tidak ada data."
+              },
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 5,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            }
+          },
+          "PrintIfEmpty": true
+        },
+        "4": {
+          "Ident": "StiDataBand",
+          "Name": "DataBand1",
+          "ClientRectangle": "0,6.2,19,0.5",
+          "Interaction": {
+            "Ident": "StiBandInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text23",
+              "Guid": "2771fe0462545a367ad36bc2005a62ff",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "0,0,3.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodepelunasan}"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:White",
+              "TextBrush": "solid:Black",
+              "Type": "DataColumn"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text2",
+              "Guid": "b86a4f5725840c6de67f84420a0a1e50",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "16.8,0,2.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.pelunasan}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:White",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "GroupSeparator": ","
+              },
+              "Type": "DataColumn"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text22",
+              "Guid": "ea954b0c3aa8b02412f3865b819effe1",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "5.2,0,4.4,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.user}"
+              },
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:White",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 2,
+                "Right": 0,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "Type": "DataColumn"
+            },
+            "3": {
+              "Ident": "StiText",
+              "Name": "Text29",
+              "Guid": "462fd9c66fe0bff82d6741be36961f85",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "9.6,0,7.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.supplier}"
+              },
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 2,
+                "Right": 2,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "Type": "DataColumn"
+            },
+            "4": {
+              "Ident": "StiText",
+              "Name": "Text25",
+              "Guid": "61f129773ae81300cfcd1480bb20b689",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "3.2,0,2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.tglpelunasan}"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:White",
+              "TextBrush": "solid:Black",
+              "TextFormat": {
+                "Ident": "StiCustomFormatService",
+                "StringFormat": "yyyy-MM-dd"
+              },
+              "Type": "DataColumn"
+            }
+          },
+          "DataSourceName": "root",
+          "OddStyle": "Style2"
+        },
+        "5": {
+          "Ident": "StiFooterBand",
+          "Name": "FooterBand1",
+          "ClientRectangle": "0,7.5,19,0.5",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text21",
+              "Guid": "a4750b9c43254119b8af3d01690774ce",
+              "ClientRectangle": "0,0,16.8,0.5",
+              "ComponentStyle": "StyleFooter",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Total"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 5,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text27",
+              "Guid": "5cf4dbdc66144af3a4114f570809d585",
+              "ClientRectangle": "16.8,0,2.2,0.5",
+              "ComponentStyle": "StyleFooter",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{Sum(root.pelunasan)}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "GroupSeparator": ","
+              },
+              "Type": "Expression"
+            }
+          }
+        }
+      },
+      "PageWidth": 21,
+      "PageHeight": 29.7,
+      "Watermark": {
+        "TextBrush": "solid:50,0,0,0"
+      },
+      "Margins": {
+        "Left": 1,
+        "Right": 1,
+        "Top": 1,
+        "Bottom": 1
+      }
+    }
+  }
+}

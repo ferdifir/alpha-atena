@@ -1,0 +1,116 @@
+* {
+    box-sizing: border-box;
+}
+
+#login-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+#login-flex {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-flex .form,
+#lupakatasandi-container,
+#signup-container {
+    width: 350px;
+    background-color: #fff;
+    z-index: +10;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 20px 2px rgba(0, 0, 0, .5)
+}
+
+#login-flex .form h3,
+#lupakatasandi-container h3,
+#signup-container h3 {
+    font-size: 20px;
+    margin: 0 0 16px;
+}
+
+.textbox .textbox-text {
+    font-size: 13px;
+}
+
+.close-button {
+    background: #ddd;
+    color: #000;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.close-button:hover {
+    background: #ccc;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.close-button:active {
+    background: #bbb;
+    color: #000;
+    border: 1px solid #bbb;
+}
+
+#btn-login {
+    margin: 20px;
+    padding: 10px 20px;
+    display: none;
+    background-color: #1a7bc9;
+    color: #fff;
+    border: 1px solid #1a7bc9;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#btn-login:hover {
+    background-color: #1070bd;
+    border: 1px solid #1070bd;
+}
+
+#btn-login:active {
+    background-color: #0963ab;
+    border: 1px solid #0963ab;
+}
+
+#mask {
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .35);
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: +10;
+}
+
+#lupakatasandi-container,
+#signup-container {
+    display: none;
+    position: fixed;
+    height: 320px;
+    left: calc((100vw - 350px) / 2);
+    top: calc((100vh - 320px) / 2);
+}
+
+#signup-container {
+    height: 450px;
+    top: calc((100vh - 450px) / 2);
+}
+
+#login-container .footer {
+    display: flex;
+    justify-content: space-between;
+}
+
+#login-container .footer a:visited,
+#login-container .footer a:link {
+    text-decoration: none;
+    color: black;
+}

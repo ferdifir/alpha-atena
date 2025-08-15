@@ -1,0 +1,81 @@
+.dataTables_wrapper.container-fluid {
+    padding: 0;
+}
+
+.select2-container--default .select2-selection--single {
+    border-radius: 0;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    color: #000000;
+}
+
+/* Pewarnaan row terhadap status */
+.status-p,
+.table-striped tbody tr:nth-of-type(odd).status-p {
+    background-color: #FFCC00;
+}
+
+.table-bordered:not(.table-laporan) .status-p td {
+    border-color: rgb(233, 186, 0);
+}
+
+.status-d,
+.table-striped tbody tr:nth-of-type(odd).status-d {
+    background-color: #FF5959;
+}
+
+.table-bordered:not(.table-laporan) .status-d td {
+    border-color: rgb(247, 62, 62);
+}
+
+.status-s,
+.table-striped tbody tr:nth-of-type(odd).status-s {
+    background-color: #66CC33;
+}
+
+.table-bordered:not(.table-laporan) .status-s td {
+    border-color: rgb(90, 194, 39);
+}
+
+.status-gray,
+.table-striped tbody tr:nth-of-type(odd).status-gray {
+    background-color: #DDDDDD;
+}
+
+.table-bordered:not(.table-laporan) .status-gray td {
+    border-color: #CCCCCC;
+}
+
+table.table-laporan tbody td {
+    border-color: #333;
+}
+
+/* Disable select2 */
+.disabled-select {
+    background-color: #d5d5d5;
+    opacity: 0.5;
+    border-radius: 3px;
+    cursor: not-allowed;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: +1;
+}
+
+input.error {
+    border-color: #77373d;
+}
+
+label.error {
+    color: #77373d;
+    background-color: #fae1e4;
+    border-color: #f7d5d9;
+    padding: .5rem .75rem;
+    border: 1px solid transparent;
+    border-radius: .25rem;
+    width: 100%;
+    margin-top: .5em;
+}

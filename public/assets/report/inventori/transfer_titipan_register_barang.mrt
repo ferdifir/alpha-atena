@@ -1,0 +1,1744 @@
+{
+  "ReportVersion": "2020.1.1",
+  "ReportGuid": "25a7831ec1a0e94035f528914e8274e7",
+  "ReportName": "Report",
+  "ReportAlias": "Report",
+  "ReportFile": "transfer_titipan_register_barang.mrt",
+  "ReportCreated": "/Date(630000000+0700)/",
+  "ReportChanged": "/Date(630000000+0700)/",
+  "EngineVersion": "EngineV2",
+  "CalculationMode": "Interpretation",
+  "ReportUnit": "Centimeters",
+  "PreviewSettings": 268435455,
+  "Styles": {
+    "0": {
+      "Ident": "StiStyle",
+      "Name": "Style1",
+      "Font": ";8.25;Bold;",
+      "Border": "All;;;;;;;solid:192,192,192",
+      "Brush": "solid:108,174,245",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "1": {
+      "Ident": "StiStyle",
+      "Name": "Style2",
+      "Font": ";8.25;;",
+      "Border": "All;;;;;;;solid:0,0,0",
+      "Brush": "solid:255,255,204",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "2": {
+      "Ident": "StiStyle",
+      "Name": "S",
+      "Border": ";;;;;;;solid:0,0,0",
+      "Brush": "solid:102,204,51",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "3": {
+      "Ident": "StiStyle",
+      "Name": "P",
+      "Border": ";;;;;;;solid:0,0,0",
+      "Brush": "solid:255,204,0",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "4": {
+      "Ident": "StiStyle",
+      "Name": "D",
+      "Border": ";;;;;;;solid:0,0,0",
+      "Brush": "solid:255,89,89",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "5": {
+      "Ident": "StiStyle",
+      "Name": "Footer",
+      "Font": ";8.25;Bold;",
+      "Border": "All;;;;;;;solid:0,0,0",
+      "Brush": "solid:179,224,255",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "6": {
+      "Ident": "StiStyle",
+      "Name": "Style3",
+      "Border": "Top, Left, Right;;;;;;;solid:0,0,0",
+      "Brush": "solid:Transparent",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    },
+    "7": {
+      "Ident": "StiStyle",
+      "Name": "Style4",
+      "Border": "Left, Right;;;;;;;solid:0,0,0",
+      "Brush": "solid:Transparent",
+      "TextBrush": "solid:0,0,0",
+      "NegativeTextBrush": "solid:255,0,0"
+    }
+  },
+  "Dictionary": {
+    "Variables": {
+      "0": {
+        "Name": "namaperusahaan",
+        "Alias": "namaperusahaan",
+        "Type": "System.String"
+      },
+      "1": {
+        "Name": "userlogin",
+        "Alias": "userlogin",
+        "Type": "System.String"
+      },
+      "2": {
+        "Name": "simbolcurrency",
+        "Alias": "simbolcurrency",
+        "Type": "System.String"
+      },
+      "3": {
+        "Name": "periode",
+        "Alias": "periode",
+        "Type": "System.String"
+      },
+      "4": {
+        "Name": "lihatharga",
+        "Alias": "lihatharga",
+        "Type": "System.String"
+      },
+      "5": {
+        "Name": "lokasi",
+        "Alias": "lokasi",
+        "Type": "System.String"
+      },
+      "6": {
+        "Name": "title",
+        "DialogInfo": {
+          "DateTimeType": "DateAndTime"
+        },
+        "Alias": "title",
+        "Type": "System.String"
+      }
+    },
+    "DataSources": {
+      "0": {
+        "Ident": "StiDataTableSource",
+        "Name": "root",
+        "Alias": "root",
+        "Key": "3f3bb1f82e4e4475a5834a8562d369b3",
+        "Columns": {
+          "0": {
+            "Name": "tgltrans",
+            "Index": -1,
+            "NameInSource": "tgltrans",
+            "Alias": "tgltrans",
+            "Type": "System.DateTime"
+          },
+          "1": {
+            "Name": "tglkirim",
+            "Index": -1,
+            "NameInSource": "tglkirim",
+            "Alias": "tglkirim",
+            "Type": "System.DateTime"
+          },
+          "2": {
+            "Name": "kodetransfertitipan",
+            "Index": -1,
+            "NameInSource": "kodetransfertitipan",
+            "Alias": "kodetransfertitipan",
+            "Type": "System.String"
+          },
+          "3": {
+            "Name": "kodelokasiasal",
+            "Index": -1,
+            "NameInSource": "kodelokasiasal",
+            "Alias": "kodelokasiasal",
+            "Type": "System.String"
+          },
+          "4": {
+            "Name": "namalokasiasal",
+            "Index": -1,
+            "NameInSource": "namalokasiasal",
+            "Alias": "namalokasiasal",
+            "Type": "System.String"
+          },
+          "5": {
+            "Name": "kodelokasitujuan",
+            "Index": -1,
+            "NameInSource": "kodelokasitujuan",
+            "Alias": "kodelokasitujuan",
+            "Type": "System.String"
+          },
+          "6": {
+            "Name": "namalokasitujuan",
+            "Index": -1,
+            "NameInSource": "namalokasitujuan",
+            "Alias": "namalokasitujuan",
+            "Type": "System.String"
+          },
+          "7": {
+            "Name": "satuan",
+            "Index": -1,
+            "NameInSource": "satuan",
+            "Alias": "satuan",
+            "Type": "System.String"
+          },
+          "8": {
+            "Name": "jml",
+            "Index": -1,
+            "NameInSource": "jml",
+            "Alias": "jml",
+            "Type": "System.String"
+          },
+          "9": {
+            "Name": "harga",
+            "Index": -1,
+            "NameInSource": "harga",
+            "Alias": "harga",
+            "Type": "System.String"
+          },
+          "10": {
+            "Name": "subtotal",
+            "Index": -1,
+            "NameInSource": "subtotal",
+            "Alias": "subtotal",
+            "Type": "System.String"
+          },
+          "11": {
+            "Name": "catatan",
+            "Index": -1,
+            "NameInSource": "catatan",
+            "Alias": "catatan",
+            "Type": "System.String"
+          },
+          "12": {
+            "Name": "namabarang",
+            "Index": -1,
+            "NameInSource": "namabarang",
+            "Alias": "namabarang",
+            "Type": "System.String"
+          },
+          "13": {
+            "Name": "kodebarang",
+            "Index": -1,
+            "NameInSource": "kodebarang",
+            "Alias": "kodebarang",
+            "Type": "System.String"
+          },
+          "14": {
+            "Name": "status",
+            "Index": -1,
+            "NameInSource": "status",
+            "Alias": "status",
+            "Type": "System.String"
+          },
+          "15": {
+            "Name": "nomor",
+            "Index": -1,
+            "NameInSource": "nomor",
+            "Alias": "nomor",
+            "Type": "System.String"
+          },
+          "16": {
+            "Name": "kodepr",
+            "Index": -1,
+            "NameInSource": "kodepr",
+            "Alias": "kodepr",
+            "Type": "System.String"
+          },
+          "17": {
+            "Name": "tglterimatransfer",
+            "Index": -1,
+            "NameInSource": "tglterimatransfer",
+            "Alias": "tglterimatransfer",
+            "Type": "System.DateTime"
+          },
+          "18": {
+            "Name": "kodeterimatransfer",
+            "Index": -1,
+            "NameInSource": "kodeterimatransfer",
+            "Alias": "kodeterimatransfer",
+            "Type": "System.String"
+          },
+          "19": {
+            "Name": "kodegudangasal",
+            "Index": -1,
+            "NameInSource": "kodegudangasal",
+            "Alias": "kodegudangasal",
+            "Type": "System.String"
+          },
+          "20": {
+            "Name": "kodegudangtujuan",
+            "Index": -1,
+            "NameInSource": "kodegudangtujuan",
+            "Alias": "kodegudangtujuan",
+            "Type": "System.String"
+          },
+          "21": {
+            "Name": "kodeso",
+            "Index": -1,
+            "NameInSource": "kodeso",
+            "Alias": "kodeso",
+            "Type": "System.String"
+          },
+          "22": {
+            "Name": "kodelokasi",
+            "Index": -1,
+            "NameInSource": "kodelokasi",
+            "Alias": "kodelokasi",
+            "Type": "System.String"
+          },
+          "23": {
+            "Name": "kodegudangasal",
+            "Index": -1,
+            "NameInSource": "kodegudangasal",
+            "Alias": "kodegudangasal",
+            "Type": "System.String"
+          },
+          "24": {
+            "Name": "kodegudangtujuan",
+            "Index": -1,
+            "NameInSource": "kodegudangtujuan",
+            "Alias": "kodegudangtujuan",
+            "Type": "System.String"
+          },
+          "25": {
+            "Name": "grandtotal",
+            "Index": -1,
+            "NameInSource": "grandtotal",
+            "Alias": "grandtotal",
+            "Type": "System.Double"
+          },
+          "26": {
+            "Name": "username",
+            "Index": -1,
+            "NameInSource": "username",
+            "Alias": "username",
+            "Type": "System.String"
+          },
+          "27": {
+            "Name": "historykerusakan",
+            "Index": -1,
+            "NameInSource": "historykerusakan",
+            "Alias": "historykerusakan",
+            "Type": "System.String"
+          },
+          "28": {
+            "Name": "bagianrusak",
+            "Index": -1,
+            "NameInSource": "bagianrusak",
+            "Alias": "bagianrusak",
+            "Type": "System.String"
+          },
+          "29": {
+            "Name": "merkframe",
+            "Index": -1,
+            "NameInSource": "merkframe",
+            "Alias": "merkframe",
+            "Type": "System.String"
+          },
+          "30": {
+            "Name": "barcode",
+            "Index": -1,
+            "NameInSource": "barcode",
+            "Alias": "barcode",
+            "Type": "System.String"
+          },
+          "31": {
+            "Name": "namabarangsupplier",
+            "Index": -1,
+            "NameInSource": "namabarangsupplier",
+            "Alias": "namabarangsupplier",
+            "Type": "System.String"
+          },
+          "32": {
+            "Name": "tglterimatitipan",
+            "Index": -1,
+            "NameInSource": "tglterimatitipan",
+            "Alias": "tglterimatitipan",
+            "Type": "System.DateTime"
+          },
+          "33": {
+            "Name": "alasanrusak",
+            "Index": -1,
+            "NameInSource": "alasanrusak",
+            "Alias": "alasanrusak",
+            "Type": "System.String"
+          },
+          "34": {
+            "Name": "kodeso",
+            "Index": -1,
+            "NameInSource": "kodeso",
+            "Alias": "kodeso",
+            "Type": "System.String"
+          },
+          "35": {
+            "Name": "tglkembalititipan",
+            "Index": -1,
+            "NameInSource": "tglkembalititipan",
+            "Alias": "tglkembalititipan",
+            "Type": "System.DateTime"
+          },
+          "36": {
+            "Name": "tglterimakembalititipan",
+            "Index": -1,
+            "NameInSource": "tglterimakembalititipan",
+            "Alias": "tglterimakembalititipan",
+            "Type": "System.DateTime"
+          },
+          "37": {
+            "Name": "kodeterimatitipan",
+            "Index": -1,
+            "NameInSource": "kodeterimatitipan",
+            "Alias": "kodeterimatitipan",
+            "Type": "System.String"
+          },
+          "38": {
+            "Name": "kodekembalititipan",
+            "Index": -1,
+            "NameInSource": "kodekembalititipan",
+            "Alias": "kodekembalititipan",
+            "Type": "System.String"
+          },
+          "39": {
+            "Name": "kodeterimakembalititipan",
+            "Index": -1,
+            "NameInSource": "kodeterimakembalititipan",
+            "Alias": "kodeterimakembalititipan",
+            "Type": "System.String"
+          },
+          "40": {
+            "Name": "hpp",
+            "Index": -1,
+            "NameInSource": "hpp",
+            "Alias": "hpp",
+            "Type": "System.Double"
+          },
+          "41": {
+            "Name": "kodegudangasal",
+            "Index": -1,
+            "NameInSource": "kodegudangasal",
+            "Alias": "kodegudangasal",
+            "Type": "System.String"
+          },
+          "42": {
+            "Name": "hargaso",
+            "Index": -1,
+            "NameInSource": "hargaso",
+            "Alias": "hargaso",
+            "Type": "System.Double"
+          }
+        },
+        "NameInSource": "Data.root"
+      }
+    },
+    "Databases": {
+      "0": {
+        "Ident": "StiJsonDatabase",
+        "Name": "Data",
+        "Alias": "Data"
+      }
+    }
+  },
+  "Pages": {
+    "0": {
+      "Ident": "StiPage",
+      "Name": "Page1",
+      "Guid": "b1cd97b8c4d64c9092737a6c2563915e",
+      "Interaction": {
+        "Ident": "StiInteraction"
+      },
+      "Border": ";;2;;;;;solid:Black",
+      "Brush": "solid:Transparent",
+      "Components": {
+        "0": {
+          "Ident": "StiPageFooterBand",
+          "Name": "PageFooterBand1",
+          "ClientRectangle": "0,27.2,23.2,0.5",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": "Top;;;;;;;solid:0,0,0",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text35",
+              "Guid": "376af8fbb961efdf36955b3693b0b6ce",
+              "ClientRectangle": "0,0,6.8,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Cetak oleh: {userlogin}"
+              },
+              "VertAlignment": "Center",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text14",
+              "Guid": "77dcb4685415e3d98f5b7913578fc174",
+              "ClientRectangle": "6.8,0,16.4,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Halaman {PageNumber} dari {TotalPageCount}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            }
+          }
+        },
+        "1": {
+          "Ident": "StiReportTitleBand",
+          "Name": "ReportTitleBand1",
+          "ClientRectangle": "0,0.4,23.2,2.2",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text5",
+              "Guid": "e62ca69d066f1fc2123ffb0758c50a83",
+              "ClientRectangle": "0,1,23.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{title}"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;14;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text18",
+              "Guid": "9b51290d5051e5a2d4b7af16d3f0ee57",
+              "ClientRectangle": "0,0,23.2,1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{namaperusahaan}"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;14;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text38",
+              "Guid": "a43bd09fbfd96bf87bba16e6d23b2f31",
+              "ClientRectangle": "0,1.5,23.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Periode : {periode}"
+              },
+              "VertAlignment": "Center",
+              "Font": "Tahoma;10;Bold;",
+              "Border": ";;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Type": "Expression"
+            }
+          }
+        },
+        "2": {
+          "Ident": "StiGroupHeaderBand",
+          "Name": "GroupHeaderBand1",
+          "ClientRectangle": "0,3.4,23.2,1",
+          "Interaction": {
+            "Ident": "StiBandInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text23",
+              "Guid": "3c2264c0e822bfe01ec73978d682a4a9",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "0,0,23.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Barang : {root.namabarang} - {root.kodebarang}"
+              },
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 5,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text2",
+              "Guid": "8f83548cdc143474e7ff61ca7b775a95",
+              "ClientRectangle": "1.2,0.5,2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Tgl. Trans"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text9",
+              "Guid": "83dc92c8d427fcd5fd0877675e891318",
+              "ClientRectangle": "0,0.5,1.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "No."
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "3": {
+              "Ident": "StiText",
+              "Name": "Text3",
+              "Guid": "94b294b1b45c032d4b3ecfcc59bb8bd9",
+              "ClientRectangle": "3.2,0.5,3.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "No.  Transfer Titipan"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "4": {
+              "Ident": "StiText",
+              "Name": "Text28",
+              "Guid": "6d77c7aaeb5a411bbb4df2d523ba0ada",
+              "ClientRectangle": "18.8,0.5,2.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "HPP"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            },
+            "5": {
+              "Ident": "StiText",
+              "Name": "Text17",
+              "Guid": "a71107c3266544be85f5398416af4239",
+              "ClientRectangle": "17.6,0.5,1.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Jml"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            },
+            "6": {
+              "Ident": "StiText",
+              "Name": "Text7",
+              "Guid": "bac4c47bbe92bf3a6189887010513144",
+              "ClientRectangle": "21,0.5,2.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Subtotal"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            },
+            "7": {
+              "Ident": "StiText",
+              "Name": "Text15",
+              "Guid": "76c128a9cb69f76f602e093ea8a56a84",
+              "ClientRectangle": "6.4,0.5,3.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "No.  SO"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "8": {
+              "Ident": "StiText",
+              "Name": "Text21",
+              "Guid": "7fce1dd8afbbfc4c907d87415bc837b1",
+              "ClientRectangle": "9.6,0.5,2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Tgl. Terima"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            },
+            "9": {
+              "Ident": "StiText",
+              "Name": "Text22",
+              "Guid": "d456575a941075fd6dc886af93c275f0",
+              "ClientRectangle": "11.6,0.5,3.2,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "No.  Terima Transfer"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "10": {
+              "Ident": "StiText",
+              "Name": "Text12",
+              "Guid": "2cd1d4822cb2310324fb7e500301e0d1",
+              "ClientRectangle": "14.8,0.5,1.4,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Asal"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            },
+            "11": {
+              "Ident": "StiText",
+              "Name": "Text20",
+              "Guid": "d02a442e9950a3ecd369bfca07bc01aa",
+              "ClientRectangle": "16.2,0.5,1.4,0.5",
+              "ComponentStyle": "Style1",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Tujuan"
+              },
+              "HorAlignment": "Center",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:192,192,192",
+              "Brush": "solid:108,174,245",
+              "TextBrush": "solid:0,0,0",
+              "Type": "Expression"
+            }
+          },
+          "Condition": {
+            "Value": "{root.kodebarang}"
+          }
+        },
+        "3": {
+          "Ident": "StiHeaderBand",
+          "Name": "HeaderBand2",
+          "ClientRectangle": "0,5.2,23.2,0.5",
+          "Conditions": {
+            "0": {
+              "Ident": "StiCondition",
+              "Item": "Expression",
+              "Expression": {
+                "Value": "{Count(root) > 0}"
+              },
+              "Enabled": false,
+              "BorderSides": "None"
+            }
+          },
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text32",
+              "Guid": "6eb2ed2289f24a33bd31be139ee9d3e1",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "0,0,23.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Tidak ada data."
+              },
+              "VertAlignment": "Center",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 5,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            }
+          },
+          "PrintIfEmpty": true
+        },
+        "4": {
+          "Ident": "StiDataBand",
+          "Name": "DataBand1",
+          "ClientRectangle": "0,6.5,23.2,0.5",
+          "Conditions": {
+            "0": {
+              "Ident": "StiCondition",
+              "Column": "root.status",
+              "Value1": "S",
+              "Style": "S",
+              "BorderSides": "None"
+            },
+            "1": {
+              "Ident": "StiCondition",
+              "Column": "root.status",
+              "Value1": "P",
+              "Style": "P",
+              "BorderSides": "None"
+            },
+            "2": {
+              "Ident": "StiCondition",
+              "Column": "root.status",
+              "Value1": "D",
+              "Style": "D",
+              "BorderSides": "None"
+            }
+          },
+          "Interaction": {
+            "Ident": "StiBandInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text1",
+              "Guid": "3315c2f96a0141ec36b6dd9e359b8950",
+              "GrowToHeight": true,
+              "ClientRectangle": "1.2,0,2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.tgltrans}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiCustomFormatService",
+                "StringFormat": "yyyy-MM-dd"
+              },
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text10",
+              "Guid": "698163c8f819e4c19c2fd350bf4a0982",
+              "GrowToHeight": true,
+              "ClientRectangle": "0,0,1.2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.nomor}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "Type": "Expression"
+            },
+            "2": {
+              "Ident": "StiText",
+              "Name": "Text16",
+              "Guid": "66f4ffdf01b0a708924d168e030e3a07",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "18.8,0,2.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{lihatharga==1? root.hpp:\"x\"}"
+              },
+              "HorAlignment": "Right",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:255,255,255",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "DecimalDigits": 0,
+                "GroupSeparator": ","
+              },
+              "Type": "Expression"
+            },
+            "3": {
+              "Ident": "StiText",
+              "Name": "Text6",
+              "Guid": "0a79a6bea69149f98cbb5b6e0d3f4087",
+              "GrowToHeight": true,
+              "ClientRectangle": "17.6,0,1.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.jml}"
+              },
+              "HorAlignment": "Right",
+              "Border": "All;;;;;;;solid:Black",
+              "Brush": "solid:White",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "DecimalDigits": 0,
+                "GroupSeparator": ",",
+                "State": "DecimalDigits"
+              },
+              "Type": "Expression"
+            },
+            "4": {
+              "Ident": "StiText",
+              "Name": "Text11",
+              "Guid": "fa7c8e48d5eca00a10c8cd7f15799ca2",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "21,0,2.2,0.5",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{lihatharga==1? root.subtotal:\"x\"}"
+              },
+              "HorAlignment": "Right",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:255,255,255",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "DecimalDigits": 0,
+                "GroupSeparator": ","
+              },
+              "Type": "Expression"
+            },
+            "5": {
+              "Ident": "StiText",
+              "Name": "Text4",
+              "Guid": "cdd04cdc37966dd29182f0090b675c59",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "3.2,0,3.2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Value2": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Value2": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodetransfertitipan}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "Type": "DataColumn"
+            },
+            "6": {
+              "Ident": "StiText",
+              "Name": "Text39",
+              "Guid": "3d1614c038277a04cc52914433225dfc",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "6.4,0,3.2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Value2": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Value2": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodeso}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "Type": "DataColumn"
+            },
+            "7": {
+              "Ident": "StiText",
+              "Name": "Text13",
+              "Guid": "95f8bbf97c1182ebbfbdc8c5ec92b5c4",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "9.6,0,2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Value2": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Value2": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.tglterimatitipan}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiCustomFormatService",
+                "StringFormat": "yyyy-MM-dd"
+              },
+              "Type": "DataColumn"
+            },
+            "8": {
+              "Ident": "StiText",
+              "Name": "Text19",
+              "Guid": "57b9548f57a55d1115b641b7e080aed0",
+              "CanGrow": true,
+              "GrowToHeight": true,
+              "ClientRectangle": "11.6,0,3.2,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodeterimatitipan}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "Type": "DataColumn"
+            },
+            "9": {
+              "Ident": "StiText",
+              "Name": "Text53",
+              "Guid": "a85f81c03a9a812cb9154d5e2e4b5be7",
+              "GrowToHeight": true,
+              "ClientRectangle": "14.8,0,1.4,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Value2": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Value2": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodelokasiasal}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "GroupSeparator": ","
+              },
+              "Type": "DataColumn"
+            },
+            "10": {
+              "Ident": "StiText",
+              "Name": "Text26",
+              "Guid": "f243ad19bc43133eb58fd2dee62c962d",
+              "GrowToHeight": true,
+              "ClientRectangle": "16.2,0,1.4,0.5",
+              "Conditions": {
+                "0": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "S",
+                  "Value2": "S",
+                  "Style": "S",
+                  "BorderSides": "None"
+                },
+                "1": {
+                  "Ident": "StiCondition",
+                  "Column": "root.status",
+                  "Value1": "P",
+                  "Value2": "P",
+                  "Style": "P",
+                  "BorderSides": "None"
+                },
+                "2": {
+                  "Ident": "StiCondition",
+                  "Style": "D",
+                  "BorderSides": "None"
+                },
+                "3": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan == \"\"}"
+                  },
+                  "Style": "Style4",
+                  "BorderSides": "None"
+                },
+                "4": {
+                  "Ident": "StiCondition",
+                  "Item": "Expression",
+                  "Expression": {
+                    "Value": "{root.kodetransfertitipan != \"\"}"
+                  },
+                  "Style": "Style3",
+                  "BorderSides": "None"
+                }
+              },
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{root.kodelokasiasal}"
+              },
+              "HorAlignment": "Center",
+              "Border": ";;;;;;;solid:0,0,0",
+              "Brush": "solid:Transparent",
+              "TextBrush": "solid:Black",
+              "TextOptions": {
+                "WordWrap": true
+              },
+              "Margins": {
+                "Left": 0,
+                "Right": 0,
+                "Top": 2,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "GroupSeparator": ","
+              },
+              "Type": "DataColumn"
+            }
+          },
+          "DataSourceName": "root"
+        },
+        "5": {
+          "Ident": "StiGroupFooterBand",
+          "Name": "GroupFooterBand1",
+          "ClientRectangle": "0,7.8,23.2,0.8",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": ";;;;;;;solid:Black",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text25",
+              "Guid": "5aa2564f88e523c5fadcb150e372a048",
+              "ClientRectangle": "21,0,2.2,0.5",
+              "ComponentStyle": "Footer",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{lihatharga==1? Sum(DataBand1,root.subtotal):\"x\"}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:0,0,0",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "DecimalDigits": 0,
+                "GroupSeparator": ","
+              },
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text31",
+              "Guid": "ef574586c45c96699bf9b7f3cca2cffa",
+              "ClientRectangle": "0,0,21,0.5",
+              "ComponentStyle": "Footer",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Total"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:0,0,0",
+              "Margins": {
+                "Left": 0,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            }
+          }
+        },
+        "6": {
+          "Ident": "StiFooterBand",
+          "Name": "FooterBand1",
+          "ClientRectangle": "0,9.4,23.2,0.5",
+          "Interaction": {
+            "Ident": "StiInteraction"
+          },
+          "Border": "Top;;;;;;;solid:0,0,0",
+          "Brush": "solid:Transparent",
+          "Components": {
+            "0": {
+              "Ident": "StiText",
+              "Name": "Text30",
+              "Guid": "106f129020fd57a9b229ac89b2afa3b6",
+              "ClientRectangle": "0,0,21,0.5",
+              "ComponentStyle": "Footer",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "Grand Total"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:0,0,0",
+              "Margins": {
+                "Left": 0,
+                "Right": 5,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiDateFormatService",
+                "StringFormat": "dd/MM/yyyy"
+              },
+              "Type": "Expression"
+            },
+            "1": {
+              "Ident": "StiText",
+              "Name": "Text41",
+              "Guid": "d85bb93469e8bc5923fe2ce040be5f4a",
+              "ClientRectangle": "21,0,2.2,0.5",
+              "ComponentStyle": "Footer",
+              "Interaction": {
+                "Ident": "StiInteraction"
+              },
+              "Text": {
+                "Value": "{lihatharga==1? Sum(DataBand1,root.subtotal):\"x\"}"
+              },
+              "HorAlignment": "Right",
+              "VertAlignment": "Center",
+              "Font": ";8.25;Bold;",
+              "Border": "All;;;;;;;solid:0,0,0",
+              "Brush": "solid:179,224,255",
+              "TextBrush": "solid:0,0,0",
+              "Margins": {
+                "Left": 0,
+                "Right": 2,
+                "Top": 0,
+                "Bottom": 0
+              },
+              "TextFormat": {
+                "Ident": "StiNumberFormatService",
+                "NegativePattern": 1,
+                "DecimalDigits": 0,
+                "GroupSeparator": ","
+              },
+              "Type": "Expression"
+            }
+          }
+        }
+      },
+      "PageWidth": 25.2,
+      "PageHeight": 29.7,
+      "Watermark": {
+        "TextBrush": "solid:50,0,0,0"
+      },
+      "Margins": {
+        "Left": 1,
+        "Right": 1,
+        "Top": 1,
+        "Bottom": 1
+      }
+    }
+  }
+}

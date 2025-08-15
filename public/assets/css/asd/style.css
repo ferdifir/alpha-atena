@@ -1,0 +1,136 @@
+@font-face {
+    font-family: Roboto;
+    *src: url(../font/Roboto/Roboto-Regular.ttf);
+    src: url(../font/open-sans/OpenSans-Regular.ttf);
+    *src: url(../font/Montserrat/Montserrat-Regular.otf);
+}
+
+fieldset{
+	margin:0px;
+	padding:1px;
+	border: 1px solid #6caef5;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+	border-radius:8px;
+}
+
+* {
+	font-size:12px;
+}
+
+body {
+    font-family:roboto, verdana,helvetica,arial,sans-serif;
+    padding:0px;
+    font-size:11px;
+    margin:0;
+}
+a {
+	/*font-family:roboto,sans-serif, Geneva, Calibri;
+	font-size:12px;
+	font-weight:bold;
+	text-decoration:none;
+	color:black;*/
+}
+.link_menu{
+	font-weight:normal;
+	font-size:12px;
+}
+
+#v_modul{
+	font-family:roboto, Arial, Helvetica, sans-serif;
+	font-size:14px;
+	/*margin:0.5px;*/
+}
+
+#label_form{
+	font-family:Roboto, verdana, sans-serif, tahoma, calibri;
+	font-size:11px;
+	font-weight:bold;
+}
+
+.datagrid-editable-input, .label_input{
+	/*font-family:verdana, sans-serif, tahoma, calibri;
+	font-size:11px;
+	/*text-transform:uppercase;
+	height:14px;*/
+}
+.font-normal {
+	text-transform:none;
+}
+.font-header {
+	font-family: 'Acme', sans-serif;
+	font-size  : 35px;
+	font-weight: bolder;
+	color      : white;
+}
+
+.font-header-menu {
+	font-family: 'acme', sans-serif;
+	font-size  : 25px;
+	font-weight: bolder;
+	color      : #37474f;
+}
+
+input:-moz-read-only {
+    background-color: #F0F0F0;
+}
+input:read-only {
+    background-color: #F0F0F0;
+}
+
+#label_laporan{
+	font-family:roboto, Verdana, Geneva, sans-serif; 
+	font-size:11px;
+}
+#form_cetak{
+	padding: 5px;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
+
+.number {
+	text-align: right;
+}
+.date {
+	width: 90px;
+}
+
+.numberbox-f{
+	text-align: right;
+}
+
+.calendar table td, .calendar table th {
+    /*font-size: 17px;*/
+}
+
+.numberbox .textbox-text{
+	text-align: right;
+}
+
+/* */
+.textbox .textbox-text {
+	font-family:roboto, tahoma;
+	font-size:11px;
+}
+
+/* */ 
+.datagrid-cell {
+	font-family:'Nunito Sans', tahoma;
+	font-size:11px;
+}
+
+/* */
+.datagrid-view .datagrid-editable-input {
+	font-family:roboto,tahoma;
+	font-size:11px;
+}
+
+#lbl_kasir{
+	font-size:10px;
+}
+#lbl_tanggal{
+	font-size:10px;
+}

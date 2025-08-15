@@ -1,0 +1,365 @@
+#menu-wrapper {
+    padding-top: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.nav-mask {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: +10;
+}
+
+.nav-popup {
+    background-color: #fff;
+    padding: 30px;
+    width: fit-content;
+    width: -moz-fit-content;
+    max-width: 1000px;
+    margin: calc(100vh / 10) auto 0;
+    border-radius: 5px;
+    box-shadow: 0 0 30px 1px rgba(0, 0, 0, 0.15);
+}
+
+.nav-popup > .menu-popup-wrapper {
+    padding: 0;
+}
+
+.nav-popup button.nav-popup-close {
+    background-color: #eee;
+    padding: 10px 20px;
+    border: 1px solid #ddd;
+    letter-spacing: 2px;
+    cursor: pointer;
+    border-radius: 2px;
+    outline: none;
+    display: block;
+    margin: 15px auto 0;
+    font-weight: bold;
+    font-family: roboto, verdana, helvetica, arial, sans-serif;
+}
+
+.nav-popup button.nav-popup-close:hover {
+    background-color: #ddd;
+    border: 1px solid #ccc;
+}
+
+.nav-popup button.nav-popup-close:active {
+    background-color: #ccc;
+    border: 1px solid #bbb;
+}
+
+#nav-laporan-mask h3 {
+    font-size: 35px;
+    text-align: center;
+    margin: 0;
+    font-family: 'Heebo';
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.root {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.card {
+    background: #fff;
+    border-radius: 2px;
+    margin: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    box-sizing: border-box;
+    /* padding: 10px 20px; */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+
+.card h4 {
+    margin: 10px 0 0;
+    text-align: center;
+    font-size: 14px;
+    font-family: 'Heebo';
+    letter-spacing: 1px;
+    color: #000;
+}
+
+.card.card-perusahaan {
+    width: 200px;
+    height: 80px;
+    padding: 10px;
+}
+
+.card.card-perusahaan h4 {
+    margin: 0;
+}
+
+.card:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+/* Master */
+.card.GTX45,
+.card.IUH5G {
+    background-color: #6ec6ff;
+    box-shadow: 0 1px 3px #2196f3, 0 1px 2px #2196f3;
+}
+
+.card.GTX45:hover,
+.card.IUH5G:hover {
+    box-shadow: 0 3px 6px #2196f3, 0 3px 6px #2196f3;
+}
+
+/* Pembelian */
+.card.HYG65,
+.card.IU781 {
+    background-color: #6abf69;
+    box-shadow: 0 1px 3px #388e3c, 0 1px 2px #388e3c;
+}
+
+.card.HYG65:hover,
+.card.IU781:hover {
+    box-shadow: 0 3px 6px #388e3c, 0 3px 6px #388e3c;
+}
+
+/* Penjualan */
+.card.KCR11,
+.card.LKCOS {
+    background-color: #fbc02d;
+    box-shadow: 0 1px 3px #c49000, 0 1px 2px #c49000;
+}
+
+.card.KCR11:hover,
+.card.LKCOS:hover {
+    box-shadow: 0 3px 6px #c49000, 0 3px 6px #c49000;
+}
+
+/* Inventori */
+.card.KIU13,
+.card.PO871 {
+    background-color: #ffa000;
+    box-shadow: 0 1px 3px #c67100, 0 1px 2px #c67100;
+}
+
+.card.KIU13:hover,
+.card.PO871:hover {
+    box-shadow: 0 3px 6px #c67100, 0 3px 6px #c67100;
+}
+
+/* Aset */
+.card.KJUY1,
+.card.KUTR1 {
+    background-color: #ff6659;
+    box-shadow: 0 1px 3px #d32f2f, 0 1px 2px #d32f2f;
+}
+
+.card.KJUY1:hover,
+.card.KUTR1:hover {
+    box-shadow: 0 3px 6px #d32f2f, 0 3px 6px #d32f2f;
+}
+
+/* Keuangan */
+.card.JHY11,
+.card.PO911 {
+    background-color: #ff5c8d;
+    box-shadow: 0 1px 3px #d81b60, 0 1px 2px #d81b60;
+}
+
+.card.JHY11:hover,
+.card.PO911:hover {
+    box-shadow: 0 3px 6px #d81b60, 0 3px 6px #d81b60;
+}
+
+/* Akuntansi */
+.card.KJDU1,
+.card.I821L {
+    background-color: #df78ef;
+    box-shadow: 0 1px 3px #ab47bc, 0 1px 2px #ab47bc;
+}
+
+.card.KJDU1:hover,
+.card.I821L:hover {
+    box-shadow: 0 3px 6px #ab47bc, 0 3px 6px #ab47bc;
+}
+
+/* Laporan */
+.card.IU76X {
+    background-color: #8e99f3;
+    box-shadow: 0 1px 3px #5c6bc0, 0 1px 2px #5c6bc0;
+}
+
+.card.IU76X:hover {
+    box-shadow: 0 3px 6px #5c6bc0, 0 3px 6px #5c6bc0;
+}
+
+.card .icon {
+    display: block;
+    margin: 0 auto;
+    width: 50px;
+    height: 50px;
+}
+
+@keyframes fade-out-slide-right {
+    0% {
+        transform: translateX(0);
+        filter: opacity(1)
+    }
+    100% {
+        transform: translateX(150px);
+        filter: opacity(0)
+    }
+}
+
+.animate-fade-out-slide-right {
+    animation-name: fade-out-slide-right;
+    animation-timing-function: ease-in;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in-slide-left {
+    0% {
+        transform: translateX(150px);
+        filter: opacity(0)
+    }
+    100% {
+        transform: translateX(0);
+        filter: opacity(1)
+    }
+}
+
+.animate-fade-in-slide-left {
+    animation-name: fade-in-slide-left;
+    animation-timing-function: ease-in;
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fade-in-slide-down {
+    0% {
+        transform: translateY(-150px);
+        filter: opacity(0)
+    }
+    100% {
+        transform: translateY(0);
+        filter: opacity(1)
+    }
+}
+
+.animate-fade-in-slide-down {
+    animation-name: fade-in-slide-down;
+    animation-timing-function: cubic-bezier();
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes grow-blur-out {
+    0% {
+        transform: scale(1);
+        filter: opacity(1) blur(0);
+    }
+    100% {
+        transform: scale(2);
+        filter: opacity(0) blur(50px);
+    }
+}
+
+.animate-grow-blur-out {
+    animation-name: grow-blur-out;
+    animation-timing-function: cubic-bezier();
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes grow-blur-in {
+    0% {
+        transform: scale(2);
+        filter: opacity(0) blur(50px)
+    }
+    100% {
+        transform: scale(1);
+        filter: opacity(1) blur(0);
+    }
+}
+
+.animate-grow-blur-in {
+    animation-name: grow-blur-in;
+    animation-timing-function: cubic-bezier();
+    animation-duration: 0.25s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+/* Card Perusahaan */
+/*
+    Style dibuat dengan konsep repeat setiap 5 objek
+*/
+
+.card.card-perusahaan {
+    font-family: 'Heebo';
+    font-weight: 900;
+    letter-spacing: 1px;
+}
+
+.card.card-perusahaan h4 {
+    font-size: 16px;
+}
+
+.card.card-perusahaan:nth-child(5n + 1) {
+    background-color: #df78ef;
+    box-shadow: 0 1px 3px #ab47bc, 0 1px 2px #ab47bc;
+}
+
+.card.card-perusahaan:nth-child(5n + 1):hover {
+    box-shadow: 0 3px 6px #ab47bc, 0 3px 6px #ab47bc;
+}
+
+.card.card-perusahaan:nth-child(5n + 2) {
+    background-color: #6abf69;
+    box-shadow: 0 1px 3px #388e3c, 0 1px 2px #388e3c;
+}
+
+.card.card-perusahaan:nth-child(5n + 2):hover {
+    box-shadow: 0 3px 6px #388e3c, 0 3px 6px #388e3c;
+}
+
+.card.card-perusahaan:nth-child(5n + 3) {
+    background-color: #ffa000;
+    box-shadow: 0 1px 3px #c67100, 0 1px 2px #c67100;
+}
+
+.card.card-perusahaan:nth-child(5n + 3):hover {
+    box-shadow: 0 3px 6px #c67100, 0 3px 6px #c67100;
+}
+
+.card.card-perusahaan:nth-child(5n + 4) {
+    background-color: #6ec6ff;
+    box-shadow: 0 1px 3px #2196f3, 0 1px 2px #2196f3;
+}
+
+.card.card-perusahaan:nth-child(5n + 4):hover {
+    box-shadow: 0 3px 6px #2196f3, 0 3px 6px #2196f3;
+}
+
+.card.card-perusahaan:nth-child(5n + 5) {
+    background-color: #ff6659;
+    box-shadow: 0 1px 3px #d32f2f, 0 1px 2px #d32f2f;
+}
+
+.card.card-perusahaan:nth-child(5n + 5):hover {
+    box-shadow: 0 3px 6px #d32f2f, 0 3px 6px #d32f2f;    
+}
