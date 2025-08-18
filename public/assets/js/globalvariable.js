@@ -10,9 +10,9 @@ var link_api = {
   getDataAkses: `${base_url_api}atena/master/user/get-user-akses`,
   //perkiraan
   hapusPerkiraan: `${base_url_api}atena/master/perkiraan/hapus`,
-  gridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/load-data-grid`,
+  loadDataGridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/load-data-grid`,
   treeMasterPerkiraan: `${base_url_api}atena/master/perkiraan/tree`,
-  headerFormPerkiraan:`${base_url_api}atena/master/perkiraan/header`,
+  headerFormPerkiraan:`${base_url_api}atena/master/perkiraan/load-data-header`,
   browseHeaderPerkiraan:`${base_url_api}atena/master/perkiraan/browse-header`,
   simpanPerkiraan:`${base_url_api}atena/master/perkiraan/simpan`,
   getPerkiraanUser:`${base_url_api}atena/master/perkiraan/load-perkiraan-user`,
@@ -38,7 +38,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
       body: JSON.stringify({
         "kodemenu":kodeMenu
       }),
-    });
+    }).then(response => response.json())
+    console.log(response);
 
     // Memeriksa apakah respons HTTP OK (status 200-299)
     if (!response.ok) {
@@ -65,13 +66,14 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
     }
 
   } catch (error) {
+    console.log(error);
     // Menangani error jaringan atau parsing JSON
-    console.error('Network or parsing error:', error);
-    if (onError && typeof onError === 'function') {
-      onError(error); // Panggil onError jika disediakan
-    } else {
-      console.error('An unexpected error occurred:', error);
-    }
+    // console.error('Network or parsing error:', error);
+    // if (onError && typeof onError === 'function') {
+    //   onError(error); // Panggil onError jika disediakan
+    // } else {
+    //   console.error('An unexpected error occurred:', error);
+    // }
   }
   tutupLoader();
 }

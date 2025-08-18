@@ -67,7 +67,7 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}"></script>
     <script>
         var counter = 0;
         $(document).ready(async function() {
@@ -192,7 +192,7 @@
                     $('#form_data').attr('target', tab_name);
 
                     parent.buka_submenu(null, 'Tambah Perkiraan Akuntansi',
-                        '{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                        '{{ route('atena.master.perkiraan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
 
                     // $('#tab_transaksi').tabs('add', {
@@ -218,7 +218,7 @@
                     //PELU BUAT SIMPEN INDEX
                     var row = $('#table_data').datagrid('getSelected');
                     parent.buka_submenu(null, row.namaperkiraan,
-                        '{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu, 'mode' => 'ubah', 'data' => 'row.uuidperkiraan']) }}',
+                        '{{ route('atena.master.perkiraan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' + row.uuidperkiraan,
                         'fa fa-pencil');
 
                     // $("#mode").val("ubah");
@@ -324,7 +324,7 @@
                     var opts = $(this).datagrid('options');
                     $.ajax({
                         type: opts.method,
-                        url: link_api.gridMasterPerkiraan,
+                        url: link_api.loadDataGridMasterPerkiraan,
                         data: param,
                         beforeSend: function(xhr) {
                             xhr.setRequestHeader('Authorization',

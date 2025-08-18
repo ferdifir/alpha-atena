@@ -102,12 +102,12 @@
                             </table>
 
                             <div class="easyui-tabs" style="width: 300px;height: 250px">
-                                {{-- <div title="Daftar User">
-                                <table id="table_data_user"></table>
-                            </div> --}}
-                                <div title="Daftar Lokasi">
-                                    <table id="table_data_lokasi"></table>
+                                <div title="Daftar User">
+                                    <table id="table_data_user"></table>
                                 </div>
+                                {{-- <div title="Daftar Lokasi">
+                                    <table id="table_data_lokasi"></table>
+                                </div> --}}
                             </div>
 
                             <table cellpadding="0" cellspacing="0" style="width:100%">
@@ -303,13 +303,13 @@
                         }
                     ]
                 ],
-                onSelect: function(index,row) {
+                onSelect: function(index, row) {
                     $('#kodecurrency').val(row.kode);
                 }
             });
 
-            // buat_table_user();
-            buat_table_lokasi();
+            buat_table_user();
+            // buat_table_lokasi();
 
             // Menghapus loading ketika halaman sudah dimuat
             setTimeout(function() {
@@ -390,17 +390,19 @@
                 // setTimeout digunakan untuk mengakali combobox yang tidak ke set value-nya
                 setTimeout(function() {
                     $('#tipe').combobox('setValue', 'DETAIL');
+                    get_akses_user('{{ $kodemenu }}', function(data) {
+                        console.log(data);
+                        if (data.success && data.data.ubah != 1) {
+                            $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
+                        }
+                    });
                 }, 250)
 
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
                 $('#kodeperkiraan').textbox('readonly', true);
 
-                get_akses_user('{{ $kodemenu }}', function(data) {
-                    if (data.ubah != 1) {
-                        $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
-                    }
-                });
+
             }
         }
 
@@ -411,17 +413,21 @@
 
             if (isValid) {
                 simpan_data(mode);
+            } else {
+                $.messager.alert('Error', "Ada data yang belum terisi", 'error');
             }
         }
 
         function simpan_data(mode) {
-            // $('#data_user').val(JSON.stringify($('#table_data_user').datagrid('getChecked')));
-            $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
+            bukaLoader()
+            var datauser=$('#table_data_user').datagrid('getChecked');
+            $('#data_user').val(JSON.stringify(datauser));
+            // $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
 
             $.ajax({
                 type: 'POST',
                 url: link_api.simpanPerkiraan,
-                data: $('#form_input :input').serialize(),
+                data:  $('#form_input :input').serialize(),
                 dataType: 'json',
                 beforeSend: function(xhr) {
                     tampilLoaderSimpan();
@@ -452,6 +458,7 @@
                     }
                 }
             });
+            tutupLoader()
         }
 
         function buat_table_user() {
@@ -496,6 +503,11 @@
                             checkbox: true
                         },
                         {
+                            field: 'uuiduser',
+                            title: 'Id User',
+                            hidden: true
+                        },
+                        {
                             field: 'username',
                             title: 'User Name',
                             width: 200
@@ -530,7 +542,7 @@
                             var ln = rows.length;
 
                             for (var i = 0; i < ln; i++) {
-                                var data = msg.data;
+                                var data = response.data;
                                 var ln1 = data.length;
 
                                 for (var j = 0; j < ln1; j++) {
@@ -542,7 +554,7 @@
                                 }
                             }
                         } else {
-                            $.messager.alert('Error', msg.errorMsg, 'error');
+                            $.messager.alert('Error', response.message, 'error');
                         }
                     } catch (error) {
                         $.messager.alert('Error', error, 'error');

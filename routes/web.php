@@ -43,29 +43,10 @@ Route::get('atena/master/perkiraan/data',function (){
     ]);
 })->name('atena.master.perkiraan.data');
 
-Route::get('/master/perkiraan/form',function (){
+Route::get('atena/master/perkiraan/form',function (){
     return view('atena.master.perkiraan.v_master_form_perkiraan',[
         'kodemenu'=>request()->kode,
         'data'=>request()->data,
         'mode'=>request()->mode,
-    ]);
-})->name('atena.master.perkiraan.form');
-
-//Master Pengaturan
-Route::get('atena/master/pengaturan/data',function (){
-    return view('atena.master.pengaturan.v_master_form_pengaturan',[
-        'kodemenu'=>request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
-    ]);
-})->name('atena.master.perkiraan.form');
-
-Route::get('atena/master/data/pengaturan/view-master-perusahaan',function (){
-    $issignup = count(session('LISTPERUSAHAAN')) == 0;
-    return view('atena.master.pengaturan.v_master_frame_perusahaan',[
-        'kodemenu'=>request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
-        'issignup'=>$issignup
     ]);
 })->name('atena.master.perkiraan.form');
