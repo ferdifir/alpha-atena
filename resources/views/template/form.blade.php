@@ -10,7 +10,7 @@
         <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     </head>
 
-    <body>
+    <body style="padding-left: 16px">
         <!-- Loading start -->
         <div id="mask-loader">
             <div style="text-align: center">
@@ -55,6 +55,7 @@
         <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
         @stack('js')
     </body>
 </html>

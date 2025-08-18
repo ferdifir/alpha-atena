@@ -20,7 +20,7 @@
                                 <tr>
                                     <td align="right" id="label_form">Kode</td>
                                     <td>
-                                        <input id="kodeperkiraan" name="kodeperkiraan" style="width:100px"
+                                        <input id="kodeperkiraan" name="kodeperkiraan" style="width:340px"
                                             class="label_input" required="true" validType='length[0,20]'>
                                         <label id="label_form"><input type="checkbox" id="status" name="status"
                                                 value="1"> Aktif</label>
@@ -34,7 +34,7 @@
                                 <tr>
                                     <td align="right" id="label_form">Kelompok</td>
                                     <td>
-                                        <select name="kelompok" id="kelompok" style="width:200px" class="easyui-combobox"
+                                        <select name="kelompok" id="kelompok" style="width:400px" class="easyui-combobox"
                                             panelHeight="auto" required="true">
                                             <option value="NERACA-AKTIVA">Neraca-Aktiva</option>
                                             <option value="NERACA-PASIVA">Neraca-Pasiva</option>
@@ -46,7 +46,7 @@
                                 <tr>
                                     <td align="right" id="label_form">Tipe</td>
                                     <td>
-                                        <select id="tipe" name="tipe" style="width:80px" class="easyui-combobox"
+                                        <select id="tipe" name="tipe" style="width:400px" class="easyui-combobox"
                                             panelHeight="auto">
                                             <option value="HEADER">Header</option>
                                             <option value="DETAIL">Detail</option>
@@ -55,13 +55,16 @@
                                 </tr>
                                 <tr>
                                     <td align="right" id="label_form">Induk</td>
-                                    <td><input id="induk" name="induk" style="width:80px"> <input name="namainduk"
-                                            id="namainduk" style="width:250px" class="label_input" readonly></td>
+                                    <td>
+                                        <input id="induk" name="induk" style="width:80px">
+                                        <input name="namainduk" id="namainduk" style="width:315px" class="label_input"
+                                            readonly>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td align="right" id="label_form">Saldo</td>
                                     <td>
-                                        <select id="saldo" name="saldo" style="width:80px" class="easyui-combobox"
+                                        <select id="saldo" name="saldo" style="width:400px" class="easyui-combobox"
                                             panelHeight="auto">
                                             <option value=""> - </option>
                                             <option value="DEBET">Debet</option>
@@ -72,8 +75,19 @@
                                 <tr>
                                     <td align="right" id="label_form">Jenis Kas-Bank</td>
                                     <td id="label_form">
-                                        <select name="kasbank" style="width:80px" class="easyui-combobox"
-                                            data-options="editable: false" panelHeight="auto" required="true">
+                                        <select name="kasbank" style="width:80px" class="easyui-combobox" panelHeight="auto"
+                                            required="true"
+                                            data-options="
+                                            editable: false,
+                                            onSelect: function(val){
+                                                if(val.value=='0'){
+                                                    $('#kodekasbank').textbox({readonly:true, required:false, value:''})
+                                                }else{
+                                                    $('#kodekasbank').textbox({readonly:false,required:true})
+                                            console.log(val.value);
+                                                }
+                                            }
+                                        ">
                                             <option value="0"> - </option>
                                             <option value="1">Kas</option>
                                             <option value="2">Bank</option>
@@ -81,13 +95,13 @@
 
                                         &nbsp;
                                         Kode Kas-Bank
-                                        <input name="kodekasbank" style="width:50px" class="label_input"
-                                            validType='length[0,10]'>
+                                        <input id="kodekasbank" name="kodekasbank" style="width:210px"
+                                            class="label_input" validType='length[0,10]'>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="right" id="label_form">Currency</td>
-                                    <td><input id="uuidcurrency" name="uuidcurrency" style="width:80px"></td>
+                                    <td><input id="uuidcurrency" name="uuidcurrency" style="width:400px"></td>
                                 </tr>
                                 <tr>
                                     <td></td>
@@ -101,7 +115,7 @@
                                 </tr>
                             </table>
 
-                            <div class="easyui-tabs" style="width: 300px;height: 250px">
+                            <div class="easyui-tabs" style="width: 505px;height: 250px">
                                 <div title="Daftar User">
                                     <table id="table_data_user"></table>
                                 </div>
@@ -109,17 +123,18 @@
                                     <table id="table_data_lokasi"></table>
                                 </div> --}}
                             </div>
-
-                            <table cellpadding="0" cellspacing="0" style="width:100%">
-                                <tr>
-                                    <td align="left" id="label_form">
-                                        <label style="font-weight:normal" id="label_form">User Input :</label>
-                                        <label id="lbl_kasir"></label>
-                                        <label style="font-weight:normal" id="label_form">| Tgl Input :</label>
-                                        <label id="lbl_tanggal"></label>
-                                    </td>
-                                </tr>
-                            </table>
+                            <div style="position: fixed;bottom:0;background-color: white;width:100%;">
+                                <table cellpadding="0" cellspacing="0" style="width:100%">
+                                    <tr>
+                                        <td align="left" id="label_form">
+                                            <label style="font-weight:normal" id="label_form">User Input :</label>
+                                            <label id="lbl_kasir"></label>
+                                            <label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+                                            <label id="lbl_tanggal"></label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -142,23 +157,26 @@
         var config = {};
         var csrf_token = '{{ csrf_token() }}';
     </script>
-    <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
     <script>
         $(document).ready(async function() {
             bukaLoader();
+            let check=false;
             await getConfig("KODEPERKIRAAN", "MPERKIRAAN", 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
+                        check=true;
                     } else {
-                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
+                        if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
                             window.alert("Login session sudah habis. Silahkan Login Kembali");
                         } else {
                             $.messager.alert('Error', error, 'error');
                         }
                     }
+                },function(error){
+                    $.messager.alert('Error', "Request Config Error", 'error');
                 });
-
+            if(!check)return;
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
@@ -390,14 +408,14 @@
                 // setTimeout digunakan untuk mengakali combobox yang tidak ke set value-nya
                 setTimeout(function() {
                     $('#tipe').combobox('setValue', 'DETAIL');
-                    get_akses_user('{{ $kodemenu }}', function(data) {
+                    get_akses_user('{{ $kodemenu }}','bearer {{ session('TOKEN') }}',function(data) {
                         console.log(data);
                         if (data.success && data.data.ubah != 1) {
                             $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                         }
                     });
                 }, 250)
-
+                $('#kodecurrency').val(row.kodecurrency);
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
                 $('#kodeperkiraan').textbox('readonly', true);
@@ -420,14 +438,14 @@
 
         function simpan_data(mode) {
             bukaLoader()
-            var datauser=$('#table_data_user').datagrid('getChecked');
+            var datauser = $('#table_data_user').datagrid('getChecked');
             $('#data_user').val(JSON.stringify(datauser));
             // $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
 
             $.ajax({
                 type: 'POST',
                 url: link_api.simpanPerkiraan,
-                data:  $('#form_input :input').serialize(),
+                data: $('#form_input :input').serialize(),
                 dataType: 'json',
                 beforeSend: function(xhr) {
                     tampilLoaderSimpan();
@@ -451,10 +469,10 @@
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
                         }
-                        parent.reload();
+                        // parent.reload();
                         $('#INDUK').combogrid('grid').datagrid('reload');
                     } else {
-                        $.messager.alert('Error', msg.errorMsg, 'error');
+                        $.messager.alert('Error', msg.message, 'error');
                     }
                 }
             });

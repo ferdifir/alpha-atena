@@ -67,10 +67,30 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
+    </script>
     <script>
         var counter = 0;
         $(document).ready(async function() {
+            bukaLoader();
+            let check=false;
+            await getConfig("KODEPERKIRAAN", "MPERKIRAAN", 'bearer {{ session('TOKEN') }}',
+                function(response) {
+                    if (response.success) {
+                        config = response.data;
+                        check=true;
+                    } else {
+                        if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
+                            window.alert("Login session sudah habis. Silahkan Login Kembali");
+                        } else {
+                            $.messager.alert('Error', error, 'error');
+                        }
+                    }
+                },function(error){
+                    $.messager.alert('Error', "Request Config Error", 'error');
+                });
+            if(!check)return;
+            tutupLoader();
             $("#table_data").datagrid({
                 onSelect: function() {
                     row = $('#table_data').datagrid('getSelected');
@@ -179,30 +199,12 @@
 
         function before_add() {
             $('#mode').val('tambah');
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}',function(data) {
                 if (data.success && data.data.tambah == 1) {
-                    counter++;
-                    // $("#mode").val("tambah");
-                    // $("#view").val('{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}');
-                    // $("#data").val('');
-
-                    var tab_title = 'Tambah';
-                    var tab_name = tab_title + "_" + counter;
-
-                    $('#form_data').attr('target', tab_name);
-
                     parent.buka_submenu(null, 'Tambah Perkiraan Akuntansi',
                         '{{ route('atena.master.perkiraan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
 
-                    // $('#tab_transaksi').tabs('add', {
-                    //     title: tab_title,
-                    //     content: '<iframe frameborder="0" class="tab_form"  id="' + counter + '" name="' +
-                    //         tab_name + '"></iframe>',
-                    //     closable: true
-                    // });
-
-                    // $('#form_data').submit();
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
@@ -211,38 +213,16 @@
 
         function before_edit() {
             $('#mode').val('ubah');
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}',function(data) {
                 if (data.success && (data.data.ubah == 1 || data.data.hakakses == 1)) {
                     counter++;
 
                     //PELU BUAT SIMPEN INDEX
                     var row = $('#table_data').datagrid('getSelected');
                     parent.buka_submenu(null, row.namaperkiraan,
-                        '{{ route('atena.master.perkiraan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' + row.uuidperkiraan,
+                        '{{ route('atena.master.perkiraan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidperkiraan,
                         'fa fa-pencil');
-
-                    // $("#mode").val("ubah");
-                    // $("#view").val('{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu]) }}');
-                    // $("#data").val(row.uuidperkiraan);
-
-                    // var tab_title = row.namaperkiraan;
-                    // var tab_name = tab_title + "_" + counter;
-
-                    // $('#form_data').attr('target', tab_name);
-
-                    // if ($('#tab_transaksi').tabs('exists', tab_title)) {
-                    //     $('#tab_transaksi').tabs('select', tab_title);
-                    // } else {
-                    //     $('#tab_transaksi').tabs('add', {
-                    //         title: tab_title,
-                    //         id: row.uuidperkiraan + "|" + row.kodeperkiraan + "|" + counter,
-                    //         content: '<iframe frameborder="0" class="tab_form"  id="' + counter +
-                    //             '" name="' + tab_name + '"></iframe>',
-                    //         closable: true
-                    //     });
-
-                    //     $('#form_data').submit();
-                    // }
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
@@ -272,7 +252,7 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuid: row.uuidperkiraan
+                                    uuidperkiraan: row.uuidperkiraan
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -283,11 +263,11 @@
                             })
 
                             if (response.success) {
-                                tutupTab();
+                                // tutupTab();
                                 refresh_data();
-                                $('#INDUK').combogrid('grid').datagrid('reload');
+                                // $('#INDUK').combogrid('grid').datagrid('reload');
                             } else {
-                                $.messager.alert('Error', msg.errorMsg, 'error');
+                                $.messager.alert('Error', msg.message, 'error');
                             }
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
@@ -305,6 +285,7 @@
                 striped: true,
                 nowrap: false,
                 pagination: true,
+                clientPaging:false,
                 pageSize: 20,
                 sortName: 'kodeperkiraan',
                 remoteFilter: true,
@@ -332,7 +313,10 @@
                             );
                         },
                         success: function(data) {
-                            $('#table_data').datagrid('loadData', data.data);
+                            $('#table_data').datagrid('loadData', data.data??[]);
+                            if(data.success==false){
+                                $.messager.alert('Error', data.message, 'error');
+                            }
                         },
                         complete: function() {
                             // Sembunyikan loading
@@ -349,7 +333,7 @@
                         {
                             field: 'kodeperkiraan',
                             title: 'Kode',
-                            width: 130,
+                            width: 70,
                             sortable: true,
                         },
                         {
@@ -364,24 +348,24 @@
                     [{
                             field: 'kelompok',
                             title: 'Kelompok',
-                            width: 150,
+                            width: 100,
                             sortable: true,
                         },
                         {
                             field: 'saldo',
                             title: 'Saldo',
-                            width: 50,
+                            width: 60,
                             sortable: true,
                         },
                         {
                             field: 'induk',
                             title: 'Induk',
-                            width: 80,
+                            width: 60,
                         },
                         {
                             field: 'namainduk',
                             title: 'Induk',
-                            width: 80,
+                            width: 60,
                             hidden: true
                         },
                         {
@@ -419,7 +403,7 @@
                             width: 100,
                             sortable: true,
                             formatter: format_checked,
-                            align: 'center'
+                            align: 'center',
                         },
                         {
                             field: 'akunhutang',
@@ -427,7 +411,7 @@
                             width: 100,
                             sortable: true,
                             formatter: format_checked,
-                            align: 'center'
+                            align: 'center',
                         },
                         {
                             field: 'userbuat',
@@ -455,7 +439,88 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter');
+            }).datagrid('enableFilter', [{
+                field: 'akunpiutang',
+                type: 'combobox',
+                options: {
+                    data: [{
+                        value: '',
+                        text: 'All'
+                    }, {
+                        value: "1",
+                        text: 'Aktif'
+                    }, {
+                        value: "0",
+                        text: 'Non-aktif'
+                    }],
+                    onChange: function(value) {
+                        if (value == '') {
+                            dg.datagrid('removeFilterRule', 'akunpiutang');
+                        } else {
+                            dg.datagrid('addFilterRule', {
+                                field: 'akunpiutang',
+                                op: 'equal',
+                                value: value
+                            });
+                        }
+                        dg.datagrid('doFilter');
+                    }
+                }
+            }, {
+                field: 'akunhutang',
+                type: 'combobox',
+                options: {
+                    data: [{
+                        value: '',
+                        text: 'All'
+                    }, {
+                        value: "1",
+                        text: 'Aktif'
+                    }, {
+                        value: "0",
+                        text: 'Non-aktif'
+                    }],
+                    onChange: function(value) {
+                        if (value == '') {
+                            dg.datagrid('removeFilterRule', 'akunhutang');
+                        } else {
+                            dg.datagrid('addFilterRule', {
+                                field: 'akunhutang',
+                                op: 'equal',
+                                value: value
+                            });
+                        }
+                        dg.datagrid('doFilter');
+                    }
+                }
+            },{
+                field: 'status',
+                type: 'combobox',
+                options: {
+                    data: [{
+                        value: '',
+                        text: 'All'
+                    }, {
+                        value: "1",
+                        text: 'Aktif'
+                    }, {
+                        value: "0",
+                        text: 'Non-aktif'
+                    }],
+                    onChange: function(value) {
+                        if (value == '') {
+                            dg.datagrid('removeFilterRule', 'status');
+                        } else {
+                            dg.datagrid('addFilterRule', {
+                                field: 'status',
+                                op: 'equal',
+                                value: value
+                            });
+                        }
+                        dg.datagrid('doFilter');
+                    }
+                }
+            },  ]);
         }
 
         function refresh_data() {

@@ -450,13 +450,17 @@
 		var ff = field ? header.find('.datagrid-filter[name="'+field+'"]') : header.find('.datagrid-filter');
 		ff.each(function(){
 			var name = $(this).attr('name');
+			var type = $(this).attr('type');
 			var col = dg.datagrid('getColumnOption', name);
 			var cc = $(this).closest('div.datagrid-filter-c');
 			var btn = cc.find('a.datagrid-filter-btn');
 			var cell = tr.find('td[field="'+name+'"] .datagrid-cell');
 			var cellWidth = cell._outerWidth();
-			if (cellWidth != _getContentWidth(cc)){
+			if (cellWidth != _getContentWidth(cc)&& type!='checkbox'){
 				this.filter.resize(this, cellWidth - btn._outerWidth());
+			}
+			if(type=='checkbox'){
+				cc.css('text-align','center');
 			}
 			if (cc.width() > col.boxWidth+col.deltaWidth-1){
 				col.boxWidth = cc.width() - col.deltaWidth + 1;

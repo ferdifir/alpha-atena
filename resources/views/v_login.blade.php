@@ -231,7 +231,8 @@
                     async: false,
                     data: {
                         credential: $('#email').val(),
-                        password: $('#password').val()
+                        password: $('#password').val(),
+                        program:"ATENA",
                     },
                     success: function(response) {
                         if (response.success) {
