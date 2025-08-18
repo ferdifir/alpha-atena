@@ -43,7 +43,7 @@ Route::get('atena/master/perkiraan/data',function (){
     ]);
 })->name('atena.master.perkiraan.data');
 
-Route::get('/master/perkiraan/form',function (){
+Route::get('atena/master/perkiraan/form',function (){
     return view('atena.master.perkiraan.v_master_form_perkiraan',[
         'kodemenu'=>request()->kode,
         'data'=>request()->data,

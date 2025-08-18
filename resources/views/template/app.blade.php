@@ -58,11 +58,13 @@
 
     <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-cellediting.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/function.js?time=' . time()) }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}"></script>
+
     {{-- <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script> --}}
     {{-- <script type="text/javascript" src="{{ asset('assets/jquery-easyui/plugins/datagrid-filter.js') }}"></script> --}}
     <script>
