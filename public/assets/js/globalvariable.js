@@ -10,9 +10,9 @@ var link_api = {
   getDataAkses: `${base_url_api}atena/master/user/get-user-akses`,
   //perkiraan
   hapusPerkiraan: `${base_url_api}atena/master/perkiraan/hapus`,
-  gridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/get-data-grid`,
+  gridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/load-data-grid`,
   treeMasterPerkiraan: `${base_url_api}atena/master/perkiraan/tree`,
-  headerFormPerkiraan:`${base_url_api}atena/master/perkiraan/get-data-header`,
+  headerFormPerkiraan:`${base_url_api}atena/master/perkiraan/header`,
   browseHeaderPerkiraan:`${base_url_api}atena/master/perkiraan/browse-header`,
   simpanPerkiraan:`${base_url_api}atena/master/perkiraan/simpan`,
   getPerkiraanUser:`${base_url_api}atena/master/perkiraan/load-perkiraan-user`,
@@ -126,3 +126,4 @@ async function getConfig(config,modul, token, onSuccess, onError = null) {
   }
   tutupLoader();
 }
+

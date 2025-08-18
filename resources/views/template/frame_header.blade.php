@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="icon" href="style/images/icon.png"/>
+    <title>@stack('title')</title>
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/metro-blue/easyui.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/icon.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}" />
@@ -11,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css?family=Acme|Heebo|Hind|Nunito+Sans" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/loader.css') }}" />
-
+    @stack('css')
     <!-- SET GLOBAL BASE URL -->
     <script>
         var base_url = '{{ url('') }}/';
@@ -40,6 +41,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
     @stack('js')
 </body>
 </html>

@@ -223,6 +223,7 @@
             var dataUser;
             var dataPerusahaan = [];
             Swal.showLoading();
+            var isLoginSuccess = false;
             try {
                 await $.ajax({
                     type: 'POST',
@@ -234,11 +235,13 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            isLoginSuccess = true;
                             console.log(response.data);
                             dataUser = response.data.user;
                             dataPerusahaan = response.data.daftar_perusahaan;
                             console.log(dataUser);
                         } else {
+                            isLoginSuccess = false;
                             Swal.close();
                             Swal.fire({
                                 type: 'error',
@@ -249,6 +252,7 @@
                     }
                 });
             } catch (error) {
+                isLoginSuccess = false;
                 Swal.close();
                 Swal.fire({
                     type: 'error',
@@ -256,6 +260,9 @@
                 })
                 return null;
             } finally {
+                if (!isLoginSuccess) {
+                    return null;
+                }
                 var dataSession = [{
                         keySession: "DATAUSER",
                         valueSession: dataUser,
@@ -267,18 +274,18 @@
                 ];
                 console.log(dataSession);
                 if (dataPerusahaan.length > 0) {
-                    dataSession.push({
-                        keySession: "DATAPERUSAHAAN",
-                        valueSession: dataUser,
-                    });
-                    dataSession.push({
-                        keySession: "IDPERUSAHAAN",
-                        valueSession: dataPerusahaan[0].uuid,
-                    })
-                    dataSession.push({
-                        keySession: "NAMAPERUSAHAAN",
-                        valueSession: dataPerusahaan[0].namaperusahaan,
-                    })
+                    // dataSession.push({
+                    //     keySession: "DATAPERUSAHAAN",
+                    //     valueSession: dataUser,
+                    // });
+                    // dataSession.push({
+                    //     keySession: "IDPERUSAHAAN",
+                    //     valueSession: dataPerusahaan[0].uuid,
+                    // })
+                    // dataSession.push({
+                    //     keySession: "NAMAPERUSAHAAN",
+                    //     valueSession: dataPerusahaan[0].namaperusahaan,
+                    // })
                 }
                 await saveSession(dataSession);
                 console.log(dataSession);
@@ -300,6 +307,7 @@
                                     success = true;
                                     token = response.data.token ?? "";
                                 } else {
+                                    success = false;
                                     Swal.close();
                                     Swal.fire({
                                         type: 'error',
@@ -310,6 +318,7 @@
                             }
                         });
                     } catch (error) {
+                        success = false;
                         Swal.close();
                         Swal.fire({
                             type: 'error',
@@ -317,10 +326,22 @@
                         })
                         return null;
                     } finally {
+                        if (!success) {
+                            return null;
+                        }
                         dataSession = [{
                             keySession: "TOKEN",
                             valueSession: token,
-                        }, {
+                        },
+                        {
+                            keySession: "IDPERUSAHAAN",
+                            valueSession: dataPerusahaan[0].uuid,
+                        },
+                        {
+                            keySession: "NAMAPERUSAHAAN",
+                            valueSession: dataPerusahaan[0].namaperusahaan,
+                        },
+                        {
                             keySession: "WARNA_STATUS_S",
                             valueSession: '#66CC33',
                         }, {
@@ -362,6 +383,26 @@
                             const [responseDetail, responseGlobal, responseMenu] = await Promise.all(promises);
                             //ambil detail perusahaan
                             if (responseDetail.success) {
+                                dataSession.push({
+                                    keySession: "ALAMATPERUSAHAAN",
+                                    valueSession: responseDetail.data.alamat ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "KODEPERUSAHAAN",
+                                    valueSession: responseDetail.data.kodeperusahaan ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "PEMANGGIL",
+                                    valueSession: responseDetail.data.pemanggil ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "NAMAPERUSAHAAN",
+                                    valueSession: responseDetail.data.namaperusahaan ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "NAMAPERUSAHAAN",
+                                    valueSession: responseDetail.data.namaperusahaan ?? "",
+                                });
                                 dataSession.push({
                                     keySession: "ALAMATPERUSAHAAN",
                                     valueSession: responseDetail.data.alamat ?? "",
@@ -465,6 +506,7 @@
                     }
                 }else if(dataPerusahaan.length>1){
                     //go to pilih perusahaan page
+                    window.location.replace("{{ url('hompage-perusahaan') }}");
                 } else {
                     Swal.close();
                 }

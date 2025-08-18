@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ isset($menu) ? $menu : 'Aplikasi Usaha Optik Online' }}</title>
-    <link rel="icon" href="{{ asset('assets/images/logo_app.png') }}" />
+    <link rel="icon" href="{{ asset('assets/images/logo_app_white.png') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/metro-blue/easyui.css') }}" />
 
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/icon.css') }}" />
