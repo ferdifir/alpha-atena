@@ -227,23 +227,6 @@
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js/') }}"></script>
   <script src="{{ asset('assets/js/globalVariable.js') }}"></script>
   <script>
-    const originalOpen = XMLHttpRequest.prototype.open;
-    const originalSend = XMLHttpRequest.prototype.send;
-    XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
-      originalOpen.apply(this, arguments);
-      const token = '{{ session('TOKEN') }}';
-      this.setRequestHeader('Authorization', 'bearer ' + token);
-    };
-
-    $.ajaxSetup({
-      dataFilter: function(data, type) {
-        const parsed = JSON.parse(data);
-        return JSON.stringify(parsed.data);
-      }
-    });
-    // initAjaxRequest('{{ session('TOKEN') }}');
-
-
     var loaded = {
       menu: false,
       menu_pos: false,
@@ -614,6 +597,7 @@
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
+      tutupLoader();
     })
 
     function tambah() {
@@ -723,6 +707,53 @@
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
         $('#mode').val('ubah');
+      }
+    }
+
+    function simpan() {
+      $('#data_detail').val(JSON.stringify($('#menu_tree').treegrid('getData')));
+      $('#data_akses_pos').val(JSON.stringify($('#menu_tree_pos').treegrid('getData')));
+      $('#data_akses_pos_desktop').val(JSON.stringify($('#menu_tree_pos_desktop').treegrid('getData')));
+      $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
+      $('#data_lokasi_transfer').val(JSON.stringify($('#table_data_lokasi_transfer').datagrid('getChecked')));
+      $('#data_perkiraan').val(JSON.stringify($('#datagrid_perkiraan').datagrid('getChecked')));
+      $('#data_jamakses').val(JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
+      $('#data_dashboard').val(JSON.stringify($('#table_data_akses_dashboard').datagrid('getChecked')));
+
+      var mode = $('#mode').val();
+
+      var isValid = $('#form_input').form('validate');
+
+      if (isValid && !isTokenExpired()) {
+        var adaTrans = false;
+
+        if (!adaTrans) {
+          $.messager.progress();
+          bukaLoader();
+
+          $('#form_input').submit();
+        }
+      }
+    }
+
+    function isTokenExpired() {
+      const token = '{{ session('TOKEN') }}';
+      if (!token) {
+        return true;
+      }
+
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const payload = JSON.parse(decodedPayload);
+
+        const expirationTime = payload.exp;
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return expirationTime < currentTime;
+      } catch (e) {
+        console.error('Gagal mendekode token JWT:', e);
+        return true;
       }
     }
 

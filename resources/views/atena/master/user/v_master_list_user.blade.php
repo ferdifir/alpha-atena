@@ -131,6 +131,7 @@
         }
       });
       buat_table();
+      tutupLoader();
     })
 
     function buat_table() {
