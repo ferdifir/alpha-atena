@@ -1,4 +1,4 @@
-@extends('template.app')
+@extends('template.form')
 
 @section('content')
   <style>
@@ -27,7 +27,7 @@
       <input type="hidden" name="act">
       <input type="hidden" id="mode" name="mode">
       <input type="hidden" name="gambar">
-      <input type="hidden" id="iduser" name="iduser">
+      <input type="hidden" id="uuiduser" name="uuiduser">
       <input type="hidden" name="fingerprint1">
       <input type="hidden" name="fingerprint2">
       <input type="hidden" id="data_detail" name="data_detail">
@@ -243,6 +243,7 @@
 
     $(function() {
       $('#mode').val('{{ $mode }}');
+      
       browse_data_perkiraan('#UUIDPERKIRAAN');
 
       $('#form_input').form({
@@ -250,7 +251,7 @@
         ajax: true,
         iframe: false,
         success: function(msg) {
-          $.messager.progress('close');
+          tutupLoaderSimpan();
 
           msg = JSON.parse(msg);
 
@@ -258,20 +259,19 @@
 
           if (msg.success) {
             if (mode == 'tambah') {
-              // $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-              $.messager.alert('Info',
+              $.messager.alert(
+                'Info',
                 'Berhasil menyimpan data. Segera melakukan verifikasi melalui email yang telah kami kirim',
-                'info');
-
+                'info',
+              );
               tambah();
             } else {
-              //tutup tab dan refresh data di function
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             }
 
-            parent.reload();
+            location.reload();
           } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+            $.messager.alert('Error', msg.message, 'error');
           }
         },
       });
@@ -602,7 +602,6 @@
 
     function tambah() {
       $('#form_input').form('clear');
-      console.log('tambah');
       $('[name=act]').val('insert');
       $('#STATUS').prop('checked', true);
       $('#UUIDUSER').textbox('readonly', true);
@@ -710,6 +709,37 @@
       }
     }
 
+    function cek_menu_pos_desktop(a, kodemenu) {
+      var check = $('#cb-' + a + '-' + kodemenu).prop('checked') ? 1 : 0;
+
+      var tg = $('#menu_tree_pos_desktop');
+
+      var row = tg.treegrid('find', kodemenu);
+
+      if (typeof row.hakakses == 'undefined') {
+        row.hakakses = 0;
+      }
+
+      if (typeof row.tambah == 'undefined') {
+        row.tambah = 0;
+      }
+
+      if (a == 'hakakses') {
+        row.hakakses = check;
+      }
+
+      if (a == 'tambah') {
+        row.tambah = check;
+      }
+
+      $('#menu_tree_pos_desktop').treegrid('update', {
+        id: kodemenu,
+        row: row
+      });
+
+      tg.treegrid('showLines');
+    }
+
     function simpan() {
       $('#data_detail').val(JSON.stringify($('#menu_tree').treegrid('getData')));
       $('#data_akses_pos').val(JSON.stringify($('#menu_tree_pos').treegrid('getData')));
@@ -720,7 +750,7 @@
       $('#data_jamakses').val(JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
       $('#data_dashboard').val(JSON.stringify($('#table_data_akses_dashboard').datagrid('getChecked')));
 
-      var mode = $('#mode').val();
+      $('#mode').val('{{ $mode }}');
 
       var isValid = $('#form_input').form('validate');
 
@@ -728,8 +758,7 @@
         var adaTrans = false;
 
         if (!adaTrans) {
-          $.messager.progress();
-          bukaLoader();
+          tampilLoaderSimpan();
 
           $('#form_input').submit();
         }

@@ -43,7 +43,20 @@
             var decimaldigitqty = {{ session('DECIMALDIGITQTY') }};
             var decimaldigitamount = {{ session('DECIMALDIGITAMOUNT') }};
             var csrf_token = '{{ csrf_token() }}';
+        </script>
 
+        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/jquery.easyui.theme.v1.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/function.js?time=' . time()) }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
+        <script>
             const originalOpen = XMLHttpRequest.prototype.open;
             const originalSend = XMLHttpRequest.prototype.send;
             XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
@@ -59,18 +72,6 @@
                 }
             });
         </script>
-
-        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/jquery.easyui.theme.v1.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/function.js?time=' . time()) }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>
-        <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
         @stack('js')
     </body>
 </html>
