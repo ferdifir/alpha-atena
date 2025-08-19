@@ -3620,3 +3620,66 @@
 .window {
   background-color: #6caef5;
 }
+
+
+.datagrid-body input[type="checkbox"]:disabled:not(:checked) {
+    /* Ini akan mengubah warna latar belakang checkbox atau elemen di sekitarnya */
+    /* Mungkin perlu penyesuaian tergantung rendering EasyUI */
+    background-color: #ffcccc !important; /* Contoh warna merah muda */
+    border: 1px solid red !important;
+    /* Anda mungkin perlu menggunakan filter atau -webkit-appearance jika ingin mengubah warna kotak centang itu sendiri */
+    /* Contoh untuk WebKit (Chrome, Safari): */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px; /* Sesuaikan ukuran jika diperlukan */
+    height: 16px; /* Sesuaikan ukuran jika diperlukan */
+    border-radius: 3px; /* Sedikit sudut membulat */
+    /* Untuk menambahkan tanda silang jika diperlukan, menggunakan pseudo-element */
+    position: relative;
+    box-sizing: border-box; /* Agar padding/border tidak menambah ukuran */
+}
+
+/* Menambahkan tanda silang (X) untuk checkbox disabled dan tidak tercentang */
+.datagrid-body input[type="checkbox"]:disabled:not(:checked)::before {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 12px; /* Sesuaikan ukuran 'X' */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.datagrid-body input[type="checkbox"]:disabled:checked {
+    background-color: #cceeff !important; /* Contoh warna biru muda */
+    border: 1px solid blue !important;
+    /* Untuk mengubah warna centang itu sendiri (tergantung browser dan render) */
+    accent-color: blue !important; /* Properti modern untuk warna centang */
+    -webkit-appearance: none; /* Reset default appearance untuk kustomisasi */
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    /* Untuk menambahkan tanda centang menggunakan pseudo-element */
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* Menambahkan tanda centang (✓) untuk checkbox yang tercentang */
+.datagrid-body input[type="checkbox"]:disabled:checked::after {
+    content: '✓';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: blue; /* Warna tanda centang */
+    font-weight: bold;
+    font-size: 12px; /* Sesuaikan ukuran centang */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
