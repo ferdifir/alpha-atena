@@ -43,6 +43,21 @@
             var decimaldigitqty = {{ session('DECIMALDIGITQTY') }};
             var decimaldigitamount = {{ session('DECIMALDIGITAMOUNT') }};
             var csrf_token = '{{ csrf_token() }}';
+
+            const originalOpen = XMLHttpRequest.prototype.open;
+            const originalSend = XMLHttpRequest.prototype.send;
+            XMLHttpRequest.prototype.open = function(method, url, async, user, password) {
+                originalOpen.apply(this, arguments);
+                const token = '{{ session('TOKEN') }}';
+                this.setRequestHeader('Authorization', 'bearer ' + token);
+            };
+
+            $.ajaxSetup({
+                dataFilter: function(data, type) {
+                    const parsed = JSON.parse(data);
+                    return JSON.stringify(parsed.data);
+                }
+            });
         </script>
 
         <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>

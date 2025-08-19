@@ -591,6 +591,12 @@
       }, 250)
     }
 
+    function tutupTab() {
+      var tab = $('#tab_menu').tabs('getSelected');
+      var index = $('#tab_menu').tabs('getTabIndex', tab);
+      $('#tab_menu').tabs('close', index);
+    }
+
     /**
      * menutup popup laporan
      */

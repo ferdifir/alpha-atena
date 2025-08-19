@@ -232,7 +232,7 @@
                     data: {
                         credential: $('#email').val(),
                         password: $('#password').val(),
-                        program:"ATENA",
+                        program: "ATENA"
                     },
                     success: function(response) {
                         if (response.success) {
