@@ -462,6 +462,7 @@
 			if(type=='checkbox'){
 				cc.css('text-align','center');
 			}
+			cc.css('height',"25px");
 			if (cc.width() > col.boxWidth+col.deltaWidth-1){
 				col.boxWidth = cc.width() - col.deltaWidth + 1;
 				col.width = col.boxWidth + col.deltaWidth;
@@ -759,7 +760,9 @@
 		var onResize = dgOpts.onResize;
 		dgOpts.onResize = function(width,height){
 			resizeFilter(target);
-			onResize.call(this, width, height);
+			// onResize.call(this, width, height);
+			onResize.call(this, width, "25px");
+
 		}
 		var onBeforeSortColumn = dgOpts.onBeforeSortColumn;
 		dgOpts.onBeforeSortColumn = function(sort, order){
@@ -958,7 +961,8 @@
 				if (!div){
 					div = $('<div class="datagrid-filter-c"></div>').appendTo(td);
 					var filter = opts.filters[fopts.type];
-					var input = filter.init(div, $.extend({height:opts.editorHeight},fopts.options||{}));
+					// var input = filter.init(div, $.extend({height:opts.editorHeight},fopts.options||{}));
+					var input = filter.init(div, $.extend({height:"25px"},fopts.options||{}));
 					input.addClass('datagrid-filter').attr('name', field);
 					input[0].filter = filter;
 					input[0].filterOptions = fopts;
@@ -991,7 +995,9 @@
 			if (!operators){return null;}
 			
 			var btn = $('<a class="datagrid-filter-btn">&nbsp;</a>').addClass(opts.filterBtnIconCls);
-			btn.css('height',opts.editorHeight);
+			// btn.css('height',opts.editorHeight);
+			btn.css('height',"25px");
+
 			if (opts.filterBtnPosition == 'right'){
 				btn.appendTo(container);
 			} else {

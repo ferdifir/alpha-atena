@@ -20,7 +20,7 @@ var link_api = {
   //currency
   browseCurrency: `${base_url_api}atena/master/currency/browse`,
   loadDataGridCurrency: `${base_url_api}atena/master/currency/load-data-grid`,
-  hapusCurrency: `${base_url_api}atena/master/currency/`,
+  hapusCurrency: `${base_url_api}atena/master/currency/hapus`,
   loadHeaderCurrency:`${base_url_api}atena/master/currency/load-data-header`,
   simpanCurrency: `${base_url_api}atena/master/currency/simpan`,
   //user

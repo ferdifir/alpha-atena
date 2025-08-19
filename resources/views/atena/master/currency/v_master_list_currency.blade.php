@@ -136,8 +136,8 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidcurrency: row.idcurrency,
-                                    kode: row.kodecurrency,
+                                    uuidcurrency: row.uuidcurrency,
+                                    kodecurrency: row.kodecurrency,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -148,9 +148,10 @@
                             })
 
                             if (response.success) {
+                                $.messager.alert('Info', response.message, 'info');
                                 refresh_data();
                             } else {
-                                $.messager.alert('Error', msg.message, 'error');
+                                $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
