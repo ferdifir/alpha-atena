@@ -65,3 +65,18 @@ Route::get('atena/master/user/form',function (){
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.user.form');
+
+//Master Currency
+Route::get('atena/master/currency/data',function (){
+    return view('atena.master.currency.v_master_list_currency',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.currency.data');
+
+Route::get('atena/master/currency/form',function (){
+    return view('atena.master.currency.v_master_form_currency',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.currency.form');

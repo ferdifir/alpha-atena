@@ -6,7 +6,7 @@ var link_api = {
   getDaftarMenu: `${base_url_api}atena/master/user/get-daftar-menu`,
   getDetailPerusahaan: `${base_url_api}auth/get-perusahaan`,
   getConfigGlobal: `${base_url_api}atena/master/config/get-config-global`,
-  getConfig:`${base_url_api}atena/master/config/get-config`,
+  getConfig: `${base_url_api}atena/master/config/get-config`,
   getDataAkses: `${base_url_api}atena/master/user/get-user-akses`,
   //perkiraan
   hapusPerkiraan: `${base_url_api}atena/master/perkiraan/hapus`,
@@ -19,7 +19,11 @@ var link_api = {
   getPerkiraanLokasi:`${base_url_api}`, //API belum dibuat
   browsePerkiraan:`${base_url_api}atena/master/perkiraan/browse`,
   //currency
-  browseCurrency:`${base_url_api}atena/master/currency/browse`,
+  browseCurrency: `${base_url_api}atena/master/currency/browse`,
+  loadDataGridCurrency: `${base_url_api}atena/master/currency/load-data-grid`,
+  hapusCurrency: `${base_url_api}atena/master/currency/hapus`,
+  loadHeaderCurrency:`${base_url_api}atena/master/currency/load-data-header`,
+  simpanCurrency: `${base_url_api}atena/master/currency/simpan`,
   //user
   userGetAll:`${base_url_api}atena/master/user/load-all`,
   loadDataGridMasterUser: `${base_url_api}atena/master/user/load-data-grid`,
@@ -117,6 +121,8 @@ async function getConfig(config,modul, token, onSuccess, onError = null) {
       } else {
         console.error('Error fetching data:', error);
       }
+
+      tutupLoader();
       return; // Hentikan eksekusi
     }
 
@@ -125,11 +131,74 @@ async function getConfig(config,modul, token, onSuccess, onError = null) {
 
     // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
     if (onSuccess && typeof onSuccess === 'function') {
-      onSuccess(data);
+      if (!data.success) {
+        $.messager.alert('error', data.message, 'error');
+        tutupLoader();
+        return null;
+      } else {
+        onSuccess(data);
+        tutupLoader();
+      }
+    } else {
+      tutupLoader();
+      console.warn('onSuccess callback not provided or not a function.');
+    }
+
+  } catch (error) {
+    console.log(error);
+
+    tutupLoader();
+  }
+}
+
+async function getConfig(config, modul, token,  onSuccess, onError = null) {
+  bukaLoader();
+  try {
+    const response = await fetch(link_api.getConfig, {
+      method: 'POST',
+      headers: {
+        'Authorization': token,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        "modul": modul,
+        "config": config,
+      }),
+    });
+
+    // Memeriksa apakah respons HTTP OK (status 200-299)
+    if (!response.ok) {
+      const errorBody = await response.text(); // Ambil teks error dari server jika ada
+      const errorMessage = `HTTP error! Status: ${response.status}. Message: ${errorBody || 'No specific error message.'}`;
+      const error = new Error(errorMessage);
+
+      if (onError && typeof onError === 'function') {
+        onError(error); // Panggil onError jika disediakan
+      } else {
+        console.error('Error fetching data:', error);
+      }
+
+      tutupLoader();
+      return; // Hentikan eksekusi
+    }
+
+    // Parsing respons sebagai JSON
+    const data = await response.json();
+
+    // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
+    if (onSuccess && typeof onSuccess === 'function') {
+      if (!data.success) {
+        $.messager.alert('error', data.message, 'error');
+        tutupLoader();
+        return null;
+      } else {
+        onSuccess(data);
+      }
     } else {
       console.warn('onSuccess callback not provided or not a function.');
     }
 
+    tutupLoader();
   } catch (error) {
     // Menangani error jaringan atau parsing JSON
     console.error('Network or parsing error:', error);
@@ -138,7 +207,8 @@ async function getConfig(config,modul, token, onSuccess, onError = null) {
     } else {
       console.error('An unexpected error occurred:', error);
     }
+
+    tutupLoader();
   }
-  tutupLoader();
 }
 

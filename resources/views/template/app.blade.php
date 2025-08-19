@@ -30,8 +30,8 @@
         var base_url = '{{ url('') }}/';
         // var decimaldigitqty = {{ session('DECIMALDIGITQTY') }};
         // var decimaldigitamount = {{ session('DECIMALDIGITAMOUNT') }};
-        var decimaldigitqty =2;
-        var decimaldigitamount =2;
+        var decimaldigitqty = 2;
+        var decimaldigitamount = 2;
         var csrf_token = '{{ csrf_token() }}';
         var warna_status_s = '{{ session('WARNA_STATUS_S') }}';
         var warna_status_p = '{{ session('WARNA_STATUS_P') }}';
@@ -42,37 +42,51 @@
 <body class="easyui-layout">
 
     <!-- Loading start -->
-    <div id="mask-loader">
-        <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-            <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+    <div id="mask-layout-loader">
+        <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66"
+            xmlns="http://www.w3.org/2000/svg">
+            <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33"
+                cy="33" r="30"></circle>
         </svg>
     </div>
     <!-- Loading end -->
 
     <!-- Region center start -->
     <div data-options="region:'center',border: false" id="v_modul">
-
+        <!-- Loading simpan start -->
+        <div id="mask-loader" hidden>
+            <div style="text-align: center" class="wrapper">
+                <div>
+                    <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                        <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <!-- Loading simpan end -->
         @yield('content')
 
     </div>
 
     <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
+    <script type="text/javascript"
+        src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/function.js?time=' . time()) }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
+    </script>
+    <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>
 
     {{-- <script type="text/javascript" src="{{ asset('assets/js/menu-accordion.js') }}"></script> --}}
     {{-- <script type="text/javascript" src="{{ asset('assets/jquery-easyui/plugins/datagrid-filter.js') }}"></script> --}}
     <script>
-
         $(document).ready(function() {
             // Menghapus loading ketika halaman sudah dimuat
             setTimeout(function() {
-                $('#mask-loader').fadeOut(500, function() {
+                $('#mask-layout-loader').fadeOut(500, function() {
                     $(this).remove()
                 })
             }, 150)

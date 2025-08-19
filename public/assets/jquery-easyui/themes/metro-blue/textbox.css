@@ -13,7 +13,7 @@
   border-radius: 0px 0px 0px 0px;
 }
 .textbox .textbox-text {
-  font-size: 14px;
+  font-size: 12px;
   border: 0;
   margin: 0;
   padding: 0 4px;
@@ -24,8 +24,8 @@
   -moz-border-radius: 0px 0px 0px 0px;
   -webkit-border-radius: 0px 0px 0px 0px;
   border-radius: 0px 0px 0px 0px;
-  height: 28px;
-  line-height: 28px;
+  height: 20px;
+  line-height: 20px;
 }
 .textbox textarea.textbox-text {
   line-height: normal;
@@ -46,7 +46,7 @@
   white-space: pre-wrap;
 }
 .textbox .textbox-prompt {
-  font-size: 14px;
+  font-size: 12px;
   color: #aaa;
 }
 .textbox .textbox-bgicon {
@@ -92,8 +92,8 @@
 .textbox-label {
   display: inline-block;
   width: 80px;
-  height: 30px;
-  line-height: 30px;
+  height: 20px;
+  line-height: 20px;
   vertical-align: middle;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -163,7 +163,7 @@
 }
 .form-floating-label.form-field-empty .textbox-label {
   cursor: text;
-  font-size: 14px;
+  font-size: 12px;
   transform: translate(0,25px);
 }
 .form-floating-label.form-field-empty.form-field-focused .textbox-label {
