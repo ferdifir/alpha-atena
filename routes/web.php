@@ -50,3 +50,18 @@ Route::get('atena/master/perkiraan/form',function (){
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.perkiraan.form');
+
+// Master User
+Route::get('atena/master/user/data',function (){
+    return view('atena.master.user.v_master_list_user',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.user.data');
+
+Route::get('atena/master/user/form',function (){
+    return view('atena.master.user.v_master_form_user',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.user.form');

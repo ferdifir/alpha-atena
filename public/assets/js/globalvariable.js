@@ -17,13 +17,25 @@ var link_api = {
   simpanPerkiraan:`${base_url_api}atena/master/perkiraan/simpan`,
   getPerkiraanUser:`${base_url_api}atena/master/perkiraan/load-perkiraan-user`,
   getPerkiraanLokasi:`${base_url_api}`, //API belum dibuat
+  browsePerkiraan:`${base_url_api}atena/master/perkiraan/browse`,
   //currency
   browseCurrency:`${base_url_api}atena/master/currency/browse`,
   //user
   userGetAll:`${base_url_api}atena/master/user/load-all`,
+  loadDataGridMasterUser: `${base_url_api}atena/master/user/load-data-grid`,
+  simpanUser:`${base_url_api}atena/master/user/simpan`,
+  treeGridUser:`${base_url_api}atena/master/user/load-tree-grid`,
+  treeGridPosUser:`${base_url_api}atena/master/user/load-tree-grid-pos`,
+  treeGridPosDesktopUser:`${base_url_api}atena/master/user/load-tree-grid-pos-desktop`,
+  browseUser:`${base_url_api}atena/master/user/browse`,
+  userGetDataPerkiraan:`${base_url_api}atena/master/user/load-data-perkiraan`,
+  getJamAksesUser:`${base_url_api}atena/master/user/load-data-jam-akses`,
+  getDahboardAksesUser:`${base_url_api}atena/master/user/load-data-akses-dashboard`,
+  headerFormUser:`${base_url_api}atena/master/user/load-data-header`,
   //lokasi
-  getLokasiAll:`${base_url_api}atena/master/lokasi/get-all`,
-
+  getLokasiAll:`${base_url_api}atena/master/lokasi/load-all`,
+  getLokasiPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-per-user`,
+  getLokasiTransferPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-transfer-per-user`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
@@ -42,7 +54,7 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
     console.log(response);
 
     // Memeriksa apakah respons HTTP OK (status 200-299)
-    if (!response.ok) {
+    if (!response.success) {
       const errorBody = await response.text(); // Ambil teks error dari server jika ada
       const errorMessage = `HTTP error! Status: ${response.status}. Message: ${errorBody || 'No specific error message.'}`;
       const error = new Error(errorMessage);
@@ -56,7 +68,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
     }
 
     // Parsing respons sebagai JSON
-    const data = await response.json();
+    // const data = await response.json();
+    const data = response;
 
     // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
     if (onSuccess && typeof onSuccess === 'function') {
