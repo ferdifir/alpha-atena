@@ -242,8 +242,6 @@
     }
 
     $(function() {
-      $('#mode').val('{{ $mode }}');
-      
       browse_data_perkiraan('#UUIDPERKIRAAN');
 
       $('#form_input').form({
@@ -252,28 +250,41 @@
         iframe: false,
         success: function(msg) {
           tutupLoaderSimpan();
+          //   msg = JSON.parse(msg);
+          //   var mode = $('#mode').val();
+          //   if (msg.success) {
+          //     if (mode == 'tambah') {
+          //       $.messager.alert(
+          //         'Info',
+          //         'Berhasil menyimpan data. Segera melakukan verifikasi melalui email yang telah kami kirim',
+          //         'info',
+          //       );
+          //       tambah();
+          //     } else {
+          //       $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+          //     }
+          console.log(msg);
 
-          msg = JSON.parse(msg);
-
-          var mode = $('#mode').val();
-
-          if (msg.success) {
-            if (mode == 'tambah') {
-              $.messager.alert(
-                'Info',
-                'Berhasil menyimpan data. Segera melakukan verifikasi melalui email yang telah kami kirim',
-                'info',
-              );
-              tambah();
-            } else {
-              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-            }
-
-            location.reload();
-          } else {
-            $.messager.alert('Error', msg.message, 'error');
-          }
+          location.reload();
+          //   } else {
+          //     $.messager.alert('Error', msg.message, 'error');
+          //   }
         },
+        loader: function(param, success, error) {
+          console.log(param);
+          $.ajax({
+            url: link_api.simpanUser,
+            type: 'POST',
+            data: $(this).serialize(),
+            dataType: 'json',
+            success: function(response) {
+              success(response);
+            },
+            error: function(xhr, status, err) {
+              error(xhr, status, err);
+            }
+          });
+        }
       });
 
       buat_table_perkiraan();
@@ -568,7 +579,9 @@
         }
       });
 
-      $('#USERCOPY, #USERCOPYAKSESPOS, #USERCOPYAKSESPOSDESKTOP, #USERCOPYPERKIRAAN, #USERCOPYJAMAKSES, #USERCOPYDASHBOARD')
+      $(
+          '#USERCOPY, #USERCOPYAKSESPOS, #USERCOPYAKSESPOSDESKTOP, #USERCOPYPERKIRAAN, #USERCOPYJAMAKSES, #USERCOPYDASHBOARD'
+        )
         .combogrid({
           panelWidth: 450,
           url: link_api.browseUser,
@@ -623,6 +636,7 @@
       $('#table_data_jamakses').datagrid('load');
       $('#table_data_dashboard').datagrid('load');
 
+      $('#mode').val('tambah');
       $('[name=authentication]').add($('[name=priority]'))
         .add($('[name=aksesutama]')).prop('checked', true)
       $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
@@ -740,27 +754,64 @@
       tg.treegrid('showLines');
     }
 
-    function simpan() {
+    async function simpan() {
       $('#data_detail').val(JSON.stringify($('#menu_tree').treegrid('getData')));
       $('#data_akses_pos').val(JSON.stringify($('#menu_tree_pos').treegrid('getData')));
       $('#data_akses_pos_desktop').val(JSON.stringify($('#menu_tree_pos_desktop').treegrid('getData')));
+
+      $('#data_jamakses').val(JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
+
       $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
       $('#data_lokasi_transfer').val(JSON.stringify($('#table_data_lokasi_transfer').datagrid('getChecked')));
       $('#data_perkiraan').val(JSON.stringify($('#datagrid_perkiraan').datagrid('getChecked')));
-      $('#data_jamakses').val(JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
       $('#data_dashboard').val(JSON.stringify($('#table_data_akses_dashboard').datagrid('getChecked')));
 
-      $('#mode').val('{{ $mode }}');
-
       var isValid = $('#form_input').form('validate');
-
       if (isValid && !isTokenExpired()) {
-        var adaTrans = false;
-
-        if (!adaTrans) {
-          tampilLoaderSimpan();
-
-          $('#form_input').submit();
+        tampilLoaderSimpan();
+        // $('#form_input').submit();
+        const data_array = ['data_detail', 'data_akses_pos', 'data_akses_pos_desktop', 'data_jamakses', 'data_lokasi',
+          'data_lokasi_transfer', 'data_perkiraan', 'data_dashboard'
+        ];
+        let payload = {};
+        const data = $('#form_input').serializeArray();
+        for (const item of data) {
+          if (data_array.includes(item.name)) {
+            continue;
+          } else {
+            payload[item.name] = item.value;
+          }
+        }
+        payload.data_detail = $('#menu_tree').treegrid('getData');
+        payload.data_akses_pos = $('#menu_tree_pos').treegrid('getData');
+        payload.data_akses_pos_desktop = $('#menu_tree_pos_desktop').treegrid('getData');
+        payload.data_jamakses = $('#table_data_jamakses').datagrid('getRows');
+        payload.data_lokasi = $('#table_data_lokasi').datagrid('getChecked');
+        payload.data_lokasi_transfer = $('#table_data_lokasi_transfer').datagrid('getChecked');
+        payload.data_perkiraan = $('#datagrid_perkiraan').datagrid('getChecked');
+        payload.data_dashboard = $('#table_data_akses_dashboard').datagrid('getChecked');
+        try {
+          const response = await fetchData(link_api.simpanUser, payload);
+          tutupLoaderSimpan();
+          var mode = $('#mode').val();
+          if (response.success) {
+            if (mode == 'tambah') {
+              $.messager.alert(
+                'Info',
+                'Berhasil menyimpan data. Segera melakukan verifikasi melalui email yang telah kami kirim',
+                'info',
+              );
+              tambah();
+            } else {
+              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+              location.reload();
+            }
+          } else {
+            $.messager.alert('Error', msg.message, 'error');
+          }
+        } catch (error) {
+          tutupLoaderSimpan();
+          $.messager.alert('Error', 'Terdapat kesalahan ketika menyimpan data', 'error');
         }
       }
     }
@@ -938,7 +989,7 @@
         onUncheckAll: function(data) {
           for (var i = 0; i < data.length; i++) {
             $(this).datagrid('updateRow', {
-              index: index,
+              index: i,
               row: {
                 akses: 0
               }
@@ -948,7 +999,7 @@
         onCheckAll: function(data) {
           for (var i = 0; i < data.length; i++) {
             $(this).datagrid('updateRow', {
-              index: index,
+              index: i,
               row: {
                 akses: 1
               }
@@ -1054,7 +1105,7 @@
         onUncheckAll: function(data) {
           for (var i = 0; i < data.length; i++) {
             $(this).datagrid('updateRow', {
-              index: index,
+              index: i,
               row: {
                 hakakses: 0
               }
@@ -1064,7 +1115,7 @@
         onCheckAll: function(data) {
           for (var i = 0; i < data.length; i++) {
             $(this).datagrid('updateRow', {
-              index: index,
+              index: i,
               row: {
                 hakakses: 1
               }

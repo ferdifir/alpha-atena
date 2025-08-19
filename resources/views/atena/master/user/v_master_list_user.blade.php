@@ -143,31 +143,6 @@
         pagination: true,
         pageSize: 20,
         url: link_api.loadDataGridMasterUser,
-        onBeforeLoad: function(param) {
-          var dg = $(this);
-
-          // Tampilkan loading manual
-          dg.datagrid('loading');
-          var opts = $(this).datagrid('options');
-          $.ajax({
-            type: opts.method,
-            url: link_api.loadDataGridMasterUser,
-            data: param,
-            beforeSend: function(xhr) {
-              xhr.setRequestHeader('Authorization',
-                'bearer {{ session('TOKEN') }}'
-              );
-            },
-            success: function(data) {
-              $('#table_data').datagrid('loadData', data.data);
-            },
-            complete: function() {
-              // Sembunyikan loading
-              dg.datagrid('loaded');
-            }
-          });
-          return false; // Supaya EasyUI tidak melakukan AJAX ganda
-        },
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';
         },
