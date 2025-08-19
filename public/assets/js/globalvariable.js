@@ -36,6 +36,7 @@ var link_api = {
   getJamAksesUser:`${base_url_api}atena/master/user/load-data-jam-akses`,
   getDahboardAksesUser:`${base_url_api}atena/master/user/load-data-akses-dashboard`,
   headerFormUser:`${base_url_api}atena/master/user/load-data-header`,
+  hapusUser:`${base_url_api}atena/master/user/hapus`,
   //lokasi
   getLokasiAll:`${base_url_api}atena/master/lokasi/load-all`,
   getLokasiPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-per-user`,

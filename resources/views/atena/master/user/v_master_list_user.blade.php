@@ -100,21 +100,56 @@
       });
     }
 
-    function hapus() {
+    async function fetchData(url, body) {
+      try {
+        const token = '{{ session('TOKEN') }}';
+        let headers = {
+          'Authorization': 'bearer ' + token,
+        };
+        let requestBody = null;
+
+        // Cek apakah body adalah instance dari FormData
+        if (body instanceof FormData) {
+          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+          requestBody = body;
+        } else {
+          // Default: Jika bukan FormData, asumsikan itu JSON.
+          headers['Content-Type'] = 'application/json';
+          requestBody = body ? JSON.stringify(body) : null;
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
+      }
+    }
+
+    async function hapus() {
       if (row) {
         $.messager.confirm('Confirm',
           'User Yang Terhapus Tidak Dapat Digunakan Kembali,<br>Anda Yakin Akan Menghapus Data Ini?',
-          function(r) {
+          async function(r) {
             if (r) {
-              $.post(base_url + 'atena/master/user/hapus', {
+              const res = await fetchData(link_api.hapusUser, {
                 uuiduser: row.uuiduser
-              }, function(msg) {
-                if (msg.success) {
-                  refresh_data();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
-              }, 'json');
+              })
+              if (res.success) {
+                refresh_data();
+              } else {
+                $.messager.alert('Error', res.errorMsg, 'error');
+              }
             }
           });
       }
