@@ -129,6 +129,7 @@
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?',async function(r) {
                     if (r) {
+                        bukaLoader();
                         try {
                             let url=link_api.hapusCurrency;
                             const response = await fetch(url, {
@@ -158,6 +159,7 @@
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
                         }
+                        tutupLoader();
                     }
                 });
             }

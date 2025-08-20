@@ -245,6 +245,7 @@
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
+                        bukaLoader();
                         try {
                             const response = await fetch(link_api.hapusPerkiraan, {
                                 method: 'POST',
@@ -272,6 +273,7 @@
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
                         }
+                        tutupLoader();
                     }
                 });
             }

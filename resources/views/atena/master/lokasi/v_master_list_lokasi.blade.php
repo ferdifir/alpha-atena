@@ -128,6 +128,7 @@
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
                         try {
+                            bukaLoader();
                             const response = await fetch(link_api.hapusLokasi, {
                                 method: 'POST',
                                 headers: {
@@ -155,6 +156,7 @@
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
                         }
+                        tutupLoader();
                     }
                 });
             }
