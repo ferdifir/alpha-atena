@@ -45,6 +45,11 @@ var link_api = {
   getHeaderLokasi:`${base_url_api}atena/master/lokasi/load-lokasi-header`,
   getLokasiDefault:`${base_url_api}atena/master/lokasi/cek-lokasi-default`,
   simpanLokasi:`${base_url_api}atena/master/lokasi/simpan`,
+  //Merk
+  hapusMerk:`${base_url_api}atena/master/merk/hapus`,
+  loadDataGridMerk:`${base_url_api}atena/master/merk/load-data-grid`,
+  simpanMerk:`${base_url_api}atena/master/merk/simpan`,
+  getHeaderMerk:`${base_url_api}atena/master/merk/load-data-header`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

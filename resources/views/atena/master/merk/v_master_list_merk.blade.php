@@ -14,33 +14,38 @@
                 onclick="refresh_data()">
                 <img src="{{ asset('assets/images/refresh.png') }}">
             </a>
+
         </div>
         <div data-options="region: 'center'">
             <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
                 <div title="Grid" id="Grid">
                     <div class="easyui-layout" style="width:100%;height:100%" fit="true">
                         <div data-options="region:'center',">
-                            <table id="table_data" idField="UUIDLOKASI"></table>
+                            <table id="table_data" idField="idmerk"></table>
                         </div>
                     </div>
-                </div>
+                </diV>
             </div>
         </div>
     </div>
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-    </script>
     <script>
+        var counter = 0;
+
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_hapus').linkbutton('enable');
         }
+
         $(document).ready(async function() {
+
             bukaLoader();
             let check = false;
-            await getConfig("KODELOKASI", "MLOKASI", 'bearer {{ session('TOKEN') }}',
+
+            let config = {};
+            await getConfig("KODEMERK", "MMERK", 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -70,25 +75,32 @@
             $("#tab_transaksi").tabs({
                 onSelect: function() {
                     var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
+
                     enable_button();
                 }
             });
 
+
             buat_table();
+
         });
+
         shortcut.add('F2', function() {
             before_add();
         });
         shortcut.add('F4', function() {
             before_edit();
         });
+        shortcut.add('F8', function() {
+            simpan();
+        });
 
         function before_add() {
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Lokasi',
-                        '{{ route('atena.master.lokasi.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah Merk',
+                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -101,9 +113,9 @@
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
-                    parent.buka_submenu(null, row.namalokasi,
-                        '{{ route('atena.master.lokasi.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidlokasi,
+                    parent.buka_submenu(null, row.namamerk,
+                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidmerk,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -114,7 +126,7 @@
         function before_delete() {
             $('#mode').val('hapus');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                if (data.data.hapus == 1) {
+                if (data.hapus == 1) {
                     hapus();
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -122,22 +134,22 @@
             });
         }
 
-        function hapus() {
+        async function hapus() {
             var row = $('#table_data').datagrid('getSelected');
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
+                        bukaLoader();
                         try {
-                            bukaLoader();
-                            const response = await fetch(link_api.hapusLokasi, {
+                            const response = await fetch(link_api.hapusMerk, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': 'bearer {{ session('TOKEN') }}',
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidlokasi: row.uuidlokasi,
-                                    kodelokasi: row.kodelokasi
+                                    uuidmerk: row.uuidmerk,
+                                    kode: row.kodemerk,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -169,116 +181,50 @@
                 singleSelect: true,
                 striped: true,
                 pagination: true,
+                clientPaging: false,
                 pageSize: 20,
-                url: link_api.loadDataGridLokasi,
+                url: link_api.loadDataGridMerk,
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
-                onLoadSuccess:function(){
+                onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
-                            field: 'uuidlokasi',
+                            field: 'uuidmerk',
                             hidden: true
                         },
                         {
-                            field: 'kodelokasi',
+                            field: 'kodemerk',
                             title: 'Kode',
                             width: 80,
                             sortable: true,
                         },
                         {
-                            field: 'namalokasi',
+                            field: 'namamerk',
                             title: 'Nama',
                             width: 200,
                             sortable: true,
                         },
                         {
-                            field: 'lokasidefault',
-                            title: 'Default',
-                            align: 'center',
+                            field: 'discountmin',
+                            title: 'Disc Min',
+                            width: 50,
                             sortable: true,
-                            formatter: format_checked,
+                            align: 'right',
+                        },
+                        {
+                            field: 'discountmax',
+                            title: 'Disc Max',
+                            width: 50,
+                            sortable: true,
+                            align: 'right',
                         },
                     ]
                 ],
                 columns: [
                     [{
-                            field: 'alamat',
-                            title: 'Alamat',
-                            width: 200,
-                            sortable: true,
-                        },
-                        {
-                            field: 'kota',
-                            title: 'Kota',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'propinsi',
-                            title: 'Propinsi',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'negara',
-                            title: 'Negara',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'telp',
-                            title: 'Telp',
-                            width: 100,
-                            sortable: true,
-                        },
-                        {
-                            field: 'selisihsetoranmin',
-                            title: 'Selisih Setoran Minimum',
-                            width: 120,
-                            formatter: format_amount,
-                            align: 'right',
-                            sortable: true,
-                        },
-                        {
-                            field: 'selisihsetoranmax',
-                            title: 'Selisih Setoran Maximum',
-                            width: 120,
-                            formatter: format_amount,
-                            align: 'right',
-                            sortable: true,
-                        },
-                        {
-                            field: 'kodeperkiraan',
-                            title: 'Akun Asal<br>Modal Awal kasir',
-                            width: 120,
-                            sortable: true,
-                        },
-                        {
-                            field: 'namaperkiraan',
-                            title: 'Nama Akun Asal Modal Awal kasir',
-                            width: 200,
-                            sortable: true,
-                        },
-                        {
-                            field: 'minimaltransaksipoin',
-                            title: 'Minimal Transaksi<br>Poin',
-                            width: 100,
-                            sortable: true,
-                            formatter: format_amount,
-                            align: 'right'
-                        },
-                        {
-                            field: 'konversi1poin',
-                            title: 'Konversi 1 Poin',
-                            width: 100,
-                            sortable: true,
-                            formatter: format_amount,
-                            align: 'right'
-                        },
-                        {
                             field: 'catatan',
                             title: 'Catatan',
                             width: 250,
@@ -338,7 +284,7 @@
                     }
                 }
             }, {
-                field: 'selisihsetoranmin',
+                field: 'discountmax',
                 type: 'numberbox',
                 options: {
                     precision: 2,
@@ -346,36 +292,20 @@
                     groupSeparator: ",",
                 }
             }, {
-                field: 'selisihsetoranmax',
+                field: 'discountmin',
                 type: 'numberbox',
                 options: {
                     precision: 2,
                     decimalSeparator: ".",
                     groupSeparator: ",",
                 }
-            }, {
-                field: 'minimaltransaksipoin',
-                type: 'numberbox',
-                options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
-                }
-            }, {
-                field: 'konversi1poin',
-                type: 'numberbox',
-                options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
-                }
-            }, ]);
+            }]);
         }
 
         function refresh_data() {
-            //JIKA DI TAB GRID
             $('#table_data').datagrid('reload');
         }
+
 
         function reload() {
             $('#table_data').datagrid('reload');

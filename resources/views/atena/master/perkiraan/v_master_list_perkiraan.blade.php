@@ -71,6 +71,7 @@
     </script>
     <script>
         var counter = 0;
+        let config={};
         $(document).ready(async function() {
             bukaLoader();
             let check=false;
@@ -188,7 +189,6 @@
         });
 
         function disable_button() {
-            $('#btn_refresh').linkbutton('disable')
             $('#btn_hapus').linkbutton('disable')
         }
 
@@ -290,7 +290,6 @@
                 clientPaging:false,
                 pageSize: 20,
                 sortName: 'kodeperkiraan',
-                remoteFilter: true,
                 url:link_api.loadDataGridMasterPerkiraan,
                 queryParams: {
                     _token: csrf_token
@@ -502,13 +501,13 @@
         }
 
         function refresh_data() {
+            buat_tree();
             $('#table_data').datagrid('reload');
-            var row = $('#table_data').datagrid('clearSelection');
         }
 
         function reload() {
+            buat_tree();
             $('#table_data').datagrid('reload');
-            var row = $('#table_data').datagrid('clearSelection');
         }
     </script>
 @endpush

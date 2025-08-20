@@ -12,7 +12,7 @@
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
 
                         <input type="hidden" name="mode" id="mode">
-                        <input type="hidden" name="idlokasi">
+                        <input type="hidden" name="uuidlokasi">
                         <div data-options="region:'center',border:false">
                             <table>
                                 <tr>
@@ -132,14 +132,18 @@
                                 </tr>
                             </table>
 
-                            <table cellpadding="0" cellspacing="0" style="width:100%">
-                                <tr>
-                                    <td align="left" id="label_form"><label style="font-weight:normal"
-                                            id="label_form">User Input :</label> <label id="lbl_kasir"></label> <label
-                                            style="font-weight:normal" id="label_form">| Tgl Input :</label> <label
-                                            id="lbl_tanggal"></label></td>
-                                </tr>
-                            </table>
+                            <div style="position: fixed;bottom:0;background-color: white;width:100%;">
+                                <table cellpadding="0" cellspacing="0" style="width:100%">
+                                    <tr>
+                                        <td align="left" id="label_form">
+                                            <label style="font-weight:normal" id="label_form">User Input :</label>
+                                            <label id="lbl_kasir"></label>
+                                            <label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+                                            <label id="lbl_tanggal"></label>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -241,6 +245,7 @@
 
         async function ubah() {
             $('#mode').val('ubah');
+            $('#uuidlokasi').val('{{ $data }}');
             try {
                 let url = link_api.getHeaderLokasi;
                 const response = await fetch(url, {
@@ -250,7 +255,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidperkiraan: '{{ $data }}',
+                        uuidlokasi: '{{ $data }}',
                         mode: "ubah",
                     }),
                 }).then(response => {
@@ -465,5 +470,8 @@
             // Return array of lengths
             return lines.map(line => line.length);
         }
+        function tutup() {
+      parent.tutupTab();
+    }
     </script>
 @endpush

@@ -398,7 +398,7 @@
                     headers['Content-Type'] = 'application/json';
                     requestBody = body ? JSON.stringify(body) : null;
                 }
-                let url=link_api.simpanPerkiraan;
+                let url = link_api.simpanPerkiraan;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: headers,
@@ -412,11 +412,7 @@
                 })
                 if (response.success) {
                     if (mode == 'tambah') {
-                        $.messager.show({
-                            title: 'Info',
-                            msg: 'Transaksi Sukses',
-                            showType: 'show'
-                        });
+                        $.messager.alert('Info', 'Simpan Data Sukses', 'info');
 
                         tambah();
                     } else {
@@ -634,6 +630,10 @@
                     // }, 'json');
                 },
             });
+        }
+
+        function tutup() {
+            parent.tutupTab();
         }
     </script>
 @endpush

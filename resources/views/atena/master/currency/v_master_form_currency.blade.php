@@ -198,5 +198,9 @@
                 tutupLoaderSimpan();
             }
         }
+
+        function tutup() {
+            parent.tutupTab();
+        }
     </script>
 @endpush

@@ -81,7 +81,6 @@ Route::get('atena/master/currency/form',function (){
     ]);
 })->name('atena.master.currency.form');
 
-
 //Master Lokasi
 Route::get('atena/master/lokasi/data',function (){
     return view('atena.master.lokasi.v_master_list_lokasi',[
@@ -96,3 +95,18 @@ Route::get('atena/master/lokasi/form',function (){
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.lokasi.form');
+
+//Master Merk
+Route::get('atena/master/merk/data',function (){
+    return view('atena.master.merk.v_master_list_merk',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.merk.data');
+
+Route::get('atena/master/merk/form',function (){
+    return view('atena.master.merk.v_master_form_merk',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.merk.form');
