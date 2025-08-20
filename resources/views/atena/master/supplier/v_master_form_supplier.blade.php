@@ -363,15 +363,9 @@
           const response = await fetchData(link_api.simpanSupplier, form);
           tutupLoaderSimpan()
           if (response.success) {
+            $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             if (mode == 'tambah') {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Simpan Data Sukses',
-                showType: 'show'
-              });
               tambah();
-            } else {
-              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             }
           } else {
             $.messager.alert('Error', response.message, 'error');

@@ -55,11 +55,12 @@
     $(document).ready(function() {
       $('#dialog_import').window('close');
       tutupLoader();
-      buat_table();
-      $('#table_data').datagrid('load', {
-        page: 2,
-        rows: 20
+      $("#table_data").datagrid({
+        onSelect: function() {
+          row = $('#table_data').datagrid('getSelected');
+        }
       });
+      buat_table();
     });
 
     shortcut.add('F2', function() {
