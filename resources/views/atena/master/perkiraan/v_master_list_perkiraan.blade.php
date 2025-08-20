@@ -241,6 +241,7 @@
         }
 
         function hapus() {
+            var row = $('#table_data').datagrid('getSelected');
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
@@ -263,11 +264,10 @@
                             })
 
                             if (response.success) {
-                                // tutupTab();
                                 refresh_data();
-                                // $('#INDUK').combogrid('grid').datagrid('reload');
+                                $.messager.alert('Info', response.message, 'info');
                             } else {
-                                $.messager.alert('Error', msg.message, 'error');
+                                $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
                             $.messager.alert('Error', error, 'error');
@@ -289,6 +289,7 @@
                 pageSize: 20,
                 sortName: 'kodeperkiraan',
                 remoteFilter: true,
+                url:link_api.loadDataGridMasterPerkiraan,
                 queryParams: {
                     _token: csrf_token
                 },
@@ -297,33 +298,8 @@
                         return 'background-color: #a8aea6';
                     }
                 },
-                onBeforeLoad: function(param) {
-                    var dg = $(this);
-
-                    // Tampilkan loading manual
-                    dg.datagrid('loading');
-                    var opts = $(this).datagrid('options');
-                    $.ajax({
-                        type: opts.method,
-                        url: link_api.loadDataGridMasterPerkiraan,
-                        data: param,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('Authorization',
-                                'bearer {{ session('TOKEN') }}'
-                            );
-                        },
-                        success: function(data) {
-                            $('#table_data').datagrid('loadData', data.data??[]);
-                            if(data.success==false){
-                                $.messager.alert('Error', data.message, 'error');
-                            }
-                        },
-                        complete: function() {
-                            // Sembunyikan loading
-                            dg.datagrid('loaded');
-                        }
-                    });
-                    return false; // Supaya EasyUI tidak melakukan AJAX ganda
+                onLoadSuccess:function(){
+                    $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
@@ -525,129 +501,12 @@
 
         function refresh_data() {
             $('#table_data').datagrid('reload');
-            //JIKA BERADA PADA TAB FORM TAMBAH / UBAH
-            // if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Tambah" || $('#tab_transaksi').tabs(
-            //         'getSelected').panel('options').title == "Ubah") {
-            //     row = {
-            //         uuidperkiraan: "",
-            //         kodeperkiraan: '',
-            //     };
-
-            //     $("#mode").val("tambah");
-            //     $("#view").val('{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu]) }}');
-            //     $("#data").val('');
-
-            //     var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-            //     if (tab_name == "Tambah") { //TAMBAH LANGSUNG AMBIL DARI ID
-
-            //         var counterTambah = $('#tab_transaksi').tabs('getSelected').panel('options').id;
-            //         tab_name = tab_name + "_" + counterTambah;
-            //     } else { //UBAH DIAMBIL DARI ID POTONGAN
-            //         var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-            //         var counterTambah = trans[2];
-            //         tab_name = tab_name + "_" + counterTambah;
-
-            //     }
-
-            //     var tab_title = 'Tambah';
-
-            //     var tab = $('#tab_transaksi').tabs('getSelected');
-            //     var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-
-            //     var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-            //     $('#form_data').attr('target', tab_name);
-
-            //     $('#tab_transaksi').tabs('update', {
-            //         tab: tabTrans,
-            //         type: 'header',
-            //         options: {
-            //             title: tab_title,
-            //             content: '<iframe frameborder="0" class="tab_form" id="' + counterTambah + '" name="' +
-            //                 tab_name + '" ></iframe>',
-            //             closable: true
-            //         }
-            //     });
-            //     $('#form_data').submit();
-
-            // } else {
-            //     //JIKA DI TAB GRID
-            //     $('#table_data').datagrid('reload');
-            // }
-
-        }
-
-        function changeTitleTab(mode) {
-            //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-            var tab = $('#tab_transaksi').tabs('getSelected');
-            var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-            var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-            if (mode == 'tambah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Tambah'
-                    }
-                });
-            } else if (mode == 'ubah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Ubah'
-                    }
-                });
-            }
-        }
-
-        function tutupTab() {
-            //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-            var tab = $('#tab_transaksi').tabs('getSelected');
-            var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-            if ($('#tab_transaksi').tabs('getSelected').panel('options').title != "Grid") {
-                $('#tab_transaksi').tabs('close', index);
-            }
+            var row = $('#table_data').datagrid('clearSelection');
         }
 
         function reload() {
-            //PELU BUAT SIMPEN INDEX
-            var row = $('#table_data').datagrid('getSelected');
-
-            if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Ubah") {
-                //INDEX TAB
-                var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-                //ROW ID dan KODE
-                var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-                var counterTambah = trans[2];
-                tab_name = tab_name + "_" + counterTambah;
-
-                $("#mode").val("ubah");
-                $("#view").val('{{ route('atena.master.perkiraan.form', ['kodemenu' => $kodemenu]) }}');
-                $("#data").val(trans[0]);
-
-                var tab = $('#tab_transaksi').tabs('getSelected');
-                var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-                var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-                var tab_title = 'Ubah';
-                $('#form_data').attr('target', tab_name);
-
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabTrans,
-                    type: 'header',
-                    options: {
-                        title: tab_title,
-                        content: '<iframe frameborder="0" class="tab_form" id="' + counterTambah + '" name="' +
-                            tab_name + '" ></iframe>',
-                        closable: true
-                    }
-                });
-                $('#form_data').submit();
-            }
-
             $('#table_data').datagrid('reload');
+            var row = $('#table_data').datagrid('clearSelection');
         }
     </script>
 @endpush

@@ -40,6 +40,11 @@ var link_api = {
   getLokasiAll:`${base_url_api}atena/master/lokasi/load-all`,
   getLokasiPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-per-user`,
   getLokasiTransferPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-transfer-per-user`,
+  loadDataGridLokasi:`${base_url_api}atena/master/lokasi/load-data-grid`,
+  hapusLokasi:`${base_url_api}atena/master/lokasi/hapus`,
+  getHeaderLokasi:`${base_url_api}atena/master/lokasi/load-lokasi-header`,
+  getLokasiDefault:`${base_url_api}atena/master/lokasi/cek-lokasi-default`,
+  simpanLokasi:`${base_url_api}atena/master/lokasi/simpan`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
@@ -55,7 +60,6 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
         "kodemenu":kodeMenu
       }),
     }).then(response => response.json())
-    console.log(response);
 
     // Memeriksa apakah respons HTTP OK (status 200-299)
     if (!response.success) {
