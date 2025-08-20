@@ -45,7 +45,6 @@ var link_api = {
   loadDataGridMasterSupplier:`${base_url_api}atena/master/supplier/load-data-grid`,
   hapusSupplier:`${base_url_api}atena/master/supplier/hapus`,
   browseSyaratBayar:`${base_url_api}atena/master/syaratbayar/browse`,
-  browseSyaratBayar:`${base_url_api}atena/master/syaratbayar/browse`,
   browseBadanUsaha:`${base_url_api}atena/master/supplier/browse-badan-usaha`,
   getHutangBelumLunas:`${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
   simpanSupplier:`${base_url_api}atena/master/supplier/simpan`,

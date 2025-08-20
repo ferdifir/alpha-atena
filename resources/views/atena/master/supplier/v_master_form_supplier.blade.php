@@ -13,7 +13,7 @@
                 <table style="padding:5px">
                   <tr>
                     <td align="right" id="label_form">Kode</td>
-                    <td><input id="KODESUPPLIER" name="kodesupplier" style="width:130px" class="label_input">
+                    <td><input id="KODESUPPLIER" name="kodesupplier" style="width:347px" class="label_input">
                       <label id="label_form"><input type="checkbox" id="STATUS" name="status" value="1">
                         Aktif</label>
                     </td>
@@ -22,7 +22,7 @@
                     <td align="right" id="label_form">Nama</td>
                     <td id="label_form">
                       <input id="BADANUSAHA" name="badanusaha" style="width:100px" prompt="BADAN USAHA">
-                      <input name="namasupplier" style="width:300px" class="label_input" required="true"
+                      <input name="namasupplier" style="width:297px" class="label_input" required="true"
                         validType='length[0,300]'>
                     </td>
                   </tr>
@@ -30,7 +30,7 @@
                     <td align="right" id="label_form">Alamat</td>
                     <td id="label_form"><input name="alamat" style="width:400px" class="label_input"
                         validType='length[0,300]'>
-                      &nbsp;&nbsp; Kode Pos
+                      &nbsp;&nbsp;Kode Pos
                       <input name="kodepos" style="width:120px" class="label_input" validType='length[0,300]'>
                     </td>
                   </tr>
@@ -38,49 +38,49 @@
                     <td align="right" id="label_form">Kota</td>
                     <td id="label_form">
                       <input name="kota" style="width:180px" class="label_input" validType='length[0,100]'>
-                      &nbsp;&nbsp;Propinsi
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Propinsi
                       <input name="propinsi" style="width:150px" class="label_input" validType='length[0,100]'>
-                      &nbsp;&nbsp;Negara
-                      <input name="negara" style="width:150px" class="label_input" validType='length[0,100]'>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Negara
+                      <input name="negara" style="width:120px" class="label_input" validType='length[0,100]'>
                     </td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Telp/HP</td>
-                    <td><input name="telp" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                    <td><input name="telp" style="width:400px" class="label_input" validType='length[0,50]'></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Fax</td>
-                    <td><input name="fax" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                    <td><input name="fax" style="width:400px" class="label_input" validType='length[0,50]'></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">E-mail</td>
-                    <td><input name="email" style="width:250px" class="label_input" validType="email"></td>
+                    <td><input name="email" style="width:400px" class="label_input" validType="email"></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Password</td>
-                    <td><input name="password" type="password" style="width:250px" class="label_input"
+                    <td><input name="password" type="password" style="width:400px" class="label_input"
                         data-options="fontTransform:'normal'"></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Konfirmasi Password</td>
-                    <td><input id="KONFIRMASIPASSWORD" name="konfirmasipassword" type="password" style="width:250px"
+                    <td><input id="KONFIRMASIPASSWORD" name="konfirmasipassword" type="password" style="width:400px"
                         class="label_input" data-options="fontTransform:'normal'"></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Website</td>
-                    <td><input name="website" style="width:250px" class="label_input" validType='url'></td>
+                    <td><input name="website" style="width:400px" class="label_input" validType='url'></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Syarat Bayar</td>
-                    <td id="label_form"><input name="uuidsyaratbayar" style="width:100px">
-                      &nbsp;&nbsp; NPWP
-                      <input name="npwp" style="width:200px" class="label_input" validType='length[0,20]'>
+                    <td id="label_form"><input name="uuidsyaratbayar" style="width:180px">
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NPWP
+                      <input name="npwp" style="width:150px" class="label_input" validType='length[0,20]'>
                     </td>
                   </tr>
                   <tr>
                     <td align="right" valign="top" id="label_form">Catatan</td>
                     <td>
-                      <textarea name="catatan" style="width:350px; height:80px" class="label_input" multiline="true"
+                      <textarea name="catatan" style="width:400px; height:80px" class="label_input" multiline="true"
                         validType='length[0,300]'></textarea>
                     </td>
                   </tr>
@@ -146,12 +146,15 @@
                 </div>
               </div>
             </div>
-            <div id="dlg-buttons">
+            <div id="dlg-buttons" style="position: fixed;bottom:0;background-color: white;width:100%;">
               <table cellpadding="0" cellspacing="0" style="width:100%">
                 <tr>
-                  <td align="left" id="label_form"><label style="font-weight:normal" id="label_form">User Input
-                      :</label> <label id="lbl_kasir"></label> <label style="font-weight:normal" id="label_form">| Tgl
-                      Input :</label> <label id="lbl_tanggal"></label></td>
+                  <td align="left" id="label_form">
+                    <label style="font-weight:normal" id="label_form">User Input :</label>
+                    <label id="lbl_kasir"></label>
+                    <label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+                    <label id="lbl_tanggal"></label>
+                  </td>
                 </tr>
               </table>
             </div>

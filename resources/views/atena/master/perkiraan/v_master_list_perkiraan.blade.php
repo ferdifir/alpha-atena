@@ -290,7 +290,7 @@
                 sortName: 'kodeperkiraan',
                 remoteFilter: true,
                 queryParams: {
-                    _token: csrf_token
+                    _token: csr f_token
                 },
                 rowStyler: function(index, row) {
                     if (row.status == 0) {

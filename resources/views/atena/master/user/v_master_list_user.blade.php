@@ -242,7 +242,45 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter');
+      }).datagrid('enableFilter', [
+        {
+          field: 'tglentry',
+          type: 'datebox',
+          options: {
+            onChange: function(value) {
+              if (value) {
+                console.log(value);
+                dg.datagrid('addFilterRule', {
+                  field: 'tglentry',
+                  op: 'contains',
+                  value: value.trim(),
+                });
+              } else {
+                dg.datagrid('removeFilterRule', 'tglentry');
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        }, {
+          field: 'hp',
+          type: 'numberspinner',
+          options: {
+            onChange: function(value) {
+              if (value == 0) {
+                dg.datagrid('removeFilterRule', 'hp');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'hp',
+                  op: 'contains',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },
+        
+      ]);
     }
   </script>
 @endpush

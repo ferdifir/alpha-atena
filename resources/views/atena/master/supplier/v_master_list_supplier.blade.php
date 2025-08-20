@@ -171,18 +171,32 @@
       }
     }
 
-    function buat_table() {
-      $('#table_data').datagrid({
+    async function buat_table() {
+      var filterList = await getFilterList();
+      var filterBadanUsaha = filterList.badanUsaha.map(item => {
+        return {
+          value: item.badanusaha,
+          text: item.badanusaha,
+        }
+      });
+      var filterSyaratBayar = filterList.syaratBayar.map(item => {
+        return {
+          value: item.nama,
+          text: item.nama
+        }
+      })
+      var dg = $('#table_data').datagrid({
         remoteFilter: true,
         fit: true,
         singleSelect: true,
         striped: true,
+        nowrap: false,
         pagination: true,
         clientPaging: false,
         pageSize: 20,
         url: link_api.loadDataGridMasterSupplier,
         onBeforeLoad: function(param) {
-          console.log(param);
+          var dg = $(this);
         },
         onLoadSuccess: function(data) {
           $('#table_data').datagrid('unselectAll');
@@ -366,6 +380,7 @@
               field: 'status',
               title: 'Aktif',
               align: 'center',
+              width: 60,
               sortable: true,
               formatter: format_checked,
             }
@@ -374,7 +389,147 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter');
+      }).datagrid('enableFilter', [{
+          field: 'badanusaha',
+          type: 'combobox',
+          options: {
+            data: [{
+                value: '',
+                text: 'All'
+              },
+              ...filterBadanUsaha,
+            ],
+            onChange: function(value) {
+              if (value == '') {
+                dg.datagrid('removeFilterRule', 'badanusaha');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'badanusaha',
+                  op: 'equal',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        }, {
+          field: 'namasyaratbayar',
+          type: 'combobox',
+          options: {
+            data: [{
+                value: '',
+                text: 'All'
+              },
+              ...filterSyaratBayar,
+            ],
+            onChange: function(value) {
+              if (value == '') {
+                dg.datagrid('removeFilterRule', 'namasyaratbayar');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'namasyaratbayar',
+                  op: 'equal',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },
+        {
+          field: 'tglentry',
+          type: 'datebox',
+          options: {
+            onChange: function(value) {
+              if (value) {
+                console.log(value);
+                dg.datagrid('addFilterRule', {
+                  field: 'tglentry',
+                  op: 'contains',
+                  value: value.trim(),
+                });
+              } else {
+                dg.datagrid('removeFilterRule', 'tglentry');
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        }, {
+          field: 'kodepos',
+          type: 'numberspinner',
+          options: {
+            onChange: function(value) {
+              if (value == 0) {
+                dg.datagrid('removeFilterRule', 'kodepos');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'kodepos',
+                  op: 'contains',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },
+        {
+          field: 'status',
+          type: 'combobox',
+          options: {
+            data: [{
+              value: '',
+              text: 'All'
+            }, {
+              value: "1",
+              text: 'Aktif'
+            }, {
+              value: "0",
+              text: 'Non-aktif'
+            }],
+            onChange: function(value) {
+              if (value == '') {
+                dg.datagrid('removeFilterRule', 'status');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'status',
+                  op: 'equal',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },
+      ]);
+    }
+
+    async function getFilterList() {
+      try {
+        const [badanUsaha, syaratBayar] = await Promise.all([
+          getBadanUsaha(),
+          getSyaratBayar()
+        ]);
+        const filterData = {
+          badanUsaha: badanUsaha,
+          syaratBayar: syaratBayar
+        };
+        return filterData;
+      } catch (error) {
+        return {
+          badanUsaha: [],
+          syaratBayar: []
+        };
+      }
+    }
+
+    async function getBadanUsaha() {
+      const res = await fetchData(link_api.browseBadanUsaha);
+      return res.data;
+    }
+
+    async function getSyaratBayar() {
+      const res = await fetchData(link_api.browseSyaratBayar);
+      return res.data;
     }
 
     function refresh_data() {
