@@ -254,6 +254,7 @@
                 });
             } catch (error) {
                 isLoginSuccess = false;
+                console.log(error.message, error.name)
                 Swal.close();
                 Swal.fire({
                     type: 'error',

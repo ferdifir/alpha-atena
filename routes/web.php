@@ -96,3 +96,18 @@ Route::get('atena/master/lokasi/form',function (){
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.lokasi.form');
+
+// Master Pemasok
+Route::get('atena/master/supplier/data', function() {
+    return view('atena.master.supplier.v_master_list_supplier', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.supplier.data');
+
+Route::get('atena/master/supplier/form', function() {
+    return view('atena.master.supplier.v_master_form_supplier', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.supplier.form');

@@ -41,6 +41,15 @@ var link_api = {
   getLokasiAll:`${base_url_api}atena/master/lokasi/load-all`,
   getLokasiPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-per-user`,
   getLokasiTransferPerUser:`${base_url_api}atena/master/lokasi/load-lokasi-transfer-per-user`,
+  //supplier
+  loadDataGridMasterSupplier:`${base_url_api}atena/master/supplier/load-data-grid`,
+  hapusSupplier:`${base_url_api}atena/master/supplier/hapus`,
+  browseSyaratBayar:`${base_url_api}atena/master/syaratbayar/browse`,
+  browseSyaratBayar:`${base_url_api}atena/master/syaratbayar/browse`,
+  browseBadanUsaha:`${base_url_api}atena/master/supplier/browse-badan-usaha`,
+  getHutangBelumLunas:`${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
+  simpanSupplier:`${base_url_api}atena/master/supplier/simpan`,
+  headerFormSupplier:`${base_url_api}atena/master/supplier/load-data-header`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

@@ -142,13 +142,17 @@
           'User Yang Terhapus Tidak Dapat Digunakan Kembali,<br>Anda Yakin Akan Menghapus Data Ini?',
           async function(r) {
             if (r) {
-              const res = await fetchData(link_api.hapusUser, {
-                uuiduser: row.uuiduser
-              })
-              if (res.success) {
-                refresh_data();
-              } else {
-                $.messager.alert('Error', res.errorMsg, 'error');
+              try {
+                const res = await fetchData(link_api.hapusUser, {
+                  uuiduser: row.uuiduser
+                })
+                if (res.success) {
+                  refresh_data();
+                } else {
+                  $.messager.alert('Error', res.message, 'error');
+                }
+              } catch (e) {
+                $.messager.alert('Error', 'Terjadi Kesalahan ketika menghapus supplier', 'error');
               }
             }
           });
@@ -180,6 +184,9 @@
         url: link_api.loadDataGridMasterUser,
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';
+        },
+        onLoadSuccess: function(data) {
+            $('#table_data').datagrid('unselectAll');
         },
         frozenColumns: [
           [{
