@@ -181,6 +181,7 @@
         striped: true,
         pagination: true,
         pageSize: 20,
+        clientPaging: false,
         url: link_api.loadDataGridMasterUser,
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';

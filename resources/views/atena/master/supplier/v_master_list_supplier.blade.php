@@ -49,8 +49,6 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-  </script>
   <script>
     var counter = 0;
 
@@ -58,6 +56,10 @@
       $('#dialog_import').window('close');
       tutupLoader();
       buat_table();
+      $('#table_data').datagrid('load', {
+        page: 2,
+        rows: 20
+      });
     });
 
     shortcut.add('F2', function() {
@@ -158,7 +160,7 @@
             if (response.success) {
               refresh_data(); // reload the user data
             } else {
-              $.messager.alert('Error', msg.errorMsg, 'error');
+              $.messager.alert('Error', response.message, 'error');
 
             }
           }
@@ -175,10 +177,14 @@
         singleSelect: true,
         striped: true,
         pagination: true,
+        clientPaging: false,
         pageSize: 20,
         url: link_api.loadDataGridMasterSupplier,
+        onBeforeLoad: function(param) {
+          console.log(param);
+        },
         onLoadSuccess: function(data) {
-            $('#table_data').datagrid('unselectAll');
+          $('#table_data').datagrid('unselectAll');
         },
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';
@@ -416,7 +422,7 @@
 
             $('#dialog_import').window('close');
           } else {
-            $.messager.alert('Gagal', response.errorMsg);
+            $.messager.alert('Gagal', response.message);
           }
         }
       });
