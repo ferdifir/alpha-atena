@@ -9,7 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Favicon icon -->
-    <link rel="icon" href="{{ asset('assets/images/logo_app_white.png') }}" />
+    <link rel="icon" href="{{ asset('assets/images/icon.png') }}" />
     <title>Aplikasi Usaha Optik Online</title>
 
     <!-- page css -->
@@ -58,9 +58,10 @@
                     <form class="form-horizontal form-material" id="loginform">
 
                         <img style="width: 200px;margin: 0 auto;display: block"
-                            src="{{ asset('assets/images/optix_login2.png') }}">
+                            src="{{ asset('assets/images/logo_atena.png') }}">
 
-                        <p class="text-center" style="font-size: 15px;color: #111111">Aplikasi Usaha Optik Online</p>
+                        {{-- <p class="text-center" style="font-size: 15px;color: #111111">Aplikasi Usaha Optik Online</p> --}}
+                        <br>
                         <h3 class="text-center m-b-20" style="font-weight:bold; font-size:14pt;">Selamat Datang Kembali
                         </h3>
                         <div class="form-group">

@@ -49,6 +49,10 @@ var link_api = {
   getHutangBelumLunas:`${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
   simpanSupplier:`${base_url_api}atena/master/supplier/simpan`,
   headerFormSupplier:`${base_url_api}atena/master/supplier/load-data-header`,
+  //customer
+  loadDataGridMasterCustomer:`${base_url_api}atena/master/customer/load-data-grid`,
+  //ekspedisi
+  loadDataGridMasterEkspedisi:`${base_url_api}atena/master/ekspedisi/load-data-grid`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

@@ -111,3 +111,33 @@ Route::get('atena/master/supplier/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.supplier.form');
+
+// Master Customer
+Route::get('atena/master/customer/data', function() {
+    return view('atena.master.customer.v_master_list_customer', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.customer.data');
+
+Route::get('atena/master/customer/form', function() {
+    return view('atena.master.customer.v_master_form_customer', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.customer.form');
+
+// Master Ekspedisi
+Route::get('atena/master/ekspedisi/data', function() {
+    return view('atena.master.ekspedisi.v_master_list_ekspedisi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.ekspedisi.data');
+
+Route::get('atena/master/ekspedisi/form', function() {
+    return view('atena.master.ekspedisi.v_master_form_ekspedisi', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.ekspedisi.form');
