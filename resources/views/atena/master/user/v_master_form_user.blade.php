@@ -225,7 +225,6 @@
 
 @push('js')
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js/') }}"></script>
-  <script src="{{ asset('assets/js/globalVariable.js') }}"></script>
   <script>
     var loaded = {
       menu: false,
@@ -308,6 +307,10 @@
               checkbox: true
             },
             {
+              field: 'uuidlokasi',
+              hidden: true
+            },
+            {
               field: 'kodelokasi',
               title: 'Kode',
               width: 80
@@ -335,6 +338,10 @@
               title: '',
               width: 30,
               checkbox: true
+            },
+            {
+              field: 'uuidlokasi',
+              hidden: true
             },
             {
               field: 'kodelokasi',
@@ -607,10 +614,10 @@
 
       if ("{{ $mode }}" == "tambah") {
         tambah();
+        tutupLoader();
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
-      tutupLoader();
     })
 
     function tambah() {
@@ -634,7 +641,7 @@
 
       $('#datagrid_perkiraan').datagrid('load');
       $('#table_data_jamakses').datagrid('load');
-      $('#table_data_dashboard').datagrid('load');
+      $('#table_data_akses_dashboard').datagrid('load');
 
       $('#mode').val('tambah');
       $('[name=authentication]').add($('[name=priority]'))
@@ -654,8 +661,6 @@
       const response = await fetchData(link_api.headerFormUser, form);
       const row = response.data;
       if (row) {
-        bukaLoader();
-
         $('#form_input').form('load', row);
         $('[name=act]').val('edit');
         $('#UUIDUSER').textbox('readonly');
@@ -684,7 +689,7 @@
         $('#table_data_jamakses').datagrid('load', {
           uuiduser: '{{ $data }}'
         });
-        $('#table_data_dashboard').datagrid('load', {
+        $('#table_data_akses_dashboard').datagrid('load', {
           uuiduser: '{{ $data }}'
         });
 
@@ -707,7 +712,7 @@
         }
 
         $('#UUIDPERKIRAAN').combogrid('setValue', {
-          id: row.uuidperkiraan,
+          uuidperkiraan: row.uuidperkiraan,
           nama: row.namaperkiraan
         });
 
@@ -721,6 +726,175 @@
         $('#lbl_tanggal').html(row.tglentry);
         $('#mode').val('ubah');
       }
+    }
+
+    function cek_menu_pos(a, kodemenu) {
+      var check = $('#cb-' + a + '-' + kodemenu).prop('checked') ? 1 : 0;
+
+      var tg = $('#menu_tree_pos');
+
+      var row = tg.treegrid('find', kodemenu);
+
+      if (typeof row.hakakses == 'undefined') {
+        row.hakakses = 0;
+      }
+
+      if (typeof row.tambah == 'undefined') {
+        row.tambah = 0;
+      }
+
+      if (typeof row.ubah == 'undefined') {
+        row.ubah = 0;
+      }
+
+      if (typeof row.inputharga == 'undefined') {
+        row.inputharga = 0;
+      }
+
+      if (typeof row.lihatharga == 'undefined') {
+        row.lihatharga = 0;
+      }
+
+      if (a == 'hakakses') {
+        row.hakakses = row.tambah = row.ubah =
+          row.inputharga = row.lihatharga = check;
+      }
+
+      if (a == 'tambah') {
+        row.tambah = check;
+      }
+
+      if (a == 'ubah') {
+        row.ubah = check;
+      }
+
+      if (a == 'inputharga') {
+        row.inputharga = check;
+      }
+
+      if (a == 'lihatharga') {
+        row.lihatharga = check;
+      }
+
+      $('#menu_tree_pos').treegrid('update', {
+        id: kodemenu,
+        row: row
+      });
+
+      tg.treegrid('showLines');
+    }
+
+    function cek_detail(a, kodemenu) {
+      var check = $('#cb-' + a + '-' + kodemenu).prop('checked') ? 1 : 0;
+
+      var tg = $('#menu_tree');
+
+      var row = tg.treegrid('find', kodemenu);
+
+      if (typeof row.hakakses == 'undefined') {
+        row.hakakses = 0;
+      }
+
+      if (typeof row.tambah == 'undefined') {
+        row.tambah = 0;
+      }
+
+      if (typeof row.ubah == 'undefined') {
+        row.ubah = 0;
+      }
+
+      if (typeof row.hapus == 'undefined') {
+        row.hapus = 0;
+      }
+
+      if (typeof row.cetak == 'undefined') {
+        row.cetak = 0;
+      }
+
+      if (typeof row.batalcetak == 'undefined') {
+        row.batalcetak = 0;
+      }
+
+      if (typeof row.inputharga == 'undefined') {
+        row.inputharga = 0;
+      }
+
+      if (typeof row.lihatharga == 'undefined') {
+        row.lihatharga = 0;
+      }
+
+      if (typeof row.lihathargabeli == 'undefined') {
+        row.lihathargabeli = 0;
+      }
+
+      if (typeof row.lihatsemuatrans == 'undefined') {
+        row.lihatsemuatrans = 0;
+      }
+
+      if (typeof row.inputmaterial == 'undefined') {
+        row.inputmaterial = 0;
+      }
+
+      if (typeof row.inputbiaya == 'undefined') {
+        row.inputbiaya = 0;
+      }
+
+      if (a == 'hakakses') {
+        row.hakakses = row.tambah = row.ubah =
+          row.hapus = row.cetak = row.batalcetak =
+          row.inputharga = row.lihatharga = row.lihathargabeli = row.lihatsemuatrans = check;
+      }
+
+      if (a == 'tambah') {
+        row.tambah = check;
+      }
+
+      if (a == 'ubah') {
+        row.ubah = check;
+      }
+
+      if (a == 'hapus') {
+        row.hapus = check;
+      }
+
+      if (a == 'cetak') {
+        row.cetak = check;
+      }
+
+      if (a == 'batalcetak') {
+        row.batalcetak = check;
+      }
+
+      if (a == 'inputharga') {
+        row.inputharga = check;
+      }
+
+      if (a == 'lihatharga') {
+        row.lihatharga = check;
+      }
+
+      if (a == 'lihathargabeli') {
+        row.lihathargabeli = check;
+      }
+
+      if (a == 'lihatsemuatrans') {
+        row.lihatsemuatrans = check;
+      }
+
+      if (a == 'inputmaterial') {
+        row.inputmaterial = check;
+      }
+
+      if (a == 'inputbiaya') {
+        row.inputbiaya = check;
+      }
+
+      $('#menu_tree').treegrid('update', {
+        id: kodemenu,
+        row: row
+      });
+
+      tg.treegrid('showLines');
     }
 
     function cek_menu_pos_desktop(a, kodemenu) {
@@ -851,7 +1025,7 @@
           var ln1 = data.length;
 
           for (var j = 0; j < ln1; j++) {
-            if (rows[i].idlokasi == data[j].idlokasi) {
+            if (rows[i].uuidlokasi == data[j].uuidlokasi) {
               $('#table_data_lokasi').datagrid('checkRow', i);
               break;
             }
@@ -867,8 +1041,7 @@
     async function load_akses_lokasi_transfer() {
       try {
         const form = new FormData();
-        // form.append('uuiduser', "{{ $data }}");
-        form.append('uuiduser', "70ed077a-5d42-11f0-b7dc-1c1b0d80570e");
+        form.append('uuiduser', "{{ $data }}");
         const response = await fetchData(link_api.getLokasiTransferPerUser, form);
         var rows = $('#table_data_lokasi_transfer').datagrid('getRows');
         var ln = rows.length;
@@ -879,8 +1052,7 @@
           var ln1 = data.length;
 
           for (var j = 0; j < ln1; j++) {
-            console.log(data[j]);
-            if (rows[i].idlokasi == data[j].idlokasi) {
+            if (rows[i].uuidlokasi == data[j].uuidlokasi) {
               $('#table_data_lokasi_transfer').datagrid('checkRow', i);
               break;
             }
@@ -1123,6 +1295,7 @@
           }
         },
         onLoadSuccess: function(data) {
+          console.log(data);
           for (var i = 0; i < data.rows.length; i++) {
             if (data.rows[i].hakakses == 1) {
               $(this).datagrid('checkRow', i);
