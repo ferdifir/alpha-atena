@@ -107,6 +107,7 @@ var link_api = {
     hapusHargaJualSatuan: `${base_url_api}atena/master/hargajual/hapus-harga-jual-satuan`,
     hapusHargaJualCustomer: `${base_url_api}atena/master/hargajual/hapus-harga-jual-customer`,
     hapusHargaJualTipeCustomer: `${base_url_api}atena/master/hargajual/hapus-harga-jual-tipe-customer`,
+    browseCustomer: `${base_url_api}atena/master/customer/browse`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

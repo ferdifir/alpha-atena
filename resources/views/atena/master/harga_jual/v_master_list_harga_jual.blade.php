@@ -13,6 +13,19 @@
     }
   </style>
 
+  <div id="mask-loader-simpan" hidden>
+    <div style="text-align: center" class="wrapper">
+      <div>
+        <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33"
+            r="30"></circle>
+        </svg>
+
+        <h1 style="font-size: 16px">Proses menyimpan ...</h1>
+      </div>
+    </div>
+  </div>
+
   <div class="easyui-layout" fit="true">
     <div data-options="region: 'center'">
       <div id="tab_transaksi" class="easyui-tabs" style="width: 100%;height: 100%;">
@@ -676,9 +689,27 @@
 @endsection
 
 @push('js')
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/jquery.datagrid-detailview.js') }}">
+  </script>
   <script>
+    const loaderfitur = {
+      supplier: false,
+      merk: false,
+      kategori: false,
+      barang: false,
+      lokasi: false,
+      tglaktif: false
+    };
+
+    function closeLoader() {
+      if (loaderfitur.supplier && loaderfitur.merk && loaderfitur.kategori && loaderfitur.barang && loaderfitur.lokasi &&
+        loaderfitur.tglaktif) {
+        tutupLoader();
+      }
+    }
+
     $(function() {
-      tutupLoader();
       browse_data_lokasi('#COPY_SATUAN_IDLOKASIASAL');
       browse_data_lokasi('#COPY_SATUAN_IDLOKASICOPY');
       browse_data_lokasi('#COPY_TIPECUSTOMER_IDLOKASIASAL');
@@ -1581,13 +1612,13 @@
               url: link_api.loadHargaJualTerakhirPerSatuan,
               type: 'POST',
               data: {
-                idlokasi: idlokasi,
-                idbarang: data.id
+                uuidlokasi: idlokasi,
+                uuidbarang: data.id
               },
               dataType: 'JSON',
               async: false,
               success: function(response) {
-                hargajualterakhir = response.data
+                hargajualterakhir = response
               }
             });
 
@@ -2629,14 +2660,14 @@
               row_parent.detailharga = JSON.stringify(ddv.datagrid('getRows'));
             },
             onDblClickRow: function(index, row) {
-              tampil_dialog_history_berdasarkan_tipecustomer(row_parent.idbarang, row);
+              tampil_dialog_history_berdasarkan_tipecustomer(row_parent.uuidbarang, row);
             }
           })
 
           ddv.datagrid('disableCellEditing');
           ddv.datagrid('enableCellEditing');
 
-          ddv.datagrid('loadData', JSON.parse(row_parent.detailharga));
+          ddv.datagrid('loadData', row_parent.detailharga);
 
           $('#table_detail_berdasarkan_tipecustomer').datagrid('fixDetailRowHeight', index);
         }
@@ -2874,6 +2905,9 @@
         },
         columns: [
           [{
+              field: 'uuidbarang',
+              hidden: true
+            }, {
               field: 'kodebarang',
               title: 'Kode Barang',
               width: 100,
@@ -3462,7 +3496,7 @@
           ddv.datagrid('disableCellEditing');
           ddv.datagrid('enableCellEditing');
 
-          ddv.datagrid('loadData', JSON.parse(row_parent.detailharga));
+          ddv.datagrid('loadData', row_parent.detailharga);
 
           $('#table_detail_berdasarkan_customer').datagrid('fixDetailRowHeight', index);
         }
@@ -3694,14 +3728,24 @@
       $(id).combogrid({
         panelWidth: 600,
         url: link_api.browseSupplier,
-        idField: 'id',
+        idField: 'uuidsupplier',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
+        onBeforeLoad: function(param) {
+          loaderfitur.supplier = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.supplier = true;
+          closeLoader();
+        },
         // required: true,
         columns: [
           [{
+              field: 'uuidsupplier',
+              hidden: true
+            }, {
               field: 'kode',
               title: 'Kode',
               width: 80,
@@ -3742,14 +3786,25 @@
         required: false,
         panelWidth: 330,
         mode: 'local',
-        idField: 'id',
+        idField: 'uuidmerk',
         textField: 'nama',
         editable: false,
         multiple: true,
+        onBeforeLoad: function(param) {
+          loaderfitur.merk = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.merk = true;
+          closeLoader();
+        },
         columns: [
           [{
               field: 'ck',
               checkbox: true
+            },
+            {
+              field: 'uuidmerk',
+              hidden: true
             },
             {
               field: 'kode',
@@ -3777,6 +3832,13 @@
         sortOrder: 'asc',
         multiple: true,
         editable: false,
+        onBeforeLoad: function(param) {
+          loaderfitur.kategori = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.kategori = true;
+          closeLoader();
+        },
         columns: [
           [{
               field: 'ck',
@@ -3801,6 +3863,13 @@
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
+        onBeforeLoad: function(param) {
+          loaderfitur.barang = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.barang = true;
+          closeLoader();
+        },
         columns: [
           [{
               field: 'id',
@@ -3845,8 +3914,8 @@
     function browse_data_customer(id) {
       $(id).combogrid({
         panelWidth: 600,
-        url: base_url + 'atena/Master/Data/Customer/comboGrid',
-        idField: 'id',
+        url: link_api.browseCustomer,
+        idField: 'uuidcustomer',
         textField: 'kode',
         mode: 'remote',
         sortName: 'nama',
@@ -3854,7 +3923,7 @@
         required: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidcustomer',
               hidden: true
             },
             {
@@ -3899,15 +3968,25 @@
       $(id).combogrid({
         panelWidth: 380,
         url: link_api.browseLokasi,
-        idField: 'id',
+        idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
         sortName: 'nama',
         sortOrder: 'asc',
         multiple: false,
         editable: false,
+        onBeforeLoad: function(param) {
+          loaderfitur.lokasi = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.lokasi = true;
+          closeLoader();
+        },
         columns: [
           [{
+              field: 'uuidlokasi',
+              hidden: true
+            }, {
               field: 'kode',
               title: 'Kode',
               width: 80,
@@ -3946,26 +4025,31 @@
         return false;
       }
 
+      if (idsupplier == '') {
+        $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
+
+        return false;
+      }
+
       $.ajax({
         url: link_api.loadDataBarangBerdasarkanSatuan,
         type: 'POST',
         dataType: 'JSON',
         data: {
-          idsupplier: idsupplier,
-          idmerk: idmerk,
-          kategori: kategori,
+          uuidsupplier: idsupplier,
+          daftarmerk: idmerk,
+          daftarkategori: kategori,
           kodebarangawal: kodebarangawal,
           kodebarangakhir: kodebarangakhir,
-          idlokasi: idlokasi,
+          uuidlokasi: idlokasi,
           berisikata: berisikata
         },
         beforeSend: function() {
-          $.messager.progress();
+          $('#table_detail_berdasarkan_satuan').datagrid('loading');
         },
-        success: function(response) {
-          $.messager.progress('close');
-
-          $('#table_detail_berdasarkan_satuan').datagrid('loadData', response.data);
+        success: function(data) {
+          $('#table_detail_berdasarkan_satuan').datagrid('loaded');
+          $('#table_detail_berdasarkan_satuan').datagrid('loadData', data);
         }
       })
     }
@@ -3987,138 +4071,175 @@
         return false;
       }
 
+      if (idsupplier == '') {
+        $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
+
+        return false;
+      }
+
       $.ajax({
         url: link_api.loadDataBarangBerdasarkanTipeCustomer,
         type: 'POST',
         dataType: 'JSON',
         data: {
-          idsupplier: idsupplier,
-          idmerk: idmerk,
-          kategori: kategori,
+          uuidsupplier: idsupplier,
+          daftarmerk: idmerk,
+          daftarkategori: kategori,
           kodebarangawal: kodebarangawal,
           kodebarangakhir: kodebarangakhir,
-          idlokasi: idlokasi,
+          uuidlokasi: idlokasi,
           berisikata: berisikata
         },
-        success: function(response) {
-          $('#table_detail_berdasarkan_tipecustomer').datagrid('loadData', response.data);
+        beforeSend: function() {
+          $('#table_detail_berdasarkan_tipecustomer').datagrid('loading');
+        },
+        success: function(data) {
+          $('#table_detail_berdasarkan_tipecustomer').datagrid('loaded');
+          $('#table_detail_berdasarkan_tipecustomer').datagrid('loadData', data);
         }
       })
     }
 
-    function simpan_berdasarkan_satuan() {
+    async function fetchData(url, body) {
+      try {
+        const token = '{{ session('TOKEN') }}';
+        let headers = {
+          'Authorization': 'bearer ' + token,
+        };
+        let requestBody = null;
+
+        // Cek apakah body adalah instance dari FormData
+        if (body instanceof FormData) {
+          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+          requestBody = body;
+        } else {
+          // Default: Jika bukan FormData, asumsikan itu JSON.
+          headers['Content-Type'] = 'application/json';
+          requestBody = body ? JSON.stringify(body) : null;
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
+      }
+    }
+
+    async function simpan_berdasarkan_satuan() {
       var idlokasi = $('#FILTER_SATUAN_IDLOKASI').combogrid('getValue');
       var tglaktif = $('#SATUAN_TGLAKTIF').datebox('getValue');
-      var detail = JSON.stringify($('#table_detail_berdasarkan_satuan').datagrid('getRows'));
+      var dataDetail = $('#table_detail_berdasarkan_satuan').datagrid('getRows');
+      var detail = dataDetail.filter(function(item) {
+        return item.edit !== undefined;
+      });
 
-      $.ajax({
-        url: link_api.simpanHargaJualBerdasarkanSatuan,
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: idlokasi,
+      try {
+        const payload = {
+          uuidlokasi: idlokasi,
           tglaktif: tglaktif,
           detail: detail
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+        };
 
-          if (response.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Data Harga Jual Berhasil Disimpan',
-              showType: 'show'
-            });
-          } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
-          }
+        tampilLoaderSimpan();
+        const response = await fetchData(link_api.simpanHargaJualBerdasarkanSatuan, payload);
+        tutupLoaderSimpan();
+        if (response.success) {
+          $.messager.alert('Info', 'Data Harga Jual Berhasil Disimpan', 'info');
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (error) {
+        tutupLoaderSimpan();
+        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+      }
     }
 
-    function simpan_berdasarkan_tipecustomer() {
+    async function simpan_berdasarkan_tipecustomer() {
       var idlokasi = $('#FILTER_TIPECUSTOMER_IDLOKASI').combogrid('getValue');
       var tglaktif = $('#TIPECUSTOMER_TGLAKTIF').datebox('getValue');
-      var detail = JSON.stringify($('#table_detail_berdasarkan_tipecustomer').datagrid('getRows'));
+      var dataDetail = $('#table_detail_berdasarkan_tipecustomer').datagrid('getRows');
+      let detail = dataDetail.map(parentItem => {
+        if (typeof parentItem.detailharga === 'string') {
+          parentItem.detailharga = JSON.parse(parentItem.detailharga);
+        }
+        if (parentItem.detailharga) {
+          parentItem.detailharga = parentItem.detailharga.filter(childItem => childItem.edit !== undefined);
+        }
+        return parentItem;
+      }).filter(parentItem => {
+        return parentItem.detailharga && parentItem.detailharga.length > 0;
+      });
 
-      $.ajax({
-        url: link_api.simpanHargaJualBerdasarkanTipeCustomer,
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: idlokasi,
+      try {
+        const payload = {
+          uuidlokasi: idlokasi,
           tglaktif: tglaktif,
           detail: detail
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
-
-          if (response.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Data Harga Jual Berhasil Disimpan',
-              showType: 'show'
-            });
-          } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
-          }
+        };
+        tampilLoaderSimpan();
+        const response = await fetchData(link_api.simpanHargaJualBerdasarkanTipeCustomer, payload);
+        tutupLoaderSimpan();
+        if (response.success) {
+          $.messager.alert('Info', 'Data Harga Jual Berhasil Disimpan', 'info');
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (error) {
+        tutupLoaderSimpan();
+        console.error("Terjadi kesalahan:", error);
+        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+      }
     }
 
-    function tampil_harga_jual_terakhir_customer() {
+    async function tampil_harga_jual_terakhir_customer() {
       var barang = $('#FILTER_CUSTOMER_BARANG').combogrid('grid').datagrid('getSelected');
       var idcustomer = $('#FILTER_CUSTOMER_CUSTOMER').combogrid('getValue');
       var idlokasi = $('#FILTER_CUSTOMER_IDLOKASI').combogrid('getValue');
 
       if (barang != null && idcustomer > 0 && idlokasi > 0) {
-        $.ajax({
-          url: link_api.loadHargaJualTerakhirCustomer,
-          type: 'POST',
-          dataType: 'JSON',
-          data: {
-            idbarang: barang.id,
-            idlokasi: idlokasi,
-            idcustomer: idcustomer
-          },
-          beforeSend: function() {
-            $.messager.progress();
-          },
-          success: function(response) {
-            $.messager.progress('close');
+        const payload = {
+          uuidbarang: barang.id,
+          uuidlokasi: idlokasi,
+          uuidcustomer: idcustomer
+        };
+        tampilLoaderSimpan();
+        const response = await fetchData(link_api.loadHargaJualTerakhirCustomer, payload);
+        tutupLoaderSimpan();
+        $('#FILTER_CUSTOMER_SATUANBELITERAKHIR').textbox('setValue', response.data.satuanbeliterakhir);
+        $('#FILTER_CUSTOMER_TGLBELITERAKHIR').datebox('setValue', response.data.tglbeliterakhir);
+        $('#FILTER_CUSTOMER_HARGABELITERAKHIR').numberbox('setValue', response.data.hargabeliterakhir);
 
-            $('#FILTER_CUSTOMER_SATUANBELITERAKHIR').textbox('setValue', response.data.satuanbeliterakhir);
-            $('#FILTER_CUSTOMER_TGLBELITERAKHIR').datebox('setValue', response.data.tglbeliterakhir);
-            $('#FILTER_CUSTOMER_HARGABELITERAKHIR').numberbox('setValue', response.data.hargabeliterakhir);
+        $('#CUSTOMER_PERSENTASEMINSATUAN').numberbox('setValue', response.data.persentaseminsatuan);
+        $('#CUSTOMER_HARGAJUALMINSATUAN').numberbox('setValue', response.data.hargajualminsatuan);
+        $('#CUSTOMER_PERSENTASEMAXSATUAN').numberbox('setValue', response.data.persentasemaxsatuan);
+        $('#CUSTOMER_HARGAJUALMAXSATUAN').numberbox('setValue', response.data.hargajualmaxsatuan);
 
-            $('#CUSTOMER_PERSENTASEMINSATUAN').numberbox('setValue', response.data.persentaseminsatuan);
-            $('#CUSTOMER_HARGAJUALMINSATUAN').numberbox('setValue', response.data.hargajualminsatuan);
-            $('#CUSTOMER_PERSENTASEMAXSATUAN').numberbox('setValue', response.data.persentasemaxsatuan);
-            $('#CUSTOMER_HARGAJUALMAXSATUAN').numberbox('setValue', response.data.hargajualmaxsatuan);
+        $('#CUSTOMER_PERSENTASEMINSATUAN2').numberbox('setValue', response.data.persentaseminsatuan2);
+        $('#CUSTOMER_HARGAJUALMINSATUAN2').numberbox('setValue', response.data.hargajualminsatuan2);
+        $('#CUSTOMER_PERSENTASEMAXSATUAN2').numberbox('setValue', response.data.persentasemaxsatuan2);
+        $('#CUSTOMER_HARGAJUALMAXSATUAN2').numberbox('setValue', response.data.hargajualmaxsatuan2);
 
-            $('#CUSTOMER_PERSENTASEMINSATUAN2').numberbox('setValue', response.data.persentaseminsatuan2);
-            $('#CUSTOMER_HARGAJUALMINSATUAN2').numberbox('setValue', response.data.hargajualminsatuan2);
-            $('#CUSTOMER_PERSENTASEMAXSATUAN2').numberbox('setValue', response.data.persentasemaxsatuan2);
-            $('#CUSTOMER_HARGAJUALMAXSATUAN2').numberbox('setValue', response.data.hargajualmaxsatuan2);
+        $('#CUSTOMER_PERSENTASEMINSATUAN3').numberbox('setValue', response.data.persentaseminsatuan3);
+        $('#CUSTOMER_HARGAJUALMINSATUAN3').numberbox('setValue', response.data.hargajualminsatuan3);
+        $('#CUSTOMER_PERSENTASEMAXSATUAN3').numberbox('setValue', response.data.persentasemaxsatuan3);
+        $('#CUSTOMER_HARGAJUALMAXSATUAN3').numberbox('setValue', response.data.hargajualmaxsatuan3);
 
-            $('#CUSTOMER_PERSENTASEMINSATUAN3').numberbox('setValue', response.data.persentaseminsatuan3);
-            $('#CUSTOMER_HARGAJUALMINSATUAN3').numberbox('setValue', response.data.hargajualminsatuan3);
-            $('#CUSTOMER_PERSENTASEMAXSATUAN3').numberbox('setValue', response.data.persentasemaxsatuan3);
-            $('#CUSTOMER_HARGAJUALMAXSATUAN3').numberbox('setValue', response.data.hargajualmaxsatuan3);
+        $('#CUSTOMER_HARGABELISATUAN').numberbox('setValue', response.data.hargabelisatuan);
+        $('#CUSTOMER_HARGABELISATUAN2').numberbox('setValue', response.data.hargabelisatuan2);
+        $('#CUSTOMER_HARGABELISATUAN3').numberbox('setValue', response.data.hargabelisatuan3);
 
-            $('#CUSTOMER_HARGABELISATUAN').numberbox('setValue', response.data.hargabelisatuan);
-            $('#CUSTOMER_HARGABELISATUAN2').numberbox('setValue', response.data.hargabelisatuan2);
-            $('#CUSTOMER_HARGABELISATUAN3').numberbox('setValue', response.data.hargabelisatuan3);
-
-            toggle_readonly_hargajual_customer();
-          }
-        })
+        toggle_readonly_hargajual_customer();
       }
     }
 
@@ -4152,7 +4273,7 @@
       var index_barang = -1;
 
       for (var i = 0; i < rows.length; i++) {
-        if (rows[i].idbarang == barang.id) {
+        if (rows[i].uuidbarang == barang.uuidbarang) {
           index_barang = i;
 
           break;
@@ -4160,9 +4281,10 @@
       }
 
       if (index_barang < 0) {
+        console.log('barang belum ada');
         $('#table_detail_berdasarkan_customer').datagrid('appendRow', {
           // idlokasi: idlokasi,
-          idbarang: barang.id,
+          uuidbarang: barang.uuidbarang,
           kodebarang: barang.kode,
           namabarang: barang.nama,
           partnumber: barang.partnumber,
@@ -4182,15 +4304,17 @@
 
         tambah_harga_jual_customer(event);
       } else {
+        console.log('barang sudah ada');
         var row_barang = rows[index_barang];
         var detailharga = JSON.parse(row_barang.detailharga);
 
         // memastikan customer belum ada atas barang yang dipilih
         var check = detailharga.filter(function(item) {
-          return item.idcustomer == customer.id;
+          return item.uuidcustomer == customer.uuidcustomer;
         })
 
         if (check.length > 0) {
+          console.log('customer sudah ada');
           $.messager.alert('Peringatan', 'Sudah terdapat customer ' + customer.nama + ' untuk barang ' + row_barang
             .namabarang, 'warning');
 
@@ -4198,7 +4322,7 @@
         }
 
         detailharga.push({
-          idcustomer: customer.id,
+          uuidcustomer: customer.uuidcustomer,
           kodecustomer: customer.kode,
           namacustomer: customer.nama,
           idtipecustomer: 0,
@@ -4233,37 +4357,35 @@
       }
     }
 
-    function simpan_berdasarkan_customer() {
+    async function simpan_berdasarkan_customer() {
       var idlokasi = $('#FILTER_CUSTOMER_IDLOKASI').combogrid('getValue');
       var tglaktif = $('#CUSTOMER_TGLAKTIF').datebox('getValue');
-      var detail = JSON.stringify($('#table_detail_berdasarkan_customer').datagrid('getRows'));
+      var detail = $('#table_detail_berdasarkan_customer').datagrid('getRows');
+      for (var i = 0; i < detail.length; i++) {
+        if (typeof detail[i].detailharga === 'string') {
+          detail[i].detailharga = JSON.parse(detail[i].detailharga);
+        }
+      }
 
-      $.ajax({
-        url: link_api.simpanHargaJualBerdasarkanCustomer,
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: idlokasi,
+      try {
+        tampilLoaderSimpan();
+        const payload = {
+          uuidlokasi: idlokasi,
           tglaktif: tglaktif,
           detail: detail
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
-
-          if (response.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Data Harga Jual Berhasil Disimpan',
-              showType: 'show'
-            });
-          } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
-          }
+        };
+        const response = await fetchData(link_api.simpanHargaJualBerdasarkanCustomer, payload);
+        tutupLoaderSimpan();
+        if (response.success) {
+          $.messager.alert('Info', 'Data Harga Jual Berhasil Disimpan', 'info');
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (error) {
+        tutupLoaderSimpan();
+        console.log(error);
+        $.messager.alert('Error', 'Terdapat Kesalahan Ketika Menyimpan Data', 'error');
+      }
     }
 
     function tampil_dialog_history_berdasarkan_satuan(row) {
@@ -4274,12 +4396,16 @@
       $.ajax({
         url: link_api.loadHistoryHargaJualBerdasarkanSatuan,
         data: {
-          idbarang: row.idbarang
+          uuidbarang: row.uuidbarang
         },
         type: 'POST',
         dataType: 'JSON',
-        success: function(response) {
-          $('#table_history_berdasarkan_satuan').datagrid('loadData', response.data);
+        beforeSend: function() {
+          $('#table_history_berdasarkan_satuan').datagrid('loading');
+        },
+        success: function(data) {
+          $('#table_history_berdasarkan_satuan').datagrid('loaded');
+          $('#table_history_berdasarkan_satuan').datagrid('loadData', data);
         }
       })
     }
@@ -4292,13 +4418,17 @@
       $.ajax({
         url: link_api.loadHistoryHargaJualBerdasarkanTipeCustomer,
         data: {
-          idbarang: idbarang,
-          idtipecustomer: row.idtipecustomer
+          uuidbarang: idbarang,
+          uuidtipecustomer: row.uuidtipecustomer
         },
         type: 'POST',
         dataType: 'JSON',
-        success: function(response) {
-          $('#table_history_berdasarkan_tipecustomer').datagrid('loadData', response.data);
+        beforeSend: function() {
+          $('#table_history_berdasarkan_tipecustomer').datagrid('loading');
+        },
+        success: function(data) {
+          $('#table_history_berdasarkan_tipecustomer').datagrid('loaded');
+          $('#table_history_berdasarkan_tipecustomer').datagrid('loadData', data);
         }
       })
     }
@@ -4316,8 +4446,12 @@
         },
         type: 'POST',
         dataType: 'JSON',
-        success: function(response) {
-          $('#table_history_berdasarkan_customer').datagrid('loadData', response.data);
+        beforeSend: function() {
+          $('#table_history_berdasarkan_customer').datagrid('loading');
+        },
+        success: function(data) {
+          $('#table_history_berdasarkan_customer').datagrid('loaded');
+          $('#table_history_berdasarkan_customer').datagrid('loadData', data);
         }
       })
     }
@@ -4327,29 +4461,23 @@
       var index = $('#table_history_berdasarkan_satuan').datagrid('getRowIndex');
 
       if (selected) {
-        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', function(confirm) {
+        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', async function(
+          confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJual,
-              data: {
-                idhargajual: selected.idhargajual
-              },
-              type: 'POST',
-              dataType: 'JSON',
-              success: function(response) {
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
+            const response = await fetchData(link_api.hapusHargaJual, {
+              uuidhargajual: selected.uuidhargajual
+            });
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
 
-                  $('#table_history_berdasarkan_satuan').datagrid('deleteRow', index);
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
-            })
+              $('#table_history_berdasarkan_satuan').datagrid('deleteRow', index);
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
           }
         });
       } else {
@@ -4362,29 +4490,23 @@
       var index = $('#table_history_berdasarkan_tipecustomer').datagrid('getRowIndex');
 
       if (selected) {
-        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', function(confirm) {
+        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', async function(
+          confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJual,
-              data: {
-                idhargajual: selected.idhargajual
-              },
-              type: 'POST',
-              dataType: 'JSON',
-              success: function(response) {
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
+            const response = await fetchData(link_api.hapusHargaJual, {
+              uuidhargajual: selected.uuidhargajual
+            });
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
 
-                  $('#table_history_berdasarkan_tipecustomer').datagrid('deleteRow', index);
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
-            })
+              $('#table_history_berdasarkan_tipecustomer').datagrid('deleteRow', index);
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
           }
         });
       } else {
@@ -4397,29 +4519,23 @@
       var index = $('#table_history_berdasarkan_customer').datagrid('getRowIndex');
 
       if (selected) {
-        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', function(confirm) {
+        $.messager.confirm('Konfirmasi', 'Apakah anda yakin akan menghapus harga jual yang dipilih?', async function(
+          confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJual,
-              data: {
-                idhargajual: selected.idhargajual
-              },
-              type: 'POST',
-              dataType: 'JSON',
-              success: function(response) {
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
-
-                  $('#table_history_berdasarkan_customer').datagrid('deleteRow', index);
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
+            const response = await fetchData(link_api.hapusHargaJual, {
+              uuidhargajual: selected.uuidhargajual
             })
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
+
+              $('#table_history_berdasarkan_customer').datagrid('deleteRow', index);
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
           }
         });
       } else {
@@ -4465,37 +4581,25 @@
 
       $.messager.confirm('Konfirmasi',
         `Apakah anda yakin akan melakukan copy harga jual dari ${lokasiasal.nama} ke ${lokasicopy.nama}`,
-        function(confirm) {
+        async function(confirm) {
           if (!confirm) {
             return false;
           }
-
-          $.ajax({
-            url: link_api.copyHargaBerdasarkanSatuan,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-              idlokasiasal: idlokasiasal,
-              tglaktif: tglaktif,
-              idlokasicopy: idlokasicopy
-            },
-            beforeSend: function() {
-              $.messager.progress();
-            },
-            success: function(response) {
-              $.messager.progress('close');
-
-              if (response.success) {
-                $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
-
-                $('#dialog_copy_harga_jual_satuan').window({
-                  closed: true
-                })
-              } else {
-                $.messager.alert('Error', response.errorMsg, 'error');
-              }
-            }
+          const response = await fetchData(link_api.copyHargaBerdasarkanSatuan, {
+            uuidlokasiasal: idlokasiasal,
+            tglaktif: tglaktif,
+            uuidlokasicopy: idlokasicopy
           });
+
+          if (response.success) {
+            $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
+
+            $('#dialog_copy_harga_jual_satuan').window({
+              closed: true
+            })
+          } else {
+            $.messager.alert('Error', response.message, 'error');
+          }
         });
     }
 
@@ -4537,37 +4641,27 @@
 
       $.messager.confirm('Konfirmasi',
         `Apakah anda yakin akan melakukan copy harga jual dari ${lokasiasal.nama} ke ${lokasicopy.nama}`,
-        function(confirm) {
+        async function(confirm) {
           if (!confirm) {
             return false;
           }
 
-          $.ajax({
-            url: link_api.copyHargaBerdasarkanTipeCustomer,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-              idlokasiasal: idlokasiasal,
-              tglaktif: tglaktif,
-              idlokasicopy: idlokasicopy
-            },
-            beforeSend: function() {
-              $.messager.progress();
-            },
-            success: function(response) {
-              $.messager.progress('close');
+          const response = await fetchData(link_api.copyHargaBerdasarkanTipeCustomer, {
+            uuidlokasiasal: idlokasiasal,
+            tglaktif: tglaktif,
+            uuidlokasicopy: idlokasicopy
+          })
 
-              if (response.success) {
-                $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
+          if (response.success) {
+            $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
 
-                $('#dialog_copy_harga_jual_tipecustomer').window({
-                  closed: true
-                })
-              } else {
-                $.messager.alert('Error', response.errorMsg, 'error');
-              }
-            }
-          });
+            $('#dialog_copy_harga_jual_tipecustomer').window({
+              closed: true
+            })
+          } else {
+            $.messager.alert('Error', response.message, 'error');
+          }
+
         });
     }
 
@@ -4609,37 +4703,25 @@
 
       $.messager.confirm('Konfirmasi',
         `Apakah anda yakin akan melakukan copy harga jual dari ${lokasiasal.nama} ke ${lokasicopy.nama}`,
-        function(confirm) {
+        async function(confirm) {
           if (!confirm) {
             return false;
           }
 
-          $.ajax({
-            url: link_api.copyHargaBerdasarkanCustomer,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
-              idlokasiasal: idlokasiasal,
-              tglaktif: tglaktif,
-              idlokasicopy: idlokasicopy
-            },
-            beforeSend: function() {
-              $.messager.progress();
-            },
-            success: function(response) {
-              $.messager.progress('close');
-
-              if (response.success) {
-                $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
-
-                $('#dialog_copy_harga_jual_customer').window({
-                  closed: true
-                })
-              } else {
-                $.messager.alert('Error', response.errorMsg, 'error');
-              }
-            }
+          const response = await fetchData(link_api.copyHargaBerdasarkanCustomer, {
+            uuidlokasiasal: idlokasiasal,
+            tglaktif: tglaktif,
+            uuidlokasicopy: idlokasicopy
           });
+          if (response.success) {
+            $.messager.alert('Berhasil', 'Berhasil melakukan copy harga jual', 'info');
+
+            $('#dialog_copy_harga_jual_customer').window({
+              closed: true
+            })
+          } else {
+            $.messager.alert('Error', response.message, 'error');
+          }
         });
     }
 
@@ -4649,6 +4731,13 @@
         panelWidth: 130,
         idField: 'tglaktif',
         textField: 'tglaktif',
+        onBeforeLoad: function(param) {
+          loaderfitur.tglaktif = false;
+        },
+        onLoadSuccess: function(data) {
+          loaderfitur.tglaktif = true;
+          closeLoader();
+        },
         columns: [
           [{
             field: 'tglaktif',
@@ -4703,35 +4792,25 @@
       $.messager.confirm('Konfirmasi',
         'Apakah anda yakin untuk menghapus harga jual? Anda akan menghapus harga jual semua barang per satuan dengan tanggal aktif ' +
         tglaktif,
-        function(confirm) {
+        async function(confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJualSatuan,
-              type: 'POST',
-              dataType: 'JSON',
-              data: {
-                tglaktif: tglaktif
-              },
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(response) {
-                $.messager.progress('close');
+            const response = await fetchData(link_api.hapusHargaJualSatuan, {
+              tglaktif: tglaktif
+            });
 
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
 
-                  $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('clear');
-                  $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
-            })
+              $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('clear');
+              $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
+
           }
         });
     }
@@ -4748,35 +4827,23 @@
       $.messager.confirm('Konfirmasi',
         'Apakah anda yakin untuk menghapus harga jual? Anda akan menghapus harga jual semua barang dari semua tipe customer dengan tanggal aktif ' +
         tglaktif,
-        function(confirm) {
+        async function(confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJualTipeCustomer,
-              type: 'POST',
-              dataType: 'JSON',
-              data: {
-                tglaktif: tglaktif
-              },
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(response) {
-                $.messager.progress('close');
+            const response = await fetchData(link_api.hapusHargaJualTipeCustomer, {
+              tglaktif: tglaktif
+            });
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
 
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
-
-                  $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
-                  $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
-            })
+              $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
+              $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
           }
         });
     }
@@ -4793,35 +4860,24 @@
       $.messager.confirm('Konfirmasi',
         'Apakah anda yakin untuk menghapus harga jual? Anda akan menghapus harga jual semua barang dari semua customer dengan tanggal aktif ' +
         tglaktif,
-        function(confirm) {
+        async function(confirm) {
           if (confirm) {
-            $.ajax({
-              url: link_api.hapusHargaJualCustomer,
-              type: 'POST',
-              dataType: 'JSON',
-              data: {
-                tglaktif: tglaktif
-              },
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(response) {
-                $.messager.progress('close');
+            const response = await fetchData(link_api.hapusHargaJualCustomer, {
+              tglaktif: tglaktif
+            });
 
-                if (response.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Data Harga Jual Berhasil Dihapus',
-                    showType: 'show'
-                  });
+            if (response.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Data Harga Jual Berhasil Dihapus',
+                showType: 'show'
+              });
 
-                  $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
-                  $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
-                } else {
-                  $.messager.alert('Error', response.errorMsg, 'error');
-                }
-              }
-            })
+              $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
+              $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
+            } else {
+              $.messager.alert('Error', response.message, 'error');
+            }
           }
         });
     }
