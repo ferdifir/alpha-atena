@@ -2,7 +2,7 @@
 
 @section('content')
     <!--FORM INPUT -->
-    <div id="form_input" class="easyui-layout" fit="true">
+    <form id="form_input" class="easyui-layout" fit="true" enctype="multipart/form-data" method="post">
         <div data-options="region:'center',border:false">
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false">
@@ -84,7 +84,6 @@
                                                     $('#kodekasbank').textbox({readonly:true, required:false, value:''})
                                                 }else{
                                                     $('#kodekasbank').textbox({readonly:false,required:true})
-                                            console.log(val.value);
                                                 }
                                             }
                                         ">
@@ -148,7 +147,7 @@
             <a href="#" title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false"
                 onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
         </div>
-    </div>
+    </form>
 @endsection
 
 @push('js')
@@ -160,23 +159,24 @@
     <script>
         $(document).ready(async function() {
             bukaLoader();
-            let check=false;
+            let check = false;
             await getConfig("KODEPERKIRAAN", "MPERKIRAAN", 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
-                        check=true;
+                        check = true;
                     } else {
                         if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
                             window.alert("Login session sudah habis. Silahkan Login Kembali");
                         } else {
-                            $.messager.alert('Error', error, 'error');
+                            $.messager.alert('Error', response.message, 'error');
                         }
                     }
-                },function(error){
+                },
+                function(error) {
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
-            if(!check)return;
+            if (!check) return;
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
@@ -193,36 +193,7 @@
                 sortName: 'kode',
                 sortOrder: 'asc',
                 url: link_api.browseHeaderPerkiraan,
-                onBeforeLoad: function(param) {
-                    var dg = $('#induk');
-
-                    // Tampilkan loading manual
-                    dg.combogrid('grid').datagrid('loading');
-                    $.ajax({
-                        type: "POST",
-                        url: link_api.browseHeaderPerkiraan,
-                        data: param,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('Authorization',
-                                'bearer {{ session('TOKEN') }}'
-                            );
-                        },
-                        success: function(data) {
-                            if (data.success) {
-                                $('#induk').combogrid('grid').datagrid('loadData', data
-                                    .data);
-                            } else {
-                                $.messager.alert('Error', data.message, 'error');
-                            }
-                        },
-                        complete: function() {
-
-                            dg.combogrid('grid').datagrid('loaded');
-                        }
-                    });
-                    return false; // Supaya EasyUI tidak melakukan AJAX ganda
-
-                },
+                remoteFilter: true,
                 columns: [
                     [{
                             field: 'uuidperkiraan',
@@ -272,38 +243,6 @@
                 sortName: 'kode',
                 sortOrder: 'asc',
                 url: link_api.browseCurrency,
-                onBeforeLoad: function(param) {
-                    var dg = $('#uuidcurrency');
-
-                    // Tampilkan loading manual
-                    dg.combogrid('grid').datagrid('loading');
-
-                    $.ajax({
-                        type: "POST",
-                        url: link_api.browseCurrency,
-                        data: param,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('Authorization',
-                                'bearer {{ session('TOKEN') }}'
-                            );
-                        },
-                        success: function(data) {
-                            if (data.success) {
-                                $('#uuidcurrency').combogrid('grid').datagrid(
-                                    'loadData',
-                                    data.data);
-                            } else {
-                                $.messager.alert('Error', data.message, 'error');
-                            }
-                        },
-                        complete: function() {
-                            // Sembunyikan loading
-                            dg.combogrid('grid').datagrid('loaded')
-                        }
-                    });
-                    return false; // Supaya EasyUI tidak melakukan AJAX ganda
-
-                },
                 columns: [
                     [{
                             field: 'uuidcurrency',
@@ -408,8 +347,7 @@
                 // setTimeout digunakan untuk mengakali combobox yang tidak ke set value-nya
                 setTimeout(function() {
                     $('#tipe').combobox('setValue', 'DETAIL');
-                    get_akses_user('{{ $kodemenu }}','bearer {{ session('TOKEN') }}',function(data) {
-                        console.log(data);
+                    get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                         if (data.success && data.data.ubah != 1) {
                             $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                         }
@@ -436,47 +374,60 @@
             }
         }
 
-        function simpan_data(mode) {
-            bukaLoader()
+        async function simpan_data(mode) {
+            tampilLoaderSimpan();
             var datauser = $('#table_data_user').datagrid('getChecked');
             $('#data_user').val(JSON.stringify(datauser));
-            // $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
+            try {
+                let headers = {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                };
+                let requestBody = null;
+                var unindexed_array = $('#form_input :input').serializeArray();
 
-            $.ajax({
-                type: 'POST',
-                url: link_api.simpanPerkiraan,
-                data: $('#form_input :input').serialize(),
-                dataType: 'json',
-                beforeSend: function(xhr) {
-                    tampilLoaderSimpan();
-                    xhr.setRequestHeader('Authorization',
-                        'bearer {{ session('TOKEN') }}'
-                    );
-                },
-                success: function(msg) {
-                    tutupLoaderSimpan();
-
-                    if (msg.success) {
-                        if (mode == 'tambah') {
-                            $.messager.show({
-                                title: 'Info',
-                                msg: 'Transaksi Sukses',
-                                showType: 'show'
-                            });
-
-                            tambah();
-                        } else {
-                            //tutup tab dan refresh data di function
-                            $.messager.alert('Info', 'Transaksi Sukses', 'info');
-                        }
-                        // parent.reload();
-                        $('#INDUK').combogrid('grid').datagrid('reload');
-                    } else {
-                        $.messager.alert('Error', msg.message, 'error');
-                    }
+                var body = {};
+                $.map(unindexed_array, function(n, i) {
+                    body[n['name']] = n['value'];
+                });
+                // Cek apakah body adalah instance dari FormData
+                if (body instanceof FormData) {
+                    // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+                    requestBody = body;
+                } else {
+                    // Default: Jika bukan FormData, asumsikan itu JSON.
+                    headers['Content-Type'] = 'application/json';
+                    requestBody = body ? JSON.stringify(body) : null;
                 }
-            });
-            tutupLoader()
+                let url = link_api.simpanPerkiraan;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: requestBody,
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP error! status: ${response.status} from ${url}`);
+                    }
+                    return response.json();
+                })
+                if (response.success) {
+                    if (mode == 'tambah') {
+                        $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+
+                        tambah();
+                    } else {
+                        //tutup tab dan refresh data di function
+                        $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                    }
+                    // parent.reload();
+                    $('#induk').combogrid('grid').datagrid('reload');
+                } else {
+                    $.messager.alert('Error', response.message, 'error');
+                }
+            } catch (error) {
+                $.messager.alert('Error', error, 'error');
+            }
+            tutupLoaderSimpan();
         }
 
         function buat_table_user() {
@@ -488,31 +439,31 @@
                 checkOnSelect: false,
                 selectOnCheck: false,
                 url: link_api.userGetAll,
-                onBeforeLoad: function(param) {
-                    var dg = $(this);
+                // onBeforeLoad: function(param) {
+                //     var dg = $(this);
 
-                    // Tampilkan loading manual
-                    dg.datagrid('loading');
-                    var opts = $(this).datagrid('options');
-                    $.ajax({
-                        type: "POST",
-                        url: link_api.userGetAll,
-                        data: param,
-                        beforeSend: function(xhr) {
-                            xhr.setRequestHeader('Authorization',
-                                'bearer {{ session('TOKEN') }}'
-                            );
-                        },
-                        success: function(data) {
-                            $('#table_data_user').datagrid('loadData', data.data);
-                        },
-                        complete: function() {
-                            // Sembunyikan loading
-                            dg.datagrid('loaded');
-                        }
-                    });
-                    return false; // Supaya EasyUI tidak melakukan AJAX ganda
-                },
+                //     // Tampilkan loading manual
+                //     dg.datagrid('loading');
+                //     var opts = $(this).datagrid('options');
+                //     $.ajax({
+                //         type: "POST",
+                //         url: link_api.userGetAll,
+                //         data: param,
+                //         beforeSend: function(xhr) {
+                //             xhr.setRequestHeader('Authorization',
+                //                 'bearer {{ session('TOKEN') }}'
+                //             );
+                //         },
+                //         success: function(data) {
+                //             $('#table_data_user').datagrid('loadData', data.data);
+                //         },
+                //         complete: function() {
+                //             // Sembunyikan loading
+                //             dg.datagrid('loaded');
+                //         }
+                //     });
+                //     return false; // Supaya EasyUI tidak melakukan AJAX ganda
+                // },
                 columns: [
                     [{
                             field: 'ck',
@@ -679,6 +630,10 @@
                     // }, 'json');
                 },
             });
+        }
+
+        function tutup() {
+            parent.tutupTab();
         }
     </script>
 @endpush

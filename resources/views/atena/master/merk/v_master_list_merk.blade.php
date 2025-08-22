@@ -1,7 +1,7 @@
 @extends('template.app')
 
 @section('content')
-    <div class="easyui-layout" style="width:100%;height:100%;">
+    <div class="easyui-layout" fit="true">
         <div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
             <a id="btn_tambah" href="#" title="Tambah" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
                 <img src="{{ asset('assets/images/add.png') }}">
@@ -14,45 +14,55 @@
                 onclick="refresh_data()">
                 <img src="{{ asset('assets/images/refresh.png') }}">
             </a>
+
         </div>
         <div data-options="region: 'center'">
             <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
                 <div title="Grid" id="Grid">
                     <div class="easyui-layout" style="width:100%;height:100%" fit="true">
                         <div data-options="region:'center',">
-                            <table id="table_data" idField="idcurrency"></table>
+                            <table id="table_data" idField="idmerk"></table>
                         </div>
                     </div>
-                </div>
+                </diV>
             </div>
         </div>
     </div>
-    <!-- FORM SUBMIT KIRIM DATA UNTUK TAMBAH DAN UBAH -->
-    {{-- <form method="post" action="atena/Master/Data/Currency/getFormLink/" target="Form"
-        id="form_data">
-        <input type="hidden" id="mode" name="mode">
-        <input type="hidden" id="view" name="view">
-        <input type="hidden" id="data" name="data">
-    </form> --}}
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-    </script>
     <script>
         var counter = 0;
-
-        function disable_button() {
-            $('#btn_refresh').linkbutton('disable');
-            $('#btn_hapus').linkbutton('disable');
-        }
 
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_hapus').linkbutton('enable');
         }
 
-        $(document).ready(function() {
+        $(document).ready(async function() {
+
+            bukaLoader();
+            let check = false;
+
+            let config = {};
+            await getConfig("KODEMERK", "MMERK", 'bearer {{ session('TOKEN') }}',
+                function(response) {
+                    if (response.success) {
+                        config = response.data;
+                        check = true;
+                    } else {
+                        if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
+                            window.alert("Login session sudah habis. Silahkan Login Kembali");
+                        } else {
+                            $.messager.alert('Error', error, 'error');
+                        }
+                    }
+                },
+                function(error) {
+                    $.messager.alert('Error', "Request Config Error", 'error');
+                });
+            if (!check) return;
+            tutupLoader();
             //WAKTU BATAL DI GRID, tidak bisa close
             //PRINT GRID
             $("#table_data").datagrid({
@@ -66,14 +76,13 @@
                 onSelect: function() {
                     var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
 
-                    if (tab_title == 'Grid') {
-                        enable_button();
-                    }
+                    enable_button();
                 }
             });
 
+
             buat_table();
-          tutupLoader();
+
         });
 
         shortcut.add('F2', function() {
@@ -90,9 +99,9 @@
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Mata Uang',
-                        '{{ route('atena.master.currency.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
-                        'fa fa-plus');
+                    parent.buka_submenu(null, 'Tambah Merk',
+                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                        'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
@@ -103,9 +112,10 @@
             $('#mode').val('ubah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
-                    parent.buka_submenu(null, row.namacurrency,
-                        '{{ route('atena.master.currency.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidcurrency,
+                    var row = $('#table_data').datagrid('getSelected');
+                    parent.buka_submenu(null, row.namamerk,
+                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidmerk,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -116,7 +126,7 @@
         function before_delete() {
             $('#mode').val('hapus');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                if (data.data.hapus == 1) {
+                if (data.hapus == 1) {
                     hapus();
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -124,23 +134,22 @@
             });
         }
 
-        function hapus() {
+        async function hapus() {
             var row = $('#table_data').datagrid('getSelected');
             if (row) {
-                $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?',async function(r) {
+                $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
                         bukaLoader();
                         try {
-                            let url=link_api.hapusCurrency;
-                            const response = await fetch(url, {
+                            const response = await fetch(link_api.hapusMerk, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': 'bearer {{ session('TOKEN') }}',
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidcurrency: row.uuidcurrency,
-                                    kodecurrency: row.kodecurrency,
+                                    uuidmerk: row.uuidmerk,
+                                    kode: row.kodemerk,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -172,45 +181,59 @@
                 singleSelect: true,
                 striped: true,
                 pagination: true,
-                pageSize: 20,
                 clientPaging: false,
-                url:link_api.loadDataGridCurrency,
+                pageSize: 20,
+                url: link_api.loadDataGridMerk,
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
-                onLoadSuccess:function(){
+                onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
-                            field: 'idcurrency',
+                            field: 'uuidmerk',
                             hidden: true
                         },
                         {
-                            field: 'kodecurrency',
+                            field: 'kodemerk',
                             title: 'Kode',
                             width: 80,
                             sortable: true,
                         },
                         {
-                            field: 'namacurrency',
+                            field: 'namamerk',
                             title: 'Nama',
                             width: 200,
                             sortable: true,
+                        },
+                        {
+                            field: 'discountmin',
+                            title: 'Disc Min',
+                            width: 50,
+                            sortable: true,
+                            align: 'right',
+                        },
+                        {
+                            field: 'discountmax',
+                            title: 'Disc Max',
+                            width: 50,
+                            sortable: true,
+                            align: 'right',
                         },
                     ]
                 ],
                 columns: [
                     [{
-                            field: 'simbol',
-                            title: 'Simbol',
-                            width: 60,
+                            field: 'catatan',
+                            title: 'Catatan',
+                            width: 250,
                             sortable: true,
                         },
                         {
                             field: 'userbuat',
                             title: 'User Entry',
-                            width: 150,
+                            width: 75,
                             sortable: true
                         },
                         {
@@ -233,7 +256,7 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter',[{
+            }).datagrid('enableFilter', [{
                 field: 'status',
                 type: 'combobox',
                 options: {
@@ -249,63 +272,43 @@
                     }],
                     onChange: function(value) {
                         if (value == '') {
-                            $('#table_data').datagrid('removeFilterRule', 'status');
+                            dg.datagrid('removeFilterRule', 'status');
                         } else {
-                            $('#table_data').datagrid('addFilterRule', {
+                            dg.datagrid('addFilterRule', {
                                 field: 'status',
                                 op: 'equal',
                                 value: value
                             });
                         }
-                        $('#table_data').datagrid('doFilter');
+                        dg.datagrid('doFilter');
                     }
+                }
+            }, {
+                field: 'discountmax',
+                type: 'numberbox',
+                options: {
+                    precision: 2,
+                    decimalSeparator: ".",
+                    groupSeparator: ",",
+                }
+            }, {
+                field: 'discountmin',
+                type: 'numberbox',
+                options: {
+                    precision: 2,
+                    decimalSeparator: ".",
+                    groupSeparator: ",",
                 }
             }]);
         }
 
         function refresh_data() {
-            var row = $('#table_data').datagrid('clearSelection');
             $('#table_data').datagrid('reload');
         }
 
-        function changeTitleTab(mode) {
-            //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-            var tab = $('#tab_transaksi').tabs('getSelected');
-            var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-            var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-            if (mode == 'tambah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Tambah'
-                    }
-                });
-            } else if (mode == 'ubah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Ubah'
-                    }
-                });
-            }
-        }
-
-        function tutupTab() {
-            //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-            var tab = $('#tab_transaksi').tabs('getSelected');
-            var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-            if (index != 0) {
-                $('#tab_transaksi').tabs('close', index);
-            }
-        }
 
         function reload() {
-            //PELU BUAT SIMPEN INDEX
             $('#table_data').datagrid('reload');
-            var row = $('#table_data').datagrid('clearSelection');
         }
     </script>
 @endpush

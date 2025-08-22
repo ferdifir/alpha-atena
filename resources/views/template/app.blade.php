@@ -17,6 +17,7 @@
     <link href="https://fonts.googleapis.com/css?family=Acme|Heebo|Hind|Nunito+Sans" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Catamaran:900|Heebo:900&display=swap" rel="stylesheet">
+    @stack('css')
     <style>
         .icon-wa {
             background-image: url('{{ asset('assets/images/whatsapp.png') }}');

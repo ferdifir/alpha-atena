@@ -1,7 +1,7 @@
 @extends('template.form')
 
 @section('content')
-    <div id="form_input" class="easyui-layout" fit="true">
+    <form id="form_input" class="easyui-layout" fit="true" enctype="multipart/form-data" method="post">
         <div data-options="region:'center',border:false">
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false ">
@@ -24,7 +24,8 @@
                             </tr>
                             <tr>
                                 <td align="right" id="label_form">Simbol</td>
-                                <td><input name="simbol" style="width:250px" class="label_input" validType='length[0,50]' required>
+                                <td><input name="simbol" style="width:250px" class="label_input" validType='length[0,50]'
+                                        required>
                                 </td>
                             </tr>
                         </table>
@@ -50,7 +51,7 @@
             <a href="#" title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false"
                 onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
         </div>
-    </div>
+    </form>
 @endsection
 
 @push('js')
@@ -98,7 +99,9 @@
         async function ubah() {
             $('#mode').val('ubah');
             try {
-                const response = await fetch(link_api.loadHeaderCurrency, {
+                bukaLoader()
+                let url = link_api.loadHeaderCurrency;
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'bearer {{ session('TOKEN') }}',
@@ -123,6 +126,7 @@
                 $.messager.alert('Error', error, 'error');
                 console.log(error);
             }
+            tutupLoader();
             if (row) {
                 $('#form_input').form('load', row);
                 $('#lbl_kasir').html(row.userbuat);
@@ -130,58 +134,73 @@
                 $('#KODECURRENCY').textbox('readonly', true);
                 $('#uuidcurrency').val('{{ $data }}');
 
-                get_akses_user('{{ $kodemenu}}', function(data) {
-                    if (data.ubah != 1) {
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    if (data.data.ubah != 1) {
                         $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                     }
                 });
             }
         }
 
-        function simpan() {
+        async function simpan() {
             var isValid = $('#form_input').form('validate');
-
             if (isValid) {
+                tampilLoaderSimpan();
                 try {
                     mode = $('[name=mode]').val();
+                    var unindexed_array = $('#form_input :input').serializeArray();
 
-                    $.ajax({
-                        type: 'POST',
-                        url: link_api.simpanCurrency,
-                        data: $('#form_input :input').serialize(),
-                        dataType: 'json',
-                        beforeSend: function(xhr) {
-                            tampilLoaderSimpan();
-                            xhr.setRequestHeader('Authorization',
-                                'bearer {{ session('TOKEN') }}'
-                            );
-                        },
-                        success: function(msg) {
-                            if (msg.success) {
-                                if (mode == 'tambah') {
-                                    $.messager.show({
-                                        title: 'Info',
-                                        msg: 'Simpan Data Sukses',
-                                        showType: 'show'
-                                    });
-                                    tambah();
-                                } else {
-                                    //tutup tab dan refresh data di function
-                                    $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-                                }
-                            } else {
-                                $.messager.alert('Error', msg.message, 'error');
-                            }
-                        },
-                        complete: function() {
-                            tutupLoaderSimpan();
-                        }
+                    let headers = {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                    };
+                    let requestBody = null;
+                    var body = {};
+                    $.map(unindexed_array, function(n, i) {
+                        body[n['name']] = n['value'];
                     });
+                    if (body instanceof FormData) {
+                        requestBody = body;
+                    } else {
+                        headers['Content-Type'] = 'application/json';
+                        requestBody = body ? JSON.stringify(body) : null;
+                    }
+                    let url = link_api.simpanCurrency;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: headers,
+                        body: requestBody,
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error! status: ${response.status} from ${url}`);
+                        }
+                        return response.json();
+                    })
+                    if (response.success) {
+                        if (mode == 'tambah') {
+                            $.messager.show({
+                                title: 'Info',
+                                msg: 'Simpan Data Sukses',
+                                showType: 'show'
+                            });
+                            tambah();
+                        } else {
+                            //tutup tab dan refresh data di function
+                            $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+                        }
+                    } else {
+                        $.messager.alert('Error', response.message, 'error');
+                    }
+
                 } catch (error) {
-                    $.messager.alert('Error', "Simpan Data Gagal", 'error');
-                    console.log(error);
+                    $.messager.alert('Error', `Simpan Data Gagal : ${error}`, 'error');
                 }
+                tutupLoaderSimpan();
             }
+        }
+
+        function tutup() {
+            parent.tutupTab();
         }
     </script>
 @endpush
