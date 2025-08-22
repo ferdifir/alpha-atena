@@ -50,6 +50,23 @@ var link_api = {
   loadDataGridMerk:`${base_url_api}atena/master/merk/load-data-grid`,
   simpanMerk:`${base_url_api}atena/master/merk/simpan`,
   getHeaderMerk:`${base_url_api}atena/master/merk/load-data-header`,
+  //Syarat Bayar
+  hapusSyaratBayar:`${base_url_api}atena/master/syaratbayar/hapus`,
+  loadDataGridSyaratBayar:`${base_url_api}atena/master/syaratbayar/load-data-grid`,
+  getHeaderSyaratBayar:`${base_url_api}atena/master/syaratbayar/load-data-header`,
+  simpanSyaratBayar:`${base_url_api}atena/master/syaratbayar/simpan`,
+  //Departemen Kerja
+  loadDataGridDepartemenKerja:`${base_url_api}atena/master/departemenkerja/load-data-grid`,
+  hapusDepartemenKerja:`${base_url_api}atena/master/departemenkerja/hapus`,
+  getHeaderDepartemenKerja:`${base_url_api}atena/master/departemenkerja/load-data-header`,
+  simpanDepartemenKerja:`${base_url_api}atena/master/departemenkerja/simpan`,
+  browseDataDepartemenKerja:`${base_url_api}atena/master/departemenkerja/browse`,
+  //Karyawan
+  hapusKaryawan:`${base_url_api}atena/master/karyawan/hapus`,
+  loadDataGridKaryawan:`${base_url_api}atena/master/karyawan/load-data-grid`,
+  simpanKaryawan:`${base_url_api}atena/master/karyawan/simpan`,
+  getHeaderKaryawan:`${base_url_api}atena/master/karyawan/load-data-header`,
+  browseKaryawan:`${base_url_api}atena/master/karyawan/browse`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

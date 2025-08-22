@@ -6,32 +6,30 @@
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false ">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
+
                         <input type="hidden" name="mode" id="mode">
-                        <input type="hidden" name="uuidmerk">
+                        <input type="hidden" name="uuidsyaratbayar">
                         <table style="padding:5px" id="label_form">
                             <tr>
                                 <td align="right" id="label_form">Kode</td>
-                                <td><input id="KODEMERK" name="kodemerk" style="width:290px" class="label_input">
+                                <td><input id="KODESYARATBAYAR" name="kodesyaratbayar" style="width:290px"
+                                        class="label_input">
                                     <label id="label_form"><input type="checkbox" id="STATUS" name="status"
                                             value="1"> Aktif</label>
                                 </td>
                             </tr>
                             <tr>
                                 <td align="right" id="label_form">Nama</td>
-                                <td><input name="namamerk" style="width:350px" class="label_input" required="true"
+                                <td><input name="namasyaratbayar" style="width:350px" class="label_input" required="true"
                                         validType='length[0,100]'></td>
                             </tr>
-                            <td valign="top" align="right" id="label_form">Disc Min</td>
-                            <td><input id="DISCOUNTMIN" name="discountmin" style="width:142px;" class="label_input"
-                                    validType='length[0,14]'
-                                    data-options="required:true,precision:2,decimalSeparator:'.',suffix:'%'">
-                                &nbsp;&nbsp;<span id="label_form">Disc Max</span>
-                                <input id="DISCOUNTMAX" name="discountmax" style="width:142px;" class="label_input"
-                                    validType='length[0,14]'
-                                    data-options="required:true,precision:2,decimalSeparator:'.',suffix:'%'">
-                            </td>
                             <tr>
-                                <td valign="top" align="right" id="label_form">Catatan</td>
+                                <td align="right" id="label_form">Selisih Hari</td>
+                                <td><input name="selisih" style="width:350px" class="easyui-numberspinner" required="true"
+                                        validType='length[0,50]'></td>
+                            </tr>
+                            <tr>
+                                <td align="right" id="label_form" valign="top">Catatan</td>
                                 <td>
                                     <textarea name="catatan" style="width:350px; height:50px" class="label_input" multiline="true"
                                         validType='length[0,300]'></textarea>
@@ -54,7 +52,6 @@
                 </div>
             </div>
         </div>
-
         <div data-options="region:'east',border:false" style="width:50px; padding:5px; border-left:1px solid #29b6f6; ">
             <br>
             <a href="#" title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false"
@@ -67,15 +64,12 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-    </script>
     <script>
         var row = {};
         let config = {};
         $(document).ready(async function() {
-            bukaLoader();
             let check = false;
-            await getConfig("KODEPERKIRAAN", "MPERKIRAAN", 'bearer {{ session('TOKEN') }}',
+            await getConfig("KODESYARATBAYAR", "MSYARATBAYAR", 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -99,6 +93,7 @@
                 await ubah();
             @endif
         })
+
         shortcut.add('F8', function() {
             simpan();
         });
@@ -109,23 +104,24 @@
 
         function tambah() {
             $('#form_input').form('clear');
-            $('#mode').val('tambah');
+            $('#uuidsyaratbayar').val('{{ $data }}');
 
+            $('#mode').val('tambah');
             $('#STATUS').prop('checked', true);
             $('#lbl_kasir, #lbl_tanggal').html('');
             if (config.value == "AUTO") {
-                $('#KODEMERK').textbox({
+                $('#KODESYARATBAYAR').textbox({
                     prompt: "Auto Generate",
                     readonly: true,
                     required: false
                 });
             } else {
-                $('#KODEMERK').textbox({
+                $('#KODESYARATBAYAR').textbox({
                     prompt: "",
                     readonly: false,
                     required: true
                 });
-                $('#KODEMERK').textbox('clear').textbox('textbox').focus();
+                $('#KODESYARATBAYAR').textbox('clear').textbox('textbox').focus();
             }
         }
 
@@ -133,7 +129,7 @@
             $('#mode').val('ubah');
             $('#uuidmerk').val('{{ $data }}');
             try {
-                let url = link_api.getHeaderMerk;
+                let url = link_api.getHeaderSyaratBayar;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -141,7 +137,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidmerk: '{{ $data }}',
+                        uuidsyaratbayar: '{{ $data }}',
                         mode: "ubah",
                     }),
                 }).then(response => {
@@ -166,7 +162,7 @@
 
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
-                $('#KODEMERK').textbox('readonly', true);
+                $('#KODESYARATBAYAR').textbox('readonly', true);
 
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
@@ -178,31 +174,6 @@
 
         async function simpan() {
             var isValid = $('#form_input').form('validate');
-
-            var cekDiskon = cek_format($('#DISCOUNTMIN').textbox('getValue'));
-
-            if (cekDiskon == "error") {
-                $.messager.alert('Peringatan', 'Discount Hanya Boleh Berisi + . Dan Angka Saja', 'error');
-
-                return false;
-            }
-
-            var cekDiskon = cek_format($('#DISCOUNTMAX').textbox('getValue'));
-
-            if (cekDiskon == "error") {
-                $.messager.alert('Peringatan', 'Discount Hanya Boleh Berisi + . Dan Angka Saja', 'error');
-
-                return false;
-            }
-
-            var diskonmin = hitungAkumulasiDiskonPersen($('#DISCOUNTMIN').textbox('getValue'));
-            var diskonmax = hitungAkumulasiDiskonPersen($('#DISCOUNTMAX').textbox('getValue'));
-
-            if (diskonmin > diskonmax) {
-                $.messager.alert('Peringatan', 'Disc Min harus lebih kecil dari Disc Max', 'error');
-
-                return false;
-            }
 
             if (isValid) {
                 tampilLoaderSimpan();
@@ -227,7 +198,7 @@
                         headers['Content-Type'] = 'application/json';
                         requestBody = body ? JSON.stringify(body) : null;
                     }
-                    let url = link_api.simpanMerk;
+                    let url = link_api.simpanSyaratBayar;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: headers,

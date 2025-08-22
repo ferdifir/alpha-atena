@@ -695,16 +695,16 @@ if ($.fn.combogrid) {
 	$.fn.combogrid.defaults.selectOnNavigation = false;
 	$.fn.combogrid.defaults.selectFirstRow = false;
 	$.fn.combogrid.defaults.onLoadSuccess = function (data) {
-		var cg = $(this);
-		var opt = cg.combogrid('options');
-		if (opt.selectFirstRow && opt.mode == 'local') {
-			if (data.rows.length == 1) {
-				cg.combogrid('grid').datagrid('selectRow', 0);
-				cg.combogrid('readonly', true);
-			} else {
-				cg.combogrid('readonly', false);
-			}
-		}
+		// var cg = $(this);
+		// var opt = cg.combogrid('options');
+		// if (opt.selectFirstRow && opt.mode == 'local') {
+		// 	if (data.rows.length == 1) {
+		// 		cg.combogrid('grid').datagrid('selectRow', 0);
+		// 		cg.combogrid('readonly', true);
+		// 	} else {
+		// 		cg.combogrid('readonly', false);
+		// 	}
+		// }
 	};
 
 	//COMBOGRID HURUF BESAR
