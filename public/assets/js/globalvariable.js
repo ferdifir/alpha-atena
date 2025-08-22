@@ -107,6 +107,24 @@ var link_api = {
     hapusHargaJualSatuan: `${base_url_api}atena/master/hargajual/hapus-harga-jual-satuan`,
     hapusHargaJualCustomer: `${base_url_api}atena/master/hargajual/hapus-harga-jual-customer`,
     hapusHargaJualTipeCustomer: `${base_url_api}atena/master/hargajual/hapus-harga-jual-tipe-customer`,
+    //Syarat Bayar
+    hapusSyaratBayar: `${base_url_api}atena/master/syaratbayar/hapus`,
+    loadDataGridSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-grid`,
+    getHeaderSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-header`,
+    simpanSyaratBayar: `${base_url_api}atena/master/syaratbayar/simpan`,
+    //Departemen Kerja
+    loadDataGridDepartemenKerja: `${base_url_api}atena/master/departemenkerja/load-data-grid`,
+    hapusDepartemenKerja: `${base_url_api}atena/master/departemenkerja/hapus`,
+    getHeaderDepartemenKerja: `${base_url_api}atena/master/departemenkerja/load-data-header`,
+    simpanDepartemenKerja: `${base_url_api}atena/master/departemenkerja/simpan`,
+    browseDataDepartemenKerja: `${base_url_api}atena/master/departemenkerja/browse`,
+    //Karyawan
+    hapusKaryawan: `${base_url_api}atena/master/karyawan/hapus`,
+    loadDataGridKaryawan: `${base_url_api}atena/master/karyawan/load-data-grid`,
+    simpanKaryawan: `${base_url_api}atena/master/karyawan/simpan`,
+    getHeaderKaryawan: `${base_url_api}atena/master/karyawan/load-data-header`,
+    browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
+
     browseCustomer: `${base_url_api}atena/master/customer/browse`,
 };
 
@@ -127,9 +145,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.success) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${
-                response.status
-            }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${response.status
+                }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
@@ -181,9 +198,8 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.ok) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${
-                response.status
-            }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${response.status
+                }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
@@ -238,9 +254,8 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.ok) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${
-                response.status
-            }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${response.status
+                }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {

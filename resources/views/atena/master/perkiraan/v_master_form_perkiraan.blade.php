@@ -313,6 +313,7 @@
         async function ubah() {
             $('#mode').val('ubah');
             try {
+                let url=link_api.headerFormPerkiraan;
                 const response = await fetch(link_api.headerFormPerkiraan, {
                     method: 'POST',
                     headers: {
@@ -439,31 +440,6 @@
                 checkOnSelect: false,
                 selectOnCheck: false,
                 url: link_api.userGetAll,
-                // onBeforeLoad: function(param) {
-                //     var dg = $(this);
-
-                //     // Tampilkan loading manual
-                //     dg.datagrid('loading');
-                //     var opts = $(this).datagrid('options');
-                //     $.ajax({
-                //         type: "POST",
-                //         url: link_api.userGetAll,
-                //         data: param,
-                //         beforeSend: function(xhr) {
-                //             xhr.setRequestHeader('Authorization',
-                //                 'bearer {{ session('TOKEN') }}'
-                //             );
-                //         },
-                //         success: function(data) {
-                //             $('#table_data_user').datagrid('loadData', data.data);
-                //         },
-                //         complete: function() {
-                //             // Sembunyikan loading
-                //             dg.datagrid('loaded');
-                //         }
-                //     });
-                //     return false; // Supaya EasyUI tidak melakukan AJAX ganda
-                // },
                 columns: [
                     [{
                             field: 'ck',
@@ -489,7 +465,8 @@
                     }
 
                     try {
-                        const response = await fetch(link_api.getPerkiraanUser, {
+                        let url=link_api.getPerkiraanUser;
+                        const response = await fetch(url, {
                             method: 'POST',
                             headers: {
                                 'Authorization': 'bearer {{ session('TOKEN') }}',

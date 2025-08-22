@@ -20,17 +20,18 @@
                 <div title="Grid" id="Grid">
                     <div class="easyui-layout" style="width:100%;height:100%" fit="true">
                         <div data-options="region:'center',">
-                            <table id="table_data" idField="uuidmerk"></table>
+                            <table id="table_data" idField="idsyaratbayar"></table>
                         </div>
                     </div>
-                </diV>
+                </div>
             </div>
         </div>
     </div>
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
+    </script>
     <script>
         var counter = 0;
 
@@ -39,30 +40,8 @@
             $('#btn_hapus').linkbutton('enable');
         }
 
-        $(document).ready(async function() {
-
-            bukaLoader();
-            let check = false;
-
-            let config = {};
-            await getConfig("KODEMERK", "MMERK", 'bearer {{ session('TOKEN') }}',
-                function(response) {
-                    if (response.success) {
-                        config = response.data;
-                        check = true;
-                    } else {
-                        if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
-                            window.alert("Login session sudah habis. Silahkan Login Kembali");
-                        } else {
-                            $.messager.alert('Error', error, 'error');
-                        }
-                    }
-                },
-                function(error) {
-                    $.messager.alert('Error', "Request Config Error", 'error');
-                });
-            if (!check) return;
-            tutupLoader();
+        $(document).ready(function() {
+          tutupLoader();
             //WAKTU BATAL DI GRID, tidak bisa close
             //PRINT GRID
             $("#table_data").datagrid({
@@ -70,19 +49,7 @@
                     row = $('#table_data').datagrid('getSelected');
                 }
             });
-
-            //PRINT TAB
-            $("#tab_transaksi").tabs({
-                onSelect: function() {
-                    var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-                    enable_button();
-                }
-            });
-
-
             buat_table();
-
         });
 
         shortcut.add('F2', function() {
@@ -91,16 +58,14 @@
         shortcut.add('F4', function() {
             before_edit();
         });
-        shortcut.add('F8', function() {
-            simpan();
-        });
 
         function before_add() {
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Merk',
-                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah Syarat Bayar',
+                        '{{ route('atena.master.syarat_bayar.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -111,11 +76,12 @@
         function before_edit() {
             $('#mode').val('ubah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
-                    parent.buka_submenu(null, row.namamerk,
-                        '{{ route('atena.master.merk.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidmerk,
+                    parent.buka_submenu(null, row.namasyaratbayar,
+                        '{{ route('atena.master.syarat_bayar.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidsyaratbayar,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -141,7 +107,7 @@
                     if (r) {
                         bukaLoader();
                         try {
-                            let url=link_api.hapusMerk;
+                            let url = link_api.hapusSyaratBayar;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -149,8 +115,8 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidmerk: row.uuidmerk,
-                                    kode: row.kodemerk,
+                                    uuidsyaratbayar: row.uuidsyaratbayar,
+                                    kode: row.kodesyaratbayar
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -184,7 +150,7 @@
                 pagination: true,
                 clientPaging: false,
                 pageSize: 20,
-                url: link_api.loadDataGridMerk,
+                url: link_api.loadDataGridSyaratBayar,
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
@@ -193,39 +159,32 @@
                 },
                 frozenColumns: [
                     [{
-                            field: 'uuidmerk',
+                            field: 'uuidsyaratbayar',
                             hidden: true
                         },
                         {
-                            field: 'kodemerk',
+                            field: 'kodesyaratbayar',
                             title: 'Kode',
                             width: 80,
                             sortable: true,
                         },
                         {
-                            field: 'namamerk',
+                            field: 'namasyaratbayar',
                             title: 'Nama',
                             width: 200,
                             sortable: true,
-                        },
-                        {
-                            field: 'discountmin',
-                            title: 'Disc Min',
-                            width: 50,
-                            sortable: true,
-                            align: 'right',
-                        },
-                        {
-                            field: 'discountmax',
-                            title: 'Disc Max',
-                            width: 50,
-                            sortable: true,
-                            align: 'right',
                         },
                     ]
                 ],
                 columns: [
                     [{
+                            field: 'selisih',
+                            title: 'Selisih',
+                            width: 50,
+                            sortable: true,
+                            align: 'right'
+                        },
+                        {
                             field: 'catatan',
                             title: 'Catatan',
                             width: 250,
@@ -257,7 +216,7 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter', [{
+            }).datagrid('enableFilter',[{
                 field: 'status',
                 type: 'combobox',
                 options: {
@@ -285,15 +244,7 @@
                     }
                 }
             }, {
-                field: 'discountmax',
-                type: 'numberbox',
-                options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
-                }
-            }, {
-                field: 'discountmin',
+                field: 'selisih',
                 type: 'numberbox',
                 options: {
                     precision: 2,
@@ -304,9 +255,9 @@
         }
 
         function refresh_data() {
+            //JIKA DI TAB GRID
             $('#table_data').datagrid('reload');
         }
-
 
         function reload() {
             $('#table_data').datagrid('reload');

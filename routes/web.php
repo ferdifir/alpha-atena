@@ -111,6 +111,51 @@ Route::get('atena/master/merk/form',function (){
     ]);
 })->name('atena.master.merk.form');
 
+// Master Syarat Bayar 
+Route::get('atena/master/syaratbayar/data',function (){
+    return view('atena.master.syarat_bayar.v_master_list_syarat_bayar',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.syarat_bayar.list');
+
+Route::get('atena/master/syaratbayar/form',function (){
+    return view('atena.master.syarat_bayar.v_master_form_syarat_bayar',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.syarat_bayar.form');
+
+// Master Departemen Kerja
+Route::get('atena/master/departemenkerja/data',function (){
+    return view('atena.master.departemen_kerja.v_master_list_departemen_kerja',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.departemen_kerja.list');
+
+Route::get('atena/master/departemenkerja/form',function (){
+    return view('atena.master.departemen_kerja.v_master_form_departemen_kerja',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.departemen_kerja.form');
+
+
+// Master Karyawan
+Route::get('atena/master/karyawan/data',function (){
+    return view('atena.master.karyawan.v_master_list_karyawan',[
+        'kodemenu'=>request()->kode,
+    ]);
+})->name('atena.master.karyawan.list');
+
+Route::get('atena/master/karyawan/form',function (){
+    return view('atena.master.karyawan.v_master_form_karyawan',[
+        'kodemenu'=>request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.karyawan.form');
 // Master Pemasok
 Route::get('atena/master/supplier/data', function() {
     return view('atena.master.supplier.v_master_list_supplier', [
