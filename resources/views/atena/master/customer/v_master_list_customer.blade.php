@@ -121,29 +121,79 @@
       });
     }
 
+    async function fetchData(url, body) {
+      try {
+        const token = '{{ session('TOKEN') }}';
+        let headers = {
+          'Authorization': 'bearer ' + token,
+        };
+        let requestBody = null;
+
+        // Cek apakah body adalah instance dari FormData
+        if (body instanceof FormData) {
+          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+          requestBody = body;
+        } else {
+          // Default: Jika bukan FormData, asumsikan itu JSON.
+          headers['Content-Type'] = 'application/json';
+          requestBody = body ? JSON.stringify(body) : null;
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
+      }
+    }
+
     function hapus() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
           if (r) {
-            $.post(base_url + 'atena/Master/Data/Customer/hapus', {
-              id: row.uuidcustomer,
-              kode: row.kodecustomer
-            }, function(msg) {
-              if (msg.success) {
-                tutupTab();
-                refresh_data();
+            try {
+              bukaLoader();
+              const response = await fetchData(link_api.hapusCustomer, {
+                uuidcustomer: row.uuidcustomer
+              });
+              tutupLoader();
+              if (!response.success) {
+                $.messager.alert('Error', response.message, 'error');
               } else {
-                $.messager.alert('Error', msg.errorMsg, 'error');
+                refresh_data();
               }
-            }, 'json');
+            } catch (error) {
+              tutupLoader();
+              console.log(error);
+              $.messager.alert('Error',
+                'Terdapat kesalahan ketika menghapus data customer, silahkan muat ulang laman',
+                'error');
+            }
           }
         });
       }
-
-      reset_detail();
     }
 
-    function buat_table() {
+    async function buat_table() {
+      const response = await fetchData(link_api.browseKaryawanMarketing, {
+        divisi: 'marketing'
+      });
+      const marketingFilterList = response.data.map(item => {
+        return {
+          value: item.nama,
+          text: item.nama
+        }
+      });
       var dg = $('#table_data').datagrid({
         remoteFilter: true,
         fit: true,
@@ -160,6 +210,9 @@
         },
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';
+        },
+        onLoadSuccess: function(data) {
+          $('#table_data').datagrid('unselectAll');
         },
         columns: [
           [{
@@ -433,6 +486,30 @@
               } else {
                 dg.datagrid('addFilterRule', {
                   field: 'npwp',
+                  op: 'contains',
+                  value: value
+                });
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },
+        {
+          field: 'namamarketing',
+          type: 'combobox',
+          options: {
+            data: [{
+                value: '',
+                text: 'All'
+              },
+              ...marketingFilterList,
+            ],
+            onChange: function(value) {
+              if (value == 0) {
+                dg.datagrid('removeFilterRule', 'namamarketing');
+              } else {
+                dg.datagrid('addFilterRule', {
+                  field: 'namamarketing',
                   op: 'contains',
                   value: value
                 });

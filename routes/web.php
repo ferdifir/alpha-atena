@@ -141,3 +141,10 @@ Route::get('atena/master/ekspedisi/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.ekspedisi.form');
+
+// Harga Jual
+Route::get('atena/master/hargajual/data', function() {
+    return view('atena.master.harga_jual.v_master_list_harga_jual', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.hargajual.data');

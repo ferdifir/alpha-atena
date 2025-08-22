@@ -5,7 +5,7 @@
 @endpush
 
 @push('css')
-  <link rel="icon" href="{{ asset('assets/images/logo_app_white.png') }}" />
+  <link rel="icon" href="{{ asset('assets/images/icon.png') }}" />
   <link href="{{ asset('assets/css/auth/sweetalert2.min.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/css/nav-modul.css') }}" rel="stylesheet">
 @endpush
@@ -18,7 +18,7 @@
         style="background-image:url({{ asset('assets/images/header.png') }});border-collapse:collapse">
         <tr class="logoheader">
           <td class="font-header-form" align="left" valign="center" style="padding-left: 28px; width:120px;">
-            <img style="width: 100px;display: block" src="{{ asset('assets/images/logo_putih.png') }}">
+            <img style="width: 100px;display: block" src="{{ asset('assets/images/logo_atena_white.png') }}">
           </td>
           <td align="left">
             <img id="billing-image" style="height:50px;" src="{{ asset('assets/images/freetrial.png') }}" hidden>

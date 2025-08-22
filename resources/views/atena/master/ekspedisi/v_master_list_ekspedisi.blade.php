@@ -34,8 +34,6 @@
 
     $(document).ready(function() {
       tutupLoader();
-      //WAKTU BATAL DI GRID, tidak bisa close
-      //PRINT GRID
       $("#table_data").datagrid({
         onSelect: function() {
           row = $('#table_data').datagrid('getSelected');
@@ -95,22 +93,65 @@
       });
     }
 
+    async function fetchData(url, body) {
+      try {
+        const token = '{{ session('TOKEN') }}';
+        let headers = {
+          'Authorization': 'bearer ' + token,
+        };
+        let requestBody = null;
 
-    function hapus() {
+        // Cek apakah body adalah instance dari FormData
+        if (body instanceof FormData) {
+          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+          requestBody = body;
+        } else {
+          // Default: Jika bukan FormData, asumsikan itu JSON.
+          headers['Content-Type'] = 'application/json';
+          requestBody = body ? JSON.stringify(body) : null;
+        }
+
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error("Terjadi kesalahan:", error);
+        throw error;
+      }
+    }
+
+
+    async function hapus() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
           if (r) {
-            $.post(base_url + 'atena/Master/Data/Ekspedisi/hapus', {
-              id: row.uuidekspedisi,
-              kode: row.kodeekspedisi
-            }, function(msg) {
-              if (msg.success) {
-                tutupTab();
+            try {
+              bukaLoader();
+              const response = await fetchData(link_api.hapusEkspedisi, {
+                uuidekspedisi: row.uuidekspedisi
+              })
+              tutupLoader();
+              if (response.success) {
                 refresh_data();
               } else {
-                $.messager.alert('Error', msg.errorMsg, 'error');
+                $.messager.alert('Error', response.message, 'error');
               }
-            }, 'json');
+            } catch (error) {
+              console.log(error);
+              tutupLoader();
+              $.messager.alert('Error',
+                'Terdapat kesalahan ketika menghapus data ekspedisi, silahkan muat ulang laman',
+                'error');
+            }
           }
         });
       }
@@ -124,9 +165,13 @@
         striped: true,
         pagination: true,
         pageSize: 20,
+        clientPaging: false,
         url: link_api.loadDataGridMasterEkspedisi,
         rowStyler: function(index, row) {
           if (row.status == 0) return 'background-color:#a8aea6';
+        },
+        onLoadSuccess: function(data) {
+          $('#table_data').datagrid('unselectAll');
         },
         frozenColumns: [
           [{

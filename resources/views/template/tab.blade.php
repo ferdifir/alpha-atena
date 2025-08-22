@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <title>{{ isset($menu) ? $menu : 'Aplikasi Usaha Optik Online' }}</title>
+  <title>{{ isset($menu) ? $menu : 'Atena - Software Akuntansi Online Cloud Terbaik Di Indonesia' }}</title>
   <link rel="icon" href="{{ asset('assets/images/icon.png') }}" />
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/metro-blue/easyui.css') }}" />
   <link rel="stylesheet" type="text/css" href="{{ asset('assets/jquery-easyui/themes/icon.css') }}" />

@@ -10,7 +10,7 @@
     <meta name="author" content="">
     <!-- Favicon icon -->
     <link rel="icon" href="{{ asset('assets/images/icon.png') }}" />
-    <title>Aplikasi Usaha Optik Online</title>
+    <title>Atena - Software Akuntansi Online Cloud Terbaik Di Indonesia</title>
 
     <!-- page css -->
     <link href="{{ asset('assets/css/auth/login-register-lock.css') }}" rel="stylesheet">
