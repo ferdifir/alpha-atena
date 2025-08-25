@@ -2679,6 +2679,9 @@
         singleSelect: true,
         frozenColumns: [
           [{
+              field: 'uuidbarang',
+              hidden: true
+            }, {
               field: 'kodebarang',
               title: 'Kode Barang',
               width: 100,
@@ -2905,9 +2908,6 @@
         },
         columns: [
           [{
-              field: 'uuidbarang',
-              hidden: true
-            }, {
               field: 'kodebarang',
               title: 'Kode Barang',
               width: 100,
@@ -3489,14 +3489,14 @@
               row_parent.detailharga = JSON.stringify(ddv.datagrid('getRows'));
             },
             onDblClickRow: function(index, row) {
-              tampil_dialog_history_berdasarkan_customer(row_parent.idbarang, row);
+              tampil_dialog_history_berdasarkan_customer(row_parent.uuidbarang, row);
             }
           });
 
           ddv.datagrid('disableCellEditing');
           ddv.datagrid('enableCellEditing');
 
-          ddv.datagrid('loadData', row_parent.detailharga);
+          ddv.datagrid('loadData', JSON.parse(row_parent.detailharga));
 
           $('#table_detail_berdasarkan_customer').datagrid('fixDetailRowHeight', index);
         }
@@ -4255,6 +4255,7 @@
 
         return false;
       }
+      console.log('barang', barang);
 
       if (customer == null) {
         $.messager.alert('Peringatan', 'Data customer belum dipilih', 'warning');
@@ -4269,6 +4270,7 @@
       }
 
       var rows = $('#table_detail_berdasarkan_customer').datagrid('getRows');
+      console.log('rows', rows);
 
       var index_barang = -1;
 
@@ -4279,6 +4281,7 @@
           break;
         }
       }
+      console.log('index_barang', index_barang);
 
       if (index_barang < 0) {
         console.log('barang belum ada');
@@ -4291,8 +4294,8 @@
           satuan: barang.satuanbesar,
           satuan2: barang.satuansedang,
           satuan3: barang.satuankecil,
-          konversi1: barang.konversi1,
-          konversi2: barang.konversi2,
+          konversi1: barang.konversi,
+          konversi2: barang.konversi,
           tglbeliterakhir: $('#FILTER_CUSTOMER_TGLBELITERAKHIR').datebox('getValue'),
           satuanbeliterakhir: $('#FILTER_CUSTOMER_SATUANBELITERAKHIR').textbox('getValue'),
           hargabeliterakhir: $('#FILTER_CUSTOMER_HARGABELITERAKHIR').numberbox('getValue'),
@@ -4374,6 +4377,7 @@
           tglaktif: tglaktif,
           detail: detail
         };
+        console.log(payload);
         const response = await fetchData(link_api.simpanHargaJualBerdasarkanCustomer, payload);
         tutupLoaderSimpan();
         if (response.success) {
@@ -4441,8 +4445,8 @@
       $.ajax({
         url: link_api.loadHistoryHargaJualBerdasarkanCustomer,
         data: {
-          idbarang: idbarang,
-          idcustomer: row.idcustomer
+          uuidbarang: idbarang,
+          uuidcustomer: row.uuidcustomer
         },
         type: 'POST',
         dataType: 'JSON',
@@ -4766,7 +4770,7 @@
 
     function browse_data_tglaktif_customer(id) {
       $(id).combogrid({
-        url: link_api.browseTglAktifSatuan,
+        url: link_api.browseTglAktifCustomer,
         panelWidth: 130,
         idField: 'tglaktif',
         textField: 'tglaktif',
@@ -4799,11 +4803,7 @@
             });
 
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Info', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('clear');
               $('#TGLAKTIF_SATUAN_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
@@ -4833,11 +4833,7 @@
               tglaktif: tglaktif
             });
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Info', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
               $('#TGLAKTIF_TIPECUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
@@ -4867,11 +4863,7 @@
             });
 
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Info', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('clear');
               $('#TGLAKTIF_CUSTOMER_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');

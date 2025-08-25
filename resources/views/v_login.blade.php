@@ -259,7 +259,7 @@
                 Swal.close();
                 Swal.fire({
                     type: 'error',
-                    text: error,
+                    text: 'Terjadi kesalahan, silahkan coba lagi',
                 })
                 return null;
             } finally {

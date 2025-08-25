@@ -1,4 +1,4 @@
-var base_url_api = "http://192.168.1.43:8000/api/";
+var base_url_api = "http://192.168.1.45:8000/api/";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -91,6 +91,7 @@ var link_api = {
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     browseTglAktifSatuan: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-satuan`,
     browseTglAktifTipeCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-tipe-customer`,
+    browseTglAktifCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-customer`,
     loadDataBarangBerdasarkanSatuan: `${base_url_api}atena/master/hargajual/load-data-barang-bedasarkan-satuan`,
     loadDataBarangBerdasarkanTipeCustomer: `${base_url_api}atena/master/hargajual/load-data-barang-bedasarkan-tipe-customer`,
     simpanHargaJualBerdasarkanSatuan: `${base_url_api}atena/master/hargajual/simpan-bedasarkan-satuan`,
