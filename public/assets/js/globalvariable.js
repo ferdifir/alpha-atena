@@ -72,6 +72,7 @@ var link_api = {
     loadDataPiutangBelumLunas: `${base_url_api}atena/master/customer/load-data-piutang-belum-lunas`,
     headerFormCustomer: `${base_url_api}atena/master/customer/load-data-header`,
     hapusCustomer: `${base_url_api}atena/master/customer/hapus`,
+    browseCustomer: `${base_url_api}atena/master/customer/browse`,
     //ekspedisi
     loadDataGridMasterEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-grid`,
     browseBadanUsahaEkspedisi: `${base_url_api}atena/master/ekspedisi/browse-badan-usaha`,
@@ -94,6 +95,7 @@ var link_api = {
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     browseTglAktifSatuan: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-satuan`,
     browseTglAktifTipeCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-tipe-customer`,
+    browseTglAktifCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-customer`,
     loadDataBarangBerdasarkanSatuan: `${base_url_api}atena/master/hargajual/load-data-barang-bedasarkan-satuan`,
     loadDataBarangBerdasarkanTipeCustomer: `${base_url_api}atena/master/hargajual/load-data-barang-bedasarkan-tipe-customer`,
     simpanHargaJualBerdasarkanSatuan: `${base_url_api}atena/master/hargajual/simpan-bedasarkan-satuan`,
@@ -142,6 +144,15 @@ var link_api = {
     getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
     loadDataGridJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-grid`,
     hapusJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/hapus`,
+    //Harga Jual Berdasarkan Jumlah
+    loadHargaAktifTerakhir: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-harga-aktif-terakhir`,
+    browseTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/browse-tgl-aktif`,
+    browseTglAktfiGlobal: `${base_url_api}atena/master/hargajualberdasarkanjumlah/browse-tgl-aktif-global`,
+    loadHargaByTanggalAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-harga-by-tanggal-aktif`,
+    loadDataBarang: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-data-barang`,
+    hapusHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus`,
+    hapusHargaJualBerdasarkanJumlahPerTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus-per-tanggal-aktif`,
+    simpanHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/simpan`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

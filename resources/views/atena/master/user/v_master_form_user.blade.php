@@ -111,7 +111,7 @@
                       <div style="width:100px; height:100px">
                         <img id="preview-image" style="width:100%; height:100%" />
                       </div>
-                      <input id="FILEGAMBAR" name="filegambar" class="easyui-filebox"
+                      <input id="FILEGAMBAR" name="gambar" class="easyui-filebox"
                         data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:100px">
                     </td>
                   </tr>

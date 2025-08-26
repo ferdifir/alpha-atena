@@ -111,7 +111,7 @@ Route::get('atena/master/merk/form',function (){
     ]);
 })->name('atena.master.merk.form');
 
-// Master Syarat Bayar 
+// Master Syarat Bayar
 Route::get('atena/master/syaratbayar/data',function (){
     return view('atena.master.syarat_bayar.v_master_list_syarat_bayar',[
         'kodemenu'=>request()->kode,
@@ -208,6 +208,12 @@ Route::get('atena/master/hargajual/data', function() {
     ]);
 })->name('atena.master.hargajual.data');
 
+// Harga Jual Berdasarkan Jumlah
+Route::get('atena/master/hargajualberdasarkanjumlah/data', function() {
+    return view('atena.master.harga_jual_berdasarkan_jumlah.v_master_list_harga_jual_berdasarkan_jumlah', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.hargajualberdasarkanjumlah.data');
 
 // Master sopir
 Route::get('atena/master/sopir/data', function() {
