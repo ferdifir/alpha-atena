@@ -820,6 +820,7 @@
 
       try {
         bukaLoader();
+        $('#window_harga').window('minimize');
         const response = await fetchData(link_api.simpanHargaJualBerdasarkanJumlah, payload);
         tutupLoader();
 
@@ -832,13 +833,16 @@
 
           $('#table_data').datagrid('collapseRow', index_header);
           $('#table_data').datagrid('expandRow', index_header);
-          //   $('#TGLAKTIF_HAPUS_HARGAJUAL').combogrid('reload').datagrid('clearSelection').datagrid('reload');
           $('#TGLAKTIF_HAPUS_HARGAJUAL').combogrid('clear');
+          $('#TGLAKTIF_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
         } else {
+          $('#window_harga').window('maximize');
           $.messager.alert('Error', response.message, 'error');
         }
       } catch (error) {
         console.log(error);
+        tutupLoader();
+        $('#window_harga').window('maximize');
         $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
       }
     }
@@ -871,6 +875,7 @@
 
           try {
             bukaLoader();
+            $('#window_harga').window('minimize');
             const response = await fetchData(link_api.hapusHargaJualBerdasarkanJumlah, {
               uuidbarang: idbarang,
               uuidlokasi: idlokasi,
@@ -888,11 +893,15 @@
               $('#table_data').datagrid('collapseRow', index_header);
               $('#table_data').datagrid('expandRow', index_header);
               $('#TGLAKTIF_HAPUS_HARGAJUAL').combogrid('clear');
+              $('#TGLAKTIF_HAPUS_HARGAJUAL').combogrid('grid').datagrid('load');
             } else {
+              $('#window_harga').window('maximize');
               $.messager.alert('Error', response.message, 'error');
             }
           } catch (error) {
             console.log(error);
+            tutupLoader();
+            $('#window_harga').window('maximize');
             $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
           }
         });
