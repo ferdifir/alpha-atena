@@ -4,38 +4,64 @@
     <div id="form_input" class="easyui-layout" fit="true">
         <div data-options="region:'center',border:false">
             <div class="easyui-layout" fit="true">
-                <div data-options="region:'center',border:false ">
+                <div data-options="region:'center',border:false">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
 
                         <input type="hidden" name="mode" id="mode">
-                        <input type="hidden" name="uuidsyaratbayar">
-                        <table style="padding:5px" id="label_form">
-                            <tr>
-                                <td align="right" id="label_form">Kode</td>
-                                <td><input id="KODESYARATBAYAR" name="kodesyaratbayar" style="width:290px"
-                                        class="label_input">
-                                    <label id="label_form"><input type="checkbox" id="STATUS" name="status"
-                                            value="1"> Aktif</label>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">Nama</td>
-                                <td><input name="namasyaratbayar" style="width:350px" class="label_input" required="true"
-                                        validType='length[0,100]'></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">Selisih Hari</td>
-                                <td><input name="selisih" style="width:350px" class="easyui-numberspinner" required="true"
-                                        validType='length[0,50]'></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form" valign="top">Catatan</td>
-                                <td>
-                                    <textarea name="catatan" style="width:350px; height:50px" class="label_input" multiline="true"
-                                        validType='length[0,300]'></textarea>
-                                </td>
-                            </tr>
-                        </table>
+                        <input type="hidden" name="uuidsopir">
+                        <div class="easyui-tabs" style="width:100%;height:270px;" data-options="border:false;"
+                            plain='true'>
+                            <table style="padding:5px" id="label_form">
+                                <tr>
+                                    <td align="right" id="label_form">Kode</td>
+                                    <td><input id="KODESOPIR" name="kodesopir" style="width:290px" class="label_input">
+                                        <label id="label_form"><input type="checkbox" id="STATUS" name="status" 
+                                                value="1"> Aktif</label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="right" id="label_form">Nama</td>
+                                    <td><input name="namasopir" style="width:350px" class="label_input" required
+                                            validType='length[0,100]'></td>
+                                </tr>
+                                <tr>
+                                    <td align="right" id="label_form">Alamat</td>
+                                    <td><input name="alamat" style="width:350px" class="label_input"
+                                            validType='length[0,100]'></td>
+                                </tr>
+                                <tr>
+                                    <td align="right" id="label_form">Kota</td>
+                                    <td><input name="kota" style="width:350px" class="label_input"
+                                            validType='length[0,50]'></td>
+                                </tr>
+                                <tr>
+                                    <td align="right" id="label_form">No Telp</td>
+                                    <td><input name="telp" style="width:350px" class="label_input"
+                                            validType='length[0,50]'></td>
+                                </tr>
+                                <tr>
+                                    <td align="right" id="label_form">No HP</td>
+                                    <td><input name="hp" style="width:350px" class="label_input"
+                                            validType='length[0,50]'></td>
+                                </tr>
+                                <!--
+                               <tr>
+                                <td align="right" id="label_form">Jenis Kendaraan</td>
+                                <td><input name="jeniskendaraan" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                               </tr>
+                               <tr>
+                                <td align="right" id="label_form">No Polisi</td>
+                                <td><input name="nopolisi" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                               </tr>
+                               -->
+                                <tr>
+                                    <td align="right" id="label_form" valign="top">Catatan</td>
+                                    <td>
+                                        <textarea name="catatan" style="width:350px; height:50px" class="label_input" multiline="true"
+                                            validType='length[0,300]'></textarea>
+                                    </td>
+                                </tr>
+                            </table>
                         <div style="position: fixed;bottom:0;background-color: white;width:100%;">
                             <table cellpadding="0" cellspacing="0" style="width:100%">
                                 <tr>
@@ -47,6 +73,7 @@
                                     </td>
                                 </tr>
                             </table>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -64,12 +91,15 @@
 @endsection
 
 @push('js')
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
+    </script>
     <script>
         var row = {};
         let config = {};
         $(document).ready(async function() {
+            bukaLoader();
             let check = false;
-            await getConfig("KODESYARATBAYAR", "MSYARATBAYAR", 'bearer {{ session('TOKEN') }}',
+            await getConfig('KODESOPIR', 'MSOPIR', 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -92,6 +122,7 @@
             @elseif ($mode == 'ubah')
                 await ubah();
             @endif
+
         })
 
         shortcut.add('F8', function() {
@@ -104,32 +135,30 @@
 
         function tambah() {
             $('#form_input').form('clear');
-            $('#uuidsyaratbayar').val('{{ $data }}');
-
             $('#mode').val('tambah');
+
             $('#STATUS').prop('checked', true);
             $('#lbl_kasir, #lbl_tanggal').html('');
             if (config.value == "AUTO") {
-                $('#KODESYARATBAYAR').textbox({
+                $('#KODESOPIR').textbox({
                     prompt: "Auto Generate",
                     readonly: true,
                     required: false
                 });
             } else {
-                $('#KODESYARATBAYAR').textbox({
+                $('#KODESOPIR').textbox({
                     prompt: "",
                     readonly: false,
                     required: true
                 });
-                $('#KODESYARATBAYAR').textbox('clear').textbox('textbox').focus();
+                $('#KODESOPIR').textbox('clear').textbox('textbox').focus();
             }
         }
 
         async function ubah() {
             $('#mode').val('ubah');
-            $('#uuidmerk').val('{{ $data }}');
             try {
-                let url = link_api.getHeaderSyaratBayar;
+                let url = link_api.getHeaderSopir;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -137,7 +166,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidsyaratbayar: '{{ $data }}',
+                        uuidsopir: '{{ $data }}',
                         mode: "ubah",
                     }),
                 }).then(response => {
@@ -155,6 +184,7 @@
                 $.messager.alert('Error', error, 'error');
                 console.log(error);
             }
+
             if (row) {
                 $('#form_input').form('load', row);
 
@@ -162,7 +192,7 @@
 
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
-                $('#KODESYARATBAYAR').textbox('readonly', true);
+                $('#KODESOPIR').textbox('readonly', true);
 
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
@@ -177,7 +207,7 @@
 
             if (isValid) {
                 tampilLoaderSimpan();
-                var mode = '{{ $mode }}';
+                mode = $('[name=mode]').val();
                 try {
                     let headers = {
                         'Authorization': 'bearer {{ session('TOKEN') }}',
@@ -198,7 +228,7 @@
                         headers['Content-Type'] = 'application/json';
                         requestBody = body ? JSON.stringify(body) : null;
                     }
-                    let url = link_api.simpanSyaratBayar;
+                    let url =link_api.simpanSopir;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: headers,

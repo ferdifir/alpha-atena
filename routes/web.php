@@ -207,3 +207,64 @@ Route::get('atena/master/hargajual/data', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.master.hargajual.data');
+
+
+// Master sopir
+Route::get('atena/master/sopir/data', function() {
+    return view('atena.master.sopir.v_master_list_sopir', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.sopir.data');
+
+Route::get('atena/master/sopir/form', function() {
+    return view('atena.master.sopir.v_master_form_sopir', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.sopir.form');
+
+// Master kendaraan
+Route::get('atena/master/kendaraan/data', function() {
+    return view('atena.master.kendaraan.v_master_list_kendaraan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.kendaraan.data');
+
+Route::get('atena/master/kendaraan/form', function() {
+    return view('atena.master.kendaraan.v_master_form_kendaraan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.kendaraan.form');
+
+// Master jenis pemakaian
+Route::get('atena/master/jenispemakaian/data', function() {
+    return view('atena.master.jenis_pemakaian.v_master_list_jenis_pemakaian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.jenis_pemakaian.data');
+
+Route::get('atena/master/jenispemakaian/form', function() {
+    return view('atena.master.jenis_pemakaian.v_master_form_jenis_pemakaian', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.jenis_pemakaian.form');
+
+// Master tipe customer
+Route::get('atena/master/tipecustomer/data', function() {
+    return view('atena.master.tipe_customer.v_master_list_tipe_customer', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.tipe_customer.data');
+
+Route::get('atena/master/tipecustomer/form', function() {
+    return view('atena.master.tipe_customer.v_master_form_tipe_customer', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.tipe_customer.form');

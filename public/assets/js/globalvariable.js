@@ -1,4 +1,4 @@
-var base_url_api = "http://192.168.1.43:8000/api/";
+var base_url_api = "http://192.168.1.45:8000/api/";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -81,6 +81,9 @@ var link_api = {
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
+    getHeaderTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-header`,
+    loadDataGridTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-grid`,
+    hapusTipeCustomer: `${base_url_api}atena/master/tipecustomer/hapus`,
     //harga jual
     browseBarang: `${base_url_api}atena/master/barang/browse`,
     browseBarangAll: `${base_url_api}atena/master/barang/browse-all`,
@@ -124,7 +127,21 @@ var link_api = {
     simpanKaryawan: `${base_url_api}atena/master/karyawan/simpan`,
     getHeaderKaryawan: `${base_url_api}atena/master/karyawan/load-data-header`,
     browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
-
+    //sopir
+    hapusSopir: `${base_url_api}atena/master/sopir/hapus`,
+    simpanSopir: `${base_url_api}atena/master/sopir/simpan`,
+    getHeaderSopir: `${base_url_api}atena/master/sopir/load-data-header`,
+    loadDataGridSopir: `${base_url_api}atena/master/sopir/load-data-grid`,
+    //kendaraan
+    simpanKendaraan: `${base_url_api}atena/master/kendaraan/simpan`,
+    getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
+    loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
+    hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
+    //jenis pemakaian
+    simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
+    getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
+    loadDataGridJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-grid`,
+    hapusJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/hapus`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
