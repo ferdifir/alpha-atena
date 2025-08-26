@@ -4025,11 +4025,11 @@
         return false;
       }
 
-      if (idsupplier == '') {
-        $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
+      //   if (idsupplier == '') {
+      //     $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
 
-        return false;
-      }
+      //     return false;
+      //   }
 
       $.ajax({
         url: link_api.loadDataBarangBerdasarkanSatuan,
@@ -4071,11 +4071,11 @@
         return false;
       }
 
-      if (idsupplier == '') {
-        $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
+      //   if (idsupplier == '') {
+      //     $.messager.alert('Peringatan', 'Data supplier belum diisi', 'warning');
 
-        return false;
-      }
+      //     return false;
+      //   }
 
       $.ajax({
         url: link_api.loadDataBarangBerdasarkanTipeCustomer,
@@ -4472,11 +4472,7 @@
               uuidhargajual: selected.uuidhargajual
             });
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Berhasil', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#table_history_berdasarkan_satuan').datagrid('deleteRow', index);
             } else {
@@ -4501,11 +4497,7 @@
               uuidhargajual: selected.uuidhargajual
             });
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Berhasil', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#table_history_berdasarkan_tipecustomer').datagrid('deleteRow', index);
             } else {
@@ -4530,11 +4522,7 @@
               uuidhargajual: selected.uuidhargajual
             })
             if (response.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Data Harga Jual Berhasil Dihapus',
-                showType: 'show'
-              });
+              $.messager.alert('Berhasil', 'Data Harga Jual Berhasil Dihapus', 'info');
 
               $('#table_history_berdasarkan_customer').datagrid('deleteRow', index);
             } else {

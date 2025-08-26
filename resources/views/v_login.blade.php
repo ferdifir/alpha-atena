@@ -43,7 +43,7 @@
             <div class="loader__figure"></div>
             <p class="loader__label">
                 <img style="width: 50px;margin: 0 auto;display: block"
-                    src="{{ asset('assets/images/optix_login.png') }}">
+                    src="{{ asset('assets/images/logo_atena.png') }}">
             </p>
         </div>
     </div>

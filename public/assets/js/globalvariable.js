@@ -127,6 +127,15 @@ var link_api = {
     browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
 
     browseCustomer: `${base_url_api}atena/master/customer/browse`,
+    //Harga Jual Berdasarkan Jumlah
+    loadHargaAktifTerakhir: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-harga-aktif-terakhir`,
+    browseTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/browse-tgl-aktif`,
+    browseTglAktfiGlobal: `${base_url_api}atena/master/hargajualberdasarkanjumlah/browse-tgl-aktif-global`,
+    loadHargaByTanggalAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-harga-by-tanggal-aktif`,
+    loadDataBarang: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-data-barang`,
+    hapusHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus`,
+    hapusHargaJualBerdasarkanJumlahPerTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus-per-tanggal-aktif`,
+    simpanHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/simpan`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
