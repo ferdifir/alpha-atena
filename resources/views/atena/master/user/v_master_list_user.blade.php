@@ -263,7 +263,7 @@
           }
         }, {
           field: 'hp',
-          type: 'numberspinner',
+          type: 'numberbox',
           options: {
             onChange: function(value) {
               if (value == 0) {
@@ -279,7 +279,7 @@
             }
           }
         },
-        
+
       ]);
     }
   </script>

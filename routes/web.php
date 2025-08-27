@@ -214,3 +214,18 @@ Route::get('atena/master/hargajualberdasarkanjumlah/data', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.master.hargajualberdasarkanjumlah.data');
+
+// Barang
+Route::get('atena/master/barang/data', function() {
+    return view('atena.master.barang.v_master_list_barang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.barang.data');
+
+Route::get('atena/master/barang/form', function() {
+    return view('atena.master.barang.v_master_form_barang', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.barang.form');
