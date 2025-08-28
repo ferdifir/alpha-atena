@@ -363,10 +363,10 @@
                     }],
                     onChange: function(value) {
                         if (value == '') {
-                            $('#table_data').datagrid('removeFilterRule', 'status');
+                            $('#table_data').datagrid('removeFilterRule', 'lokasidefault');
                         } else {
                             $('#table_data').datagrid('addFilterRule', {
-                                field: 'status',
+                                field: 'lokasidefault',
                                 op: 'equal',
                                 value: value
                             });

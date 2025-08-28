@@ -264,6 +264,42 @@
                     before_edit();
                 },
             }).datagrid('enableFilter', [{
+                field: 'tglbeli',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglbeli',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglbeli');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            },{
+                field: 'tgljatuhtempo',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tgljatuhtempo',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tgljatuhtempo');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            },{
                 field: 'tglentry',
                 type: 'datebox',
                 options: {

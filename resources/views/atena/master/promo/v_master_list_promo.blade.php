@@ -304,6 +304,7 @@
       }).datagrid('enableFilter', [
         dateFilter('tglawal'),
         dateFilter('tglakhir'),
+        dateFilter('tglentry'),
         statusFilter('status'),
         statusFilter('jenisitem', [{
           value: '',
