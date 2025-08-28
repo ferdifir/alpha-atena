@@ -8,6 +8,7 @@
           <div class="easyui-layout" style="height:100%" id="trans_layout">
             <input type="hidden" id="mode" name="mode">
             <input type="hidden" id="IDBARANG" name="uuidbarang">
+            <input type="hidden" id="uuidmerk" name="uuidmerk">
             <input type="hidden" id="data_barangkategori" name="data_barangkategori">
             <input type="hidden" id="data_barangset" name="data_barangset">
             <input type="hidden" id="data_supplier" name="data_supplier">
@@ -821,6 +822,9 @@
         sortName: 'kode',
         sortOrder: 'asc',
         url: link_api.browseMerk,
+        onSelect: function(index, row) {
+          $('#uuidmerk').val(row.uuidmerk);
+        },
         columns: [
           [{
               field: 'uuidmerk',
@@ -1083,6 +1087,7 @@
 
       $('#table_data_barangset').datagrid('loadData', []);
       $('#table_data_barangkategori').datagrid('loadData', []);
+      $('#table_data_supplier').datagrid('loadData', []);
 
       $('#btn_ubah_hargajual').hide();
 
@@ -1225,7 +1230,7 @@
         );
 
         $('#form_input').form('load', row);
-        $('#mode').val('edit');
+        $('#mode').val('ubah');
 
         $.ajax({
           type: 'POST',
@@ -1237,10 +1242,7 @@
           async: false,
           cache: false,
           success: function(msg) {
-            if (msg != 0)
-              opt = true;
-            else
-              opt = false;
+            opt = msg.ada_transaksi;
 
             $("#SATUAN").add($("#KONVERSI1")).add($("#SATUAN2")).add($("#KONVERSI2")).add($("#SATUAN3")).textbox(
               'readonly', opt);
@@ -1408,16 +1410,21 @@
             }
             payload[data[i].name] = data[i].value;
           }
+          if ('{{ $mode }}' == 'ubah') {
+            const barangset = payload.data_barangset;
+            for (let i = 0; i < barangset.length; i++) {
+              barangset[i].uuidbarangset = payload.uuidbarang;
+            }
+            payload.data_barangset = barangset;
+          }
 
           try {
             const response = await fetchData(link_api.simpanBarang, payload);
             tutupLoaderSimpan();
             if (response.success) {
+              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               if (mode == 'tambah') {
-                $.messager.alert('Info', 'Simpan Data Sukses', 'info');
                 tambah();
-              } else {
-                $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               }
             } else {
               $.messager.alert('Error', response.message, 'error');
@@ -1529,29 +1536,25 @@
         },
         cache: false,
         success: function(msg) {
-          console.log('load_data_barangkategori', msg);
-          // $.messager.progress('close');
-          if (msg.success) {
+          $('#table_data_barangkategori').datagrid('loadData', msg);
 
-            $('#table_data_barangkategori').datagrid('loadData', msg.detail);
+          var rows = $('#table_data_barangkategori').datagrid('getRows');
 
-            var rows = $('#table_data_barangkategori').datagrid('getRows');
+          for (var i = 0; i < rows.length; i++) {
 
-            for (var i = 0; i < rows.length; i++) {
+            $('#kategori_' + indexKategori).show();
+            $('#nama_kategori_' + indexKategori).textbox('setValue', rows[i].namakategori);
 
-              $('#kategori_' + indexKategori).show();
-              $('#nama_kategori_' + indexKategori).textbox('setValue', rows[i].namakategori);
+            var index = (i + 1);
+            if (rows[i].kategoriutama == "1") {
 
-              var index = (i + 1);
-              if (rows[i].kategoriutama == "1") {
-
-                $('#cb_kategori_' + index).prop('checked', true);
-              } else {
-                $('#cb_kategori_' + index).prop('checked', false);
-              }
-
-              indexKategori++;
+              $('#cb_kategori_' + index).prop('checked', true);
+            } else {
+              $('#cb_kategori_' + index).prop('checked', false);
             }
+
+            indexKategori++;
+
           }
         }
       });

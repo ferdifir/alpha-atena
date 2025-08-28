@@ -152,6 +152,13 @@ var link_api = {
     loadHargaJual: `${base_url_api}atena/master/barang/load-harga-jual`,
     simpanHargaJual: `${base_url_api}atena/master/barang/simpan-harga-jual`,
     headerFormBarang: `${base_url_api}atena/master/barang/load-data-header`,
+    //Promo
+    loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
+    simpanPromo: `${base_url_api}atena/master/promo/simpan`,
+    hapusPromo: `${base_url_api}atena/master/promo/hapus`,
+    browseBarangPromo: `${base_url_api}atena/master/promo/browse-barang`,
+    loadDataPromo: `${base_url_api}atena/master/promo/load-data`,
+    headerFormPromo: `${base_url_api}atena/master/promo/load-data-header`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

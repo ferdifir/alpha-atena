@@ -229,3 +229,18 @@ Route::get('atena/master/barang/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.barang.form');
+
+// Promo
+Route::get('atena/master/promo/data', function() {
+    return view('atena.master.promo.v_master_list_promo', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.promo.data');
+
+Route::get('atena/master/promo/form', function() {
+    return view('atena.master.promo.v_master_form_promo', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.promo.form');
