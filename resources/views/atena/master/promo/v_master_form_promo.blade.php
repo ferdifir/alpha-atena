@@ -157,7 +157,8 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js') }}"></script>
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
+  </script>
   <script>
     var mode_load_depo = false;
     var indexSelectedBarang = -1;

@@ -163,9 +163,9 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-cellediting-2.js') }}">
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}">
   </script>
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/jquery.datagrid-detailview.js') }}">
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
   </script>
   <script>
     var index_header = -1;

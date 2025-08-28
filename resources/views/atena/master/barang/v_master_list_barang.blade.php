@@ -48,7 +48,6 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js') }}"></script>
   <script>
     var counter = 0;
 
