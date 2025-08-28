@@ -210,6 +210,11 @@ var link_api = {
 
 };
 
+function getTextError(error) {
+    return `Kami mengalami sedikit masalah dalam memproses permintaan Anda.\n
+                        Detail: ${error}\n Harap ambil tangkapan layar lalu hubungi administrator.`;
+}
+
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
     bukaLoader();
     try {

@@ -34,7 +34,8 @@
                                 </tr>
                                 <tr>
                                     <td align="right" id="label_form">Akun Kas/Bank</td>
-                                    <td colspan="2"><input id="UUIDPERKIRAANKAS" name="uuidperkiraankas" style="width:350px">
+                                    <td colspan="2"><input id="UUIDPERKIRAANKAS" name="uuidperkiraankas"
+                                            style="width:350px">
                                     </td>
                                 </tr>
                                 <tr>
@@ -170,7 +171,8 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
+                var textError=getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
             }
             tutupLoader();
             if (!check) return;
@@ -317,7 +319,8 @@
             if (row.gambar != 'NO_IMAGE.jpg') {
                 window.open(row.gambar, 'Gambar', 'resizable,scrollbars,status');
             } else {
-                window.open('{{ asset('assets/foto_user/NO_IMAGE.jpg') }}', 'Gambar', 'resizable,scrollbars,status');
+                window.open('{{ asset('assets/foto_user/NO_IMAGE.jpg') }}', 'Gambar',
+                    'resizable,scrollbars,status');
             }
         }
 
