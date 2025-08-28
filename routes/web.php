@@ -341,3 +341,40 @@ Route::get('atena/master/ppn/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.ppn.form');
+
+// Barang
+Route::get('atena/master/barang/data', function() {
+    return view('atena.master.barang.v_master_list_barang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.barang.data');
+
+Route::get('atena/master/barang/form', function() {
+    return view('atena.master.barang.v_master_form_barang', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.barang.form');
+
+// Promo
+Route::get('atena/master/promo/data', function() {
+    return view('atena.master.promo.v_master_list_promo', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.promo.data');
+
+Route::get('atena/master/promo/form', function() {
+    return view('atena.master.promo.v_master_form_promo', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.promo.form');
+
+// Jurnal Link
+Route::get('atena/master/jurnallink/data', function() {
+    return view('atena.master.jurnal_link.v_master_list_jurnal_link', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.jurnal_link.data');

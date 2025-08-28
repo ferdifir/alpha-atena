@@ -689,8 +689,7 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/datagrid-filter.js') }}"></script>
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extra/plugins/jquery.datagrid-detailview.js') }}">
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
   </script>
   <script>
     const loaderfitur = {

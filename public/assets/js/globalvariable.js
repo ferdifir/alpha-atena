@@ -178,9 +178,36 @@ var link_api = {
     updateHargaBeli: `${base_url_api}atena/master/harga-beli/update-harga-beli`,
     //PPN
     simpanPPN: `${base_url_api}atena/master/ppn/simpan`,
-getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
-loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
-hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
+    getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
+    loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
+    hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
+    //Barang
+    loadDataGridBarang: `${base_url_api}atena/master/barang/load-data-grid`,
+    simpanBarang: `${base_url_api}atena/master/barang/simpan`,
+    hapusBarang: `${base_url_api}atena/master/barang/hapus`,
+    browseBarangKategori: `${base_url_api}atena/master/barang/browse-barang-kategori`,
+    browseMerk: `${base_url_api}atena/master/merk/browse`,
+    loadLastPerkiraan: `${base_url_api}atena/master/barang/load-last-perkiraan`,
+    cekTransaksiBarang: `${base_url_api}atena/master/barang/cek-transaksi-barang`,
+    loadBarangSet: `${base_url_api}atena/master/barang/load-data-barang-set`,
+    loadDataSupplier: `${base_url_api}atena/master/barang/load-data-supplier`,
+    loadDataLokasi: `${base_url_api}atena/master/barang/load-data-lokasi`,
+    loadDaftarKategori: `${base_url_api}atena/master/barang/load-daftar-kategori`,
+    loadHargaJualTerakhirBerdasarkanSatuan: `${base_url_api}atena/master/barang/load-harga-jual-terakhir-bedasarkan-satuan`,
+    loadHargaJual: `${base_url_api}atena/master/barang/load-harga-jual`,
+    simpanHargaJual: `${base_url_api}atena/master/barang/simpan-harga-jual`,
+    headerFormBarang: `${base_url_api}atena/master/barang/load-data-header`,
+    //Promo
+    loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
+    simpanPromo: `${base_url_api}atena/master/promo/simpan`,
+    hapusPromo: `${base_url_api}atena/master/promo/hapus`,
+    browseBarangPromo: `${base_url_api}atena/master/promo/browse-barang`,
+    loadDataPromo: `${base_url_api}atena/master/promo/load-data`,
+    headerFormPromo: `${base_url_api}atena/master/promo/load-data-header`,
+    //Jurnal Link
+    simpanJurnalLink: `${base_url_api}atena/master/jurnal-link/simpan`,
+    loadAllJurnalLink: `${base_url_api}atena/master/jurnal-link/load-all`,
+
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
@@ -208,8 +235,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
-                if(errorBody.toLowerCase()=="token tidak valid"){
-                    $.messager.alert('Error', errorBody+" Silahkan logout dan login kembali", 'error');
+                if (errorBody.toLowerCase() == "token tidak valid") {
+                    $.messager.alert('Error', errorBody + " Silahkan logout dan login kembali", 'error');
                 }
                 console.error("Error fetching data:", error);
             }
