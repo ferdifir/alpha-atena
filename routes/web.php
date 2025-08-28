@@ -356,3 +356,10 @@ Route::get('atena/master/promo/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.promo.form');
+
+// Jurnal Link
+Route::get('atena/master/jurnallink/data', function() {
+    return view('atena.master.jurnal_link.v_master_list_jurnal_link', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.jurnal_link.data');

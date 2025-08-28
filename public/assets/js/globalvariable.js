@@ -199,6 +199,10 @@ var link_api = {
     browseBarangPromo: `${base_url_api}atena/master/promo/browse-barang`,
     loadDataPromo: `${base_url_api}atena/master/promo/load-data`,
     headerFormPromo: `${base_url_api}atena/master/promo/load-data-header`,
+    //Jurnal Link
+    simpanJurnalLink: `${base_url_api}atena/master/jurnal-link/simpan`,
+    loadAllJurnalLink: `${base_url_api}atena/master/jurnal-link/load-all`,
+    
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

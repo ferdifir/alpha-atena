@@ -453,7 +453,7 @@
               continue;
             }
 
-            if (rows[i].idbarang == row.idbarang) {
+            if (rows[i].uuidbarang == row.uuidbarang) {
               $.messager.alert('Peringatan', 'Sudah terdapat data barang yang sama', 'warning');
 
               $('#table_detail_barang').datagrid('deleteRow', index);
@@ -781,7 +781,7 @@
           }
 
           if (field == 'potongannominalmaksimum' || field == 'kuotapotongannominal') {
-            if (row.idbarangbonus > 0 || row.barangbonussama == 1) {
+            if (row.uuidbarangbonus != '' || row.barangbonussama == 1) {
               return false;
             }
           }
@@ -816,7 +816,7 @@
           switch (cell.field) {
             case 'namabarangbonus':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              
+
               row_update = {
                 uuidbarangbonus: data.uuidbarang,
                 kodebarangbonus: data.kode,
@@ -850,7 +850,7 @@
             case 'potongannominal':
               row_update = {
                 barangbonussama: 0,
-                idbarangbonus: 0,
+                uuidbarangbonus: '',
                 kodebarangbonus: '',
                 namabarangbonus: '',
                 jmlbarangbonus: 0,
@@ -995,7 +995,7 @@
       };
 
       if (barangbonussama == 1) {
-        row_update.uuidbarangbonus = 0;
+        row_update.uuidbarangbonus = '';
         row_update.kodebarangbonus = '';
         row_update.namabarangbonus = '';
       }
