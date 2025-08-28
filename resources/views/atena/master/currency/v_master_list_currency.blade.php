@@ -73,7 +73,7 @@
             });
 
             buat_table();
-          tutupLoader();
+            tutupLoader();
         });
 
         shortcut.add('F2', function() {
@@ -127,11 +127,11 @@
         function hapus() {
             var row = $('#table_data').datagrid('getSelected');
             if (row) {
-                $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?',async function(r) {
+                $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
                         bukaLoader();
                         try {
-                            let url=link_api.hapusCurrency;
+                            let url = link_api.hapusCurrency;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -174,11 +174,11 @@
                 pagination: true,
                 pageSize: 20,
                 clientPaging: false,
-                url:link_api.loadDataGridCurrency,
+                url: link_api.loadDataGridCurrency,
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
-                onLoadSuccess:function(){
+                onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
@@ -233,7 +233,25 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter',[{
+            }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {

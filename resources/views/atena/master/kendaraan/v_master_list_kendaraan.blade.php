@@ -46,7 +46,7 @@
             let check = false;
 
             let config = {};
-            await getConfig('KODEKENDARAAN','MKENDARAAN', 'bearer {{ session('TOKEN') }}',
+            await getConfig('KODEKENDARAAN', 'MKENDARAAN', 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -127,9 +127,9 @@
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
-                      bukaLoader();
+                        bukaLoader();
                         try {
-                            let url=link_api.hapusKendaraan;
+                            let url = link_api.hapusKendaraan;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -264,6 +264,24 @@
                     before_edit();
                 },
             }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {

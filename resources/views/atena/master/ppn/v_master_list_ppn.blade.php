@@ -20,10 +20,10 @@
                 <div title="Grid" id="Grid">
                     <div class="easyui-layout" style="width:100%;height:100%" fit="true">
                         <div data-options="region:'center',">
-                            <table id="table_data" idField="uuidjenispemakaian"></table>
+                            <table id="table_data"></table>
                         </div>
                     </div>
-                </div>
+                </diV>
             </div>
         </div>
     </div>
@@ -32,14 +32,13 @@
 @push('js')
     <script>
         var counter = 0;
-        var row = {};
 
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_hapus').linkbutton('enable');
         }
 
-        $(document).ready(async function() {
+        $(document).ready(function() {
             //WAKTU BATAL DI GRID, tidak bisa close
             //PRINT GRID
             $("#table_data").datagrid({
@@ -58,13 +57,16 @@
         shortcut.add('F4', function() {
             before_edit();
         });
+        shortcut.add('F8', function() {
+            simpan();
+        });
 
         function before_add() {
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Jenis Pemakaian',
-                        '{{ route('atena.master.jenis_pemakaian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah PPN',
+                        '{{ route('atena.master.ppn.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -77,9 +79,9 @@
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
-                    parent.buka_submenu(null, row.namajenispemakaian,
-                        '{{ route('atena.master.jenis_pemakaian.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidjenispemakaian,
+                    parent.buka_submenu(null, "PPN Tgl. "+ row.tglaktif,
+                        '{{ route('atena.master.ppn.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.tglaktif,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -97,6 +99,7 @@
                 }
             });
         }
+
         async function hapus() {
             var row = $('#table_data').datagrid('getSelected');
             if (row) {
@@ -104,7 +107,7 @@
                     if (r) {
                         bukaLoader();
                         try {
-                            let url = link_api.hapusJenisPemakaian;
+                            let url = link_api.hapusPPN;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -112,8 +115,7 @@
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidjenispemakaian: row.uuidjenispemakaian,
-                                    kode: row.kodejenispemakaian,
+                                    tglaktif: row.tglaktif,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -146,47 +148,34 @@
                 striped: true,
                 pagination: true,
                 pageSize: 20,
+                url: link_api.loadDataGridPPN,
                 clientPaging: false,
-                url: link_api.loadDataGridJenisPemakaian,
                 rowStyler: function(index, row) {
-                    if (row.status == 0) {
-                        return 'background-color:#a8aea6';
-                    }
+                    if (row.status == 0) return 'background-color:#a8aea6';
                 },
                 onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
-                            field: 'uuidjenispemakaian',
-                            hidden: true
-                        },
-                        {
-                            field: 'kodejenispemakaian',
-                            title: 'Kode',
+                            field: 'tglaktif',
+                            title: 'Tgl. Aktif',
                             width: 80,
                             sortable: true,
+                            align: 'center'
                         },
                         {
-                            field: 'namajenispemakaian',
-                            title: 'Nama',
-                            width: 200,
+                            field: 'ppnpersen',
+                            title: 'PPN (%)',
+                            width: 50,
                             sortable: true,
+                            align: 'right',
+                            formatter: format_amount
                         },
                     ]
                 ],
                 columns: [
                     [{
-                            field: 'kodeperkiraan',
-                            title: 'Perkiraan Biaya/HPP',
-                            width: 120
-                        },
-                        {
-                            field: 'namaperkiraan',
-                            title: 'Nama Akun',
-                            width: 200
-                        },
-                        {
                             field: 'catatan',
                             title: 'Catatan',
                             width: 250,
@@ -195,13 +184,13 @@
                         {
                             field: 'userbuat',
                             title: 'User Entry',
-                            width: 100,
+                            width: 75,
                             sortable: true
                         },
                         {
                             field: 'tglentry',
                             title: 'Tgl. Input',
-                            width: 75,
+                            width: 120,
                             sortable: true,
                             formatter: ubah_tgl_indo,
                             align: 'center',
@@ -218,24 +207,25 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter', [{
-                field: 'tglentry',
-                type: 'datebox',
-                options: {
-                    onChange: function(value) {
-                        if (value) {
-                            $('#table_data').datagrid('addFilterRule', {
-                                field: 'tglentry',
-                                op: 'contains',
-                                value: value.trim(),
-                            });
-                        } else {
-                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
-                        }
-                        $('#table_data').datagrid('doFilter');
-                    }
-                }
-            }, {
+            }).datagrid('enableFilter', [
+        {
+          field: 'tglentry',
+          type: 'datebox',
+          options: {
+            onChange: function(value) {
+              if (value) {
+                $('#table_data').datagrid('addFilterRule', {
+                  field: 'tglentry',
+                  op: 'contains',
+                  value: value.trim(),
+                });
+              } else {
+                $('#table_data').datagrid('removeFilterRule', 'tglentry');
+              }
+              $('#table_data').datagrid('doFilter');
+            }
+          }
+        },{
                 field: 'status',
                 type: 'combobox',
                 options: {
@@ -262,13 +252,20 @@
                         $('#table_data').datagrid('doFilter');
                     }
                 }
+            }, {
+                field: 'ppnpersen',
+                type: 'numberbox',
+                options: {
+                    precision: 2,
+                    decimalSeparator: ".",
+                    groupSeparator: ",",
+                }
             }]);
         }
 
         function refresh_data() {
             $('#table_data').datagrid('reload');
         }
-
 
         function reload() {
             $('#table_data').datagrid('reload');

@@ -6,52 +6,29 @@
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false ">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
-
                         <input type="hidden" name="mode" id="mode">
-                        <input type="hidden" name="uuidkendaraan">
-                        <table style="padding:5px" border="0">
+
+                        <table style="padding:5px" id="label_form">
                             <tr>
-                                <td align="right" id="label_form" style='width: 100px'>Kode Kendaraan</td>
-                                <td><input id="KODEKENDARAAN" name="kodekendaraan" style="width:290px"
-                                        class="easyui-validatebox label_input" validType='length[0,20]'>
+                                <td align="right" id="label_form">Tgl. Aktif</td>
+                                <td>
+                                    <input name="tglaktif" style="width:290px" class="date" required="true"
+                                        validType='length[0,100]'>
                                     <label id="label_form"><input type="checkbox" id="STATUS" name="status"
                                             value="1"> Aktif</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right" id="label_form">Nama</td>
-                                <td><input name="namakendaraan" style="width:350px" class="easyui-validatebox label_input"
-                                        required="true" validType='length[0,100]'></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">No. Polisi</td>
-                                <td><input name="nopolisi" id="NOPOLISI" style="width:350px"
-                                        class="easyui-validatebox label_input" required="true"></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">No. STNK</td>
-                                <td><input name="nostnk" id="NOSTNK" style="width:350px"
-                                        class="easyui-validatebox label_input" required="true"></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">No. BPKB</td>
-                                <td><input name="nobpkb" id="NOBPKB" style="width:350px"
-                                        class="easyui-validatebox label_input" required="true"></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form">Tgl. Beli</td>
-                                <td><input name="tglbeli" id="TGLBELI" class="date" style="width:350px" required="true">
+                                <td align="right" id="label_form">PPN (%)</td>
+                                <td>
+                                    <input name="ppnpersen" style="width:350px;" class="number" validType='length[0,14]'
+                                        data-options="precision:2,decimalSeparator:'.',suffix:'%'" required>
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right" id="label_form">Tgl. Jatuh Tempo</td>
-                                <td><input name="tgljatuhtempo" id="TGLJATUHTEMPO" class="date" style="width:350px"
-                                        required="true"></td>
-                            </tr>
-                            <tr>
-                                <td align="right" valign="top" id="label_form">Catatan</td>
+                                <td valign="top" align="right" id="label_form">Catatan</td>
                                 <td>
-                                    <textarea name="catatan" style="width:350px; height:60px;" class="label_input" multiline='true'
+                                    <textarea name="catatan" style="width:350px; height:50px" class="label_input" multiline="true"
                                         validType='length[0,300]'></textarea>
                                 </td>
                             </tr>
@@ -72,6 +49,7 @@
                 </div>
             </div>
         </div>
+
         <div data-options="region:'east',border:false" style="width:50px; padding:5px; border-left:1px solid #29b6f6; ">
             <br>
             <a href="#" title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false"
@@ -84,38 +62,18 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-    </script>
     <script>
         var row = {};
-        var config = {};
+        var id = '{{ $data }}'
         $(document).ready(async function() {
-            bukaLoader();
-            let check = false;
-            await getConfig('KODEKENDARAAN', 'MKENDARAAN', 'bearer {{ session('TOKEN') }}',
-                function(response) {
-                    if (response.success) {
-                        config = response.data;
-                        check = true;
-                    } else {
-                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
-                            window.alert("Login session sudah habis. Silahkan Login Kembali");
-                        } else {
-                            $.messager.alert('Error', error, 'error');
-                        }
-                    }
-                },
-                function(error) {
-                    $.messager.alert('Error', "Request Config Error", 'error');
-                });
-            if (!check) return;
-            tutupLoader();
+
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
                 await ubah();
             @endif
 
+            tutupLoader();
         })
 
         shortcut.add('F8', function() {
@@ -128,29 +86,17 @@
 
         function tambah() {
             $('#form_input').form('clear');
+
             $('#mode').val('tambah');
 
             $('#STATUS').prop('checked', true);
             $('#lbl_kasir, #lbl_tanggal').html('');
-            if (config.value == "AUTO") {
-                $('#KODEKENDARAAN').textbox({
-                    prompt: "Auto Generate",
-                    readonly: true,
-                    required: false
-                });
-            } else {
-                $('#KODEKENDARAAN').textbox({
-                    prompt: "",
-                    readonly: false,
-                    required: true
-                });
-            }
         }
 
         async function ubah() {
             $('#mode').val('ubah');
             try {
-                let url = link_api.getHeaderKendaraan;
+                let url = link_api.getHeaderPPN;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -158,7 +104,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidkendaraan: '{{ $data }}',
+                        tglaktif: '{{ $data }}',
                         mode: "ubah",
                     }),
                 }).then(response => {
@@ -180,9 +126,9 @@
                 $('#form_input').form('load', row);
 
                 $('[name=mode]').val('ubah');
+
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
-                $('#KODEKENDARAAN').textbox('readonly', true);
 
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
@@ -194,6 +140,7 @@
 
         async function simpan() {
             var isValid = $('#form_input').form('validate');
+
             if (isValid) {
                 tampilLoaderSimpan();
                 var mode = '{{ $mode }}';
@@ -204,7 +151,9 @@
                     let requestBody = null;
                     var unindexed_array = $('#form_input :input').serializeArray();
 
-                    var body = {};
+                    var body = {
+                        "tglaktiflama": id
+                    };
                     $.map(unindexed_array, function(n, i) {
                         body[n['name']] = n['value'];
                     });
@@ -217,7 +166,7 @@
                         headers['Content-Type'] = 'application/json';
                         requestBody = body ? JSON.stringify(body) : null;
                     }
-                    let url = link_api.simpanKendaraan;
+                    let url = link_api.simpanPPN;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: headers,
@@ -235,6 +184,7 @@
 
                             tambah();
                         } else {
+                            id = body.tglaktif;
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
                         }

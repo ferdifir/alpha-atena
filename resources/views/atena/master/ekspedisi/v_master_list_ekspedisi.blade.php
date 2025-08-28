@@ -279,22 +279,23 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter', [{
+      }).datagrid('enableFilter', [
+        {
           field: 'tglentry',
           type: 'datebox',
           options: {
             onChange: function(value) {
               if (value) {
                 console.log(value);
-                dg.datagrid('addFilterRule', {
+                $('#table_data').datagrid('addFilterRule', {
                   field: 'tglentry',
                   op: 'contains',
                   value: value.trim(),
                 });
               } else {
-                dg.datagrid('removeFilterRule', 'tglentry');
+                $('#table_data').datagrid('removeFilterRule', 'tglentry');
               }
-              dg.datagrid('doFilter');
+              $('#table_data').datagrid('doFilter');
             }
           }
         },
@@ -314,15 +315,15 @@
             }],
             onChange: function(value) {
               if (value == '') {
-                dg.datagrid('removeFilterRule', 'status');
+                $('#table_data').datagrid('removeFilterRule', 'status');
               } else {
-                dg.datagrid('addFilterRule', {
+                $('#table_data').datagrid('addFilterRule', {
                   field: 'status',
                   op: 'equal',
                   value: value
                 });
               }
-              dg.datagrid('doFilter');
+              $('#table_data').datagrid('doFilter');
             }
           }
         },

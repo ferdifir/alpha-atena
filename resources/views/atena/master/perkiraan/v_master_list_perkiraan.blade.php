@@ -416,7 +416,26 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter', [{
+            }).datagrid('enableFilter', [
+        {
+          field: 'tglentry',
+          type: 'datebox',
+          options: {
+            onChange: function(value) {
+              if (value) {
+                console.log(value);
+                dg.datagrid('addFilterRule', {
+                  field: 'tglentry',
+                  op: 'contains',
+                  value: value.trim(),
+                });
+              } else {
+                dg.datagrid('removeFilterRule', 'tglentry');
+              }
+              dg.datagrid('doFilter');
+            }
+          }
+        },{
                 field: 'akunpiutang',
                 type: 'combobox',
                 options: {

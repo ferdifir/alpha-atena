@@ -32,7 +32,8 @@
 @push('js')
     <script>
         var counter = 0;
-        var row={};
+        var row = {};
+
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_hapus').linkbutton('enable');
@@ -122,7 +123,7 @@
                     if (r) {
                         bukaLoader();
                         try {
-                            let url=link_api.hapusAlatBayar;
+                            let url = link_api.hapusAlatBayar;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -241,7 +242,25 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter',[{
+            }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {

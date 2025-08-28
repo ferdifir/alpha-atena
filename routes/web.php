@@ -326,3 +326,18 @@ Route::get('atena/master/hargabeli/data', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.master.harga_beli.data');
+
+// Master ppn
+Route::get('atena/master/ppn/data', function() {
+    return view('atena.master.ppn.v_master_list_ppn', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.ppn.data');
+
+Route::get('atena/master/ppn/form', function() {
+    return view('atena.master.ppn.v_master_form_ppn', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.ppn.form');

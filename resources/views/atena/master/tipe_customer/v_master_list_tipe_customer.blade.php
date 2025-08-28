@@ -40,7 +40,7 @@
         }
 
         $(document).ready(function() {
-          tutupLoader();
+            tutupLoader();
             //WAKTU BATAL DI GRID, tidak bisa close
             //PRINT GRID
             $("#table_data").datagrid({
@@ -62,7 +62,7 @@
             simpan();
         });
 
-        
+
         function before_add() {
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
@@ -111,7 +111,7 @@
                     if (r) {
                         bukaLoader();
                         try {
-                            let url=link_api.hapusTipeCustomer;
+                            let url = link_api.hapusTipeCustomer;
                             const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
@@ -227,7 +227,24 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter',[{
+            }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {

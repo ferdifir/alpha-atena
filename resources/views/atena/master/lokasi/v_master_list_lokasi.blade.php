@@ -166,7 +166,7 @@
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
-                onLoadSuccess:function(){
+                onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
@@ -303,6 +303,24 @@
                     before_edit();
                 },
             }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            console.log(value);
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {
@@ -318,15 +336,42 @@
                     }],
                     onChange: function(value) {
                         if (value == '') {
-                            dg.datagrid('removeFilterRule', 'status');
+                            $('#table_data').datagrid('removeFilterRule', 'status');
                         } else {
-                            dg.datagrid('addFilterRule', {
+                            $('#table_data').datagrid('addFilterRule', {
                                 field: 'status',
                                 op: 'equal',
                                 value: value
                             });
                         }
-                        dg.datagrid('doFilter');
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
+                field: 'lokasidefault',
+                type: 'combobox',
+                options: {
+                    data: [{
+                        value: '',
+                        text: 'All'
+                    }, {
+                        value: "1",
+                        text: 'Aktif'
+                    }, {
+                        value: "0",
+                        text: 'Non-aktif'
+                    }],
+                    onChange: function(value) {
+                        if (value == '') {
+                            $('#table_data').datagrid('removeFilterRule', 'status');
+                        } else {
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'status',
+                                op: 'equal',
+                                value: value
+                            });
+                        }
+                        $('#table_data').datagrid('doFilter');
                     }
                 }
             }, {

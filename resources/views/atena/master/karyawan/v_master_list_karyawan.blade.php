@@ -1,7 +1,7 @@
 @extends('template.app')
 
 @section('content')
-    <div class="easyui-layout" fit="true" >
+    <div class="easyui-layout" fit="true">
         <div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
             <a id="btn_tambah" href="#" title="Tambah" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
                 <img src="{{ asset('assets/images/add.png') }}">
@@ -265,6 +265,23 @@
                     before_edit();
                 },
             }).datagrid('enableFilter', [{
+                field: 'tglentry',
+                type: 'datebox',
+                options: {
+                    onChange: function(value) {
+                        if (value) {
+                            $('#table_data').datagrid('addFilterRule', {
+                                field: 'tglentry',
+                                op: 'contains',
+                                value: value.trim(),
+                            });
+                        } else {
+                            $('#table_data').datagrid('removeFilterRule', 'tglentry');
+                        }
+                        $('#table_data').datagrid('doFilter');
+                    }
+                }
+            }, {
                 field: 'status',
                 type: 'combobox',
                 options: {

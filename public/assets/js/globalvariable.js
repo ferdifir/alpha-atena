@@ -176,6 +176,11 @@ var link_api = {
     loadHargaBeli: `${base_url_api}atena/master/harga-beli/load-harga-beli`,
     hapusHargaBeli: `${base_url_api}atena/master/harga-beli/hapus-harga-beli`,
     updateHargaBeli: `${base_url_api}atena/master/harga-beli/update-harga-beli`,
+    //PPN
+    simpanPPN: `${base_url_api}atena/master/ppn/simpan`,
+getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
+loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
+hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
@@ -194,7 +199,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
 
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.success) {
-            const errorBody = await response.text(); // Ambil teks error dari server jika ada
+            console.log(response);
+            const errorBody = await response.message; // Ambil teks error dari server jika ada
             const errorMessage = `HTTP error! Status: ${response.status
                 }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
@@ -202,8 +208,12 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
+                if(errorBody.toLowerCase()=="token tidak valid"){
+                    $.messager.alert('Error', errorBody+" Silahkan logout dan login kembali", 'error');
+                }
                 console.error("Error fetching data:", error);
             }
+            tutupLoader();
             return; // Hentikan eksekusi
         }
 

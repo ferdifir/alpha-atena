@@ -389,7 +389,26 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter', [{
+      }).datagrid('enableFilter', [
+        {
+          field: 'tglentry',
+          type: 'datebox',
+          options: {
+            onChange: function(value) {
+              if (value) {
+                console.log(value);
+                $('#table_data').datagrid('addFilterRule', {
+                  field: 'tglentry',
+                  op: 'contains',
+                  value: value.trim(),
+                });
+              } else {
+                $('#table_data').datagrid('removeFilterRule', 'tglentry');
+              }
+              $('#table_data').datagrid('doFilter');
+            }
+          }
+        },{
           field: 'badanusaha',
           type: 'combobox',
           options: {
