@@ -72,6 +72,7 @@ var link_api = {
     loadDataPiutangBelumLunas: `${base_url_api}atena/master/customer/load-data-piutang-belum-lunas`,
     headerFormCustomer: `${base_url_api}atena/master/customer/load-data-header`,
     hapusCustomer: `${base_url_api}atena/master/customer/hapus`,
+    browseCustomer: `${base_url_api}atena/master/customer/browse`,
     //ekspedisi
     loadDataGridMasterEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-grid`,
     browseBadanUsahaEkspedisi: `${base_url_api}atena/master/ekspedisi/browse-badan-usaha`,
@@ -81,6 +82,9 @@ var link_api = {
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
+    getHeaderTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-header`,
+    loadDataGridTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-grid`,
+    hapusTipeCustomer: `${base_url_api}atena/master/tipecustomer/hapus`,
     //harga jual
     browseBarang: `${base_url_api}atena/master/barang/browse`,
     browseBarangAll: `${base_url_api}atena/master/barang/browse-all`,
@@ -125,8 +129,21 @@ var link_api = {
     simpanKaryawan: `${base_url_api}atena/master/karyawan/simpan`,
     getHeaderKaryawan: `${base_url_api}atena/master/karyawan/load-data-header`,
     browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
-
-    browseCustomer: `${base_url_api}atena/master/customer/browse`,
+    //sopir
+    hapusSopir: `${base_url_api}atena/master/sopir/hapus`,
+    simpanSopir: `${base_url_api}atena/master/sopir/simpan`,
+    getHeaderSopir: `${base_url_api}atena/master/sopir/load-data-header`,
+    loadDataGridSopir: `${base_url_api}atena/master/sopir/load-data-grid`,
+    //kendaraan
+    simpanKendaraan: `${base_url_api}atena/master/kendaraan/simpan`,
+    getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
+    loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
+    hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
+    //jenis pemakaian
+    simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
+    getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
+    loadDataGridJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-grid`,
+    hapusJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/hapus`,
     //Harga Jual Berdasarkan Jumlah
     loadHargaAktifTerakhir: `${base_url_api}atena/master/hargajualberdasarkanjumlah/load-harga-aktif-terakhir`,
     browseTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/browse-tgl-aktif`,
@@ -136,6 +153,29 @@ var link_api = {
     hapusHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus`,
     hapusHargaJualBerdasarkanJumlahPerTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus-per-tanggal-aktif`,
     simpanHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/simpan`,
+    //Master alat bayar non tunai
+    getHeaderNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-header`,
+    loadConfigNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-config`,
+    hapusNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/hapus`,
+    loadDataGridNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-grid`,
+    simpanNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/simpan`,
+    loadLokasiNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-lokasi`,
+    //alat bayar
+    simpanAlatBayar: `${base_url_api}atena/master/alatbayar/simpan`,
+    setUrutanAlatBayar: `${base_url_api}atena/master/alatbayar/set-urutan`,
+    getHeaderAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-header`,
+    loadDataGridAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-grid`,
+    hapusAlatBayar: `${base_url_api}atena/master/alatbayar/hapus`,
+    //satuan
+    simpanSatuan: `${base_url_api}atena/master/satuan/simpan`,
+    getHeaderSatuan: `${base_url_api}atena/master/satuan/load-data-header`,
+    loadDataGridSatuan: `${base_url_api}atena/master/satuan/load-data-grid`,
+    hapusSatuan: `${base_url_api}atena/master/satuan/hapus`,
+    //harga beli
+    loadHargaBeliSupplierBarang: `${base_url_api}atena/master/harga-beli/load-supplier-barang`,
+    loadHargaBeli: `${base_url_api}atena/master/harga-beli/load-harga-beli`,
+    hapusHargaBeli: `${base_url_api}atena/master/harga-beli/hapus-harga-beli`,
+    updateHargaBeli: `${base_url_api}atena/master/harga-beli/update-harga-beli`,
     //Barang
     loadDataGridBarang: `${base_url_api}atena/master/barang/load-data-grid`,
     simpanBarang: `${base_url_api}atena/master/barang/simpan`,

@@ -81,7 +81,7 @@
                         config = response.data;
                         check = true;
                     } else {
-                        if ((response.message ?? "").toLowerCase() == "Token tidak valid") {
+                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
                             window.alert("Login session sudah habis. Silahkan Login Kembali");
                         } else {
                             $.messager.alert('Error', error, 'error');
@@ -92,12 +92,13 @@
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
             if (!check) return;
-            tutupLoader();
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
                 await ubah();
             @endif
+
+            tutupLoader();
         })
         shortcut.add('F8', function() {
             simpan();

@@ -20,7 +20,7 @@
                 <div title="Grid" id="Grid">
                     <div class="easyui-layout" style="width:100%;height:100%" fit="true">
                         <div data-options="region:'center',">
-                            <table id="table_data" idField="UUIDLOKASI"></table>
+                            <table id="table_data" idField="idalatbayar"></table>
                         </div>
                     </div>
                 </div>
@@ -30,17 +30,18 @@
 @endsection
 
 @push('js')
-    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
-    </script>
     <script>
+        var counter = 0;
+        var row={};
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_hapus').linkbutton('enable');
         }
+
         $(document).ready(async function() {
             bukaLoader();
             let check = false;
-            await getConfig("KODELOKASI", "MLOKASI", 'bearer {{ session('TOKEN') }}',
+            await getConfig('KODEALATBAYAR', 'MALATBAYAR', 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -56,8 +57,6 @@
                 function(error) {
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
-            if (!check) return;
-            tutupLoader();
             //WAKTU BATAL DI GRID, tidak bisa close
             //PRINT GRID
             $("#table_data").datagrid({
@@ -67,7 +66,9 @@
             });
 
             buat_table();
+            tutupLoader();
         });
+
         shortcut.add('F2', function() {
             before_add();
         });
@@ -79,8 +80,8 @@
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Lokasi',
-                        '{{ route('atena.master.lokasi.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah Alat Bayar',
+                        '{{ route('atena.master.alat_bayar.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -93,9 +94,9 @@
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
-                    parent.buka_submenu(null, row.namalokasi,
-                        '{{ route('atena.master.lokasi.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidlokasi,
+                    parent.buka_submenu(null, row.namaalatbayar,
+                        '{{ route('atena.master.alat_bayar.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidalatbayar,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -114,22 +115,23 @@
             });
         }
 
-        function hapus() {
+        async function hapus() {
             var row = $('#table_data').datagrid('getSelected');
             if (row) {
                 $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                     if (r) {
+                        bukaLoader();
                         try {
-                            bukaLoader();
-                            const response = await fetch(link_api.hapusLokasi, {
+                            let url=link_api.hapusAlatBayar;
+                            const response = await fetch(url, {
                                 method: 'POST',
                                 headers: {
                                     'Authorization': 'bearer {{ session('TOKEN') }}',
                                     'Content-Type': 'application/json',
                                 },
                                 body: JSON.stringify({
-                                    uuidlokasi: row.uuidlokasi,
-                                    kodelokasi: row.kodelokasi
+                                    uuidalatbayar: row.uuidalatbayar,
+                                    kode: row.kodealatbayar,
                                 }),
                             }).then(response => {
                                 if (!response.ok) {
@@ -162,125 +164,62 @@
                 striped: true,
                 pagination: true,
                 pageSize: 20,
-                url: link_api.loadDataGridLokasi,
+                clientPaging: false,
+                url: link_api.loadDataGridAlatBayar,
                 rowStyler: function(index, row) {
                     if (row.status == 0) return 'background-color:#a8aea6';
                 },
-                onLoadSuccess:function(){
+                onLoadSuccess: function() {
                     $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
-                            field: 'uuidlokasi',
+                            field: 'uuidalatbayar',
                             hidden: true
                         },
                         {
-                            field: 'kodelokasi',
+                            field: 'kodealatbayar',
                             title: 'Kode',
                             width: 80,
                             sortable: true,
+                            align: 'center'
                         },
                         {
-                            field: 'namalokasi',
+                            field: 'namaalatbayar',
                             title: 'Nama',
                             width: 200,
                             sortable: true,
-                        },
-                        {
-                            field: 'lokasidefault',
-                            title: 'Default',
-                            align: 'center',
-                            sortable: true,
-                            formatter: format_checked,
                         },
                     ]
                 ],
                 columns: [
                     [{
-                            field: 'alamat',
-                            title: 'Alamat',
-                            width: 200,
-                            sortable: true,
-                        },
-                        {
-                            field: 'kota',
-                            title: 'Kota',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'propinsi',
-                            title: 'Propinsi',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'negara',
-                            title: 'Negara',
-                            width: 150,
-                            sortable: true,
-                        },
-                        {
-                            field: 'telp',
-                            title: 'Telp',
-                            width: 100,
-                            sortable: true,
-                        },
-                        {
-                            field: 'selisihsetoranmin',
-                            title: 'Selisih Setoran Minimum',
+                            field: 'namaperkiraankas',
+                            title: 'Akun Kas/Bank',
                             width: 120,
-                            formatter: format_amount,
+                            sortable: true
+                        },
+                        {
+                            field: 'amount',
+                            title: 'Minimal Grandtotal',
+                            width: 120,
+                            sortable: true,
                             align: 'right',
-                            sortable: true,
-                        },
-                        {
-                            field: 'selisihsetoranmax',
-                            title: 'Selisih Setoran Maximum',
-                            width: 120,
                             formatter: format_amount,
-                            align: 'right',
-                            sortable: true,
                         },
                         {
-                            field: 'kodeperkiraan',
-                            title: 'Akun Asal<br>Modal Awal kasir',
-                            width: 120,
+                            field: 'urutan',
+                            title: 'Urutan',
+                            width: 55,
                             sortable: true,
-                        },
-                        {
-                            field: 'namaperkiraan',
-                            title: 'Nama Akun Asal Modal Awal kasir',
-                            width: 200,
-                            sortable: true,
-                        },
-                        {
-                            field: 'minimaltransaksipoin',
-                            title: 'Minimal Transaksi<br>Poin',
-                            width: 100,
-                            sortable: true,
-                            formatter: format_amount,
-                            align: 'right'
-                        },
-                        {
-                            field: 'konversi1poin',
-                            title: 'Konversi 1 Poin',
-                            width: 100,
-                            sortable: true,
-                            formatter: format_amount,
-                            align: 'right'
-                        },
-                        {
-                            field: 'catatan',
-                            title: 'Catatan',
-                            width: 250,
-                            sortable: true,
+                            align: 'center'
                         },
                         {
                             field: 'userbuat',
                             title: 'User Entry',
                             width: 75,
-                            sortable: true
+                            sortable: true,
+                            align: 'center'
                         },
                         {
                             field: 'tglentry',
@@ -302,7 +241,7 @@
                 onDblClickRow: function(index, row) {
                     before_edit();
                 },
-            }).datagrid('enableFilter', [{
+            }).datagrid('enableFilter',[{
                 field: 'status',
                 type: 'combobox',
                 options: {
@@ -318,19 +257,19 @@
                     }],
                     onChange: function(value) {
                         if (value == '') {
-                            dg.datagrid('removeFilterRule', 'status');
+                            $('#table_data').datagrid('removeFilterRule', 'status');
                         } else {
-                            dg.datagrid('addFilterRule', {
+                            $('#table_data').datagrid('addFilterRule', {
                                 field: 'status',
                                 op: 'equal',
                                 value: value
                             });
                         }
-                        dg.datagrid('doFilter');
+                        $('#table_data').datagrid('doFilter');
                     }
                 }
             }, {
-                field: 'selisihsetoranmin',
+                field: 'amount',
                 type: 'numberbox',
                 options: {
                     precision: 2,
@@ -338,36 +277,18 @@
                     groupSeparator: ",",
                 }
             }, {
-                field: 'selisihsetoranmax',
+                field: 'urutan',
                 type: 'numberbox',
                 options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
+                    precision: 0,
                 }
-            }, {
-                field: 'minimaltransaksipoin',
-                type: 'numberbox',
-                options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
-                }
-            }, {
-                field: 'konversi1poin',
-                type: 'numberbox',
-                options: {
-                    precision: 2,
-                    decimalSeparator: ".",
-                    groupSeparator: ",",
-                }
-            }, ]);
+            }]);
         }
 
         function refresh_data() {
-            //JIKA DI TAB GRID
             $('#table_data').datagrid('reload');
         }
+
 
         function reload() {
             $('#table_data').datagrid('reload');

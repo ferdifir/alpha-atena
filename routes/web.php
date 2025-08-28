@@ -215,6 +215,118 @@ Route::get('atena/master/hargajualberdasarkanjumlah/data', function() {
     ]);
 })->name('atena.master.hargajualberdasarkanjumlah.data');
 
+// Master sopir
+Route::get('atena/master/sopir/data', function() {
+    return view('atena.master.sopir.v_master_list_sopir', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.sopir.data');
+
+Route::get('atena/master/sopir/form', function() {
+    return view('atena.master.sopir.v_master_form_sopir', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.sopir.form');
+
+// Master kendaraan
+Route::get('atena/master/kendaraan/data', function() {
+    return view('atena.master.kendaraan.v_master_list_kendaraan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.kendaraan.data');
+
+Route::get('atena/master/kendaraan/form', function() {
+    return view('atena.master.kendaraan.v_master_form_kendaraan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.kendaraan.form');
+
+// Master jenis pemakaian
+Route::get('atena/master/jenispemakaian/data', function() {
+    return view('atena.master.jenis_pemakaian.v_master_list_jenis_pemakaian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.jenis_pemakaian.data');
+
+Route::get('atena/master/jenispemakaian/form', function() {
+    return view('atena.master.jenis_pemakaian.v_master_form_jenis_pemakaian', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.jenis_pemakaian.form');
+
+// Master tipe customer
+Route::get('atena/master/tipecustomer/data', function() {
+    return view('atena.master.tipe_customer.v_master_list_tipe_customer', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.tipe_customer.data');
+
+Route::get('atena/master/tipecustomer/form', function() {
+    return view('atena.master.tipe_customer.v_master_form_tipe_customer', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.tipe_customer.form');
+
+// Master alat bayar
+Route::get('atena/master/alatbayar/data', function() {
+    return view('atena.master.alat_bayar.v_master_list_alat_bayar', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.alat_bayar.data');
+
+Route::get('atena/master/alatbayar/form', function() {
+    return view('atena.master.alat_bayar.v_master_form_alat_bayar', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.alat_bayar.form');
+
+// Master alat bayar non tunai
+Route::get('atena/master/alatbayarnontunai/data', function() {
+    return view('atena.master.alat_bayar_non_tunai.v_master_list_alat_bayar_non_tunai', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.alat_bayar_non_tunai.data');
+
+Route::get('atena/master/alatbayarnontunai/form', function() {
+    return view('atena.master.alat_bayar_non_tunai.v_master_form_alat_bayar_non_tunai', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.alat_bayar_non_tunai.form');
+
+// Master satuan
+Route::get('atena/master/satuan/data', function() {
+    return view('atena.master.satuan.v_master_list_satuan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.satuan.data');
+
+Route::get('atena/master/satuan/form', function() {
+    return view('atena.master.satuan.v_master_form_satuan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.satuan.form');
+
+// Master harga beli
+Route::get('atena/master/hargabeli/data', function() {
+    return view('atena.master.harga_beli.v_master_list_harga_beli', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.harga_beli.data');
+
 // Barang
 Route::get('atena/master/barang/data', function() {
     return view('atena.master.barang.v_master_list_barang', [

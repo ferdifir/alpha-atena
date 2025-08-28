@@ -4,32 +4,28 @@
     <div id="form_input" class="easyui-layout" fit="true">
         <div data-options="region:'center',border:false">
             <div class="easyui-layout" fit="true">
-                <div data-options="region:'center',border:false ">
+                <div data-options="region:'center',border:false">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
-
                         <input type="hidden" name="mode" id="mode">
-                        <input type="hidden" name="uuidsyaratbayar">
+                        <input type="hidden" name="uuidsatuan">
                         <table style="padding:5px" id="label_form">
                             <tr>
-                                <td align="right" id="label_form">Kode</td>
-                                <td><input id="KODESYARATBAYAR" name="kodesyaratbayar" style="width:290px"
-                                        class="label_input">
+                                <td align="right" id="label_form">Satuan</td>
+                                <td><input name="satuan" style="width:290px" class="label_input" required="true"
+                                        validType='length[0,100]'>
                                     <label id="label_form"><input type="checkbox" id="STATUS" name="status"
                                             value="1"> Aktif</label>
                                 </td>
                             </tr>
                             <tr>
-                                <td align="right" id="label_form">Nama</td>
-                                <td><input name="namasyaratbayar" style="width:350px" class="label_input" required="true"
-                                        validType='length[0,100]'></td>
+                                <td align="right" id="label_form">Kode Pajak</td>
+                                <td>
+                                    <input name="kodepajak" style="width:350px" class="label_input"
+                                        validType='length[0,100]'>
+                                </td>
                             </tr>
                             <tr>
-                                <td align="right" id="label_form">Selisih Hari</td>
-                                <td><input name="selisih" style="width:350px" class="easyui-numberspinner" required="true"
-                                        validType='length[0,50]'></td>
-                            </tr>
-                            <tr>
-                                <td align="right" id="label_form" valign="top">Catatan</td>
+                                <td valign="top" align="right" id="label_form">Catatan</td>
                                 <td>
                                     <textarea name="catatan" style="width:350px; height:50px" class="label_input" multiline="true"
                                         validType='length[0,300]'></textarea>
@@ -66,32 +62,16 @@
 @push('js')
     <script>
         var row = {};
-        let config = {};
         $(document).ready(async function() {
-            let check = false;
-            await getConfig("KODESYARATBAYAR", "MSYARATBAYAR", 'bearer {{ session('TOKEN') }}',
-                function(response) {
-                    if (response.success) {
-                        config = response.data;
-                        check = true;
-                    } else {
-                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
-                            window.alert("Login session sudah habis. Silahkan Login Kembali");
-                        } else {
-                            $.messager.alert('Error', error, 'error');
-                        }
-                    }
-                },
-                function(error) {
-                    $.messager.alert('Error', "Request Config Error", 'error');
-                });
-            if (!check) return;
-            tutupLoader();
+
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
                 await ubah();
             @endif
+
+            tutupLoader();
+
         })
 
         shortcut.add('F8', function() {
@@ -104,32 +84,16 @@
 
         function tambah() {
             $('#form_input').form('clear');
-            $('#uuidsyaratbayar').val('{{ $data }}');
-
             $('#mode').val('tambah');
+
             $('#STATUS').prop('checked', true);
             $('#lbl_kasir, #lbl_tanggal').html('');
-            if (config.value == "AUTO") {
-                $('#KODESYARATBAYAR').textbox({
-                    prompt: "Auto Generate",
-                    readonly: true,
-                    required: false
-                });
-            } else {
-                $('#KODESYARATBAYAR').textbox({
-                    prompt: "",
-                    readonly: false,
-                    required: true
-                });
-                $('#KODESYARATBAYAR').textbox('clear').textbox('textbox').focus();
-            }
         }
 
         async function ubah() {
             $('#mode').val('ubah');
-            $('#uuidmerk').val('{{ $data }}');
             try {
-                let url = link_api.getHeaderSyaratBayar;
+                let url = link_api.getHeaderSatuan;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -137,7 +101,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidsyaratbayar: '{{ $data }}',
+                        uuidsatuan: '{{ $data }}',
                         mode: "ubah",
                     }),
                 }).then(response => {
@@ -162,7 +126,6 @@
 
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
-                $('#KODESYARATBAYAR').textbox('readonly', true);
 
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
@@ -198,7 +161,7 @@
                         headers['Content-Type'] = 'application/json';
                         requestBody = body ? JSON.stringify(body) : null;
                     }
-                    let url = link_api.simpanSyaratBayar;
+                    let url = link_api.simpanSatuan;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: headers,
