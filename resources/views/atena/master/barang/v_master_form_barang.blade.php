@@ -959,7 +959,7 @@
             }
             // parent.reload();
           } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+            $.messager.alert('Error', msg.message, 'error');
           }
         },
       });
@@ -1166,42 +1166,6 @@
         function(error) {
           $.messager.alert('Error', "Request Config Error", 'error');
         });
-    }
-
-    async function fetchData(url, body) {
-      try {
-        const token = '{{ session('TOKEN') }}';
-        let headers = {
-          'Authorization': 'bearer ' + token,
-        };
-        let requestBody = null;
-
-        // Cek apakah body adalah instance dari FormData
-        if (body instanceof FormData) {
-          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
-          requestBody = body;
-        } else {
-          // Default: Jika bukan FormData, asumsikan itu JSON.
-          headers['Content-Type'] = 'application/json';
-          requestBody = body ? JSON.stringify(body) : null;
-        }
-
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: headers,
-          body: requestBody,
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        console.error("Terjadi kesalahan:", error);
-        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
-      }
     }
 
     async function ubah() {
@@ -1432,8 +1396,9 @@
             }
           } catch (error) {
             tutupLoaderSimpan();
-            console.log(error);
-            $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+            const e = (typeof error === 'string') ? error : error.message;
+            var textError = getTextError(e);
+            $.messager.alert('Error', textError, 'error');
             return;
           }
         }
@@ -1648,7 +1613,7 @@
               nama: msg.namamerk
             });
           } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+            $.messager.alert('Error', msg.message, 'error');
           }
         }
       });
@@ -2252,7 +2217,7 @@
 
             tampil_hargajual_berdasarkan_satuan($('#IDBARANG').val());
           } else {
-            $.messager.alert('Error', response.errorMsg, 'error');
+            $.messager.alert('Error', response.message, 'error');
           }
         }
       })

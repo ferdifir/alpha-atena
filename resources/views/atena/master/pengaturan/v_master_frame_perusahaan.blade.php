@@ -251,7 +251,7 @@
               showType: 'show'
             });
           } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+            $.messager.alert('Error', msg.message, 'error');
           }
         }
       });

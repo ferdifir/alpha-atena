@@ -717,74 +717,80 @@
     }
 
     async function tambah() {
-      $('#form_input').form('clear');
-      $('#mode').val('tambah');
+      try {
+        // Clear form dan set nilai default
+        $('#form_input').form('clear');
+        $('#mode').val('tambah');
+        $('#STATUS').prop('checked', true);
+        $('#lbl_kasir, #lbl_tanggal').empty();
+        $("#v-cust-induk").hide();
+        $('.number').numberbox('setValue', 0);
+        $('#DISCOUNTMIN, #DISCOUNTMAX').textbox('setValue', '0');
 
-      $('#STATUS').prop('checked', true);
-      $('#lbl_kasir, #lbl_tanggal').html('');
-      $("#v-cust-induk").hide();
-      $('.number').numberbox('setValue', 0)
+        const [aksesResponse, configResponse] = await Promise.all([
+          fetchData(link_api.getAksesFitur, {
+            uuiduser: "{{ session('DATAUSER')['uuid'] }}",
+            kodemenu: "I8KJS"
+          }),
+          fetchData(link_api.getConfig, {
+            modul: 'MCUSTOMER',
+            config: 'KODECUSTOMER',
+          })
+        ]);
 
-      $('#DISCOUNTMIN').textbox('setValue', '0');
-      $('#DISCOUNTMAX').textbox('setValue', '0');
-
-      fetchData(link_api.getAksesFitur, {
-        uuiduser: "{{ session('DATAUSER')['uuid'] }}",
-        kodemenu: "I8KJS"
-      }).then(function(response) {
-        if (response.success && !response.data.akses) {
+        if (aksesResponse.success && !aksesResponse.data.akses) {
           $('#tabs').tabs('disableTab', 3);
         }
-      })
 
-      const response = await fetchData(link_api.getConfig, {
-        modul: 'MCUSTOMER',
-        config: 'KODECUSTOMER',
-      });
-
-      if (response.data.value == 'AUTO') {
+        const isAuto = configResponse.data.value === 'AUTO';
         $('#KODECUSTOMER').textbox({
+          prompt: isAuto ? "Auto Generate" : "",
+          readonly: isAuto,
+          required: !isAuto
+        });
+
+        if (!isAuto) {
+          $('#KODECUSTOMER').textbox('clear').textbox('textbox').focus();
+        }
+
+        $('#KODETIPECUSTOMER').textbox({
           prompt: "Auto Generate",
           readonly: true,
           required: false
         });
-      } else {
-        $('#KODECUSTOMER').textbox({
-          prompt: "",
-          readonly: false,
-          required: true
-        });
-        $('#KODECUSTOMER').textbox('clear').textbox('textbox').focus();
+
+        reset_detail();
+        tutupLoader();
+
+      } catch (error) {
+        const e = (typeof error === 'string') ? error : error.message;
+        $.messager.alert('Error', getTextError(e), 'error');
+        tutupLoader();
       }
-
-      $('#KODETIPECUSTOMER').textbox({
-        prompt: "Auto Generate",
-        readonly: true,
-        required: false
-      });
-
-      reset_detail();
-      tutupLoader();
     }
 
     async function ubah() {
-      $('#mode').val('ubah');
-      const response = await fetchData(link_api.headerFormCustomer, {
-        uuidcustomer: '{{ $data }}'
-      })
+      try {
+        $('#mode').val('ubah');
 
-      if (response.success) {
+        const response = await fetchData(link_api.headerFormCustomer, {
+          uuidcustomer: '{{ $data }}'
+        });
+
+        if (!response.success) {
+          throw new Error('Gagal mengambil data customer');
+        }
+
         const row = response.data.row;
-        $('#form_input').form('load', row);
 
+        $('#form_input').form('load', row);
         $('[name=mode]').val('ubah');
-        //load_data_mcustomernpwp(row.IDCUSTOMER);
 
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
         $('#KODECUSTOMER').textbox('readonly', true);
-        $('#KODETIPECUSTOMERMASTER').combogrid('setValue', row.kodetipecustomer);
 
+        $('#KODETIPECUSTOMERMASTER').combogrid('setValue', row.kodetipecustomer);
         $('#KODETIPECUSTOMER').textbox({
           prompt: "Auto Generate",
           readonly: true,
@@ -800,14 +806,58 @@
           $('#tabs').tabs('disableTab', 3);
         }
 
-        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-          if (data.data.ubah != 1) {
-            $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
-          }
-        });
+        await Promise.all([
+          new Promise((resolve) => {
+            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+              if (data.data.ubah != 1) {
+                $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
+              }
+              resolve();
+            });
+          }),
+          load_data_piutang_belum_lunas(row.uuidcustomer),
+          load_data_ubah_status_piutang(row.uuidcustomer)
+        ]);
 
-        load_data_piutang_belum_lunas(row.uuidcustomer);
-        load_data_ubah_status_piutang(row.uuidcustomer);
+      } catch (error) {
+        const e = (typeof error === 'string') ? error : error.message;
+        $.messager.alert('Error', getTextError(e), 'error');
+      } finally {
+        tutupLoader();
+      }
+    }
+
+    async function load_data_piutang_belum_lunas(idcustomer) {
+      const url = link_api.loadDataPiutangBelumLunas;
+      const data = {
+        uuidcustomer: idcustomer
+      };
+      try {
+        const response = await fetchData(url, data);
+        if (response.success) {
+          $('#table_data_riwayat_piutang').datagrid('loadData', response.data);
+        } else {
+          throw new Error(response.message);
+        }
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async function load_data_ubah_status_piutang(idcustomer) {
+      const url = link_api.loadDataUbahStatusPiutang;
+      const data = {
+        uuidcustomer: idcustomer
+      };
+      try {
+        const reponse = await fetchData(url, data);
+        if (reponse.success) {
+          $('#table_data_ubah_status_piutang').datagrid('loadData', reponse.data);
+        } else {
+          throw new Error(reponse.message);
+        }
+      } catch (error) {
+        throw error;
       }
     }
 
@@ -864,8 +914,9 @@
           }
         } catch (error) {
           tutupLoaderSimpan();
-                var textError=getTextError(error);
-                $.messager.alert('Error', getTextError(error), 'error');
+          const e = (typeof error === 'string') ? error : error.message;
+          var textError = getTextError(e);
+          $.messager.alert('Error', textError, 'error');
         }
       }
       reset_detail();
@@ -928,8 +979,9 @@
           $.messager.alert('Error', response.message, 'error');
         }
       } catch (error) {
-        console.log(error);
-        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -1135,46 +1187,6 @@
       });
     }
 
-    async function load_data_piutang_belum_lunas(idcustomer) {
-      const url = link_api.loadDataPiutangBelumLunas;
-      const data = {
-        uuidcustomer: idcustomer
-      };
-      try {
-        const response = await fetchData(url, data);
-        if (response.success) {
-          $('#table_data_riwayat_piutang').datagrid('loadData', response.data);
-        } else {
-          $.messager.alert('Error', response.message, 'error');
-        }
-      } catch (error) {
-        console.log(error);
-        $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
-      } finally {
-        tutupLoader();
-      }
-    }
-
-    async function load_data_ubah_status_piutang(idcustomer) {
-      const url = link_api.loadDataUbahStatusPiutang;
-      const data = {
-        uuidcustomer: idcustomer
-      };
-      try {
-        const reponse = await fetchData(url, data);
-        if (reponse.success) {
-          $('#table_data_ubah_status_piutang').datagrid('loadData', reponse.data);
-        } else {
-          $.messager.alert('Error', reponse.message, 'error');
-        }
-      } catch (error) {
-        console.log(error);
-        $.messager.alert('Error', 'Terjadi Kesalahan', 'error');
-      } finally {
-        tutupLoader();
-      }
-    }
-
     function tampilFormUbahStatusPiutang() {
       $('#TGLJUALUBAHSTATUSPIUTANG').datebox('setValue', date_format());
       $('#SEMUAUBAHSTATUSPIUTANG').prop('checked', true);
@@ -1216,7 +1228,9 @@
         }
       } catch (error) {
         tutupLoaderSimpan();
-        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        const textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -1238,8 +1252,9 @@
                 $('#alasan_pembatalan').dialog('close');
               }
             } catch (error) {
-              console.log(error);
-              $.messager.alert('Error', 'Terjadi Kesalahan', 'error');
+              const e = (typeof error === 'string') ? error : error.message;
+              const textError = getTextError(e);
+              $.messager.alert('Error', textError, 'error');
             }
           }
         });
@@ -1307,7 +1322,6 @@
 
         return expirationTime < currentTime;
       } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
         return true;
       }
     }

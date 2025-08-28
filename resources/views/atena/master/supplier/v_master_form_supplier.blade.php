@@ -310,8 +310,11 @@
           $.messager.alert('Error', response.message, 'error');
         }
       } catch (error) {
-        $.messager.alert('Error', 'Terdapat kesalahan ketika mengambil data supplier, silahkan muat ulang laman',
-          'error');
+        console.log(error);
+        tutupLoader();
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -375,7 +378,10 @@
           }
         } catch (error) {
           console.log(error)
-          $.messager.alert('Error', 'Terdapat kesalahan ketika menyimpan supplier', 'error');
+          tutupLoaderSimpan();
+          const e = (typeof error === 'string') ? error : error.message;
+          var textError = getTextError(e);
+          $.messager.alert('Error', textError, 'error');
         }
       }
     }
@@ -482,7 +488,10 @@
           $.messager.alert('Error', response.message, 'error');
         }
       } catch (error) {
-        $.messager.alert('Error', 'Terdapat kesalahan ketika memuat data hutang belum lunas', 'error');
+        console.log(error);
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 

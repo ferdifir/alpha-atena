@@ -446,7 +446,7 @@
               '#preview-image-profile').clone());
             $('#fm-tabs').tabs('select', 0)
           } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+            $.messager.alert('Error', msg.message, 'error');
           }
         },
       });

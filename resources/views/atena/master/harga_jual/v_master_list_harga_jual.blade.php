@@ -4160,7 +4160,9 @@
         }
       } catch (error) {
         tutupLoaderSimpan();
-        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -4196,8 +4198,9 @@
         }
       } catch (error) {
         tutupLoaderSimpan();
-        console.error("Terjadi kesalahan:", error);
-        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -4386,8 +4389,9 @@
         }
       } catch (error) {
         tutupLoaderSimpan();
-        console.log(error);
-        $.messager.alert('Error', 'Terdapat Kesalahan Ketika Menyimpan Data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 

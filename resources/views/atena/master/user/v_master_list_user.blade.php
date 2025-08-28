@@ -143,16 +143,22 @@
           async function(r) {
             if (r) {
               try {
+                bukaLoader();
                 const res = await fetchData(link_api.hapusUser, {
                   uuiduser: row.uuiduser
-                })
+                });
+                tutupLoader();
                 if (res.success) {
                   refresh_data();
                 } else {
                   $.messager.alert('Error', res.message, 'error');
                 }
               } catch (e) {
-                $.messager.alert('Error', 'Terjadi Kesalahan ketika menghapus supplier', 'error');
+                tutupLoader();
+                console.log(e);
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
               }
             }
           });

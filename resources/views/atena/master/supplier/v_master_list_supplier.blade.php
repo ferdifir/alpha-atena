@@ -155,14 +155,19 @@
       if (row) {
         $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
           if (r) {
-            const response = await fetchData(link_api.hapusSupplier, {
-              uuidsupplier: row.uuidsupplier
-            })
-            if (response.success) {
-              refresh_data(); // reload the user data
-            } else {
-              $.messager.alert('Error', response.message, 'error');
-
+            try {
+              const response = await fetchData(link_api.hapusSupplier, {
+                uuidsupplier: row.uuidsupplier
+              });
+              if (response.success) {
+                refresh_data();
+              } else {
+                $.messager.alert('Error', response.message, 'error');
+              }
+            } catch (error) {
+              const e = (typeof error === 'string') ? error : error.message;
+              var textError = getTextError(e);
+              $.messager.alert('Error', textError, 'error');
             }
           }
         });
@@ -172,19 +177,6 @@
     }
 
     async function buat_table() {
-      var filterList = await getFilterList();
-      var filterBadanUsaha = filterList.badanUsaha.map(item => {
-        return {
-          value: item.badanusaha,
-          text: item.badanusaha,
-        }
-      });
-      var filterSyaratBayar = filterList.syaratBayar.map(item => {
-        return {
-          value: item.nama,
-          text: item.nama
-        }
-      })
       var dg = $('#table_data').datagrid({
         remoteFilter: true,
         fit: true,
@@ -389,8 +381,7 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter', [
-        {
+      }).datagrid('enableFilter', [{
           field: 'tglentry',
           type: 'datebox',
           options: {
@@ -408,74 +399,9 @@
               $('#table_data').datagrid('doFilter');
             }
           }
-        },{
-          field: 'badanusaha',
-          type: 'combobox',
-          options: {
-            data: [{
-                value: '',
-                text: 'All'
-              },
-              ...filterBadanUsaha,
-            ],
-            onChange: function(value) {
-              if (value == '') {
-                dg.datagrid('removeFilterRule', 'badanusaha');
-              } else {
-                dg.datagrid('addFilterRule', {
-                  field: 'badanusaha',
-                  op: 'equal',
-                  value: value
-                });
-              }
-              dg.datagrid('doFilter');
-            }
-          }
-        }, {
-          field: 'namasyaratbayar',
-          type: 'combobox',
-          options: {
-            data: [{
-                value: '',
-                text: 'All'
-              },
-              ...filterSyaratBayar,
-            ],
-            onChange: function(value) {
-              if (value == '') {
-                dg.datagrid('removeFilterRule', 'namasyaratbayar');
-              } else {
-                dg.datagrid('addFilterRule', {
-                  field: 'namasyaratbayar',
-                  op: 'equal',
-                  value: value
-                });
-              }
-              dg.datagrid('doFilter');
-            }
-          }
-        },
-        {
-          field: 'tglentry',
-          type: 'datebox',
-          options: {
-            onChange: function(value) {
-              if (value) {
-                console.log(value);
-                dg.datagrid('addFilterRule', {
-                  field: 'tglentry',
-                  op: 'contains',
-                  value: value.trim(),
-                });
-              } else {
-                dg.datagrid('removeFilterRule', 'tglentry');
-              }
-              dg.datagrid('doFilter');
-            }
-          }
         }, {
           field: 'kodepos',
-          type: 'numberspinner',
+          type: 'numberbox',
           options: {
             onChange: function(value) {
               if (value == 0) {
@@ -520,35 +446,6 @@
           }
         },
       ]);
-    }
-
-    async function getFilterList() {
-      try {
-        const [badanUsaha, syaratBayar] = await Promise.all([
-          getBadanUsaha(),
-          getSyaratBayar()
-        ]);
-        const filterData = {
-          badanUsaha: badanUsaha,
-          syaratBayar: syaratBayar
-        };
-        return filterData;
-      } catch (error) {
-        return {
-          badanUsaha: [],
-          syaratBayar: []
-        };
-      }
-    }
-
-    async function getBadanUsaha() {
-      const res = await fetchData(link_api.browseBadanUsaha);
-      return res.data;
-    }
-
-    async function getSyaratBayar() {
-      const res = await fetchData(link_api.browseSyaratBayar);
-      return res.data;
     }
 
     function refresh_data() {

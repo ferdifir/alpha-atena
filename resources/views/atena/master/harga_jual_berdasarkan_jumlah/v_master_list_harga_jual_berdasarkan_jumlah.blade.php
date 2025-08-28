@@ -843,7 +843,9 @@
         console.log(error);
         tutupLoader();
         $('#window_harga').window('maximize');
-        $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -902,7 +904,9 @@
             console.log(error);
             tutupLoader();
             $('#window_harga').window('maximize');
-            $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
+            const e = (typeof error === 'string') ? error : error.message;
+            var textError = getTextError(e);
+            $.messager.alert('Error', textError, 'error');
           }
         });
     }
@@ -937,7 +941,9 @@
             }
           } catch (error) {
             console.log(error);
-            $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
+            const e = (typeof error === 'string') ? error : error.message;
+            var textError = getTextError(e);
+            $.messager.alert('Error', textError, 'error');
           }
         });
     }

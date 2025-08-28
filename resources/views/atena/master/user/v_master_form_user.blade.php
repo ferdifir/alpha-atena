@@ -986,7 +986,9 @@
           }
         } catch (error) {
           tutupLoaderSimpan();
-          $.messager.alert('Error', 'Terdapat kesalahan ketika menyimpan data', 'error');
+          const e = (typeof error === 'string') ? error : error.message;
+          var textError = getTextError(e);
+          $.messager.alert('Error', textError, 'error');
         }
       }
     }
@@ -1035,7 +1037,9 @@
         loaded.lokasi = true;
         close_loading();
       } catch (error) {
-        console.error('Erro Get Lokasi Per User:', error);
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -1063,6 +1067,9 @@
         close_loading();
       } catch (error) {
         console.error('Erro Get Lokasi Transfer Per User:', error);
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 

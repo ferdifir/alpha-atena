@@ -185,11 +185,13 @@
               if (response.success) {
                 refresh_data();
               } else {
-                $.messager.alert('Error', response.errorMsg, 'error');
+                $.messager.alert('Error', response.message, 'error');
               }
             } catch (error) {
               tutupLoader();
-              $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
+              const e = (typeof error === 'string') ? error : error.message;
+              var textError = getTextError(e);
+              $.messager.alert('Error', textError, 'error');
             }
           }
         });
@@ -404,7 +406,7 @@
 
         $('#table_data').datagrid('reload');
       } else {
-        $.messager.alert('Error', msg.errorMsg, 'error');
+        $.messager.alert('Error', msg.message, 'error');
       }
 
     }

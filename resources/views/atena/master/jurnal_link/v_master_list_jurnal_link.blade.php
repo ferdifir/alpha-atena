@@ -93,7 +93,9 @@
         }
       } catch (error) {
         tutupLoaderSimpan();
-        $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
 
     }

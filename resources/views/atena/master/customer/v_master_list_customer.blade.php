@@ -175,9 +175,9 @@
             } catch (error) {
               tutupLoader();
               console.log(error);
-              $.messager.alert('Error',
-                'Terdapat kesalahan ketika menghapus data customer, silahkan muat ulang laman',
-                'error');
+              const e = (typeof error === 'string') ? error : error.message;
+              var textError = getTextError(e);
+              $.messager.alert('Error', textError, 'error');
             }
           }
         });
@@ -185,15 +185,6 @@
     }
 
     async function buat_table() {
-      const response = await fetchData(link_api.browseKaryawanMarketing, {
-        divisi: 'marketing'
-      });
-      const marketingFilterList = response.data.map(item => {
-        return {
-          value: item.nama,
-          text: item.nama
-        }
-      });
       var dg = $('#table_data').datagrid({
         remoteFilter: true,
         fit: true,
@@ -460,7 +451,7 @@
         },
         {
           field: 'noktp',
-          type: 'numberspinner',
+          type: 'numberbox',
           options: {
             onChange: function(value) {
               if (value == 0) {
@@ -478,7 +469,7 @@
         },
         {
           field: 'npwp',
-          type: 'numberspinner',
+          type: 'numberbox',
           options: {
             onChange: function(value) {
               if (value == 0) {
@@ -486,30 +477,6 @@
               } else {
                 dg.datagrid('addFilterRule', {
                   field: 'npwp',
-                  op: 'contains',
-                  value: value
-                });
-              }
-              dg.datagrid('doFilter');
-            }
-          }
-        },
-        {
-          field: 'namamarketing',
-          type: 'combobox',
-          options: {
-            data: [{
-                value: '',
-                text: 'All'
-              },
-              ...marketingFilterList,
-            ],
-            onChange: function(value) {
-              if (value == 0) {
-                dg.datagrid('removeFilterRule', 'namamarketing');
-              } else {
-                dg.datagrid('addFilterRule', {
-                  field: 'namamarketing',
                   op: 'contains',
                   value: value
                 });
@@ -567,7 +534,7 @@
 
             $('#dialog_import').window('close');
           } else {
-            $.messager.alert('Gagal', response.errorMsg);
+            $.messager.alert('Gagal', response.message);
           }
         }
       });

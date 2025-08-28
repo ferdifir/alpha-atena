@@ -216,12 +216,13 @@
                 tutupTab();
                 refresh_data();
               } else {
-                $.messager.alert('Error', response.errorMsg, 'error');
+                $.messager.alert('Error', response.message, 'error');
               }
             } catch (error) {
               tutupLoader();
-              console.log(error);
-              $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
+              const e = (typeof error === 'string') ? error : error.message;
+              var textError = getTextError(e);
+              $.messager.alert('Error', textError, 'error');
             }
           }
         });
@@ -749,7 +750,7 @@
 
             $('#dialog_import').window('close');
           } else {
-            $.messager.alert('Gagal', response.errorMsg);
+            $.messager.alert('Gagal', response.message);
           }
         }
       });

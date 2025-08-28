@@ -263,8 +263,10 @@
           $.messager.alert('Error', response.message, 'error');
         }
       } catch (error) {
-        $.messager.alert('Error', 'Terjadi kesalahan saat memuat data', 'error');
         tutupLoader();
+        const e = (typeof error === 'string') ? error : error.message;
+        var textError = getTextError(e);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
@@ -335,7 +337,9 @@
           }
         } catch (error) {
           tutupLoaderSimpan();
-          $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+          const e = (typeof error === 'string') ? error : error.message;
+          var textError = getTextError(e);
+          $.messager.alert('Error', textError, 'error');
         }
       }
     }
