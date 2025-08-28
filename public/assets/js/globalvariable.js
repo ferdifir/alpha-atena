@@ -153,6 +153,29 @@ var link_api = {
     hapusHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus`,
     hapusHargaJualBerdasarkanJumlahPerTglAktif: `${base_url_api}atena/master/hargajualberdasarkanjumlah/hapus-per-tanggal-aktif`,
     simpanHargaJualBerdasarkanJumlah: `${base_url_api}atena/master/hargajualberdasarkanjumlah/simpan`,
+    //Master alat bayar non tunai
+    getHeaderNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-header`,
+    loadConfigNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-config`,
+    hapusNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/hapus`,
+    loadDataGridNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-grid`,
+    simpanNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/simpan`,
+    loadLokasiNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-lokasi`,
+    //alat bayar
+    simpanAlatBayar: `${base_url_api}atena/master/alatbayar/simpan`,
+    setUrutanAlatBayar: `${base_url_api}atena/master/alatbayar/set-urutan`,
+    getHeaderAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-header`,
+    loadDataGridAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-grid`,
+    hapusAlatBayar: `${base_url_api}atena/master/alatbayar/hapus`,
+    //satuan
+    simpanSatuan: `${base_url_api}atena/master/satuan/simpan`,
+    getHeaderSatuan: `${base_url_api}atena/master/satuan/load-data-header`,
+    loadDataGridSatuan: `${base_url_api}atena/master/satuan/load-data-grid`,
+    hapusSatuan: `${base_url_api}atena/master/satuan/hapus`,
+    //harga beli
+    loadHargaBeliSupplierBarang: `${base_url_api}atena/master/harga-beli/load-supplier-barang`,
+    loadHargaBeli: `${base_url_api}atena/master/harga-beli/load-harga-beli`,
+    hapusHargaBeli: `${base_url_api}atena/master/harga-beli/hapus-harga-beli`,
+    updateHargaBeli: `${base_url_api}atena/master/harga-beli/update-harga-beli`,
 };
 
 async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {

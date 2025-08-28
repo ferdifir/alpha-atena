@@ -274,3 +274,55 @@ Route::get('atena/master/tipecustomer/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.master.tipe_customer.form');
+
+// Master alat bayar
+Route::get('atena/master/alatbayar/data', function() {
+    return view('atena.master.alat_bayar.v_master_list_alat_bayar', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.alat_bayar.data');
+
+Route::get('atena/master/alatbayar/form', function() {
+    return view('atena.master.alat_bayar.v_master_form_alat_bayar', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.alat_bayar.form');
+
+// Master alat bayar non tunai
+Route::get('atena/master/alatbayarnontunai/data', function() {
+    return view('atena.master.alat_bayar_non_tunai.v_master_list_alat_bayar_non_tunai', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.alat_bayar_non_tunai.data');
+
+Route::get('atena/master/alatbayarnontunai/form', function() {
+    return view('atena.master.alat_bayar_non_tunai.v_master_form_alat_bayar_non_tunai', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.alat_bayar_non_tunai.form');
+
+// Master satuan
+Route::get('atena/master/satuan/data', function() {
+    return view('atena.master.satuan.v_master_list_satuan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.satuan.data');
+
+Route::get('atena/master/satuan/form', function() {
+    return view('atena.master.satuan.v_master_form_satuan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.satuan.form');
+
+// Master harga beli
+Route::get('atena/master/hargabeli/data', function() {
+    return view('atena.master.harga_beli.v_master_list_harga_beli', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.harga_beli.data');
