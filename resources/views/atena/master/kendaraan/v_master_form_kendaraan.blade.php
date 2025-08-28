@@ -109,12 +109,12 @@
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
             if (!check) return;
-            tutupLoader();
             @if ($mode == 'tambah')
                 tambah();
             @elseif ($mode == 'ubah')
                 await ubah();
             @endif
+            tutupLoader();
 
         })
 
@@ -173,8 +173,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
             }
             if (row) {
                 $('#form_input').form('load', row);
@@ -184,7 +183,7 @@
                 $('#lbl_tanggal').html(row.tglentry);
                 $('#KODEKENDARAAN').textbox('readonly', true);
 
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
                         $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                     }
@@ -242,7 +241,7 @@
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                    $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                 }
                 tutupLoaderSimpan();
             }

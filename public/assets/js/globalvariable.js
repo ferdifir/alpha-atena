@@ -255,12 +255,23 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
 
         // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
         if (onSuccess && typeof onSuccess === "function") {
-            onSuccess(data);
+            if (!data.success) {
+                var texterror = data.message ?? "";
+                if ((data.message ?? "").toLowerCase() == "token tidak valid") {
+                    texterror += " Silahkan login ulang";
+                }
+                $.messager.alert("error", texterror, "error");
+                // tutupLoader();
+                // return null;
+            } else {
+                onSuccess(data);
+            }
         } else {
             console.warn("onSuccess callback not provided or not a function.");
         }
     } catch (error) {
         console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
         // Menangani error jaringan atau parsing JSON
         // console.error('Network or parsing error:', error);
         // if (onError && typeof onError === 'function') {
@@ -310,7 +321,11 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
-                $.messager.alert("error", data.message, "error");
+                var texterror = data.message ?? "";
+                if ((data.message ?? "").toLowerCase() == "token tidak valid") {
+                    texterror += " Silahkan login ulang";
+                }
+                $.messager.alert("error", texterror, "error");
                 // tutupLoader();
                 return null;
             } else {
@@ -323,7 +338,7 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         }
     } catch (error) {
         console.log(error);
-
+        $.messager.alert("error", getTextError(error), "error");
         // tutupLoader();
     }
 }

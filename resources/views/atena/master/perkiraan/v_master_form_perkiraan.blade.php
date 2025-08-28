@@ -336,7 +336,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                 console.log(error);
             }
 
@@ -346,9 +346,9 @@
                 $('[name=mode]').val('ubah');
 
                 // setTimeout digunakan untuk mengakali combobox yang tidak ke set value-nya
-                setTimeout(function() {
+                setTimeout(async function() {
                     $('#tipe').combobox('setValue', 'DETAIL');
-                    get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                         if (data.success && data.data.ubah != 1) {
                             $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                         }
@@ -426,7 +426,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
             }
             tutupLoaderSimpan();
         }
@@ -503,7 +503,7 @@
                             $.messager.alert('Error', response.message, 'error');
                         }
                     } catch (error) {
-                        $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                     }
 
                     // $.post(link_api.getPerkiraanUser, {

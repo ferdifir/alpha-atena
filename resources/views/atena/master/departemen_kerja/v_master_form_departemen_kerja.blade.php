@@ -162,7 +162,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                 console.log(error);
             }
             if (row) {
@@ -174,7 +174,7 @@
                 $('#lbl_tanggal').html(row.tglentry);
                 $('#kodedepartemenkerja').textbox('readonly', true);
 
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
                         $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                     }

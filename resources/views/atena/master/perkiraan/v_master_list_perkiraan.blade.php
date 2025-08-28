@@ -170,8 +170,7 @@
 
 
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
             }
 
             $('#tv_kode_perkiraan').tree({
@@ -271,7 +270,7 @@
                                 $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
-                            $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                         }
                         tutupLoader();
                     }
