@@ -157,7 +157,8 @@
                                 $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
-                            $.messager.alert('Error', error, 'error');
+                var textError=getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
                         }
                         tutupLoader();
                     }

@@ -273,7 +273,7 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
 }
 
 async function getConfig(config, modul, token, onSuccess, onError = null) {
-    bukaLoader();
+    // bukaLoader();
     try {
         const response = await fetch(link_api.getConfig, {
             method: "POST",
@@ -300,7 +300,7 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
                 console.error("Error fetching data:", error);
             }
 
-            tutupLoader();
+            // tutupLoader();
             return; // Hentikan eksekusi
         }
 
@@ -311,81 +311,20 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 $.messager.alert("error", data.message, "error");
-                tutupLoader();
+                // tutupLoader();
                 return null;
             } else {
                 onSuccess(data);
-                tutupLoader();
+                // tutupLoader();
             }
         } else {
-            tutupLoader();
+            // tutupLoader();
             console.warn("onSuccess callback not provided or not a function.");
         }
     } catch (error) {
         console.log(error);
 
-        tutupLoader();
+        // tutupLoader();
     }
 }
 
-async function getConfig(config, modul, token, onSuccess, onError = null) {
-    bukaLoader();
-    try {
-        const response = await fetch(link_api.getConfig, {
-            method: "POST",
-            headers: {
-                Authorization: token,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                modul: modul,
-                config: config,
-            }),
-        });
-
-        // Memeriksa apakah respons HTTP OK (status 200-299)
-        if (!response.ok) {
-            const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
-            const error = new Error(errorMessage);
-
-            if (onError && typeof onError === "function") {
-                onError(error); // Panggil onError jika disediakan
-            } else {
-                console.error("Error fetching data:", error);
-            }
-
-            tutupLoader();
-            return; // Hentikan eksekusi
-        }
-
-        // Parsing respons sebagai JSON
-        const data = await response.json();
-
-        // Panggil fungsi onSuccess dan teruskan data yang telah di-parse
-        if (onSuccess && typeof onSuccess === "function") {
-            if (!data.success) {
-                $.messager.alert("error", data.message, "error");
-                tutupLoader();
-                return null;
-            } else {
-                onSuccess(data);
-            }
-        } else {
-            console.warn("onSuccess callback not provided or not a function.");
-        }
-
-        tutupLoader();
-    } catch (error) {
-        // Menangani error jaringan atau parsing JSON
-        console.error("Network or parsing error:", error);
-        if (onError && typeof onError === "function") {
-            onError(error); // Panggil onError jika disediakan
-        } else {
-            console.error("An unexpected error occurred:", error);
-        }
-
-        tutupLoader();
-    }
-}

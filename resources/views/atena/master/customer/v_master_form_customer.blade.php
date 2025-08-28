@@ -863,9 +863,9 @@
             $.messager.alert('Error', response.message, 'error');
           }
         } catch (error) {
-          console.log(error);
           tutupLoaderSimpan();
-          $.messager.alert('Error', 'Terjadi kesalahan saat menyimpan data', 'error');
+                var textError=getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
         }
       }
       reset_detail();

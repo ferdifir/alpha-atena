@@ -171,7 +171,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                var textError=getTextError(error);
+                var textError = getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
             tutupLoader();
@@ -224,8 +224,8 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
             }
             if (row) {
                 $('#form_input').form('load', row);
@@ -309,7 +309,8 @@
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                    $.messager.alert('Error', error, 'error');
+                    var textError = getTextError(error);
+                    $.messager.alert('Error', getTextError(error), 'error');
                 }
                 tutupLoaderSimpan();
             }

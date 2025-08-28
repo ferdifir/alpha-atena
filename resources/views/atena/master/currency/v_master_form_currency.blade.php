@@ -123,8 +123,8 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+                var textError=getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
             }
             tutupLoader();
             if (row) {
@@ -193,7 +193,8 @@
                     }
 
                 } catch (error) {
-                    $.messager.alert('Error', `Simpan Data Gagal : ${error}`, 'error');
+                var textError=getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
                 }
                 tutupLoaderSimpan();
             }
