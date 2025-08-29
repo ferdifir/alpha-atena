@@ -378,3 +378,10 @@ Route::get('atena/master/jurnallink/data', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.master.jurnal_link.data');
+
+// Inventori/Validasi Kirim
+Route::get('atena/inventori/validasikirim/transaksi', function() {
+    return view('atena.inventori.validasi_kirim.v_inventori_list_validasi_kirim', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventori.validasi_kirim.transaksi');
