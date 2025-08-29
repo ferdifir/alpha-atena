@@ -372,6 +372,26 @@ Route::get('atena/master/promo/form', function() {
     ]);
 })->name('atena.master.promo.form');
 
+// Pengaturan
+Route::get('atena/master/pengaturan/data', function() {
+    return view('atena.master.pengaturan.v_master_form_pengaturan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.data');
+
+Route::get('atena/master/pengaturan/view-master-perusahaan', function() {
+    return view('atena.master.pengaturan.v_master_frame_perusahaan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-perusahaan');
+
+Route::get('atena/master/pengaturan/view-master-global', function() {
+    return view('atena.master.pengaturan.v_master_frame_global', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-global');
+
+
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
     return view('atena.master.jurnal_link.v_master_list_jurnal_link', [

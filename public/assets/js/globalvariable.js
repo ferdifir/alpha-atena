@@ -212,6 +212,18 @@ var link_api = {
     validasiValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/validasi`,
     cetakValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/cetak`,
     browseSopir: `${base_url_api}atena/master/sopir/browse`,
+    //Pengaturan
+    loadSettingPerusahaan: `${base_url_api}atena/master/pengaturan/load-setting-perusahaan`,
+    loadSettingGlobal: `${base_url_api}atena/master/pengaturan/load-setting-global`,
+    loadSettingMaster: `${base_url_api}atena/master/pengaturan/load-setting-master`,
+    loadSettingPembelian: `${base_url_api}atena/master/pengaturan/load-setting-pembelian`,
+    loadSettingPenjualan: `${base_url_api}atena/master/pengaturan/load-setting-penjualan`,
+    loadSettingInventori: `${base_url_api}atena/master/pengaturan/load-setting-inventori`,
+    loadSettingAset: `${base_url_api}atena/master/pengaturan/load-setting-aset`,
+    loadSettingProduksi: `${base_url_api}atena/master/pengaturan/load-setting-produksi`,
+    loadSettingKeuangan: `${base_url_api}atena/master/pengaturan/load-setting-keuangan`,
+    loadSettingAkuntansi: `${base_url_api}atena/master/pengaturan/load-setting-akuntansi`,
+    simpanSettingPerusahaan: `${base_url_api}atena/master/perusahaan/simpan`,
 };
 
 function getTextError(error) {
@@ -237,15 +249,20 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
         if (!response.success) {
             console.log(response);
             const errorBody = await response.message; // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${
+                response.status
+            }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
                 if (errorBody.toLowerCase() == "token tidak valid") {
-                    $.messager.alert('Error', errorBody + " Silahkan logout dan login kembali", 'error');
+                    $.messager.alert(
+                        "Error",
+                        errorBody + " Silahkan logout dan login kembali",
+                        "error"
+                    );
                 }
                 console.error("Error fetching data:", error);
             }
@@ -305,8 +322,9 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.ok) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${
+                response.status
+            }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
@@ -346,4 +364,3 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // tutupLoader();
     }
 }
-

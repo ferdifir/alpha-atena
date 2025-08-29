@@ -10,16 +10,16 @@
       <label class="font-header-menu">Data Perusahaan</label>
       <div align="right" valign="top">
         <p>Proses 1 dari 10</p>
-        @if (!$issignup)
-          <a class="easyui-linkbutton" onclick="javascript:simpan()"><i class="fa fa-save"></i> Simpan</a>
-        @endif
+        {{-- signup condition --}}
+        <a class="easyui-linkbutton" onclick="javascript:simpan()"><i class="fa fa-save"></i> Simpan</a>
+        {{-- end signup condition --}}
         <a class="easyui-linkbutton" onclick="javascript:next()"><i class="far fa-circle-right"></i> Simpan dan
           Lanjut</a>
       </div>
     </div>
     <div id="form_input" style="width:100%;height:100%">
       <input type="hidden" name="mode" id="mode">
-      <input type="hidden" name="idperusahaan" id="IDPERUSAHAAN">
+      <input type="hidden" name="uuidperusahaan" id="IDPERUSAHAAN">
 
       <table style="padding:5px">
         <tr hidden>
@@ -33,10 +33,9 @@
           <td id="label_form">
             <input id="NAMAPERUSAHAAN" name="namaperusahaan" style="width:300px" class="label_input" required="true"
               validType='length[0,300]'>
-
-            @if (!$issignup)
-              <input type="checkbox" name="prosesopname" id="prosesopname" value="1"> Proses Opname
-            @endif
+            {{-- signup condition --}}
+            <input type="checkbox" name="prosesopname" id="prosesopname" value="1"> Proses Opname
+            {{-- end signup condition --}}
           </td>
         </tr>
         <tr>
@@ -90,11 +89,11 @@
           <td align="right" id="label_form" valign="top">Stok Dapat Minus</td>
           <td id="label_form">
             <input type="checkbox" name="stokminus" id="stokminus" value="1"> YA
-            @if (!$issignup)
-              <br>
-              <div style="padding: 5px; background-color: #fbb4b4">Setelah mengubah pengaturan "Stok Dapat Minus", segera
-                lakukan login ulang untuk seluruh user.</div>
-            @endif
+            {{-- signup condition --}}
+            <br>
+            <div style="padding: 5px; background-color: #fbb4b4">Setelah mengubah pengaturan "Stok Dapat Minus", segera
+              lakukan login ulang untuk seluruh user.</div>
+            {{-- end signup condition --}}
           </td>
         </tr>
         <tr>
@@ -116,172 +115,148 @@
           <td></td>
         </tr>
       </table>
-      <hr>
+      {{-- <hr>
       <label style="font-weight:normal" id="label_form">User Input :</label> <label id="lbl_kasir"></label>
-      <label style="font-weight:normal" id="label_form">| Tgl Input :</label> <label id="lbl_tanggal"></label>
+      <label style="font-weight:normal" id="label_form">| Tgl Input :</label> <label id="lbl_tanggal"></label> --}}
+      <div style="position: fixed;bottom:0;background-color: white;width:100%;">
+        <table cellpadding="0" cellspacing="0" style="width:100%">
+          <tr>
+            <td align="left" id="label_form">
+              <label style="font-weight:normal" id="label_form">User Input :</label>
+              <label id="lbl_kasir"></label>
+              <label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+              <label id="lbl_tanggal"></label>
+            </td>
+          </tr>
+        </table>
+      </div>
     </div>
   </div>
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
   <script>
-    const token = '{{ session('TOKEN') }}';
-    let row = {};
-    const issignup = '{{ $issignup }}';
     $(function() {
-      $('#mask-loader').fadeOut(500, function() {
-        $(this).hide()
-      })
       $("#tglawaltrans").datebox('setValue', '');
-      $("#mode").val('{{ $issignup ? 'signup' : 'ubah' }}');
-      if (!issignup) {
-        getDataConfig();
-      }
-    })
+      $("#mode").val('ubah'); // signup condition
+      getDataPerusahaan();
+    });
 
-    async function fetchWithRetry(url, options, maxRetries = 3) {
-      let retries = 0;
-      while (retries < maxRetries) {
-        try {
-          const response = await fetch(url, options);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status} from ${url}`);
-          }
-          return await response.json();
-        } catch (error) {
-          console.error(`Attempt ${retries + 1} failed for ${url}:`, error);
-          retries++;
-          if (retries >= maxRetries) {
-            throw new Error(`Failed to fetch ${url} after ${maxRetries} retries.`);
-          }
-          await new Promise(resolve => setTimeout(resolve, 1000 * retries));
-        }
-      }
-    }
-
-    async function getDataConfig() {
-      const uuidperusahaan = "{{ session('IDPERUSAHAAN') }}";
-
-      const urls = [
-        link_api.getDetailPerusahaan,
-        link_api.getConfigGlobal,
-      ];
-
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'authorization': `bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          "uuidperusahaan": uuidperusahaan
-        }),
-      };
-
-      const promises = urls.map(url => fetchWithRetry(url, requestOptions));
-
+    async function getDataPerusahaan() {
       try {
-        const [resDetail, resGlobal] = await Promise.all(promises);
-        const row = {};
+        const response = await fetchData(link_api.loadSettingPerusahaan, null);
+        if (response.success) {
+          const row = response.data;
+          $("#form_input").form("load", row);
+          $("#lbl_kasir").html(row.userentry);
+          $("#lbl_tanggal").html(row.tglentry);
+          if (row.jenishitunghpp == 'PERPETUAL') {
+            $('#perpetual').prop('checked', true);
+            $('[name="metodehitunghpp"]').prop('disabled', false);
+            $('#stokminus').prop('checked', false).prop('disabled', true);
+          } else if (row.jenishitunghpp == 'CLOSING') {
+            $('#closing').prop('checked', true);
+            $('[name="metodehitunghpp"]').prop('disabled', true);
+            $('#stokminus').prop('disabled', false);
+          }
 
-        if (resDetail && resDetail.success) {
-          const data = resDetail.data;
-          Object.assign(row, {
-            idperusahaan: data.uuidperusahaan,
-            kodeperusahaan: data.kodeperusahaan,
-            namaperusahaan: data.namaperusahaan,
-            alamat: data.alamat,
-            kota: data.kota,
-            propinsi: data.propinsi,
-            negara: data.negara,
-            kodepos: data.kodepos,
-            telp: data.telp,
-            npwp: data.npwp,
-            informasirekening: data.informasirekening,
-            catatan: data.catatan,
-            prosesopname: data.prosesopname,
-            userentry: data.userentry,
-            tglentry: data.tglentry
-          });
+          if (row.metodehitunghpp == 'FIFO') {
+            $('#fifo').prop('checked', true);
+          } else if (row.metodehitunghpp == 'LIFO') {
+            $('#lifo').prop('checked', true);
+          } else if (row.metodehitunghpp == 'AVERAGE') {
+            $('#average').prop('checked', true);
+          }
+
+          $('#prosesopname').prop('checked', row.prosesopname == 1);
+          $('#stokminus').prop('checked', row.stokminus == 1);
         } else {
-          console.error('Failed to get company details.');
+          $.messager.alert('Error', response.message, 'error');
         }
-
-        if (resGlobal && resGlobal.success) {
-          const data = resGlobal.data.config;
-          Object.assign(row, {
-            jenishitunghpp: data.find(item => item.config === 'JENISHITUNGHPP')?.value,
-            metodehitunghpp: data.find(item => item.config === 'METODEHITUNGHPP')?.value,
-            stokminus: data.find(item => item.config === 'CEKMINUS')?.value == 'TIDAK' ? true : false,
-            tglawaltrans: data.find(item => item.config === 'TGLAWALTRANS')?.value,
-          });
-        } else {
-          console.error('Failed to get global config.');
-        }
-
-        console.log(row);
-        $("#form_input").form("load", row);
-      } catch (error) {
-        console.error('An error occurred during data fetching:', error);
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        $.messager.alert('Error', getTextError(error), 'error');
+      } finally {
+        tutupLoader();
       }
     }
 
-    function simpan() {
-      if (isTokenExpired()) {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-        return;
-      }
-      var isValid = $('#form_input').form('validate');
-      mode = $('[name=mode]').val();
-      $.ajax({
-        type: 'POST',
-        url: base_url + 'atena/Master/Data/Perusahaan/simpan',
-        data: $('#form_input :input').serialize(),
-        dataType: 'json',
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(msg) {
-          $.messager.progress('close');
-          if (msg.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Data Berhasil Diubah',
-              showType: 'show'
-            });
-          } else {
-            $.messager.alert('Error', msg.message, 'error');
-          }
+    async function simpanData() {
+      try {
+        const data = $('#form_input :input').serializeArray();
+        const payload = {};
+        for (const item of data) {
+          payload[item.name] = item.value;
         }
+        const response = await fetchData(link_api.simpanSettingPerusahaan, payload);
+
+        if (response.success) {
+          return true;
+        } else {
+          throw new Error(response.message || 'Failed to save data.');
+        }
+      } catch (e) {
+        throw new Error(e.message || 'An error occurred during data saving.');
+      }
+    }
+
+    async function handleFormSubmit(onSuccessCallback) {
+      const isValid = $('#form_input').form('validate');
+
+      if (isValid) {
+        try {
+          await simpanData();
+          if (typeof onSuccessCallback === 'function') {
+            onSuccessCallback();
+          }
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          $.messager.alert('Error', getTextError(error), 'error');
+        }
+      }
+    }
+
+    async function simpan() {
+      await handleFormSubmit(() => {
+        $.messager.alert('Info', 'Data berhasil diubah', 'info');
       });
     }
 
-    function next() {
-      if (isTokenExpired()) {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-        return;
-      }
-      var isValid = $('#form_input').form('validate');
+    async function next() {
+      await handleFormSubmit(() => {
+        window.location.href = "{{ route('atena.master.pengaturan.frame-master-global') }}";
+      });
     }
 
-    function isTokenExpired() {
-      if (!token) {
-        return true;
-      }
-
+    async function fetchData(url, body) {
       try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
+        const token = '{{ session('TOKEN') }}';
+        let headers = {
+          'Authorization': 'bearer ' + token,
+        };
+        let requestBody = null;
 
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
+        if (body instanceof FormData) {
+          requestBody = body;
+        } else {
+          headers['Content-Type'] = 'application/json';
+          requestBody = body ? JSON.stringify(body) : null;
+        }
 
-        return expirationTime < currentTime;
-      } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
-        return true;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: headers,
+          body: requestBody,
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        throw error;
       }
     }
   </script>
