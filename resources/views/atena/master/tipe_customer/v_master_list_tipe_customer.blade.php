@@ -137,7 +137,7 @@
                                 $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
-                            $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                         }
                         tutupLoader();
                     }

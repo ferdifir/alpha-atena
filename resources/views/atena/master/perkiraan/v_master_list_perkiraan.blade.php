@@ -91,7 +91,6 @@
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
             if(!check)return;
-            tutupLoader();
             $("#table_data").datagrid({
                 onSelect: function() {
                     row = $('#table_data').datagrid('getSelected');
@@ -113,6 +112,7 @@
             // create_form_login();
             buat_table();
             await buat_tree();
+            tutupLoader();
         });
 
         async function buat_tree() {
@@ -170,8 +170,7 @@
 
 
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
             }
 
             $('#tv_kode_perkiraan').tree({
@@ -271,7 +270,7 @@
                                 $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
-                            $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                         }
                         tutupLoader();
                     }
@@ -291,9 +290,6 @@
                 pageSize: 20,
                 sortName: 'kodeperkiraan',
                 url:link_api.loadDataGridMasterPerkiraan,
-                queryParams: {
-                    _token: csr f_token
-                },
                 rowStyler: function(index, row) {
                     if (row.status == 0) {
                         return 'background-color: #a8aea6';

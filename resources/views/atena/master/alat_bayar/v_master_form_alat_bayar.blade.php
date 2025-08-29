@@ -250,7 +250,7 @@
                 }
 
 
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
                         $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                     }

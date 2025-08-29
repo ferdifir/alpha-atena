@@ -99,7 +99,6 @@
         async function ubah() {
             $('#mode').val('ubah');
             try {
-                bukaLoader()
                 let url = link_api.loadHeaderCurrency;
                 const response = await fetch(url, {
                     method: 'POST',
@@ -126,7 +125,6 @@
                 var textError=getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
-            tutupLoader();
             if (row) {
                 $('#form_input').form('load', row);
                 $('#lbl_kasir').html(row.userbuat);

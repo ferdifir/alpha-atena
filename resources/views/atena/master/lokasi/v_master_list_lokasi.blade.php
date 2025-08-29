@@ -146,7 +146,7 @@
                                 $.messager.alert('Error', response.message, 'error');
                             }
                         } catch (error) {
-                            $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                         }
                         tutupLoader();
                     }
@@ -363,10 +363,10 @@
                     }],
                     onChange: function(value) {
                         if (value == '') {
-                            $('#table_data').datagrid('removeFilterRule', 'status');
+                            $('#table_data').datagrid('removeFilterRule', 'lokasidefault');
                         } else {
                             $('#table_data').datagrid('addFilterRule', {
-                                field: 'status',
+                                field: 'lokasidefault',
                                 op: 'equal',
                                 value: value
                             });

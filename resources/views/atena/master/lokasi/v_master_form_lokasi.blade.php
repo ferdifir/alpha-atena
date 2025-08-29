@@ -271,7 +271,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                 console.log(error);
             }
             if (row) {
@@ -354,8 +354,7 @@
                             return;
                         }
                     } catch (error) {
-                        $.messager.alert('Error', error, 'error');
-                        console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
                         tutupLoader();
                         return ;
                     }
@@ -421,7 +420,7 @@
                 }
 
             } catch (error) {
-                $.messager.alert('Error', `Simpan Data Gagal : ${error}`, 'error');
+        $.messager.alert("error", getTextError(error), "error");
             }
             tutupLoaderSimpan();
         }

@@ -119,8 +119,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                $.messager.alert('Error', error, 'error');
-                console.log(error);
+        $.messager.alert("error", getTextError(error), "error");
             }
             if (row) {
                 $('#form_input').form('load', row);
@@ -130,7 +129,7 @@
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
 
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                     if (data.data.ubah != 1) {
                         $('#btn_simpan').css('filter', 'grayscale(100%)').removeAttr('onclick');
                     }
@@ -192,7 +191,7 @@
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                    $.messager.alert('Error', error, 'error');
+        $.messager.alert("error", getTextError(error), "error");
                 }
                 tutupLoaderSimpan();
             }
