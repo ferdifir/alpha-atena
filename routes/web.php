@@ -380,7 +380,6 @@ Route::get('atena/master/jurnallink/data', function() {
 })->name('atena.master.jurnal_link.data');
 
 // Inventory Transfer
-http://atenalaravel.test/atena/inventori/transferpersediaan/transaksi?kode=qa23r&kodeinduk=kiu13
 Route::get('atena/inventori/transferpersediaan/transaksi', function() {
     return view('atena.inventory.transfer.v_inventory_list_transfer', [
         'kodemenu' => request()->kode,
@@ -394,3 +393,10 @@ Route::get('atena/inventori/transferpersediaan/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.inventory.transfer.form');
+
+// Inventori/Validasi Kirim
+Route::get('atena/inventori/validasikirim/transaksi', function() {
+    return view('atena.inventori.validasi_kirim.v_inventori_list_validasi_kirim', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventori.validasi_kirim.transaksi');

@@ -217,6 +217,11 @@ var link_api = {
     //Jurnal Link
     simpanJurnalLink: `${base_url_api}atena/master/jurnal-link/simpan`,
     loadAllJurnalLink: `${base_url_api}atena/master/jurnal-link/load-all`,
+    //Inventori-Validasi Kirim
+    loadDataGridValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/load-data-grid`,
+    validasiValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/validasi`,
+    cetakValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/cetak`,
+    browseSopir: `${base_url_api}atena/master/sopir/browse`,
     //Inventory Transfer
     batalTransaksiInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/batal-trans`,
     loadDataHeaderInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-header`,

@@ -1,6 +1,11 @@
 @extends('template.form')
 
 @section('content')
+  <style>
+    .numberbox .textbox-text {
+      text-align: left !important;
+    }
+  </style>
   <div id="form_input" class="easyui-layout" fit="true">
     <div data-options="region:'center',border:false">
       <div class="easyui-layout" fit="true">
@@ -60,7 +65,7 @@
                     <td id="label_form">
                       <input name="alamat" style="width:355px" class="label_input" validType='length[0,300]'>
                       &nbsp; Kode Pos
-                      <input name="kodepos" style="width:150px" class="label_input" validType='length[0,100]'>
+                      <input name="kodepos" style="width:150px" class="label_input easyui-numberbox" validType='length[0,100]'>
                     </td>
                   </tr>
                   <tr>
@@ -76,11 +81,11 @@
                   <tr>
                     <td align="right" id="label_form">Telp</td>
                     <td id="label_form">
-                      <input name="telp" style="width:150px" class="label_input" validType='length[0,50]'>
+                      <input name="telp" style="width:150px" class="label_input easyui-numberbox" validType='length[0,50]'>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fax
-                      <input name="fax" style="width:150px" class="label_input" validType='length[0,50]'>
+                      <input name="fax" style="width:150px" class="label_input easyui-numberbox" validType='length[0,50]'>
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HP
-                      <input name="hp" style="width:150px" class="label_input" validType='length[0,50]'>
+                      <input name="hp" style="width:150px" class="label_input easyui-numberbox" validType='length[0,50]'>
                     </td>
                   </tr>
                   <tr>
@@ -96,11 +101,11 @@
                     <td align="left" id="label_form">
                       <input name="uuidsyaratbayar" id="UUIDSYARATBAYAR" style="width:150px">
                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Disc Min
-                      <input id="DISCOUNTMIN" name="discountmin" style="width:70px;" class="label_input"
+                      <input id="DISCOUNTMIN" name="discountmin" style="width:70px;" class="label_input easyui-numberbox"
                         validType='length[0,14]'
                         data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
                       &nbsp;&nbsp;<span id="label_form">Disc Max</span>
-                      <input id="DISCOUNTMAX" name="discountmax" style="width:70px;" class="label_input"
+                      <input id="DISCOUNTMAX" name="discountmax" style="width:70px;" class="label_input easyui-numberbox"
                         validType='length[0,14]'
                         data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
                     </td>
@@ -138,17 +143,19 @@
                   <tr>
                     <td align="right" id="label_form">No Rekening</td>
                     <td id="label_form">
-                      <input name="norek" style="width:150px;" class="label_input" validType='length[0,100]'>
+                      <input name="norek" style="width:150px;" class="label_input easyui-numberbox" validType='length[0,100]'>
                       Virtual Acc
-                      <input name="virtualaccount" style="width:2150px25px;" class="label_input"
+                      <input name="virtualaccount" style="width:2150px25px;" class="label_input easyui-numberbox"
                         validType='length[0,100]'>
                     </td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Latitude</td>
                     <td id="label_form">
-                      <input name="latitude" class="label_input" style="width:150px;" type="text">
-                      Longitude <input name="longitude" class="label_input" style="width:150px;" type="text">
+                      <input name="latitude" class="label_input easyui-numberbox" style="width:150px;" type="text"
+                        data-options="precision:10">
+                      Longitude <input name="longitude" class="label_input easyui-numberbox" style="width:150px;"
+                        type="text" data-options="precision:10">
                     </td>
                   </tr>
                   <tr>
@@ -180,7 +187,7 @@
                   </tr>
                   <tr>
                     <td align="right" id="label_form">No. KTP</td>
-                    <td><input name="noktp" style="width:400px" class="label_input" validType='length[0,100]'></td>
+                    <td><input name="noktp" style="width:400px" class="label_input easyui-numberbox" validType='length[0,100]'></td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">NPWP</td>
@@ -215,7 +222,7 @@
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Telp/HP</td>
-                    <td><input name="telpcontactperson" style="width:250px" class="label_input"
+                    <td><input name="telpcontactperson" style="width:250px" class="label_input easyui-numberbox"
                         validType='length[0,50]'></td>
                   </tr>
                   <tr>
@@ -277,10 +284,10 @@
             </tr>
             <tr>
               <td align="right" id="label_form">Disc Min</td>
-              <td><input id="DISCOUNTMINTIPE" name="discountmin" style="width:70px;" class="label_input"
+              <td><input id="DISCOUNTMINTIPE" name="discountmin" style="width:70px;" class="label_input easyui-numberbox"
                   validType='length[0,14]' data-options="precision:2,required:true,decimalSeparator:'.',suffix:'%'">
                 &nbsp;&nbsp;<span id="label_form">Disc Max</span>
-                <input id="DISCOUNTMAXTIPE" name="discountmax" style="width:70px;" class="label_input"
+                <input id="DISCOUNTMAXTIPE" name="discountmax" style="width:70px;" class="label_input easyui-numberbox"
                   validType='length[0,14]' data-options="precision:2,required:true,decimalSeparator:'.',suffix:'%'">
               </td>
             </tr>
@@ -397,6 +404,10 @@
 @push('js')
   <script>
     var idbatalstatuspiutang;
+
+    function tutup_tipe_customer() {
+      $("#form_tipe_customer").dialog('close');
+    }
 
     $(document).ready(function() {
 

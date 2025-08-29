@@ -449,43 +449,39 @@
             }
           }
         },
-        {
-          field: 'noktp',
-          type: 'numberbox',
-          options: {
-            onChange: function(value) {
-              if (value == 0) {
-                dg.datagrid('removeFilterRule', 'noktp');
-              } else {
-                dg.datagrid('addFilterRule', {
-                  field: 'noktp',
-                  op: 'contains',
-                  value: value
-                });
-              }
-              dg.datagrid('doFilter');
-            }
-          }
-        },
-        {
-          field: 'npwp',
-          type: 'numberbox',
-          options: {
-            onChange: function(value) {
-              if (value == 0) {
-                dg.datagrid('removeFilterRule', 'npwp');
-              } else {
-                dg.datagrid('addFilterRule', {
-                  field: 'npwp',
-                  op: 'contains',
-                  value: value
-                });
-              }
-              dg.datagrid('doFilter');
-            }
-          }
-        },
+        numberFilter('noktp'),
+        numberFilter('npwp'),
+        numberFilter('discountmax'),
+        numberFilter('discountmin'),
+        numberFilter('maxcredit'),
+        numberFilter('telpcontactperson'),
+        numberFilter('kodepos'),
+        numberFilter('telp'),
+        numberFilter('hp'),
+        numberFilter('fax'),
       ]);
+    }
+
+    function numberFilter(field) {
+      const dg = $('#table_data');
+      return {
+        field: field,
+        type: 'numberbox',
+        options: {
+          onChange: function(value) {
+            if (value == 0) {
+              dg.datagrid('removeFilterRule', field);
+            } else {
+              dg.datagrid('addFilterRule', {
+                field: field,
+                op: 'contains',
+                value: value
+              });
+            }
+            dg.datagrid('doFilter');
+          }
+        }
+      };
     }
 
     function refresh_data() {
