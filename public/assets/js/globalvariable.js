@@ -1,4 +1,14 @@
 var base_url_api = "http://192.168.1.45:8000/api/";
+function getDateMinusDays(days) {
+    const today = new Date();
+    today.setDate(today.getDate() - days);
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -46,6 +56,7 @@ var link_api = {
     getHeaderLokasi: `${base_url_api}atena/master/lokasi/load-lokasi-header`,
     getLokasiDefault: `${base_url_api}atena/master/lokasi/cek-lokasi-default`,
     simpanLokasi: `${base_url_api}atena/master/lokasi/simpan`,
+    browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     //Merk
     hapusMerk: `${base_url_api}atena/master/merk/hapus`,
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
@@ -92,7 +103,6 @@ var link_api = {
     browseSupplier: `${base_url_api}atena/master/supplier/browse`,
     browseFilterMerk: `${base_url_api}atena/master/hargajual/browse-daftar-filter-merk`,
     browseFilterKategori: `${base_url_api}atena/master/hargajual/browse-daftar-filter-kategori`,
-    browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     browseTglAktifSatuan: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-satuan`,
     browseTglAktifTipeCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-tipe-customer`,
     browseTglAktifCustomer: `${base_url_api}atena/master/hargajual/browse-tgl-aktif-customer`,
@@ -207,7 +217,29 @@ var link_api = {
     //Jurnal Link
     simpanJurnalLink: `${base_url_api}atena/master/jurnal-link/simpan`,
     loadAllJurnalLink: `${base_url_api}atena/master/jurnal-link/load-all`,
+    //Inventory Transfer
+    batalTransaksiInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/batal-trans`,
+    loadDataHeaderInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-header`,
+    cetakInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/cetak/`,
+    getStatusTransaksiInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/get-status-trans`,
+    ubahStatusJadiInputInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/ubah-status-jadi-slip`,
+    loadDataGridInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-grid`,
+    simpanInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/simpan/`,
+    loadDataInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data`,
+    loadDataDetailInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
+    brosweInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
+    hitungStokInventoryTransfer: `${base_url_api}atena/master/barang/hitung-stok-transaksi`,
+};
 
+var modul_kode = {
+    pembelian: 'B93JH',
+    penjualan: 'OI02K',
+    inventori: '92DXS',
+    produksi: '3K93J',
+    aset: '93JK4',
+    keuangan: 'L03KD',
+    akuntansi: 'P02MS'
 };
 
 function getTextError(error) {
@@ -215,8 +247,10 @@ function getTextError(error) {
                         Detail: ${error}\n Harap ambil tangkapan layar lalu hubungi administrator.`;
 }
 
-async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
-    bukaLoader();
+async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onError = null) {
+    if (useLoader) {
+        bukaLoader();
+    }
     try {
         const response = await fetch(link_api.getDataAkses, {
             method: "POST",
@@ -245,7 +279,9 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
                 }
                 console.error("Error fetching data:", error);
             }
-            tutupLoader();
+            if (useLoader) {
+                tutupLoader();
+            }
             return; // Hentikan eksekusi
         }
 
@@ -264,7 +300,7 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
                 // tutupLoader();
                 // return null;
             } else {
-                onSuccess(data);
+                await onSuccess(data);
             }
         } else {
             console.warn("onSuccess callback not provided or not a function.");
@@ -280,7 +316,9 @@ async function get_akses_user(kodeMenu, token, onSuccess, onError = null) {
         //   console.error('An unexpected error occurred:', error);
         // }
     }
-    tutupLoader();
+    if (useLoader) {
+        tutupLoader();
+    }
 }
 
 async function getConfig(config, modul, token, onSuccess, onError = null) {
@@ -341,5 +379,35 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         $.messager.alert("error", getTextError(error), "error");
         // tutupLoader();
     }
+}
+
+const getStatusTrans = async (url, token, param) => {
+    var status = "-";
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(param),
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(
+                    `HTTP error! status: ${response.status} from ${url}`);
+            }
+            return response.json();
+        })
+
+        if (response.success) {
+            status=response.data.status;
+        } else {
+            $.messager.alert('Error', response.message, 'error');
+        }
+    } catch (error) {
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+    }
+    return status;
 }
 
