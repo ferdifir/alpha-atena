@@ -611,6 +611,15 @@
       buka_menu_utama()
     }
 
+    function check_tab_exist(namamenu, gambarmenu){
+      var tab_title = '<span class="' + gambarmenu + '"></span> ' + namamenu;
+      if ($('#tab_menu').tabs('exists', tab_title)) {
+        return true;
+      }else{
+        return false;
+      }
+    }
+
     function buka_submenu(e, namamenu, link, gambarmenu) {
       console.log(link);
       if (e != null && e != undefined) {
