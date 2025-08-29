@@ -381,18 +381,18 @@ Route::get('atena/master/jurnallink/data', function() {
 
 // Inventory Transfer
 Route::get('atena/inventori/transferpersediaan/transaksi', function() {
-    return view('atena.inventory.transfer.v_inventory_list_transfer', [
+    return view('atena.inventori.transfer.v_inventory_list_transfer', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.inventory.transfer.transaksi');
 
 Route::get('atena/inventori/transferpersediaan/form', function() {
-    return view('atena.inventory.transfer.v_inventory_form_transfer', [
+    return view('atena.inventori.transfer.v_inventory_form_transfer', [
         'kodemenu' => request()->kode,
         'data'=>request()->data,
         'mode'=>request()->mode,
     ]);
-})->name('atena.inventory.transfer.form');
+})->name('atena.inventori.transfer.form');
 
 // Inventori/Validasi Kirim
 Route::get('atena/inventori/validasikirim/transaksi', function() {

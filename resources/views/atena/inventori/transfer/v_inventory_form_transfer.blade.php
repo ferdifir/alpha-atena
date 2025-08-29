@@ -165,11 +165,29 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 @push('js')
     <script>
         var row = {};
+        var config={};
         var cekbtnsimpan = true;
-        $(document).ready(function() {
-
+        $(document).ready(async function() {
+            let check = false;
+            await getConfig('KODETRANSFER', 'TTRANSFER', 'bearer {{ session('TOKEN') }}',
+                function(response) {
+                    if (response.success) {
+                        config = response.data;
+                        check = true;
+                    } else {
+                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
+                            window.alert("Login session sudah habis. Silahkan Login Kembali");
+                        } else {
+                            $.messager.alert('Error', error, 'error');
+                        }
+                    }
+                },
+                function(error) {
+                    $.messager.alert('Error', "Request Config Error", 'error');
+                });
+            if (!check) return;
             //TAMBAH CHECK AKSES CETAK
-            get_akses_user('<?= $kodemenu ?>', function(data) {
+            get_akses_user('<?= $kodemenu ?>', async function(data) {
                 var UT = data.cetak;
                 if (UT == 1) {
                     $('#simpan_cetak').css('filter', '');
@@ -177,7 +195,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     $('#simpan_cetak').css('filter', 'grayscale(100%)');
                     $('#simpan_cetak').removeAttr('onclick');
                 }
-            });
+            },false);
 
             $("#form_cetak").window({
                 collapsible: false,

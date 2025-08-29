@@ -35,15 +35,15 @@
                                     <td id="label_form" align="center">Tgl. Trans</td>
                                 </tr>
                                 <tr>
-                                    <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px"
-                                            class="date" /></td>
+                                    <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter"
+                                            style="width:100px" class="date" /></td>
                                 </tr>
                                 <tr>
                                     <td id="label_form" align="center">s/d</td>
                                 </tr>
                                 <tr>
-                                    <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px"
-                                            class="date" /></td>
+                                    <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter"
+                                            style="width:100px" class="date" /></td>
                                 </tr>
                                 <tr>
                                     <td id="label_form"><br></td>
@@ -127,6 +127,8 @@
 @endsection
 
 @push('js')
+    <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
+    </script>
     <script>
         //add
         var edit_row = false;
@@ -210,7 +212,9 @@
                         return false;
                     }
                     var statusTrans = await getStatusTrans(link_api.getStatusTransaksiInventoryTransfer,
-                        'bearer {{ session('TOKEN') }}', {uuidtransfer: row.uuidtransfer});
+                        'bearer {{ session('TOKEN') }}', {
+                            uuidtransfer: row.uuidtransfer
+                        });
                     var checkTabAvailable = parent.check_tab_exist(row.kodetransfer, 'fa fa-pencil');
                     if (statusTrans == 'I') {
                         var kode = row.kodetransfer;
@@ -240,11 +244,8 @@
                                 })
 
                                 if (response.success) {
+                                    cetak(row.uuidtransfer);
                                     refresh_data();
-                                    $.messager.alert('Info', response.message, 'info');
-
-                                    $("#area_cetak").load(link_api.cetakInventoryTransfer+row.uuidtransfer);
-                                    $("#form_cetak").window('open');
                                 } else {
                                     $.messager.alert('Error', response.message, 'error');
                                 }
@@ -256,8 +257,13 @@
                     } else if (statusTrans == 'S' || statusTrans == 'P') {
                         get_akses_user(modul_kode.inventori, 'bearer {{ session('TOKEN') }}', function(data) {
                             if (data.data.hakakses == 1) {
-                                $("#area_cetak").load(link_api.cetakInventoryTransfer+row.uuidtransfer);
-                                $("#form_cetak").window('open');
+                                // $("#area_cetak").load(link_api.cetakInventoryTransfer + row
+                                //     .uuidtransfer);
+                                // $("#form_cetak").window('open');
+                                cetak(row.uuidtransfer);
+                            } else {
+                                $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses Cetak Ulang',
+                                    'warning');
                             }
                         });
                     } else {
@@ -268,14 +274,37 @@
             }
         }
 
-        function cetak() {
-          var row = $('#table_data').datagrid('getSelected');
-          if(row){
-            // $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/TransferPersediaan/cetak/" + row.idtransfer);
-            $("#area_cetak").load(link_api.cetakInventoryTransfer+row.uuidtransfer);
-            $("#form_cetak").window('open');
-            reload();
-          }
+        async function cetak(uuidtrans) {
+            if (row) {
+                try {
+                    let url = link_api.cetakInventoryTransfer + uuidtrans;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': 'bearer {{ session('TOKEN') }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            uuidalatbayar: row.uuidalatbayar,
+                            kode: row.kodealatbayar,
+                        }),
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error! status: ${response.status} from ${url}`
+                            );
+                        }
+                        return response.text();
+                    })
+
+
+                    $("#area_cetak").html(response);
+                    $("#form_cetak").window('open');
+                } catch (error) {
+                    var textError = getTextError(error);
+                    $.messager.alert('Error', getTextError(error), 'error');
+                }
+            }
         }
 
         function ubah_status() {
@@ -330,8 +359,8 @@
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Inventory Transfer',
-                        '{{ route('atena.inventory.transfer.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah Inventori Transfer',
+                        '{{ route('atena.inventori.transfer.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -345,7 +374,7 @@
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
                     parent.buka_submenu(null, row.kodetransfer,
-                        '{{ route('atena.inventory.transfer.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        '{{ route('atena.inventori.transfer.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                         row.uuidtransfer,
                         'fa fa-pencil');
                 } else {
@@ -378,7 +407,9 @@
                     return;
                 }
                 var statusTrans = await getStatusTrans(link_api.getStatusTransaksiInventoryTransfer,
-                    'bearer {{ session('TOKEN') }}', {uuidtransfer: row.uuidtransfer});
+                    'bearer {{ session('TOKEN') }}', {
+                        uuidtransfer: row.uuidtransfer
+                    });
                 if (statusTrans == "I" || statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                         if (r) {
@@ -446,7 +477,9 @@
                     return;
                 }
                 var statusTrans = getStatusTrans(link_api.getStatusTransaksiInventoryTransfer,
-                    'bearer {{ session('TOKEN') }}', {uuidtransfer: row.uuidtransfer});
+                    'bearer {{ session('TOKEN') }}', {
+                        uuidtransfer: row.uuidtransfer
+                    });
                 if (statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                         if (r) {
@@ -500,7 +533,7 @@
                 striped: true,
                 rownumbers: true,
                 pageSize: 20,
-                url:link_api.loadDataGridInventoryTransfer,
+                url: link_api.loadDataGridInventoryTransfer,
                 pagination: true,
                 clientPaging: false,
                 rowStyler: function(index, row) {
