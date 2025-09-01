@@ -633,7 +633,7 @@
         generate_kode("CURRENCY"),
       ];
 
-      await Promise.all(promises);
+      Promise.all(promises);
     }
 
     async function getDataMaster() {

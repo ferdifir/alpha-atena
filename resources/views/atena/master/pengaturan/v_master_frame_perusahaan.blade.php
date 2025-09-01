@@ -13,7 +13,7 @@
         {{-- signup condition --}}
         <a class="easyui-linkbutton" onclick="javascript:simpan()"><i class="fa fa-save"></i> Simpan</a>
         {{-- end signup condition --}}
-        <a class="easyui-linkbutton" onclick="javascript:next()"><i class="far fa-circle-right"></i> Simpan dan
+        <a class="easyui-linkbutton" onclick="javascript:next()"><i class="far fa-arrow-alt-circle-right"></i> Simpan dan
           Lanjut</a>
       </div>
     </div>
