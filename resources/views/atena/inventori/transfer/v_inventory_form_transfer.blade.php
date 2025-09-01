@@ -175,7 +175,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         config = response.data;
                         check = true;
                     } else {
-                        if ((response.message ?? "").toLowerCase() == "token tidak valid") {
+                        if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
                             window.alert("Login session sudah habis. Silahkan Login Kembali");
                         } else {
                             $.messager.alert('Error', error, 'error');
