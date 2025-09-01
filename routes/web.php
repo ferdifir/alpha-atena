@@ -415,6 +415,12 @@ Route::get('atena/master/pengaturan/view-master-inventori', function() {
     ]);
 })->name('atena.master.pengaturan.frame-master-inventori');
 
+Route::get('atena/master/pengaturan/view-master-aset', function() {
+    return view('atena.master.pengaturan.v_master_frame_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-aset');
+
 
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
