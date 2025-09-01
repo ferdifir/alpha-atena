@@ -1,5 +1,9 @@
 @extends('template.form')
 
+@push('css')
+  <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/fontawesome/all.min.css') }}" />
+@endpush
+
 @section('content')
   <div style="height: 100%;overflow:hidden;margin-left:25px;margin-right:25px">
     <div style="height:30px;background-color:white;">
