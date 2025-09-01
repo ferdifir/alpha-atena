@@ -621,7 +621,6 @@
     }
 
     function buka_submenu(e, namamenu, link, gambarmenu) {
-      console.log(link);
       if (e != null && e != undefined) {
         e.preventDefault();
       }
@@ -634,7 +633,6 @@
       if ($('#tab_menu').tabs('exists', tab_title)) {
         $('#tab_menu').tabs('select', tab_title);
       } else {
-        console.log('add menu: ' + namamenu);
         $('#tab_menu').tabs('add', {
           title: tab_title,
           id: counter,

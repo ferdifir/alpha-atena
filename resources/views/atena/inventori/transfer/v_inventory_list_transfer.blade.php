@@ -100,7 +100,7 @@
     </div>
 
     <div id="form_cetak" title="Preview" style="width:660px; height:450px">
-        <div id="area_cetak"></div>
+        <div id="area_cetak" style="width:660px; height:450px"></div>
     </div>
 
     <div id="alasan_pembatalan" title="Alasan Pembatalan">
@@ -152,6 +152,11 @@
             $("#form_cetak").window({
                 collapsible: false,
                 minimizable: false,
+                onClose:function(){
+                    // $("#area_cetak").html("<html></html>");
+                     $("#area_cetak").attr("src", "about:blank");
+                    console.log("cek");
+                },
                 tools: [{
                     text: '',
                     iconCls: 'icon-print',
@@ -298,7 +303,20 @@
                     })
 
 
-                    $("#area_cetak").html(response);
+                    // $("#area_cetak").html(response);
+                    const iframe = document.createElement('iframe');
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+
+    // Masukkan iframe ke dalam #area_cetak
+    $("#area_cetak").html(iframe);
+
+    // Dapatkan dokumen di dalam iframe dan tuliskan respons ke sana
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(response);
+    iframeDoc.close();
                     $("#form_cetak").window('open');
                 } catch (error) {
                     var textError = getTextError(error);

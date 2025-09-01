@@ -96,7 +96,6 @@
 
         $.ajaxSetup({
             dataFilter: function(data, type) {
-                console.log(`type: ${type}`)
                 if (type == 'json') {
                     const parsed = JSON.parse(data);
                     return JSON.stringify(parsed.data);

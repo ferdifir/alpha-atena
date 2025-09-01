@@ -284,22 +284,16 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
 
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.success) {
-            console.log(response);
-            const errorBody = await response.message; // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${
-                response.status
-            }. Message: ${errorBody || "No specific error message."}`;
+            const errorBody = response.message; // Ambil teks error dari server jika ada
+            const errorMessage = `HTTP error! Status: ${response.status
+                }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
-                if (errorBody.toLowerCase() == "token tidak valid") {
-                    $.messager.alert(
-                        "Error",
-                        errorBody + " Silahkan logout dan login kembali",
-                        "error"
-                    );
+                if (errorBody.toLowerCase() == "token tidak valid.") {
+                    $.messager.alert('Error', errorBody + " Silahkan logout dan login kembali", 'error');
                 }
                 console.error("Error fetching data:", error);
             }
@@ -317,7 +311,7 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid") {
+                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
                     texterror += " Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
@@ -375,7 +369,7 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
             }
 
             // tutupLoader();
-            return; // Hentikan eksekusi
+            return; // Hentikan eksekusi∂
         }
 
         // Parsing respons sebagai JSON
@@ -385,7 +379,7 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid") {
+                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
                     texterror += " Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
