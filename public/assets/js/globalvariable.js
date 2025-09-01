@@ -239,6 +239,7 @@ var link_api = {
     simpanSettingPembelian: `${base_url_api}atena/master/pengaturan/pembelian/simpan`,
     simpanSettingPenjualan: `${base_url_api}atena/master/pengaturan/penjualan/simpan`,
     simpanSettingInventori: `${base_url_api}atena/master/pengaturan/inventori/simpan`,
+    simpanSettingProduksi: `${base_url_api}atena/master/pengaturan/produksi/simpan`,
     simpanSettingAset: `${base_url_api}atena/master/pengaturan/aset/simpan`,
     loadConfigMaster: `${base_url_api}atena/master/pengaturan/master/load-data-config`,
     loadConfigPembelian: `${base_url_api}atena/master/pengaturan/pembelian/load-data-config`,

@@ -1592,7 +1592,7 @@
 
     async function next() {
       await handleFormSubmit(() => {
-        window.location.href = "{{ route('atena.master.pengaturan.frame-master-aset') }}";
+        window.location.href = "{{ route('atena.master.pengaturan.frame-master-produksi') }}";
       });
     }
   </script>

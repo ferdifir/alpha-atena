@@ -421,6 +421,12 @@ Route::get('atena/master/pengaturan/view-master-aset', function() {
     ]);
 })->name('atena.master.pengaturan.frame-master-aset');
 
+Route::get('atena/master/pengaturan/view-master-produksi', function() {
+    return view('atena.master.pengaturan.v_master_frame_produksi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-produksi');
+
 
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
