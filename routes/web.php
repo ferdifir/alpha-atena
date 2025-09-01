@@ -391,6 +391,12 @@ Route::get('atena/master/pengaturan/view-master-global', function() {
     ]);
 })->name('atena.master.pengaturan.frame-master-global');
 
+Route::get('atena/master/pengaturan/view-master-master', function() {
+    return view('atena.master.pengaturan.v_master_frame_master', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-master');
+
 
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {

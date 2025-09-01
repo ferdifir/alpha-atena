@@ -6,7 +6,7 @@
 
 @section('content')
   <div style="height: 100%;overflow:hidden;margin-left:25px;margin-right:25px">
-    <div style="height:30px;background-color:white;">
+    <div style="height:40px;background-color:white;">
       <label class="font-header-menu">Data Perusahaan</label>
       <div align="right" valign="top">
         <p>Proses 1 dari 10</p>
@@ -144,7 +144,7 @@
 
     async function getDataPerusahaan() {
       try {
-        const response = await fetchData(link_api.loadSettingPerusahaan, null);
+        const response = await parent.fetchData(link_api.loadSettingPerusahaan, null);
         if (response.success) {
           const row = response.data;
           $("#form_input").form("load", row);
@@ -188,7 +188,7 @@
         for (const item of data) {
           payload[item.name] = item.value;
         }
-        const response = await fetchData(link_api.simpanSettingPerusahaan, payload);
+        const response = await parent.fetchData(link_api.simpanSettingPerusahaan, payload);
 
         if (response.success) {
           return true;
@@ -205,6 +205,7 @@
 
       if (isValid) {
         try {
+          tampilLoaderSimpan();
           await simpanData();
           if (typeof onSuccessCallback === 'function') {
             onSuccessCallback();
@@ -212,6 +213,8 @@
         } catch (e) {
           const error = (typeof e === 'string') ? e : e.message;
           $.messager.alert('Error', getTextError(error), 'error');
+        } finally {
+          tutupLoaderSimpan();
         }
       }
     }
@@ -228,36 +231,5 @@
       });
     }
 
-    async function fetchData(url, body) {
-      try {
-        const token = '{{ session('TOKEN') }}';
-        let headers = {
-          'Authorization': 'bearer ' + token,
-        };
-        let requestBody = null;
-
-        if (body instanceof FormData) {
-          requestBody = body;
-        } else {
-          headers['Content-Type'] = 'application/json';
-          requestBody = body ? JSON.stringify(body) : null;
-        }
-
-        const response = await fetch(url, {
-          method: 'POST',
-          headers: headers,
-          body: requestBody,
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        return data;
-      } catch (error) {
-        throw error;
-      }
-    }
   </script>
 @endpush

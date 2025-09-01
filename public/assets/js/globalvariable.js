@@ -234,6 +234,8 @@ var link_api = {
     loadSettingKeuangan: `${base_url_api}atena/master/pengaturan/load-setting-keuangan`,
     loadSettingAkuntansi: `${base_url_api}atena/master/pengaturan/load-setting-akuntansi`,
     simpanSettingPerusahaan: `${base_url_api}atena/master/perusahaan/simpan`,
+    simpanSettingGlobal: `${base_url_api}atena/master/setting-global/simpan`,
+    simpanSettingMaster: `${base_url_api}atena/master/pengaturan/master/simpan`,
     //Inventory Transfer
     batalTransaksiInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/batal-trans`,
     loadDataHeaderInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-header`,

@@ -172,6 +172,10 @@
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
+        onClose: function() {
+          document.removeEventListener('selectstart', handleSelectStart);
+          document.removeEventListener('contextmenu', handleContextMenu, false);
+        },
         tools: [{
           text: '',
           iconCls: 'icon-print',
@@ -258,7 +262,6 @@
         },
         buttons: '#verify-buttons'
       }).dialog('close');
-      tutupLoader();
     });
 
     /*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
@@ -440,6 +443,7 @@
         selectOnCheck: false,
         url: link_api.loadDataGridValidasiKirim,
         onLoadSuccess: function(data) {
+          tutupLoader();
           $("#table_data").datagrid('unselectAll');
         },
         rowStyler: function(index, row) {
