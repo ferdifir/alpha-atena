@@ -303,20 +303,20 @@
                     })
 
 
-                    // $("#area_cetak").html(response);
-                    const iframe = document.createElement('iframe');
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.border = 'none';
+                    $("#area_cetak").html(response);
+    //                 const iframe = document.createElement('iframe');
+    // iframe.style.width = '100%';
+    // iframe.style.height = '100%';
+    // iframe.style.border = 'none';
 
-    // Masukkan iframe ke dalam #area_cetak
-    $("#area_cetak").html(iframe);
+    // // Masukkan iframe ke dalam #area_cetak
+    // $("#area_cetak").html(iframe);
 
-    // Dapatkan dokumen di dalam iframe dan tuliskan respons ke sana
-    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(response);
-    iframeDoc.close();
+    // // Dapatkan dokumen di dalam iframe dan tuliskan respons ke sana
+    // const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    // iframeDoc.open();
+    // iframeDoc.write(response);
+    // iframeDoc.close();
                     $("#form_cetak").window('open');
                 } catch (error) {
                     var textError = getTextError(error);

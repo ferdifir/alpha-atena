@@ -397,6 +397,18 @@ Route::get('atena/master/pengaturan/view-master-master', function() {
     ]);
 })->name('atena.master.pengaturan.frame-master-master');
 
+Route::get('atena/master/pengaturan/view-master-pembelian', function() {
+    return view('atena.master.pengaturan.v_master_frame_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-pembelian');
+
+Route::get('atena/master/pengaturan/view-master-penjualan', function() {
+    return view('atena.master.pengaturan.v_master_frame_penjualan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-penjualan');
+
 
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
