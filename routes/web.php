@@ -433,6 +433,12 @@ Route::get('atena/master/pengaturan/view-master-keuangan', function() {
     ]);
 })->name('atena.master.pengaturan.frame-master-keuangan');
 
+Route::get('atena/master/pengaturan/view-master-akuntansi', function() {
+    return view('atena.master.pengaturan.v_master_frame_akuntansi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-akuntansi');
+
 
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
