@@ -296,22 +296,6 @@
 
 
                     $("#area_cetak").html(response);
-<<<<<<< HEAD
-=======
-    //                 const iframe = document.createElement('iframe');
-    // iframe.style.width = '100%';
-    // iframe.style.height = '100%';
-    // iframe.style.border = 'none';
-
-    // // Masukkan iframe ke dalam #area_cetak
-    // $("#area_cetak").html(iframe);
-
-    // // Dapatkan dokumen di dalam iframe dan tuliskan respons ke sana
-    // const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    // iframeDoc.open();
-    // iframeDoc.write(response);
-    // iframeDoc.close();
->>>>>>> 19422d8363730102d0cca5ab61c535b6e649c5e0
                     $("#form_cetak").window('open');
                 } catch (error) {
                     var textError = getTextError(error);
