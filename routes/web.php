@@ -394,6 +394,22 @@ Route::get('atena/inventori/transferpersediaan/form', function() {
     ]);
 })->name('atena.inventori.transfer.form');
 
+// Inventory Terima Transfer
+Route::get('atena/inventori/terimatransferpersediaan/transaksi', function() {
+    return view('atena.inventori.terima_transfer.v_inventory_list_terima_transfer', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.terima_transfer.transaksi');
+
+Route::get('atena/inventori/terimatransferpersediaan/form', function() {
+    return view('atena.inventori.terima_transfer.v_inventory_form_terima_transfer', [
+        "transaksi"=>"HEADER",
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.terima_transfer.form');
+
 // Inventori/Validasi Kirim
 Route::get('atena/inventori/validasikirim/transaksi', function() {
     return view('atena.inventori.validasi_kirim.v_inventori_list_validasi_kirim', [
