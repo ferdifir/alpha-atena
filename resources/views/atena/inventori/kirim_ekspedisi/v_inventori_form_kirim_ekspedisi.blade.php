@@ -364,7 +364,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadLokasiDefault,
+        url: link_api.getLokasiDefault,
         dataType: 'json',
         cache: false,
         success: function(msg) {
