@@ -227,7 +227,42 @@ var link_api = {
     validasiValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/validasi`,
     cetakValidasiKirim: `${base_url_api}atena/inventori/validasi-kirim/cetak`,
     browseSopir: `${base_url_api}atena/master/sopir/browse`,
-    //Inventori Transfer
+    //Pengaturan
+    loadSettingPerusahaan: `${base_url_api}atena/master/pengaturan/load-setting-perusahaan`,
+    loadSettingGlobal: `${base_url_api}atena/master/pengaturan/load-setting-global`,
+    loadSettingMaster: `${base_url_api}atena/master/pengaturan/load-setting-master`,
+    loadSettingPembelian: `${base_url_api}atena/master/pengaturan/load-setting-pembelian`,
+    loadSettingPenjualan: `${base_url_api}atena/master/pengaturan/load-setting-penjualan`,
+    loadSettingInventori: `${base_url_api}atena/master/pengaturan/load-setting-inventori`,
+    loadSettingAset: `${base_url_api}atena/master/pengaturan/load-setting-aset`,
+    loadSettingProduksi: `${base_url_api}atena/master/pengaturan/load-setting-produksi`,
+    loadSettingKeuangan: `${base_url_api}atena/master/pengaturan/load-setting-keuangan`,
+    loadSettingAkuntansi: `${base_url_api}atena/master/pengaturan/load-setting-akuntansi`,
+    simpanSettingPerusahaan: `${base_url_api}atena/master/perusahaan/simpan`,
+    simpanSettingGlobal: `${base_url_api}atena/master/setting-global/simpan`,
+    simpanSettingMaster: `${base_url_api}atena/master/pengaturan/master/simpan`,
+    simpanSettingPembelian: `${base_url_api}atena/master/pengaturan/pembelian/simpan`,
+    simpanSettingPenjualan: `${base_url_api}atena/master/pengaturan/penjualan/simpan`,
+    simpanSettingInventori: `${base_url_api}atena/master/pengaturan/inventori/simpan`,
+    simpanSettingProduksi: `${base_url_api}atena/master/pengaturan/produksi/simpan`,
+    simpanSettingAset: `${base_url_api}atena/master/pengaturan/aset/simpan`,
+    simpanSettingKeuangan: `${base_url_api}atena/master/pengaturan/keuangan/simpan`,
+    simpanSettingAkuntansi: `${base_url_api}atena/master/pengaturan/akuntansi/simpan`,
+    loadConfigMaster: `${base_url_api}atena/master/pengaturan/master/load-data-config`,
+    loadConfigPembelian: `${base_url_api}atena/master/pengaturan/pembelian/load-data-config`,
+    loadConfigPenjualan: `${base_url_api}atena/master/pengaturan/penjualan/load-data-config`,
+    loadConfigInventori: `${base_url_api}atena/master/pengaturan/inventori/load-data-config`,
+    loadConfigAset: `${base_url_api}atena/master/pengaturan/aset/load-data-config`,
+    loadConfigKeuangan: `${base_url_api}atena/master/pengaturan/keuangan/load-data-config`,
+    loadConfigAkuntansi: `${base_url_api}atena/master/pengaturan/akuntansi/load-data-config`,
+    generateCodeMaster: `${base_url_api}atena/master/pengaturan/master/generate-kode`,
+    generateCodePembelian: `${base_url_api}atena/master/pengaturan/pembelian/generate-kode`,
+    generateCodePenjualan: `${base_url_api}atena/master/pengaturan/penjualan/generate-kode`,
+    generateCodeInventori: `${base_url_api}atena/master/pengaturan/inventori/generate-kode`,
+    generateCodeAset: `${base_url_api}atena/master/pengaturan/aset/generate-kode`,
+    generateCodeKeuangan: `${base_url_api}atena/master/pengaturan/keuangan/generate-kode`,
+    generateCodeAkuntansi: `${base_url_api}atena/master/pengaturan/akuntansi/generate-kode`,
+    //Inventory Transfer
     batalTransaksiInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/batal-trans`,
     loadDataHeaderInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-header`,
     cetakInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/cetak/`,
@@ -363,8 +398,9 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.ok) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${
+                response.status
+            }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
@@ -434,4 +470,3 @@ const getStatusTrans = async (url, token, param) => {
     }
     return status;
 }
-

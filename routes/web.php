@@ -372,6 +372,74 @@ Route::get('atena/master/promo/form', function() {
     ]);
 })->name('atena.master.promo.form');
 
+// Pengaturan
+Route::get('atena/master/pengaturan/data', function() {
+    return view('atena.master.pengaturan.v_master_form_pengaturan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.data');
+
+Route::get('atena/master/pengaturan/view-master-perusahaan', function() {
+    return view('atena.master.pengaturan.v_master_frame_perusahaan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-perusahaan');
+
+Route::get('atena/master/pengaturan/view-master-global', function() {
+    return view('atena.master.pengaturan.v_master_frame_global', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-global');
+
+Route::get('atena/master/pengaturan/view-master-master', function() {
+    return view('atena.master.pengaturan.v_master_frame_master', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-master');
+
+Route::get('atena/master/pengaturan/view-master-pembelian', function() {
+    return view('atena.master.pengaturan.v_master_frame_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-pembelian');
+
+Route::get('atena/master/pengaturan/view-master-penjualan', function() {
+    return view('atena.master.pengaturan.v_master_frame_penjualan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-penjualan');
+
+Route::get('atena/master/pengaturan/view-master-inventori', function() {
+    return view('atena.master.pengaturan.v_master_frame_inventori', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-inventori');
+
+Route::get('atena/master/pengaturan/view-master-aset', function() {
+    return view('atena.master.pengaturan.v_master_frame_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-aset');
+
+Route::get('atena/master/pengaturan/view-master-produksi', function() {
+    return view('atena.master.pengaturan.v_master_frame_produksi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-produksi');
+
+Route::get('atena/master/pengaturan/view-master-keuangan', function() {
+    return view('atena.master.pengaturan.v_master_frame_keuangan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-keuangan');
+
+Route::get('atena/master/pengaturan/view-master-akuntansi', function() {
+    return view('atena.master.pengaturan.v_master_frame_akuntansi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.pengaturan.frame-master-akuntansi');
+
+
 // Jurnal Link
 Route::get('atena/master/jurnallink/data', function() {
     return view('atena.master.jurnal_link.v_master_list_jurnal_link', [
