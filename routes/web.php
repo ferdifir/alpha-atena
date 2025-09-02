@@ -449,13 +449,13 @@ Route::get('atena/master/jurnallink/data', function() {
 
 // Inventory Transfer
 Route::get('atena/inventori/transferpersediaan/transaksi', function() {
-    return view('atena.inventori.transfer.v_inventory_list_transfer', [
+    return view('atena.inventori.transfer.v_inventori_list_transfer', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.inventory.transfer.transaksi');
 
 Route::get('atena/inventori/transferpersediaan/form', function() {
-    return view('atena.inventori.transfer.v_inventory_form_transfer', [
+    return view('atena.inventori.transfer.v_inventori_form_transfer', [
         'kodemenu' => request()->kode,
         'data'=>request()->data,
         'mode'=>request()->mode,
@@ -464,13 +464,13 @@ Route::get('atena/inventori/transferpersediaan/form', function() {
 
 // Inventory Terima Transfer
 Route::get('atena/inventori/terimatransferpersediaan/transaksi', function() {
-    return view('atena.inventori.terima_transfer.v_inventory_list_terima_transfer', [
+    return view('atena.inventori.terima_transfer.v_inventori_list_terima_transfer', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.inventory.terima_transfer.transaksi');
 
 Route::get('atena/inventori/terimatransferpersediaan/form', function() {
-    return view('atena.inventori.terima_transfer.v_inventory_form_terima_transfer', [
+    return view('atena.inventori.terima_transfer.v_inventori_form_terima_transfer', [
         "transaksi"=>"HEADER",
         'kodemenu' => request()->kode,
         'data'=>request()->data,
@@ -484,3 +484,50 @@ Route::get('atena/inventori/validasikirim/transaksi', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.inventori.validasi_kirim.transaksi');
+
+
+// Inventory Pemakaian Bahan
+Route::get('atena/inventori/pemakaianbahan/transaksi', function() {
+    return view('atena.inventori.pemakaian_bahan.v_inventori_list_pemakaian_bahan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.pemakaianbahan.transaksi');
+
+Route::get('atena/inventori/pemakaianbahan/form', function() {
+    return view('atena.inventori.pemakaian_bahan.v_inventori_form_pemakaian_bahan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.pemakaianbahan.form');
+
+
+// Inventory Repacking
+Route::get('atena/inventori/repacking/transaksi', function() {
+    return view('atena.inventori.repacking.v_inventori_list_repacking', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.repacking.transaksi');
+
+Route::get('atena/inventori/repacking/form', function() {
+    return view('atena.inventori.repacking.v_inventori_form_repacking', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.repacking.form');
+
+// Inventory Saldo Awal Stok
+Route::get('atena/inventori/saldoawalstok/transaksi', function() {
+    return view('atena.inventori.saldo_awal_stok.v_inventori_list_saldo_awal_stok', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.saldo_awal_stok.transaksi');
+
+Route::get('atena/inventori/saldoawalstok/form', function() {
+    return view('atena.inventori.saldo_awal_stok.v_inventori_form_saldo_awal_stok', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.saldo_awal_stok.form');
