@@ -55,6 +55,7 @@ var link_api = {
     hapusLokasi: `${base_url_api}atena/master/lokasi/hapus`,
     getHeaderLokasi: `${base_url_api}atena/master/lokasi/load-lokasi-header`,
     getLokasiDefault: `${base_url_api}atena/master/lokasi/cek-lokasi-default`,
+    loadLokasiDefault: `${base_url_api}atena/master/lokasi/get-lokasi-default`,
     simpanLokasi: `${base_url_api}atena/master/lokasi/simpan`,
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     //Merk
@@ -90,6 +91,7 @@ var link_api = {
     headerFormEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-header`,
     simpanEkspedisi: `${base_url_api}atena/master/ekspedisi/simpan`,
     hapusEkspedisi: `${base_url_api}atena/master/ekspedisi/hapus`,
+    browseEkspedisi: `${base_url_api}atena/master/ekspedisi/browse`,
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
@@ -270,6 +272,19 @@ var link_api = {
     loadDataDetailInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
     brosweInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
     hitungStokInventoryTransfer: `${base_url_api}atena/master/barang/hitung-stok-transaksi`,
+    //Inventory Kirim Ekspedisi
+    ubahStatusJadiSlipInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-slip`,
+    cetakInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/cetak/`,
+    batalTransaksiInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/batal-trans`,
+    ubahStatusjadiInputInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-input`,
+    loadDataGridInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data-grid`,
+    getStatusTransaksiInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/get-status-trans`,
+    simpanInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/simpan/`,
+    loadDataInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data`,
+    loadDataDetailKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-detail-kirim`,
+    browsePenjualanBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-penjualan`,
+    browseKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-kirim`,
+    browseBarangBBMBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-barang-bbm`,
 };
 
 var modul_kode = {

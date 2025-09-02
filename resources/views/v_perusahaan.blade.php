@@ -368,6 +368,16 @@
                   valueSession: (dataConfig.find((conf) => conf.config ==
                     "CEKMINUS").value) ?? ""
                 })
+                dataSession.push({
+                  keySession: "SHOWBARCODE",
+                  valueSession: (dataConfig.find((conf) => conf.config ==
+                    "SHOWBARCODE").value) ?? ""
+                })
+                dataSession.push({
+                  keySession: "SHOWPARTNUMBER",
+                  valueSession: (dataConfig.find((conf) => conf.config ==
+                    "SHOWPARTNUMBER").value) ?? ""
+                })
               } else {
                 Swal.close();
                 Swal.fire({

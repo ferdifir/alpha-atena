@@ -468,3 +468,18 @@ Route::get('atena/inventori/validasikirim/transaksi', function() {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.inventori.validasi_kirim.transaksi');
+
+// Inventori/Kirim Ekspedisi
+Route::get('atena/inventori/kirimekspedisi/transaksi', function() {
+    return view('atena.inventori.kirim_ekspedisi.v_inventori_list_kirim_ekspedisi', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventori.kirim_ekspedisi.transaksi');
+
+Route::get('atena/inventori/kirimekspedisi/form', function() {
+    return view('atena.inventori.kirim_ekspedisi.v_inventori_form_kirim_ekspedisi', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.kirim_ekspedisi.form');
