@@ -328,7 +328,7 @@
                 if ($('#LOKASIDEFAULT').is(':checked')) {
                     bukaLoader();
                     try {
-                        let url = link_api.getLokasiDefault;
+                        let url = link_api.checkLokasiDefault;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {

@@ -429,60 +429,17 @@
                             //ambil config global
                             if (responseGlobal.success) {
                                 var dataConfig = responseGlobal.data.config;
-                                dataSession.push({
-                                    keySession: "DECIMALDIGITQTY",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "DECIMALDIGITQTY").value) ?? ""
+                                for(var i=0;i<dataConfig.length;i++){
+                                  var conf=dataConfig[i];
+                                    dataSession.push({
+                                    keySession: conf.config,
+                                    valueSession: conf.value??"",
                                 })
-                                dataSession.push({
-                                    keySession: "DECIMALDIGITAMOUNT",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "DECIMALDIGITAMOUNT").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "MULTICURRENCY",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "MULTICURRENCY").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "SIMBOLCURRENCY",
-                                    valueSession: responseGlobal.simbol_currency ?? "",
-                                })
-                                dataSession.push({
-                                    keySession: "PPN",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "PPNPERSEN").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "DEFAULTPAKAIPPN",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "DEFAULTPAKAIPPN").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "PPH22",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "PPH22PERSEN").value) ?? ""
-                                })
+                                }
                                 dataSession.push({
                                     keySession: "TIMEOUT",
                                     valueSession: 5000,
                                 })
-                                dataSession.push({
-                                    keySession: "CEKMINUS",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "CEKMINUS").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "SHOWBARCODE",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "SHOWBARCODE").value) ?? ""
-                                })
-                                dataSession.push({
-                                    keySession: "SHOWPARTNUMBER",
-                                    valueSession: (dataConfig.find((conf) => conf.config ==
-                                        "SHOWPARTNUMBER").value) ?? ""
-                                })
-
                             } else {
                                 Swal.close();
                                 Swal.fire({

@@ -54,10 +54,11 @@ var link_api = {
     loadDataGridLokasi: `${base_url_api}atena/master/lokasi/load-data-grid`,
     hapusLokasi: `${base_url_api}atena/master/lokasi/hapus`,
     getHeaderLokasi: `${base_url_api}atena/master/lokasi/load-lokasi-header`,
-    getLokasiDefault: `${base_url_api}atena/master/lokasi/cek-lokasi-default`,
-    loadLokasiDefault: `${base_url_api}atena/master/lokasi/get-lokasi-default`,
+    checkLokasiDefault: `${base_url_api}atena/master/lokasi/cek-lokasi-default`,
+    getLokasiDefault: `${base_url_api}atena/master/lokasi/get-lokasi-default`,
     simpanLokasi: `${base_url_api}atena/master/lokasi/simpan`,
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
+    browseLokasiTransfer: `${base_url_api}atena/master/lokasi/browse-transfer`,
     //Merk
     hapusMerk: `${base_url_api}atena/master/merk/hapus`,
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
@@ -66,7 +67,6 @@ var link_api = {
     //supplier
     loadDataGridMasterSupplier: `${base_url_api}atena/master/supplier/load-data-grid`,
     hapusSupplier: `${base_url_api}atena/master/supplier/hapus`,
-    browseSyaratBayar: `${base_url_api}atena/master/syaratbayar/browse`,
     browseBadanUsaha: `${base_url_api}atena/master/supplier/browse-badan-usaha`,
     getHutangBelumLunas: `${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
     simpanSupplier: `${base_url_api}atena/master/supplier/simpan`,
@@ -135,6 +135,7 @@ var link_api = {
     getHeaderDepartemenKerja: `${base_url_api}atena/master/departemenkerja/load-data-header`,
     simpanDepartemenKerja: `${base_url_api}atena/master/departemenkerja/simpan`,
     browseDataDepartemenKerja: `${base_url_api}atena/master/departemenkerja/browse`,
+    browseSyaratBayar: `${base_url_api}atena/master/syaratbayar/browse`,
     //Karyawan
     hapusKaryawan: `${base_url_api}atena/master/karyawan/hapus`,
     loadDataGridKaryawan: `${base_url_api}atena/master/karyawan/load-data-grid`,
@@ -209,6 +210,9 @@ var link_api = {
     loadHargaJual: `${base_url_api}atena/master/barang/load-harga-jual`,
     simpanHargaJual: `${base_url_api}atena/master/barang/simpan-harga-jual`,
     headerFormBarang: `${base_url_api}atena/master/barang/load-data-header`,
+    getStokBarangSatuan: `${base_url_api}atena/master/barang/get-stok-barang-satuan`,
+    loadDataBarangBarcode: `${base_url_api}atena/master/barang/load-data-barang-barcode`,
+    loadSatuanBarang: `${base_url_api}atena/master/barang/load-satuan-barang`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,
@@ -269,9 +273,24 @@ var link_api = {
     loadDataGridInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-grid`,
     simpanInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/simpan/`,
     loadDataInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data`,
-    loadDataDetailInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
-    brosweInventoryTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
     hitungStokInventoryTransfer: `${base_url_api}atena/master/barang/hitung-stok-transaksi`,
+    // Inventori Terima Transaksi
+    batalTransaksiInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/batal-trans`,
+    loadDataHeaderInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/load-data-header`,
+    cetakInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/cetak`,
+    getStatusTransaksiInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/get-status-trans`,
+    ubahStatusJadiInputInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/ubah-status-jadi-slip`,
+    loadDataGridInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/load-data-grid`,
+    simpanInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/simpan`,
+    loadDataInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/load-data`,
+    loadDataDetailInventoryTerimaTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-detail-terima-transfer`,
+    browseInventoriTerimaTransfer: `${base_url_api}atena/inventori/transfer-persediaan/browse-terima-transfer`,
+    //pembelian - permintaan barang
+    loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
+    broswePermintaanBarangTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
+
+
     //Inventory Kirim Ekspedisi
     ubahStatusJadiSlipInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-slip`,
     cetakInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/cetak/`,
@@ -455,7 +474,7 @@ const getStatusTrans = async (url, token, param) => {
         })
 
         if (response.success) {
-            status=response.data.status;
+            status = response.data.status;
         } else {
             $.messager.alert('Error', response.message, 'error');
         }

@@ -152,9 +152,9 @@
             $("#form_cetak").window({
                 collapsible: false,
                 minimizable: false,
-                onClose:function(){
+                onClose: function() {
                     // $("#area_cetak").html("<html></html>");
-                     $("#area_cetak").attr("src", "about:blank");
+                    $("#area_cetak").attr("src", "about:blank");
                     console.log("cek");
                 },
                 tools: [{
@@ -193,13 +193,6 @@
             before_add();
         });
 
-        function disable_button() {
-            $('#btn_refresh').linkbutton('disable');
-            $('#btn_batal').linkbutton('disable')
-            $('#btn_cetak').linkbutton('disable')
-            $('#btn_batal_cetak').linkbutton('disable')
-        }
-
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
             $('#btn_batal').linkbutton('enable')
@@ -236,8 +229,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidtrans: row.uuidtransfer,
-                                        kodetrans: row.kodetransfer,
+                                        uuidtransfer: row.uuidtransfer,
+                                        kodetransfer: row.kodetransfer,
                                     }),
                                 }).then(response => {
                                     if (!response.ok) {
@@ -290,8 +283,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            uuidalatbayar: row.uuidalatbayar,
-                            kode: row.kodealatbayar,
+                            uuidtransfer: uuidtrans,
                         }),
                     }).then(response => {
                         if (!response.ok) {
@@ -304,19 +296,6 @@
 
 
                     $("#area_cetak").html(response);
-    //                 const iframe = document.createElement('iframe');
-    // iframe.style.width = '100%';
-    // iframe.style.height = '100%';
-    // iframe.style.border = 'none';
-
-    // // Masukkan iframe ke dalam #area_cetak
-    // $("#area_cetak").html(iframe);
-
-    // // Dapatkan dokumen di dalam iframe dan tuliskan respons ke sana
-    // const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-    // iframeDoc.open();
-    // iframeDoc.write(response);
-    // iframeDoc.close();
                     $("#form_cetak").window('open');
                 } catch (error) {
                     var textError = getTextError(error);
@@ -401,20 +380,23 @@
             });
         }
 
-        function before_batal() {
+        function before_delete() {
             $('#mode').val('hapus');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.hapus == 1) {
-                    batal();
+                    // batal();
+                    $("#alasan_pembatalan").dialog('open');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
             });
         }
 
-        async function batal() {
+        async function batal_trans() {
+            $("#alasan_pembatalan").dialog('close');
+            alasan = $('#ALASANPEMBATALAN').val();
             var row = $('#table_data').datagrid('getSelected');
-            if (row) {
+            if (row && alasan != "") {
                 bukaLoader();
 
                 var checkTabAvailable = parent.check_tab_exist(row.kodetransfer, 'fa fa-pencil');
@@ -432,7 +414,7 @@
                     $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                         if (r) {
                             try {
-                                let url = link_api.hapusAlatBayar;
+                                let url = link_api.batalTransaksiInventoryTransfer;
                                 const response = await fetch(url, {
                                     method: 'POST',
                                     headers: {
@@ -440,8 +422,9 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidalatbayar: row.uuidalatbayar,
-                                        kode: row.kodealatbayar,
+                                        uuidtransfer: row.uuidtransfer,
+                                        kodetransfer: row.kodetransfer,
+                                        alasan: alasan,
                                     }),
                                 }).then(response => {
                                     if (!response.ok) {
@@ -494,10 +477,11 @@
                     tutupLoader();
                     return;
                 }
-                var statusTrans = getStatusTrans(link_api.getStatusTransaksiInventoryTransfer,
+                var statusTrans = await getStatusTrans(link_api.getStatusTransaksiInventoryTransfer,
                     'bearer {{ session('TOKEN') }}', {
                         uuidtransfer: row.uuidtransfer
                     });
+                console.log(statusTrans);
                 if (statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
                         if (r) {
@@ -510,8 +494,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidtrans: row.uuidtransfer,
-                                        kodetrans: row.kodetransfer,
+                                        uuidtransfer: row.uuidtransfer,
+                                        kodetransfer: row.kodetransfer,
                                     }),
                                 }).then(response => {
                                     if (!response.ok) {
