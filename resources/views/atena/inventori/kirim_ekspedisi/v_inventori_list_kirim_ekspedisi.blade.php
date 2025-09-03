@@ -120,6 +120,7 @@
 @endsection
 
 @push('js')
+  <script type="text/javascript" src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
     //addd
     var edit_row = false;
@@ -137,28 +138,6 @@
         }
       });
 
-      //PRINT TAB
-      $("#tab_transaksi").tabs({
-        onSelect: function() {
-          var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-          if (tab_title == 'Grid') {
-            enable_button()
-          } else if (tab_title == 'Tambah') {
-            disable_button()
-          } else {
-            //AMBIL IDTRANS LEBIH DARI IDTAB
-            var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-            //Variabel ROW diisi array object
-            row = {
-              uuidkirim: trans[0],
-              kodekirim: trans[1],
-            };
-            disable_button()
-          }
-        }
-      });
-
       create_form_login();
       buat_table();
 
@@ -167,6 +146,7 @@
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
+        method: 'POST',
         tools: [{
           text: '',
           iconCls: 'icon-print',
@@ -257,8 +237,11 @@
               var kode = row.kodekirim;
               var isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
               if (isTabAvailable) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatalkan ', 'warning');
+                $.messager.alert(
+                  'Warning',
+                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
+                  'warning'
+                );
               } else {
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                   data = data.data;
@@ -283,7 +266,7 @@
       }
     }
 
-    async function fetchData(url, body) {
+    async function fetchData(url, body, isjson = true) {
       try {
         const token = '{{ session('TOKEN') }}';
         let headers = {
@@ -311,8 +294,11 @@
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        const data = await response.json();
-        return data;
+        if (isjson) {
+          return await response.json();
+        } else {
+          return await response.text();
+        }
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
         throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
@@ -334,9 +320,13 @@
             const data = response.data;
             if (data.status == 'S') {
               var kode = row.kodekirim;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatal Cetak ', 'warning');
+              var isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabAvailable) {
+                $.messager.alert(
+                  'Warning',
+                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatal Cetak ',
+                  'warning'
+                );
               } else {
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                   data = data.data;
@@ -382,8 +372,8 @@
             if (data.status == 'I') {
               row = $('#table_data').datagrid('getSelected');
               const res = await fetchData(link_api.ubahStatusJadiSlipInventoryKirimEkspedisi, {
-                idtrans: row.uuidkirim,
-                kodetrans: row.kodekirim
+                uuidkirim: row.uuidkirim,
+                kodekirim: row.kodekirim
               });
               if (res.success) {
                 $.messager.alert('Info', 'Transaksi Sukses Dicetak', 'info');
@@ -404,10 +394,16 @@
               }
             } else if (data.status == 'S' || data.status == 'P') {
               const kodemenu = modul_kode['inventori'];
-              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', function(data) {
+              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
                 data = data.data;
                 if (data.hakakses == 1) {
-                  $("#area_cetak").load(cetakInventoryKirimEkspedisi + row.uuidkirim);
+                  const document = await getCetakDocument(
+                    link_api.cetakInventoryKirimEkspedisi + row.uuidkirim
+                  );
+                  if (document == null) {
+                    return;
+                  }
+                  $("#area_cetak").html(document);
                   $("#form_cetak").window('open');
                 }
               });
@@ -423,70 +419,92 @@
       }
     }
 
-    function batal_trans() {
+    async function getCetakDocument(url) {
+      try {
+        const response = await fetchData(url, null, false);
+        return response;
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+        return null;
+      }
+    }
+
+    async function batal_trans() {
       $("#alasan_pembatalan").dialog('close');
       alasan = $('#ALASANPEMBATALAN').val();
       if (row && alasan != "") {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodekirim + ' ?', function(r) {
-          if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.batalTransaksiInventoryKirimEkspedisi,
-              data: "idtrans=" + row.uuidkirim + "&kodetrans=" + row.kodekirim + "&alasan=" + alasan,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
+        $.messager.confirm(
+          'Confirm',
+          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodekirim + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                bukaLoader();
+                const msg = await fetchData(link_api.batalTransaksiInventoryKirimEkspedisi, {
+                  uuidkirim: row.uuidkirim,
+                  kodekirim: row.kodekirim,
+                  alasan: alasan
+                });
+                if (!msg.success) {
+                  throw new Error(msg.message || 'Terjadi kesalahan ketika membatalkan transaksi');
                 }
+
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } catch (error) {
+                $.messager.progress('close');
+                const errorMessage = (typeof error === 'string') ? error : error.message;
+                const textError = getTextError(errorMessage);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
               }
-            });
-          }
-        });
+            }
+          });
       } else {
         $.messager.alert('Error', 'Alasan harus diisi', 'error');
       }
     }
 
-    function batal_cetak() {
+    async function batal_cetak() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodekirim + ' ?', function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodekirim + ' ?', async function(r) {
           if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.ubahStatusjadiInputInventoryKirimEkspedisi,
-              data: "idtrans=" + row.uuidkirim + "&kodetrans=" + row.kodekirim,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
+            try {
+              bukaLoader();
+              const msg = await fetchData(link_api.ubahStatusjadiInputInventoryKirimEkspedisi, {
+                uuidkirim: row.uuidkirim,
+                kodekirim: row.kodekirim
+              });
 
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
+              if (!msg.success) {
+                throw new Error(msg.message || 'Terjadi kesalahan ketika membatalkan cetak transaksi');
               }
-            });
+
+              $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
+              reload();
+            } catch (error) {
+              const errorMessage = (typeof error === 'string') ? error : error.message;
+              const textError = getTextError(errorMessage);
+              $.messager.alert('Error', textError, 'error');
+            } finally {
+              tutupLoader();
+            }
           }
         });
       }
     }
 
-    function cetak() {
-      $("#area_cetak").load(link_api.cetakInventoryKirimEkspedisi + row.uuidkirim);
+    async function cetak() {
+      const document = await getCetakDocument(
+        link_api.cetakInventoryKirimEkspedisi + row.uuidkirim
+      );
+      if (document == null) {
+        return;
+      }
+      $("#area_cetak").html(document);
       $("#form_cetak").window('open');
       reload();
     }

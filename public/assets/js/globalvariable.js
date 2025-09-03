@@ -304,6 +304,7 @@ var link_api = {
     browsePenjualanBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-penjualan`,
     browseKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-kirim`,
     browseBarangBBMBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-barang-bbm`,
+    loadDataHeaderInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data-header`,
 };
 
 var modul_kode = {
