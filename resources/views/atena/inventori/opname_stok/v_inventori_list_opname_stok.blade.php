@@ -32,7 +32,7 @@
                   <td id="label_form"></td>
                 </tr>
                 <tr>
-                  <td id="label_form" align="center">Tgl. Trans</td>
+                  <td id="label_form" align="center">Tgl. Transaksi</td>
                 </tr>
                 <tr>
                   <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
@@ -57,7 +57,7 @@
                   <td id="label_form"><br></td>
                 </tr>
                 <tr>
-                  <td id="label_form" align="center">No. Kirim</td>
+                  <td id="label_form" align="center">No. Opname Stok</td>
                 </tr>
                 <tr>
                   <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
@@ -70,11 +70,31 @@
                   <td id="label_form" align="center">Status</td>
                 </tr>
                 <tr>
-                  <td align="center">
-                    <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                    <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                    <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                    <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+                  <td align="left">
+                    <table>
+                      <tr valign = "top">
+                        <td><input type="checkbox" value="I" name="cb_status_filter[]"></td>
+                        <td><label id="label_form"> Input (I)</label></td>
+                      </tr>
+                      <tr valign = "top">
+                        <td><input type="checkbox" value="S" name="cb_status_filter[]"></td>
+                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_S') }}"> Cetak
+                            (S)</label>
+                        </td>
+                      </tr>
+                      <tr valign = "top">
+                        <td><input type="checkbox" value="P" name="cb_status_filter[]"></td>
+                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_P') }}"> Sudah
+                            Berlanjut Ke
+                            Penyesuaian Stok (P)</label></td>
+                      </tr>
+                      <tr valign = "top">
+                        <td><input type="checkbox" value="D" name="cb_status_filter[]"></td>
+                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_D') }}"> Batal
+                            (D)</label>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
                 <tr>
@@ -120,12 +140,12 @@
 @endsection
 
 @push('js')
+  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
+  </script>
   <script type="text/javascript" src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
-    //addd
     var edit_row = false;
     var idtrans = "";
-    var mode = "auto";
     var counter = 0;
 
     $(document).ready(function() {
@@ -146,7 +166,6 @@
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
-        method: 'POST',
         tools: [{
           text: '',
           iconCls: 'icon-print',
@@ -163,7 +182,7 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Kirim Ekspedisi', $("#area_cetak").html());
+            export_excel('Faktur Opname Stok', $("#area_cetak").html());
             return false;
           }
         }]
@@ -183,27 +202,13 @@
       before_add();
     });
 
-    function disable_button() {
-      $('#btn_refresh').linkbutton('disable');
-      $('#btn_batal').linkbutton('disable')
-      $('#btn_cetak').linkbutton('disable')
-      $('#btn_batal_cetak').linkbutton('disable')
-    }
-
-    function enable_button() {
-      $('#btn_refresh').linkbutton('enable');
-      $('#btn_batal').linkbutton('enable')
-      $('#btn_cetak').linkbutton('enable')
-      $('#btn_batal_cetak').linkbutton('enable')
-    }
-
     function before_add() {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Inventori Kirim Ekspedisi',
-            '{{ route('atena.inventori.kirim_ekspedisi.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Inventori Opname Stok',
+            '{{ route('atena.inventori.opnamestok.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -211,23 +216,17 @@
       });
     }
 
-    async function before_delete() {
+    function before_delete() {
       $('#mode').val('hapus');
 
       if (row) {
         if (!isTokenExpired()) {
-          try {
-            const response = await fetchData(link_api.getStatusTransaksiInventoryKirimEkspedisi, {
-              uuidkirim: row.uuidkirim
-            });
-            if (!response.success) {
-              throw new Error(response.message || 'Terjadi kesalahan ketika mengambil status transaksi');
-            }
-            const data = response.data;
+          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+            data = data.data;
             if (data.status == 'I' || data.status == 'S') {
-              var kode = row.kodekirim;
-              var isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabAvailable) {
+              var kode = row.kodeopnamestok;
+              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
                 $.messager.alert(
                   'Warning',
                   'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
@@ -246,18 +245,113 @@
             } else {
               $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
             }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          }
+          });
         } else {
-          $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
+          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
       }
     }
 
-    async function fetchData(url, body, isjson = true) {
+    function before_delete_print() {
+      $('#mode').val('batal_cetak');
+
+      if (row) {
+        if (!isTokenExpired()) {
+          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+            data = data.data;
+            if (data.status == 'S') {
+              var kode = row.kodeopnamestok;
+              if ($('#tab_transaksi').tabs('exists', kode)) {
+                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                  ', Sebelum Dibatal Cetak ', 'warning');
+              } else {
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.batalcetak == 1) {
+                    batal_cetak();
+                  } else {
+                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                  }
+                });
+              }
+            } else {
+              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+            }
+          });
+        } else {
+          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+        }
+      }
+    }
+
+    function before_print() {
+      $('#mode').val('cetak');
+
+      if (row) {
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          data = data.data;
+          if (data.cetak == 0) {
+            $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+            return false;
+          }
+          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+            data = data.data;
+            if (data.status == 'S' || data.status == 'P') {
+              get_akses_cetak_ulang('inventori', function(data) {
+                if (data.hakakses == 1) {
+                  $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
+                    .uuidopnamestok);
+                  $("#form_cetak").window('open');
+                }
+              });
+            } else if (data.status == 'I') {
+              var kode = row.kodeopnamestok;
+              if ($('#tab_transaksi').tabs('exists', kode)) {
+                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                  'warning');
+              } else {
+                cetak();
+              }
+            } else {
+              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+            }
+          });
+        });
+      }
+    }
+
+    function batal_trans() {
+      $("#alasan_pembatalan").dialog('close');
+      alasan = $('#ALASANPEMBATALAN').val();
+      if (row) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeopnamestok + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                bukaLoader();
+                const response = await fetchData(link_api.batalTransaksiInventoryOpnameStok, {
+                  uuidopnamestok: row.uuidopnamestok,
+                  kodeopnamestok: row.kodeopnamestok,
+                  alasan: alasan
+                });
+                if (!response.success) {
+                  throw response.message;
+                }
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } catch (e) {
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
+              }
+            }
+          });
+      }
+    }
+
+    async function fetchData(url, body, isJson = true) {
       try {
         const token = '{{ session('TOKEN') }}';
         let headers = {
@@ -265,12 +359,9 @@
         };
         let requestBody = null;
 
-        // Cek apakah body adalah instance dari FormData
         if (body instanceof FormData) {
-          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
           requestBody = body;
         } else {
-          // Default: Jika bukan FormData, asumsikan itu JSON.
           headers['Content-Type'] = 'application/json';
           requestBody = body ? JSON.stringify(body) : null;
         }
@@ -285,128 +376,43 @@
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
 
-        if (isjson) {
+        if (isJson) {
           return await response.json();
         } else {
           return await response.text();
         }
-      } catch (error) {
-        console.error("Terjadi kesalahan:", error);
-        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
       }
     }
 
-    async function before_delete_print() {
-      $('#mode').val('batal_cetak');
-
+    function batal_cetak() {
       if (row) {
-        if (!isTokenExpired()) {
-          try {
-            const response = await fetchData(link_api.getStatusTransaksiInventoryKirimEkspedisi, {
-              uuidkirim: row.uuidkirim
-            });
-            if (!response.success) {
-              throw new Error(response.message || 'Terjadi kesalahan ketika mengambil status transaksi');
-            }
-            const data = response.data;
-            if (data.status == 'S') {
-              var kode = row.kodekirim;
-              var isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabAvailable) {
-                $.messager.alert(
-                  'Warning',
-                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatal Cetak ',
-                  'warning'
-                );
-              } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.batalcetak == 1) {
-                    batal_cetak();
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeopnamestok + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                bukaLoader();
+                const response = await fetchData(link_api.ubahStatusJadiInputInventoryOpnameStok, {
+                  uuidopnamestok: row.uuidopnamestok,
+                  kodeopnamestok: row.kodeopnamestok
                 });
-              }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
-            }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          }
-        } else {
-          $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
-        }
-      }
-    }
-
-    function before_print() {
-      $('#mode').val('cetak');
-      if (row) {
-        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-          data = data.data;
-          if (data.cetak == 0) {
-            $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-            return false;
-          }
-
-          try {
-            const response = await fetchData(link_api.getStatusTransaksiInventoryKirimEkspedisi, {
-              uuidkirim: row.uuidkirim
-            });
-            if (!response.success) {
-              throw new Error(response.message || 'Terjadi kesalahan ketika mengambil status transaksi');
-            }
-            const data = response.data;
-            if (data.status == 'I') {
-              row = $('#table_data').datagrid('getSelected');
-              const res = await fetchData(link_api.ubahStatusJadiSlipInventoryKirimEkspedisi, {
-                uuidkirim: row.uuidkirim,
-                kodekirim: row.kodekirim
-              });
-              if (res.success) {
-                $.messager.alert('Info', 'Transaksi Sukses Dicetak', 'info');
-                reload();
-              } else {
-                $.messager.alert('Error', res.message, 'error');
-              }
-              var kode = row.kodekirim;
-              const isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabAvailable) {
-                $.messager.alert(
-                  'Warning',
-                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning',
-                );
-              } else {
-                cetak();
-              }
-            } else if (data.status == 'S' || data.status == 'P') {
-              const kodemenu = modul_kode['inventori'];
-              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
-                data = data.data;
-                if (data.hakakses == 1) {
-                  const document = await getCetakDocument(
-                    link_api.cetakInventoryKirimEkspedisi + row.uuidkirim
-                  );
-                  if (document == null) {
-                    return;
-                  }
-                  $("#area_cetak").html(document);
-                  $("#form_cetak").window('open');
+                if (!response.success) {
+                  throw response.message;
                 }
-              });
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+                $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
+                reload();
+              } catch (e) {
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
+              }
             }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          }
-        });
+          });
       }
     }
 
@@ -415,103 +421,66 @@
         const response = await fetchData(url, null, false);
         return response;
       } catch (e) {
-        const error = (typeof e === 'string') ? e : e.message;
+        const error = typeof e === "string" ? e : e.message;
         const textError = getTextError(error);
-        $.messager.alert('Error', textError, 'error');
+        $.messager.alert("Error", textError, "error");
         return null;
       }
     }
 
-    async function batal_trans() {
-      $("#alasan_pembatalan").dialog('close');
-      alasan = $('#ALASANPEMBATALAN').val();
-      if (row && alasan != "") {
-        $.messager.confirm(
-          'Confirm',
-          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodekirim + ' ?',
-          async function(r) {
-            if (r) {
-              try {
-                bukaLoader();
-                const msg = await fetchData(link_api.batalTransaksiInventoryKirimEkspedisi, {
-                  uuidkirim: row.uuidkirim,
-                  kodekirim: row.kodekirim,
-                  alasan: alasan
-                });
-                if (!msg.success) {
-                  throw new Error(msg.message || 'Terjadi kesalahan ketika membatalkan transaksi');
-                }
-
-                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                reload();
-              } catch (error) {
-                $.messager.progress('close');
-                const errorMessage = (typeof error === 'string') ? error : error.message;
-                const textError = getTextError(errorMessage);
-                $.messager.alert('Error', textError, 'error');
-              } finally {
-                tutupLoader();
-              }
-            }
-          });
-      } else {
-        $.messager.alert('Error', 'Alasan harus diisi', 'error');
-      }
-    }
-
-    async function batal_cetak() {
+    async function cetak() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodekirim + ' ?', async function(r) {
-          if (r) {
-            try {
-              bukaLoader();
-              const msg = await fetchData(link_api.ubahStatusjadiInputInventoryKirimEkspedisi, {
-                uuidkirim: row.uuidkirim,
-                kodekirim: row.kodekirim
+        try {
+          bukaLoader();
+          const response = await fetchData(link_api.ubahStatusJadiSlipInventoryOpnameStok, {
+            uuidopnamestok: row.uuidopnamestok,
+            kodeopnamestok: row.kodeopnamestok
+          });
+          if (!response.success) {
+            throw response.message;
+          }
+          $.messager.alert('Info', 'Transaksi Sukses Dicetak', 'info');
+          reload();
+          const url = link_api.cetakInventoryOpnameStok + row.uuidopnamestok;
+          const document = await getCetakDocument(url);
+          if (document == null) {
+            return;
+          }
+          $("#area_cetak").html(document);
+          $("#form_cetak").window('open');
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoader();
+        }
+        $.ajax({
+          type: 'POST',
+          dataType: 'json',
+          url: link_api.ubahStatusJadiSlipInventoryOpnameStok,
+          data: {
+            uuidopnamestok: row.uuidopnamestok,
+            kodeopnamestok: row.kodeopnamestok
+          },
+          cache: false,
+          success: function(msg) {
+            $.messager.progress('close');
+            if (msg.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Transaksi Sukses Dicetak',
+                showType: 'show'
               });
+              $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
+                .uuidopnamestok);
+              $("#form_cetak").window('open');
 
-              if (!msg.success) {
-                throw new Error(msg.message || 'Terjadi kesalahan ketika membatalkan cetak transaksi');
-              }
-
-              $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
               reload();
-            } catch (error) {
-              const errorMessage = (typeof error === 'string') ? error : error.message;
-              const textError = getTextError(errorMessage);
-              $.messager.alert('Error', textError, 'error');
-            } finally {
-              tutupLoader();
+            } else {
+              $.messager.alert('Error', msg.errorMsg, 'error');
             }
           }
-        });
-      }
-    }
-
-    async function cetak() {
-      const document = await getCetakDocument(
-        link_api.cetakInventoryKirimEkspedisi + row.uuidkirim
-      );
-      if (document == null) {
-        return;
-      }
-      $("#area_cetak").html(document);
-      $("#form_cetak").window('open');
-      reload();
-    }
-
-    function ubah_status() {
-      $('#mode').val('ubah_status');
-      if (row) {
-        get_status_trans(row.kodepo, 'tbeli', 'kodebeli', function(data) {
-          if (data.status == 'S')
-            $('#form_login').dialog('open');
-          else if (data.status == 'P')
-            $.messager.alert('Error',
-              'Transaksi Telah Berlanjut Ke Transaksi Pesanan Pembelian, Status Transaksi Tidak Dapat Diubah', 'error'
-            );
-          else if (data.status == 'I')
-            $.messager.alert('Error', 'Transaksi Dalam Mode Input, Status Transaksi Tidak Dapat Diubah', 'error');
         });
       }
     }
@@ -523,7 +492,6 @@
     function filter_data() {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
-      console.log(dataLokasi);
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
         lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
@@ -536,6 +504,7 @@
         })
         .get()
         .join(",");
+
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
@@ -555,8 +524,7 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
-        pageSize: 20,
-        url: link_api.loadDataGridInventoryKirimEkspedisi,
+        url: link_api.loadDataGridInventoryOpnameStok,
         onLoadSuccess: function(data) {
           $('#table_data').datagrid('unselectAll');
         },
@@ -575,42 +543,30 @@
               align: 'center'
             },
             {
-              field: 'uuidkirim',
+              field: 'uuidopnamestok',
               hidden: true
             },
             {
-              field: 'kodekirim',
-              title: 'No. Kirim',
-              width: 145,
+              field: 'kodeopnamestok',
+              title: 'No. Opname Stok',
+              width: 140,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'namacustomer',
-              title: 'Customer',
-              width: 150,
-              sortable: true
+              field: 'uuidperusahaan',
+              hidden: true
             },
             {
-              field: 'namaekspedisi',
-              title: 'Ekspedisi',
-              width: 150,
-              sortable: true
-            },
-            {
-              field: 'kodelokasi',
-              hidden: true,
-              title: 'Lokasi',
-              width: 90,
-              sortable: true,
-              align: 'center'
+              field: 'uuidlokasi',
+              hidden: true
             },
             {
               field: 'namalokasi',
-              title: 'Nama Lokasi',
-              width: 150,
+              title: 'Lokasi',
+              width: 100,
               sortable: true,
-              align: 'center'
+              align: 'left'
             },
           ]
         ],
@@ -622,8 +578,8 @@
               sortable: true
             },
             {
-              field: 'userbuat',
-              title: 'User Entry',
+              field: 'userentry',
+              title: 'User Input',
               width: 100,
               sortable: true
             },
@@ -636,7 +592,7 @@
               align: 'center'
             },
             {
-              field: 'userhapus',
+              field: 'userbatal',
               title: 'User Batal',
               width: 100,
               sortable: true
@@ -658,14 +614,14 @@
             {
               field: 'status',
               title: 'Status',
-              width: 50,
+              width: 60,
               sortable: true,
               align: 'center'
             },
             {
               field: 'closing',
               title: 'Closing',
-              width: 55,
+              width: 60,
               sortable: true,
               align: 'center'
             }
@@ -673,17 +629,46 @@
         ],
         onDblClickRow: function(index, data) {
           if (!isTokenExpired()) {
+            counter++;
+
+            //PELU BUAT SIMPEN INDEX
             var row = $('#table_data').datagrid('getSelected');
-            var tab_title = row.kodekirim;
+
+            $("#mode").val("ubah");
+            $("#data").val(row.uuidopnamestok);
+
+            var row = $('#table_data').datagrid('getSelected');
+            var tab_title = row.kodeopnamestok;
             parent.buka_submenu(null, tab_title,
-              '{{ route('atena.inventori.kirim_ekspedisi.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              row.uuidkirim,
+              '{{ route('atena.inventori.opnamestok.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+              row.uuidopnamestok,
               'fa fa-pencil');
           } else {
-            $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
+            $.messager.alert('Gagal', 'Token tidak valid, silahkan login kembali', 'error');
           }
         },
       });
+    }
+
+    function isTokenExpired() {
+      const token = '{{ session('TOKEN') }}';
+      if (!token) {
+        return true;
+      }
+
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const payload = JSON.parse(decodedPayload);
+
+        const expirationTime = payload.exp;
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return expirationTime < currentTime;
+      } catch (e) {
+        console.error('Gagal mendekode token JWT:', e);
+        return true;
+      }
     }
 
     function browse_data_lokasi(id) {
@@ -726,27 +711,6 @@
 
     function reload() {
       $('#table_data').datagrid('reload');
-    }
-
-    function isTokenExpired() {
-      const token = '{{ session('TOKEN') }}';
-      if (!token) {
-        return true;
-      }
-
-      try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
-
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        return expirationTime < currentTime;
-      } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
-        return true;
-      }
     }
   </script>
 @endpush

@@ -305,6 +305,15 @@ var link_api = {
     browseKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-kirim`,
     browseBarangBBMBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-barang-bbm`,
     loadDataHeaderInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data-header`,
+    //Inventory Opname Stok
+    batalTransaksiInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/batal-trans`,
+    ubahStatusJadiInputInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/ubah-status-jadi-slip`,
+    loadDataGridInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-grid`,
+    loadDataInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data`,
+    simpanInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/simpan`,
+    loadDataHeaderInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-header`,
+    cetakInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/cetak/`,
 };
 
 var modul_kode = {

@@ -343,18 +343,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         const response = await fetchData(url, null, false);
         return response;
       } catch (e) {
-        const error = typeof e === "string" ? e : e.message;
-        const textError = getTextError(error);
-        $.messager.alert("Error", textError, "error");
-        return null;
-      }
-    }
-
-    async function getCetakDocument(url) {
-      try {
-        const response = await fetchData(url, null, false);
-        return response;
-      } catch (e) {
         const error = (typeof e === 'string') ? e : e.message;
         const textError = getTextError(error);
         $.messager.alert('Error', textError, 'error');
@@ -417,6 +405,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         return;
       }
       if (row) {
+        get_status_trans("atena/inventori/kirim-ekspedisi", 'uuidkirim', row.uuidkirim, function(data) {
+          data = data.data;
+          $(".form_status").html(status_transaksi(data.status));
+        });
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;

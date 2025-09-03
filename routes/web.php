@@ -593,3 +593,18 @@ Route::get('atena/inventori/saldoawalstok/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.inventori.saldo_awal_stok.form');
+
+// Inventory Opname Stok
+Route::get('atena/inventori/opnamestok/transaksi', function() {
+    return view('atena.inventori.opname_stok.v_inventori_list_opname_stok', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.opnamestok.transaksi');
+
+Route::get('atena/inventori/opnamestok/form', function() {
+    return view('atena.inventori.opname_stok.v_inventori_form_opname_stok', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.opnamestok.form');
