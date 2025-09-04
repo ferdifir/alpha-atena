@@ -144,7 +144,7 @@
         var idtrans = "";
         $(document).ready(async function() {
             let check = false;
-            await getConfig('KODETERIMATRANSFER','TTERIMATRANSFER', 'bearer {{ session('TOKEN') }}',
+            await getConfig('KODETERIMATRANSFER', 'TTERIMATRANSFER', 'bearer {{ session('TOKEN') }}',
                 function(response) {
                     if (response.success) {
                         config = response.data;
@@ -161,16 +161,21 @@
                     $.messager.alert('Error', "Request Config Error", 'error');
                 });
             if (!check) return;
-            //TAMBAH CHECK AKSES CETAK
-            await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                var UT = data.data.cetak;
-                if (UT == 1) {
-                    $('#simpan_cetak').css('filter', '');
-                } else {
-                    $('#simpan_cetak').css('filter', 'grayscale(100%)');
-                    $('#simpan_cetak').removeAttr('onclick');
-                }
-            },false);
+
+            if (config.value == "AUTO") {
+                $('#KODETERIMATRANSFER').textbox({
+                    prompt: "Auto Generate",
+                    readonly: true,
+                    required: false
+                });
+            } else {
+                $('#KODETERIMATRANSFER').textbox({
+                    prompt: "",
+                    readonly: false,
+                    required: true
+                });
+                $('#KODETERIMATRANSFER').textbox('clear').textbox('textbox').focus();
+            }
 
             $("#form_cetak").window({
                 collapsible: false,
@@ -246,6 +251,16 @@
             buat_table_detail();
 
             @if ($mode == 'tambah')
+                //TAMBAH CHECK AKSES CETAK
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    var UT = data.data.cetak;
+                    if (UT == 1) {
+                        $('#simpan_cetak').css('filter', '');
+                    } else {
+                        $('#simpan_cetak').css('filter', 'grayscale(100%)');
+                        $('#simpan_cetak').removeAttr('onclick');
+                    }
+                }, false);
                 await tambah();
             @elseif ($mode == 'ubah')
                 await ubah();
@@ -343,21 +358,6 @@
                 $.messager.alert('Error', getTextError(error), 'error');
             }
 
-            if (config.value == "AUTO") {
-                $('#KODETERIMATRANSFER').textbox({
-                    prompt: "Auto Generate",
-                    readonly: true,
-                    required: false
-                });
-            } else {
-                $('#KODETERIMATRANSFER').textbox({
-                    prompt: "",
-                    readonly: false,
-                    required: true
-                });
-                $('#KODETERIMATRANSFER').textbox('clear').textbox('textbox').focus();
-            }
-
             clear_plugin();
             reset_detail();
         }
@@ -394,7 +394,14 @@
             if (row) {
 
                 await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-                    var UT = data.data.ubah;
+                    var UT = data.data.cetak;
+                    if (UT == 1) {
+                        $('#simpan_cetak').css('filter', '');
+                    } else {
+                        $('#simpan_cetak').css('filter', 'grayscale(100%)');
+                        $('#simpan_cetak').removeAttr('onclick');
+                    }
+                    UT = data.data.ubah;
                     var statusTrans = await getStatusTrans(link_api
                         .getStatusTransaksiInventoryTerimaTransfer,
                         'bearer {{ session('TOKEN') }}', {

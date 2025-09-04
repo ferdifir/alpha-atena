@@ -411,8 +411,9 @@
                         uuidtransfer: row.uuidtransfer
                     });
                 if (statusTrans == "I" || statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Batalkan Transaksi Ini ?', async function(r) {
                         if (r) {
+                            bukaLoader();
                             try {
                                 let url = link_api.batalTransaksiInventoryTransfer;
                                 const response = await fetch(url, {
@@ -451,6 +452,8 @@
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
                 }
+
+                            tutupLoader();
             }
         }
 
@@ -483,7 +486,7 @@
                     });
                 console.log(statusTrans);
                 if (statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                         if (r) {
                             try {
                                 let url = link_api.ubahStatusJadiInputInventoryTransfer;

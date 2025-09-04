@@ -491,7 +491,7 @@ Route::get('atena/inventori/pemakaianbahan/transaksi', function() {
     return view('atena.inventori.pemakaian_bahan.v_inventori_list_pemakaian_bahan', [
         'kodemenu' => request()->kode,
     ]);
-})->name('atena.inventory.pemakaianbahan.transaksi');
+})->name('atena.inventory.pemakaian_bahan.transaksi');
 
 Route::get('atena/inventori/pemakaianbahan/form', function() {
     return view('atena.inventori.pemakaian_bahan.v_inventori_form_pemakaian_bahan', [
@@ -499,7 +499,7 @@ Route::get('atena/inventori/pemakaianbahan/form', function() {
         'data'=>request()->data,
         'mode'=>request()->mode,
     ]);
-})->name('atena.inventori.pemakaianbahan.form');
+})->name('atena.inventori.pemakaian_bahan.form');
 
 
 // Inventory Repacking

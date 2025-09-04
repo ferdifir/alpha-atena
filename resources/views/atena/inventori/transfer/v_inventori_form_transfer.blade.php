@@ -196,6 +196,20 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     $('#simpan_cetak').removeAttr('onclick');
                 }
             }, false);
+            if (config.value == "AUTO") {
+                $('#KODETRANSFER').textbox({
+                    prompt: "Auto Generate",
+                    readonly: true,
+                    required: false
+                });
+            } else {
+                $('#KODETRANSFER').textbox({
+                    prompt: "",
+                    readonly: false,
+                    required: true
+                });
+                $('#KODETRANSFER').textbox('clear').textbox('textbox').focus();
+            }
 
             $("#form_cetak").window({
                 collapsible: false,
@@ -409,20 +423,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 $.messager.alert('Error', getTextError(error), 'error');
             }
 
-            if (config.value == "AUTO") {
-                $('#KODETRANSFER').textbox({
-                    prompt: "Auto Generate",
-                    readonly: true,
-                    required: false
-                });
-            } else {
-                $('#KODETRANSFER').textbox({
-                    prompt: "",
-                    readonly: false,
-                    required: true
-                });
-                $('#KODETRANSFER').textbox('clear').textbox('textbox').focus();
-            }
+            
 
             clear_plugin();
             reset_detail();
@@ -558,7 +559,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         headers['Content-Type'] = 'application/json';
                         requestBody = body ? JSON.stringify(body) : null;
                     }
-                    let url = link_api.simpanInventoryTransfer+jenis_simpan;
+                    let url = link_api.simpanInventoryTransfer;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: headers,
@@ -766,7 +767,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 return false;
             }
             try {
-                let url = link_api.hitungStokInventoryTransfer;
+                let url = link_api.hitungStokTransaksiBarang;
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: {
@@ -774,8 +775,9 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidtransfer: '{{ $data }}',
-                        mode: "ubah",
+                        uuidlokasi: $('#IDLOKASIASAL').combogrid('getValue'),
+			tgltrans: $('#TGLTRANS').datebox('getValue'),
+			data_detail: JSON.stringify(rows)
                     }),
                 }).then(response => {
                     if (!response.ok) {

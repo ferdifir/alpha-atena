@@ -430,6 +430,7 @@
                 if (statusTrans == "I" || statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                         if (r) {
+                bukaLoader();
                             try {
                                 let url = link_api.batalTransaksiInventoryTerimaTransfer;
                                 const response = await fetch(url, {
@@ -469,6 +470,7 @@
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
                 }
             }
+            tutupLoader();
         }
 
         function ubah_status() {
