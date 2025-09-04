@@ -9,6 +9,7 @@
 
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidjenispemakaian">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
 
                         <div data-options="region:'north',border:false" style="width:100%; height:350px;">
                             <table style="padding:5px" id="label_form">
@@ -216,6 +217,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

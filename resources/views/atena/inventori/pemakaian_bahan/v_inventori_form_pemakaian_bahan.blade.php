@@ -28,6 +28,7 @@
                                                             class="label_input" style="width:190px">
                                                         <input type="hidden" id="IDPEMAKAIANBAHAN"
                                                             name="uuidpemakaianbahan">
+                                                        <input type="hidden" id="TGLENTRY" name="tglentry">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -315,8 +316,8 @@
 
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
-                    if(Array.isArray(dataLokasi) ){
-                      return;
+                    if (Array.isArray(dataLokasi)) {
+                        return;
                     }
                     if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
                         $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
@@ -480,9 +481,11 @@
                             msg: 'Transaksi Sukses',
                             showType: 'show'
                         });
-                        if(mode=="tambah"){
-                          await tambah();
-                          $('#table_data_detail').datagrid('loadData', []);
+                        if (mode == "tambah") {
+                            await tambah();
+                            $('#table_data_detail').datagrid('loadData', []);
+                        } else {
+                            await ubah();
                         }
                         if (jenis_simpan == 'simpan_cetak') {
                             await cetak(response.data.uuidpemakaianbahan);
@@ -491,7 +494,7 @@
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                  console.log(error);
+                    console.log(error);
                     var textError = getTextError(error);
                     $.messager.alert('Error', getTextError(error), 'error');
                 }
@@ -823,9 +826,9 @@
                         ed.combogrid('showPanel');
                     } else if (field == 'kodebarang') {
                         ed.combogrid('grid').datagrid('options').url = link_api.browseBarang;
-                            ed.combogrid('grid').datagrid('load', {
-                                q: ''
-                            });
+                        ed.combogrid('grid').datagrid('load', {
+                            q: ''
+                        });
                         ed.combogrid('showPanel');
                     }
                 },

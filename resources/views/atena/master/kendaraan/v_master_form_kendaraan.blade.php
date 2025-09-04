@@ -9,6 +9,7 @@
 
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidkendaraan">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
                         <table style="padding:5px" border="0">
                             <tr>
                                 <td align="right" id="label_form" style='width: 100px'>Kode Kendaraan</td>
@@ -236,6 +237,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

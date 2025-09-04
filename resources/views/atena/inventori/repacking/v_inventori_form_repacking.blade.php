@@ -24,6 +24,7 @@
                                                     <td id="label_form"><input name="koderepacking" id="KODEREPACKING"
                                                             class="label_input" style="width:190px">
                                                         <input type="hidden" id="IDREPACKING" name="uuidrepacking">
+                                                        <input type="hidden" id="TGLENTRY" name="tglentry">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -662,6 +663,8 @@
                         if (mode == "tambah") {
                             await tambah();
                             $('#table_data_detail').datagrid('loadData', []);
+                        }else{
+                            await ubah();
                         }
                         if (jenis_simpan == 'simpan_cetak') {
                             await cetak(response.data.uuidrepacking);

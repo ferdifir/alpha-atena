@@ -10,6 +10,7 @@
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidkaryawan">
                         <input type="hidden" name="gambar">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
 
                         <table>
                             <tbody>
@@ -287,6 +288,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

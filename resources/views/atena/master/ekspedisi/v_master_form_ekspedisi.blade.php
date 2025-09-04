@@ -8,6 +8,7 @@
           <div class="easyui-layout" style="height:100%" id="trans_layout">
             <input type="hidden" name="mode" id="mode">
             <input type="hidden" name="uuidekspedisi" id="UUIDEKSPEDISI">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
             <div class="easyui-tabs" data-options="border:false" style="width:100%;height:340px;" plain='true'>
               <div title="Ekspedisi Information">
                 <table style="padding:5px">
@@ -292,6 +293,7 @@
             }
           } else {
             $.messager.alert('Error', response.message, 'error');
+            await ubah();
           }
         } catch (e) {
           tutupLoaderSimpan();

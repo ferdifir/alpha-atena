@@ -14,6 +14,7 @@
                         <input type="hidden" name="kodecurrency" id="kodecurrency">
                         <input type="hidden" id="data_user" name="data_user">
                         <input type="hidden" id="data_lokasi" name="data_lokasi">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
 
                         <div data-options="region:'center',border:false">
                             <table style="padding:5px" id="label_form">
@@ -424,6 +425,7 @@
                     $('#induk').combogrid('grid').datagrid('reload');
                 } else {
                     $.messager.alert('Error', response.message, 'error');
+                    await ubah();
                 }
             } catch (error) {
         $.messager.alert("error", getTextError(error), "error");

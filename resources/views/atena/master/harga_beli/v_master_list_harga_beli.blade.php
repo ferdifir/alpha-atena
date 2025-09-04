@@ -427,9 +427,6 @@
         shortcut.add('F4', function() {
             before_edit();
         });
-        shortcut.add('F8', function() {
-            simpan();
-        });
 
         function before_add() {
             $('#mode').val('tambah');

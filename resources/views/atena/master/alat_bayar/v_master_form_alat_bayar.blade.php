@@ -10,6 +10,7 @@
                             <input type="hidden" name="mode" id="mode">
                             <input type="hidden" name="uuidalatbayar">
                             <input type="hidden" name="gambar">
+                            <input type="hidden" id="TGLENTRY" name="tglentry">
                             <table style="padding:5px" id="label_form">
                                 <tr>
                                     <td align="right" id="label_form">Kode</td>
@@ -304,6 +305,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

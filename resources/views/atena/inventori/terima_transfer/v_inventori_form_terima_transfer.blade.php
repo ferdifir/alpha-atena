@@ -26,6 +26,7 @@
                                                             id="KODETERIMATRANSFER" class="label_input" style="width:190px">
                                                         <input type="hidden" id="IDTERIMATRANSFER"
                                                             name="uuidterimatransfer">
+                                                        <input type="hidden" id="TGLENTRY" name="tglentry">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -509,10 +510,11 @@
                     if (response.success) {
                         if (mode == 'tambah') {
                             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-                            tambah();
+                            await tambah();
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                         if (jenis_simpan == 'simpan_cetak') {
                             cetak(response.data.uuidterimatransfer);
