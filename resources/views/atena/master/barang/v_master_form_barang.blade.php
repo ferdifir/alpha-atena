@@ -655,7 +655,7 @@
               }
             },
             {
-              field: 'satuanutama',
+              field: 'satuan',
               align: 'center',
               title: 'Satuan',
               width: 60

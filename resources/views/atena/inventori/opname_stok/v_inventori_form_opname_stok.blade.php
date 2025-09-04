@@ -13,6 +13,7 @@
               <div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
               <table>
                 <input type="hidden" id="mode" name="mode">
+                <input type="hidden" id="tglentry" name="tglentry">
                 <tr>
                   <td valign="top">
                     <fieldset style="height:120px;">

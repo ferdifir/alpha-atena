@@ -352,6 +352,12 @@ var link_api = {
     simpanInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/simpan`,
     loadDataHeaderInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-header`,
     cetakInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/cetak/`,
+    //Inventory Penyesuaian Stok
+    loadDataGridInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-grid`,
+    batalTransaksiInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/batal-trans`,
+    ubahStatusJadiSlipInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/ubah-status-jadi-slip`,
+    cetakInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/cetak/`,
+    ubahStatusJadiInputInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/ubah-status-jadi-input`,
 };
 
 var modul_kode = {
