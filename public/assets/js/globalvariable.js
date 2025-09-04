@@ -91,6 +91,7 @@ var link_api = {
     headerFormEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-header`,
     simpanEkspedisi: `${base_url_api}atena/master/ekspedisi/simpan`,
     hapusEkspedisi: `${base_url_api}atena/master/ekspedisi/hapus`,
+    browseEkspedisi: `${base_url_api}atena/master/ekspedisi/browse`,
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
@@ -328,7 +329,29 @@ var link_api = {
     //pembelian - permintaan barang
     loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
     broswePermintaanBarangTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
-
+    //Inventory Kirim Ekspedisi
+    ubahStatusJadiSlipInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-slip`,
+    cetakInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/cetak/`,
+    batalTransaksiInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/batal-trans`,
+    ubahStatusjadiInputInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-input`,
+    loadDataGridInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data-grid`,
+    getStatusTransaksiInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/get-status-trans`,
+    simpanInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/simpan/`,
+    loadDataInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data`,
+    loadDataDetailKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-detail-kirim`,
+    browsePenjualanBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-penjualan`,
+    browseKirimBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-kirim`,
+    browseBarangBBMBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-barang-bbm`,
+    loadDataHeaderInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/load-data-header`,
+    //Inventory Opname Stok
+    batalTransaksiInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/batal-trans`,
+    ubahStatusJadiInputInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/ubah-status-jadi-slip`,
+    loadDataGridInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-grid`,
+    loadDataInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data`,
+    simpanInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/simpan`,
+    loadDataHeaderInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-header`,
+    cetakInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/cetak/`,
 };
 
 var modul_kode = {
