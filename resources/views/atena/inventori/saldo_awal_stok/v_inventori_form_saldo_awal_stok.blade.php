@@ -15,7 +15,8 @@
 
                             <table>
                                 <input type="hidden" id="mode" name="mode">
-                                <input type="hidden" id="IDSALDOSTOK" name="idsaldostok"></td>
+                                <input type="hidden" id="TGLENTRY" name="tglentry">
+                                <input type="hidden" id="IDSALDOSTOK" name="uuidsaldostok"></td>
                                 <tr>
                                     <td valign="top">
                                         <fieldset style="height:120px;">
@@ -24,12 +25,11 @@
                                                 <tr>
                                                     <td id="label_form">No. Saldo Stok</td>
                                                     <td id="label_form"><input name="kodesaldostok" id="KODESALDOSTOK"
-                                                            class="label_input" style="width:190px" <?php if($KODE == 'AUTO'){?>
-                                                            prompt="Auto Generate" readonly <?php }?>></td>
+                                                            class="label_input" style="width:190px"></td>
                                                 </tr>
                                                 <tr>
                                                     <td id="label_form">Lokasi</td>
-                                                    <td id="label_form"><input name="idlokasi" id="IDLOKASI"
+                                                    <td id="label_form"><input name="uuidlokasi" id="IDLOKASI"
                                                             style="width:190px"></td>
                                                     <input type="hidden" id="KODELOKASI" name="kodelokasi">
                                                 </tr>
@@ -70,13 +70,12 @@
             <br>
 
             <a title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false" id='btn_simpan_modal'
-                onclick="$('#window_button_simpan').window('open')"><img
-                    src="<?= base_url() ?>/assets/images/simpan.png"></a>
+                onclick="$('#window_button_simpan').window('open')"><img src="{{ asset('assets/images/simpan.png') }}"></a>
 
 
             <br><br>
             <a title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false"
-                onclick="javascript:tutup()"><img src="<?= base_url() ?>/assets/images/cancel.png"></a>
+                onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
         </div>
     </div>
     <div id="window_button_simpan" class="easyui-window" title="Konfirmasi" data-options="modal:true,closed:true"
@@ -104,18 +103,44 @@
     <script>
         var cekbtnsimpan = true;
         var row = {};
-        $(document).ready(function() {
+        var config = {};
+        var idtrans = '';
+        var row = {};
+        $(document).ready(async function() {
+            let check = false;
+            await getConfig('KODESALDOSTOK', 'SALDOSTOK', 'bearer {{ session('TOKEN') }}',
+                function(response) {
+                    if (response.success) {
+                        config = response.data;
+                        check = true;
+                    } else {
+                        if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
+                            window.alert("Login session sudah habis. Silahkan Login Kembali");
+                        } else {
+                            $.messager.alert('Error', error, 'error');
+                        }
+                    }
+                },
+                function(error) {
+                    $.messager.alert('Error', "Request Config Error", 'error');
+                });
 
-            //TAMBAH CHECK AKSES CETAK
-            get_akses_user('<?= $kodemenu ?>', function(data) {
-                var UT = data.cetak;
-                if (UT == 1) {
-                    $('#simpan_cetak').css('filter', '');
-                } else {
-                    $('#simpan_cetak').css('filter', 'grayscale(100%)');
-                    $('#simpan_cetak').removeAttr('onclick');
-                }
-            });
+            if (!check) return;
+
+            if (config.value == "AUTO") {
+                $('#KODESALDOSTOK').textbox({
+                    prompt: "Auto Generate",
+                    readonly: true,
+                    required: false
+                });
+            } else {
+                $('#KODESALDOSTOK').textbox({
+                    prompt: "",
+                    readonly: false,
+                    required: true
+                });
+                $('#KODESALDOSTOK').textbox('clear').textbox('textbox').focus();
+            }
 
             $("#form_cetak").window({
                 collapsible: false,
@@ -162,26 +187,26 @@
                 left: left
             });
 
-            get_status_trans("atena/Inventori/Transaksi/SaldoAwalStok", row.idsaldostok, function(data) {
-                $(".form_status").html(status_transaksi(data.status));
-            });
-
             browse_data_lokasi('#IDLOKASI');
 
             buat_table_detail();
 
-            if ("<?= $mode ?>" == "tambah") {
-                tambah();
-            } else if ("<?= $mode ?>" == "ubah") {
-                ubah();
-            }
+            @if ($mode == 'tambah')
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    var UT = data.data.cetak;
+                    if (UT == 1) {
+                        $('#simpan_cetak').css('filter', '');
+                    } else {
+                        $('#simpan_cetak').css('filter', 'grayscale(100%)');
+                        $('#simpan_cetak').removeAttr('onclick');
+                    }
+                }, false);
+                await tambah();
+            @elseif ($mode == 'ubah')
+                await ubah();
+            @endif
 
-            // Menghapus loading ketika halaman sudah dimuat
-            setTimeout(function() {
-                $('#mask-loader').fadeOut(500, function() {
-                    $(this).hide()
-                })
-            }, 250)
+            tutupLoader();
 
         })
 
@@ -193,71 +218,154 @@
             parent.tutupTab();
         }
 
-        function cetak(id) {
-            $("#window_button_cetak").window('close');
-            $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/SaldoAwalStok/cetak/" + id);
-            $("#form_cetak").window('open');
+        async function cetak(uuidtrans) {
+            try {
+                $("#window_button_cetak").window('close');
+                let url = link_api.cetakSaldoAwalStok + uuidtrans;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuidsaldostok: row.uuidtrans,
+                    }),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP error! status: ${response.status} from ${url}`
+                        );
+                    }
+                    return response.text();
+                })
+
+
+                $("#area_cetak").html(response);
+                $("#form_cetak").window('open');
+            } catch (error) {
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+            }
+
         }
 
-
-        function tambah() {
+        async function tambah() {
             $('#mode').val('tambah');
-            parent.changeTitleTab($('#mode').val());
 
             $('#lbl_kasir, #lbl_tanggal').html('');
 
             $('#IDLOKASI').combogrid('readonly', false);
-            $('#TGLTRANS').combogrid('readonly', false);
+            $('#TGLTRANS').datebox('readonly', false);
+            $('#IDLOKASI').combogrid('clear');
             idtrans = "";
 
-            $.ajax({
-                type: 'POST',
-                url: base_url + 'atena/Master/Data/Lokasi/getLokasiDefault',
-                dataType: 'json',
-                cache: false,
-                success: function(msg) {
-                    if (msg.idlokasi != null) {
-                        $('#IDLOKASI').combogrid('setValue', msg.idlokasi);
-                        $("#KODELOKASI").val(msg.kodelokasi);
+            try {
+                let url = link_api.getLokasiDefault;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({}),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(
+                            `HTTP error! status: ${response.status} from ${url}`);
                     }
+                    return response.json();
+                })
+
+                if (response.success) {
+                    var dataLokasi = response.data ?? {};
+                    if (Array.isArray(dataLokasi)) {
+                        return;
+                    }
+                    if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
+                        $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
+                        $("#KODELOKASI").val(dataLokasi.kodelokasi);
+                    }
+                } else {
+                    $.messager.alert('Error', response.message, 'error');
                 }
-            });
+            } catch (error) {
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+            }
 
             clear_plugin();
             reset_detail();
         }
 
-        function ubah() {
+        async function ubah() {
             $('#mode').val('ubah');
-
+            try {
+                let url = link_api.loadDataHeaderSaldoAwalStok;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuidsaldostok: '{{ $data }}',
+                        mode: "ubah",
+                    }),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+                    }
+                    return response.json();
+                })
+                if (response.success) {
+                    row = response.data;
+                } else {
+                    $.messager.alert('Error', response.message, 'error');
+                }
+            } catch (error) {
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+            }
             if (row) {
                 $("#form_input").form('load', row);
                 $('#IDLOKASI').combogrid('readonly');
-                $('#TGLTRANS').combogrid('readonly', false);
+                $('#TGLTRANS').datebox('readonly', false);
 
-                load_data(row.idsaldostok);
+                await load_data(row.uuidsaldostok);
 
                 $('#lbl_kasir').html(row.userbuat);
                 $('#lbl_tanggal').html(row.tglentry);
 
-                get_akses_user('<?= $kodemenu ?>', function(data) {
-                    var UT = data.ubah;
-                    get_status_trans("atena/Inventori/Transaksi/SaldoAwalStok", row.idsaldostok, function(data) {
-                        if (UT == 1 && data.status == 'I') {
-                            $('#btn_simpan_modal').linkbutton('enable');
-                            $('#mode').val('ubah');
-                        } else {
-                            document.getElementById('btn_simpan_modal').onclick = '';
-                            $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-                            $('#btn_simpan_modal').removeAttr('onclick');
-                        }
+                await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
+                    var UT = data.data.cetak;
+                    if (UT == 1) {
+                        $('#simpan_cetak').css('filter', '');
+                    } else {
+                        $('#simpan_cetak').css('filter', 'grayscale(100%)');
+                        $('#simpan_cetak').removeAttr('onclick');
+                    }
+                    UT = data.data.ubah;
 
-                    });
+                    var statusTrans = await getStatusTrans(link_api.getStatusTransSaldoAwalStok,
+                        'bearer {{ session('TOKEN') }}', {
+                            uuidsaldostok: row.uuidsaldostok
+                        });
+                    $(".form_status").html(status_transaksi(statusTrans));
+                    if (UT == 1 && statusTrans == 'I') {
+                        //document.getElementById('btn_simpan_all').onclick = simpan; 
+                        $('#btn_simpan_modal').css('filter', '');
+                        $('#mode').val('ubah');
+                    } else {
+                        document.getElementById('btn_simpan_modal').onclick = '';
+                        $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+                        $('#btn_simpan_modal').removeAttr('onclick');
+                    };
                 });
             }
         }
 
-        function simpan(jenis_simpan) {
+        async function simpan(jenis_simpan) {
             var mode = $("#mode").val();
 
             // collapse row LO
@@ -295,82 +403,72 @@
 
             if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
                 cekbtnsimpan = false;
-                validasi_session(function() {
-                    var adaTrans = false;
+                tampilLoaderSimpan();
+                try {
+                    let headers = {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                    };
+                    let requestBody = null;
+                    var unindexed_array = $('#form_input :input').serializeArray();
 
-                    if (mode == 'ubah') {
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            url: base_url + 'Home/cekTanggalJamInput',
-                            data: {
-                                id: row.idsaldostok,
-                                table: "saldostok",
-                                whereid: "idsaldostok",
-                                tgl: row.tglentry,
-                                status: row.status
-                            },
-                            async: false,
-                            success: function(msg) {
-                                cekbtnsimpan = true;
-                                if (!msg.success) {
-                                    var errorMsg =
-                                        'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal ' +
-                                        msg.tgl + ' / ' + msg.jam +
-                                        '.<br>Transaksi Tidak Dapat Disimpan.';
-                                    $.messager.alert('Warning', errorMsg, 'warning');
-                                    adaTrans = true;
-                                }
-                            }
-                        });
-                    }
-
-                    cek_tanggal_tutup_periode($('#TGLTRANS').datebox('getValue'), 0, function(data) {
-                        cekbtnsimpan = true;
-                        if (!data.success) {
-                            var kode = row.kodesaldostok ? row.kodesaldostok : 'ini';
-
-                            $.messager.alert('Error',
-                                'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' +
-                                kode + '. Prosedur tidak dapat dilanjutkan', 'error');
-
-                            adaTrans = true;
+                    var body = {};
+                    $.map(unindexed_array, function(n, i) {
+                        if (n['name'] == "data_detail") {
+                            body[n['name']] = $('#table_data_detail').datagrid('getRows');
+                        } else {
+                            body[n['name']] = n['value'];
                         }
                     });
-
-                    if (!adaTrans) {
-                        $.ajax({
-                            type: 'POST',
-                            dataType: 'json',
-                            url: base_url + "atena/Inventori/Transaksi/SaldoAwalStok/simpan/" +
-                                jenis_simpan,
-                            data: datanya,
-                            cache: false,
-                            beforeSend: function() {
-                                $.messager.progress();
-                            },
-                            success: function(msg) {
-                                $.messager.progress('close');
-                                cekbtnsimpan = true;
-                                if (msg.success) {
-                                    $('#form_input').form('clear');
-                                    $.messager.show({
-                                        title: 'Info',
-                                        msg: 'Transaksi Sukses',
-                                        showType: 'show'
-                                    });
-                                    tambah();
-                                    parent.reload();
-                                    if (jenis_simpan == 'simpan_cetak') {
-                                        cetak(msg.id);
-                                    }
-                                } else {
-                                    $.messager.alert('Error', msg.errorMsg, 'error');
-                                }
-                            }
-                        });
+                    body['jenis_simpan'] = jenis_simpan;
+                    // Cek apakah body adalah instance dari FormData
+                    if (body instanceof FormData) {
+                        // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+                        requestBody = body;
+                    } else {
+                        // Default: Jika bukan FormData, asumsikan itu JSON.
+                        headers['Content-Type'] = 'application/json';
+                        requestBody = body ? JSON.stringify(body) : null;
                     }
-                });
+                    let url = link_api.simpanSaldoAwalStok;
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: headers,
+                        body: requestBody,
+                    }).then(response => {
+                        if (!response.ok) {
+                            throw new Error(
+                                `HTTP error! status: ${response.status} from ${url}`);
+                        }
+                        return response.json();
+                    })
+                    if (response.success) {
+
+                        $('#form_input').form('clear');
+
+                        $.messager.show({
+                            title: 'Info',
+                            msg: 'Transaksi Sukses',
+                            showType: 'show'
+                        });
+                        if (mode == "tambah") {
+                            await tambah();
+                            $('#table_data_detail').datagrid('loadData', []);
+                        } else {
+                            await ubah();
+                        }
+                        if (jenis_simpan == 'simpan_cetak') {
+                            await cetak(response.data.uuidsaldostok);
+                        }
+                    } else {
+                        $.messager.alert('Error', response.message, 'error');
+                    }
+                } catch (error) {
+                    console.log(error);
+                    var textError = getTextError(error);
+                    $.messager.alert('Error', getTextError(error), 'error');
+                }
+                cekbtnsimpan = true;
+                tutupLoaderSimpan();
             }
         }
 
@@ -378,31 +476,42 @@
             $('#table_data_detail').datagrid('loadData', []);
         }
 
-        function load_data(idtrans) {
-            $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: base_url + "atena/Inventori/Transaksi/SaldoAwalStok/loadData",
-                data: "idtrans=" + idtrans,
-                cache: false,
-                beforeSend: function() {
-                    // $.messager.progress();
-                },
-                success: function(msg) {
-                    // $.messager.progress('close');
-                    if (msg.success) {
-                        $('#table_data_detail').datagrid('loadData', msg.detail);
+        async function load_data(idtrans) {
+            try {
+                let url = link_api.loadDataSaldoAwalStok;
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'bearer {{ session('TOKEN') }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uuidsaldostok: idtrans,
+                        mode: "ubah",
+                    }),
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status} from ${url}`);
                     }
+                    return response.json();
+                })
+                if (response.success) {
+                    $('#table_data_detail').datagrid('loadData', response.data ?? []);
+                } else {
+                    $.messager.alert('Error', response.message, 'error');
                 }
-            });
+            } catch (error) {
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+            }
         }
 
         /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
         function browse_data_lokasi(id) {
             $(id).combogrid({
                 panelWidth: 400,
-                url: base_url + 'atena/Master/Data/Lokasi/comboGrid',
-                idField: 'id',
+                url: link_api.browseLokasi,
+                idField: 'uuidlokasi',
                 textField: 'nama',
                 mode: 'local',
                 sortName: 'nama',
@@ -411,7 +520,7 @@
                 selectFirstRow: true,
                 columns: [
                     [{
-                            field: 'id',
+                            field: 'uuidlokasi',
                             hidden: true
                         },
                         {
@@ -474,8 +583,6 @@
                                 index: index,
                                 field: 'kodebarang'
                             });
-
-                            getRowIndex(target);
                         }
                     }, {
                         text: 'Hapus',
@@ -520,7 +627,7 @@
                                     },
                                     columns: [
                                         [{
-                                                field: 'id',
+                                                field: 'uuidbarang',
                                                 hidden: true
                                             },
                                             {
@@ -534,7 +641,7 @@
                                                 width: 250
                                             },
                                             {
-                                                field: 'satuan',
+                                                field: 'satuanutama',
                                                 title: 'Satuan',
                                                 width: 60
                                             },
@@ -575,25 +682,20 @@
                             title: 'Nama',
                             width: 295,
                         },
-                        <?php
-					if ($_SESSION[NAMAPROGRAM]['SHOWBARCODE']) {
-					?> {
-                            field: 'barcodesatuan1',
-                            title: 'Barcode Sat. 1',
-                            width: 120
-                        },
-                        <?php
-					}
-
-					if ($_SESSION[NAMAPROGRAM]['SHOWPARTNUMBER']) {
-					?> {
-                            field: 'partnumber',
-                            title: 'Part Number',
-                            width: 120
-                        },
-                        <?php
-					}
-					?> {
+                        @if (session('SHOWBARCODE') == 'YA')
+                            {
+                                field: 'barcodesatuan1',
+                                title: 'Barcode Sat. 1',
+                                width: 180
+                            },
+                        @endif
+                        @if (session('SHOWPARTNUMBER') == 'YA')
+                            {
+                                field: 'partnumber',
+                                title: 'Part Number',
+                                width: 180
+                            },
+                        @endif {
                             field: 'jml',
                             title: 'Jumlah',
                             align: 'right',
@@ -647,14 +749,14 @@
                             align: 'right',
                             width: 95,
                             formatter: format_amount
-                            <?php if ($INPUTHARGA == 1) { ?>,
-                            editor: {
-                                type: 'numberbox',
-                                options: {
-                                    required: true
-                                }
-                            },
-                            <?php } ?>
+                            @if (session('INPUTHARGA'))
+                                editor: {
+                                    type: 'numberbox',
+                                    options: {
+                                        required: true
+                                    }
+                                },
+                            @endif
                         },
                     ]
                 ],
@@ -667,16 +769,14 @@
                     var ed = get_editor('#table_data_detail', index, field);
 
                     if (field == 'satuan') {
-                        ed.combogrid('grid').datagrid('options').url = base_url +
-                            'atena/Master/Data/Barang/satuanBarang/' + row.idbarang;
+                        ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
                         ed.combogrid('grid').datagrid('load', {
                             q: '',
-                            idbarang: row.idbarang
+                            uuidbarang: row.uuidbarang
                         });
                         ed.combogrid('showPanel');
                     } else if (field == 'kodebarang') {
-                        ed.combogrid('grid').datagrid('options').url = base_url +
-                            'atena/Master/Data/Barang/comboGrid';
+                        ed.combogrid('grid').datagrid('options').url = link_api.browseBarang;
                         ed.combogrid('grid').datagrid('load', {
                             q: ''
                         });
@@ -692,14 +792,14 @@
                         case 'kodebarang':
                             var data = ed.combogrid('grid').datagrid('getSelected');
 
-                            var id = data ? data.id : '';
+                            var uuidbarang = data ? data.uuidbarang : '';
                             var nama = data ? data.nama : '';
-                            var satuan = data ? data.satuan : '';
+                            var satuan = data ? data.satuanutama : '';
                             var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
                             var partnumber = data.partnumber ? data.partnumber : '';
 
                             row_update = {
-                                idbarang: id,
+                                uuidbarang: uuidbarang,
                                 namabarang: nama,
                                 barcodesatuan1: barcodesatuan1,
                                 partnumber: partnumber,
@@ -746,8 +846,8 @@
             var subtotal = parseFloat(row.subtotal);
             var dg = $('#table_data_detail');
 
-            row.jml = parseFloat(row.jml).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITQTY'] ?>);
-            data.harga = +((subtotal / row.jml).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+            row.jml = parseFloat(row.jml).toFixed({{ session('DECIMALDIGITQTY') }});
+            data.harga = +((subtotal / row.jml).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
 
             dg.datagrid('updateRow', {
                 index: index,
@@ -762,7 +862,7 @@
                     $.messager.show({
                         title: 'Warning',
                         msg: 'Barang Yang Diinput Tidak Boleh Sama Dalam Satu Detail Transaksi',
-                        timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+                        timeout: {{ session('TIMEOUT') }},
                     });
                     dg.datagrid('deleteRow', index);
                     break;

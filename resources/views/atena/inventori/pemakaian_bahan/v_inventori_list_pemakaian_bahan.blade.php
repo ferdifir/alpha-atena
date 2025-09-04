@@ -253,7 +253,7 @@
                         uuidpemakaianbahan: row.uuidpemakaianbahan
                     });
                 if (statusTrans == "I" || statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                         if (r) {
                             bukaLoader();
                             try {
@@ -362,17 +362,7 @@
                             }
                         }
                     } else if (statusTrans == 'S' || statusTrans == 'P') {
-                        get_akses_user(modul_kode.inventori, 'bearer {{ session('TOKEN') }}', function(data) {
-                            if (data.data.hakakses == 1) {
-                                // $("#area_cetak").load(link_api.cetakInventoryTransfer + row
-                                //     .uuidtransfer);
-                                // $("#form_cetak").window('open');
-                                cetak(row.uuidpemakaianbahan);
-                            } else {
-                                $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses Cetak Ulang',
-                                    'warning');
-                            }
-                        });
+                        cetak(row.uuidpemakaianbahan);
                     } else {
                         $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
                     }
@@ -397,10 +387,10 @@
                     'bearer {{ session('TOKEN') }}', {
                         uuidpemakaianbahan: row.uuidpemakaianbahan
                     });
-                console.log(statusTrans);
                 if (statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                         if (r) {
+                            bukaLoader();
                             try {
                                 let url = link_api.ubahStatusJadiInputPemakaianBahan;
                                 const response = await fetch(url, {
@@ -410,7 +400,7 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidpemakaianbahan: uuidpemakaianbahan,
+                                        uuidpemakaianbahan: row.uuidpemakaianbahan,
                                         kodepemakaianbahan: row.kodepemakaianbahan,
                                     }),
                                 }).then(response => {
@@ -438,6 +428,7 @@
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
                 }
+                            tutupLoader();
             }
         }
 
