@@ -608,3 +608,18 @@ Route::get('atena/inventori/opnamestok/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.inventori.opnamestok.form');
+
+// Inventory Penyesuaian Stok
+Route::get('atena/inventori/penyesuaianstok/transaksi', function() {
+    return view('atena.inventori.penyesuaian_stok.v_inventori_list_penyesuaian_stok', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.penyesuaianstok.transaksi');
+
+Route::get('atena/inventori/penyesuaianstok/form', function() {
+    return view('atena.inventori.penyesuaian_stok.v_inventori_form_penyesuaian_stok', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.inventori.penyesuaianstok.form');

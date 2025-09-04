@@ -20,6 +20,7 @@
         <div data-options="region:'north',border:false" style="height: 130px;">
           <input type="hidden" name="mode" id="mode">
           <input type="hidden" name="uuidpromo">
+          <input type="hidden" name="tglentry">
           <input type="hidden" name="data_detail_barang" id="data_detail_barang">
           <input type="hidden" name="data_detail_syarat" id="data_detail_syarat">
 
@@ -331,6 +332,8 @@
             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             if (mode == 'tambah') {
               tambah();
+            } else if (mode == 'ubah') {
+              ubah();
             }
           } else {
             $.messager.alert('Error', response.message, 'error');

@@ -8,6 +8,7 @@
           <div class="easyui-layout" style="height:100%" id="trans_layout">
             <input type="hidden" name="mode" id="mode">
             <input type="hidden" name="uuidsupplier">
+            <input type="hidden" name="tglentry">
             <div class="easyui-tabs" data-options="border:false" plain='true'>
               <div title="Supplier Information">
                 <table style="padding:5px">
@@ -372,6 +373,8 @@
             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             if (mode == 'tambah') {
               tambah();
+            } else if (mode == 'ubah') {
+              ubah();
             }
           } else {
             $.messager.alert('Error', response.message, 'error');

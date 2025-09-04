@@ -7,6 +7,7 @@
         <div data-options="region:'center',border:false ">
           <div class="easyui-layout" style="height:100%" id="trans_layout">
             <input type="hidden" name="mode" id="mode">
+            <input type="hidden" name="tglentry" id="tglentry">
             <input type="hidden" name="uuidekspedisi" id="UUIDEKSPEDISI">
             <input type="hidden" id="TGLENTRY" name="tglentry">
             <div class="easyui-tabs" data-options="border:false" style="width:100%;height:340px;" plain='true'>
@@ -290,6 +291,8 @@
             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             if (mode == 'tambah') {
               tambah();
+            } else if (mode == 'ubah') {
+              ubah();
             }
           } else {
             $.messager.alert('Error', response.message, 'error');

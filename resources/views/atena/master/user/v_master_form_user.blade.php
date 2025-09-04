@@ -27,6 +27,7 @@
       <input type="hidden" name="act">
       <input type="hidden" id="mode" name="mode">
       <input type="hidden" name="gambar">
+      <input type="hidden" name="tglentry">
       <input type="hidden" id="uuiduser" name="uuiduser">
       <input type="hidden" name="fingerprint1">
       <input type="hidden" name="fingerprint2">

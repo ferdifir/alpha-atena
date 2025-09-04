@@ -20,10 +20,11 @@
                       <legend id="label_laporan">Info Transaksi</legend>
                       <table border="0">
                         <tr>
-                          <td id="label_form">No. Opname Stok</td>
+                          <td id="label_form">No. Penyesuaian Stok</td>
                           <td id="label_form">
-                            <input name="kodeopnamestok" id="KODEOPNAMESTOK" class="label_input" style="width:190px">
-                            <input type="hidden" id="IDOPNAMESTOK" name="uuidopnamestok">
+                            <input name="kodepenyesuaianstok" id="KODEPENYESUAIANSTOK" class="label_input"
+                              style="width:190px">
+                            <input type="hidden" id="IDPENYESUAIANSTOK" name="uuidpenyesuaianstok">
                           </td>
                         </tr>
                         <tr>
@@ -34,7 +35,13 @@
                           <input type="hidden" id="KODELOKASI" name="kodelokasi">
                         </tr>
                         <tr>
-                          <td id="label_form">Tgl. Trans
+                          <td id="label_form">No. Opname Stok</td>
+                          <td id="label_form">
+                            <input name="uuidopnamestok" id="IDOPNAMESTOK" class="label_input" style="width:190px">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td id="label_form">Tgl. Trans</td>
                           <td id="label_form">
                             <input name="tgltrans" id="TGLTRANS" class="date" style="width:190px">
                           </td>
@@ -43,22 +50,8 @@
                       </legend>
                   </td>
                   <td valign="bottom">
-                    <table border="0">
-                      <tr></tr>
-                      <tr>
-                        <td valign="bottom">
-                          <textarea name="catatan" class="label_input" id="CATATAN" multiline="true" prompt="Catatan"
-                            style="width:300px; height:85px" data-options="validType:'length[0, 500]'"></textarea>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <label id="label_form" style="font-size:17pt;margin:3px;">Barcode
-                            <input name="BARCODE" class="label_input" id="BARCODE" style="width:200px;height:30px;">
-                          </label>
-                        </td>
-                      </tr>
-                    </table>
+                    <textarea name="catatan" class="label_input" id="CATATAN" multiline="true" prompt="Catatan"
+                      style="width:300px; height:85px" data-options="validType:'length[0, 500]'"></textarea>
                   </td>
                 </tr>
               </table>
@@ -100,13 +93,12 @@
     style="height:164cm;padding:15px 10px 10px 10px;top:20px">
     <center>
       <div id="button_simpan">
-
         <a title="Simpan" class="easyui-linkbutton button_add" id='simpan' onclick="simpan(this.id)"
-          style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a><br><br>
+          style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a>
+        <br><br>
         <a title="Simpan & Cetak" class="easyui-linkbutton button_add_print" id='simpan_cetak'
           onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan & Cetak</a>
-
         <div>
     </center>
   </div>
@@ -123,16 +115,34 @@
   <script type="text/javascript" src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
     var cekbtnsimpan = true;
+    var hargabeliterakhir;
+    var inputharga;
+    var kodepenyesuaianstok;
     $(document).ready(async function() {
-      const kode = await fetchData(link_api.getConfig, {
-        modul: 'TOPNAMESTOK',
-        config: 'KODEOPNAMESTOK'
+      try {
+        hargabeliterakhir = await fetchData(link_api.getConfig, {
+          modul: 'TPENYESUAIANSTOK',
+          config: 'HARGABELITERAKHIR'
+        });
+        inputharga = await fetchData(link_api.getDataAkses, {
+          kodemenu: '{{ $kodemenu }}',
+        });
+        kodepenyesuaianstok = await fetchData(link_api.getConfig, {
+          modul: 'TPENYESUAIANSTOK',
+          config: 'KODEPENYESUAIANSTOK'
+        });
+      } catch (e) {
+        const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert("Error", textError, "error");
+      }
+
+      $('#KODEPENYESUAIANSTOK').textbox({
+        readonly: kodepenyesuaianstok.data.value == 'AUTO',
+        prompt: kodepenyesuaianstok.data.value == 'AUTO' ? 'Auto Generate' : '',
       });
 
-      $('#KODEOPNAMESTOK').textbox({
-        readonly: kode.data.value == 'AUTO',
-        prompt: kode.data.value == 'AUTO' ? 'Auto Generate' : '',
-      });
+      //TAMBAH CHECK AKSES CETAK
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         var UT = data.cetak;
@@ -163,18 +173,11 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Opname Stok', $("#area_cetak").html());
+            export_excel('Faktur Penyesuaian Stok', $("#area_cetak").html());
             return false;
           }
         }]
       }).window('close');
-
-      $('#BARCODE').textbox('textbox').bind('keydown', function(e) {
-        if (e.keyCode == 13) { // when press ENTER key, accept the inputed value.
-          insert_barang($(this).val());
-          $(this).val('');
-        }
-      });
 
       var lebar = $('.panel').width();
       var tabsimpan = 50;
@@ -196,6 +199,7 @@
         left: left
       });
 
+      browse_data_opnamestok('#IDOPNAMESTOK')
       browse_data_lokasi('#IDLOKASI');
       buat_table_detail();
 
@@ -235,7 +239,7 @@
     }
 
     function cetak(id) {
-      const url = link_api.cetakInventoryOpnameStok + id;
+      const url = link_api.cetakInventoryPenyesuaianStok + id;
       const document = getCetakDocument(url);
       if (document == null) {
         return;
@@ -272,12 +276,13 @@
 
     async function ubah() {
       $('#mode').val('ubah');
+
       try {
-        const response = await fetchData(link_api.loadDataHeaderInventoryOpnameStok, {
-          uuidopnamestok: "{{ $data }}"
+        const response = await fetchData(link_api.loadDataHeaderInventoryPenyesuaianStok, {
+          uuidpenyesuaianstok: "{{ $data }}"
         });
         if (!response.success) {
-          throw new Error(response.message || 'Gagal mengambil data');
+          throw response.message;
         }
         row = response.data;
       } catch (e) {
@@ -286,43 +291,50 @@
         $.messager.alert('Error', textError, 'error');
         return;
       }
+
       if (row) {
-        get_status_trans("atena/inventori/opname-stok", "uuidopnamestok", row.uuidopnamestok, function(data) {
-          data = data.data;
-          $(".form_status").html(status_transaksi(data.status));
-        });
+        get_status_trans(
+          "atena/inventori/penyesuaian-stok",
+          'uuidpenyesuaianstok',
+          row.uuidpenyesuaianstok,
+          function(data) {
+            data = data.data;
+            $(".form_status").html(status_transaksi(data.status));
+          });
 
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;
-          get_status_trans("atena/inventori/opname-stok", "uuidopnamestok", row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (UT == 1 && data.status == 'I') {
-              $('#btn_simpan_modal').css('filter', '');
-              $('#mode').val('ubah');
-            } else {
-              document.getElementById('btn_simpan_modal').onclick = '';
-              $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-              $('#btn_simpan_modal').removeAttr('onclick');
-            }
+          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row.uuidpenyesuaianstok,
+            function(data) {
+              data = data.data;
+              if (UT == 1 && data.status == 'I') {
+                $('#btn_simpan_modal').css('filter', '');
+                $('#mode').val('ubah');
+              } else {
+                document.getElementById('btn_simpan_modal').onclick = '';
+                $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+                $('#btn_simpan_modal').removeAttr('onclick');
+              }
+              $("#form_input").form('load', row);
+              $('#IDLOKASI').combogrid('readonly');
+              $('#IDOPNAMESTOK').combogrid('readonly');
+              $('#IDOPNAMESTOK').combogrid('setValue', {
+                uuidopnamestok: row.uuidopnamestok,
+                kodeopnamestok: row.kodeopnamestok
+              });
 
-            $("#form_input").form('load', row);
-            $('#IDLOKASI').combogrid('readonly');
+              idtrans = row.uuidpenyesuaianstok;
+              load_data(row.uuidpenyesuaianstok);
 
-            //get_combogrid_data ($('#KODESUPPLIER'), row.KODESUPPLIER, 'supplier');
-            //get_combogrid_data ($('#KODEPERKIRAANBIAYA'), row.KODEPERKIRAANBIAYA, 'kode_perkiraan&jenis=detail');
-            idtrans = row.uuidopnamestok;
-            load_data(row.uuidopnamestok);
-
-            $('#lbl_kasir').html(row.userentry);
-            $('#lbl_tanggal').html(row.tglentry);
-
-          });
+              $('#lbl_kasir').html(row.userentry);
+              $('#lbl_tanggal').html(row.tglentry);
+            });
         });
       }
     }
 
-    function simpan(jenis_simpan) {
+    async function simpan(jenis_simpan) {
       var mode = $("#mode").val();
 
       $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
@@ -354,45 +366,39 @@
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
         if (!isTokenExpired()) {
-          $.messager.alert(
-            'Perhatian',
-            '<b>PERINGATAN!<br>Segera Lanjutkan ke Penyesuaian Stok Setelah Melakukan Opname Stok</b>',
-            'info',
-            async function() {
-              const data = $("#form_input :input").serializeArray();
-              const payload = {};
-              for (const item of data) {
-                payload[item.name] = item.value;
-                if (item.name == 'data_detail') {
-                  payload[item.name] = JSON.parse(item.value);
-                }
-              }
-              payload['jenis_simpan'] = jenis_simpan;
-              try {
-                tampilLoaderSimpan();
-                const response = await fetchData(link_api.simpanInventoryOpnameStok, payload);
-                cekbtnsimpan = true;
-                if (!response.success) {
-                  throw new Error(response.message || 'Gagal menyimpan data');
-                }
-                $('#form_input').form('clear');
-                $.messager.alert('Info', 'Transaksi Sukses', 'info');
-                if (mode == 'ubah') {
-                  ubah();
-                } else {
-                  tambah();
-                }
-                if (jenis_simpan == 'simpan_cetak') {
-                  cetak(response.data.uuidopnamestok);
-                }
-              } catch (e) {
-                const error = (typeof e === 'string') ? e : e.message;
-                const textError = getTextError(error);
-                $.messager.alert('Error', textError, 'error');
-              } finally {
-                tutupLoaderSimpan();
-              }
-            });
+          const data = $("#form_input :input").serializeArray();
+          const payload = {};
+          data.forEach((item) => {
+            payload[item.name] = item.value;
+            if (item.name == 'data_detail') {
+              payload[item.name] = JSON.parse(item.value);
+            }
+          });
+          payload['jenis_simpan'] = jenis_simpan;
+          try {
+            tampilLoaderSimpan();
+            const response = await fetchData(link_api.simpanInventoryPenyesuaianStok, payload);
+            cekbtnsimpan = true;
+            if (!response.success) {
+              throw new Error(response.message || 'Gagal menyimpan data');
+            }
+            $('#form_input').form('clear');
+            $.messager.alert('Info', 'Transaksi Sukses', 'info');
+            if (mode == 'ubah') {
+              ubah();
+            } else {
+              tambah();
+            }
+            if (jenis_simpan == 'simpan_cetak') {
+              cetak(response.data.uuidpenyesuaianstok);
+            }
+          } catch (e) {
+            const error = typeof e === "string" ? e : e.message;
+            const textError = getTextError(error);
+            $.messager.alert("Error", textError, "error");
+          } finally {
+            tutupLoaderSimpan();
+          }
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
@@ -429,16 +435,12 @@
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: link_api.loadDataInventoryOpnameStok,
+        url: link_api.loadDataInventoryPenyesuaianStok,
         data: {
-          uuidopnamestok: idtrans
+          uuidpenyesuaianstok: idtrans
         },
         cache: false,
-        beforeSend: function() {
-          $('#table_data_detail').datagrid('loading');
-        },
         success: function(msg) {
-          $('#table_data_detail').datagrid('loaded');
           $('#table_data_detail').datagrid('loadData', msg);
           var rows = msg;
           for (var i = 0; i < rows.length; i++) {
@@ -450,15 +452,14 @@
     }
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
-    function browse_data_lokasi(id) {
+    function browse_data_lokasi(id, table) {
+      console.log(id, table);
       $(id).combogrid({
         panelWidth: 400,
         url: link_api.browseLokasi,
         idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
         required: true,
         selectFirstRow: true,
         columns: [
@@ -485,7 +486,115 @@
           if ($('#mode').val() != '') {
             reset_detail();
           }
-        }
+        },
+        onChange: function(newVal, oldVal) {
+          var row = $(id).combogrid('grid').datagrid('getSelected');
+
+          if (row) {
+            if ($('#mode').val() != '') {
+              //   ubah_url_combogrid($('#IDOPNAMESTOK'), link_api.browseOpnameStok + row.uuidlokasi, true);
+              $('#IDOPNAMESTOK').combogrid('grid').datagrid('options').url = link_api.browseOpnameStok;
+              $('#IDOPNAMESTOK').combogrid('clear');
+              $('#IDOPNAMESTOK').combogrid('grid').datagrid('load', {
+                uuidlokasi: row.uuidlokasi,
+                q: ''
+              });
+            }
+          }
+          //   else {
+          // ubah_url_combogrid($('#IDOPNAMESTOK'), 'config/combogrid.php', true);
+          // $('#IDOPNAMESTOK').combogrid('grid').datagrid('options').url = 'config/combogrid.php';
+          // $('#IDOPNAMESTOK').combogrid('clear');
+          // $('#IDOPNAMESTOK').combogrid('grid').datagrid('load', {
+          //   q: ''
+          // });
+          //   }
+          if ($('#mode').val() != '') {
+            reset_detail();
+          }
+        },
+      });
+    }
+
+    function browse_data_opnamestok(id) {
+      $(id).combogrid({
+        panelWidth: 510,
+        idField: 'uuidopnamestok',
+        textField: 'kodeopnamestok',
+        sortName: 'kodeopnamestok',
+        sortOrder: 'desc',
+        mode: 'remote',
+        data: [],
+        columns: [
+          [{
+              field: 'uuidopnamestok',
+              hidden: true
+            },
+            {
+              field: 'kodeopnamestok',
+              title: 'No. Opname Stok',
+              width: 120,
+              sortable: true
+            },
+            {
+              field: 'tgltrans',
+              title: 'Tgl. Trans',
+              width: 80,
+              sortable: true,
+              formatter: ubah_tgl_indo,
+              align: 'center'
+            },
+            {
+              field: 'catatan',
+              title: 'Catatan',
+              width: 250,
+              sortable: true
+            },
+          ]
+        ],
+        onSelect: function(index, row) {
+          //$(id).combogrid('options').onChange.call();
+        },
+        onChange: function() {
+          var row = $(id).combogrid('grid').datagrid('getSelected');
+
+          if (row && $('#mode').val() != '') {
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              url: link_api.loadDataOpnamePenyesuaian,
+              data: {
+                uuidopnamestok: row.uuidopnamestok
+              },
+              cache: false,
+              beforeSend: function() {
+                $('#table_data_detail').datagrid('loading');
+              },
+              success: function(msg) {
+                $('#table_data_detail').datagrid('loaded');
+                $('#table_data_detail').datagrid('loadData', msg.detail);
+                var rows = msg.detail;
+                for (var i = 0; i < rows.length; i++) {
+                  hitung_subtotal_detail(i, rows[i])
+                }
+                hitung_grandtotal();
+                var dg = $('#table_data_detail').datagrid('options');
+                dg.RowAdd = false;
+                dg.RowDelete = false;
+                dg.RowEdit = true;
+                $('#TGLTRANS').datebox('setValue', row.tgltrans).datebox('readonly');
+              }
+            });
+          } else {
+            var dg = $('#table_data_detail').datagrid('options');
+            dg.RowAdd = true;
+            dg.RowDelete = true;
+            dg.RowEdit = true;
+
+            $('#TGLTRANS').datebox('readonly', false);
+            reset_detail();
+          }
+        },
       });
     }
 
@@ -513,12 +622,14 @@
             var index = $(dg).datagrid('getRows').length;
             $(dg).datagrid('appendRow', {
               kodebarang: '',
+              subtotal: 0,
+              selisih: 0,
             }).datagrid('gotoCell', {
               index: index,
               field: 'kodebarang'
             });
 
-            //   getRowIndex(target);
+            // getRowIndex(target);
           }
         }, {
           text: 'Hapus',
@@ -566,7 +677,7 @@
                         width: 250
                       },
                       {
-                        field: 'satuanutama',
+                        field: 'satuan',
                         title: 'Satuan',
                         width: 60
                       },
@@ -605,7 +716,7 @@
             {
               field: 'namabarang',
               title: 'Nama',
-              width: 300,
+              width: 270,
             },
             @if (session('SHOWBARCODE') == 'YA')
               {
@@ -622,14 +733,22 @@
               },
             @endif {
               field: 'jml',
-              title: 'Jumlah',
+              title: 'Jml Opname',
               align: 'right',
               width: 80,
+              formatter: format_qty
+            },
+            {
+              field: 'selisih',
+              title: 'Selisih',
+              align: 'right',
+              width: 60,
               formatter: format_qty,
               editor: {
                 type: 'numberbox',
                 options: {
-                  min: 0,
+                  required: true,
+                  precision: 2
                 }
               }
             },
@@ -643,7 +762,7 @@
             {
               field: 'satuan',
               title: 'Satuan',
-              width: 80,
+              width: 50,
               align: 'center',
               editor: {
                 type: 'combogrid',
@@ -664,10 +783,35 @@
                 }
               }
             },
+            {
+              field: 'harga',
+              title: 'Harga',
+              align: 'right',
+              width: 85,
+              formatter: format_amount
+            },
+            {
+              field: 'subtotal',
+              title: 'Subtotal',
+              align: 'right',
+              width: 95,
+              formatter: format_amount,
+              editor: inputharga.data.inputharga == 1 ? {
+                type: 'numberbox',
+                options: {
+                  required: true
+                }
+              } : null,
+            },
           ]
         ],
         onClickRow: function(index, row) {
           indexDetail = index;
+        },
+        onBeforeCellEdit: function(index, field) {
+          if (field == 'kodebarang' && $("#IDOPNAMESTOK").combogrid('getValue') != '') {
+            return false;
+          }
         },
         onCellEdit: function(index, field, val) {
           var row = $(this).datagrid('getRows')[index];
@@ -676,8 +820,8 @@
           if (field == 'satuan') {
             ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
-              uuidbarang: row.uuidbarang,
               q: '',
+              uuidbarang: row.uuidbarang
             });
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
@@ -702,6 +846,11 @@
               var satuan = data ? data.satuan : '';
               var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
               var partnumber = data.partnumber ? data.partnumber : '';
+              var hargabeli = 0;
+
+              if (hargabeliterakhir.data.value == 'YA') {
+                hargabeli = get_harga_barangbeli(id, satuan);
+              }
 
               row_update = {
                 uuidbarang: id,
@@ -710,18 +859,20 @@
                 partnumber: partnumber,
                 satuan_lama: satuan,
                 satuan: satuan,
-                jml: 1,
+                jml: 0,
+                harga: hargabeli
               };
 
               break;
             case 'satuan':
-              // get_konversi (ed.combogrid('grid').datagrid('getRows'), changes.satuan, row.satuan_lama);
-              // if (satuan_baru != 0 || satuan_lama != 0 &&  changes.satuan) {
-              // 	row_update = {
-              // 		jml		   : (satuan_baru>satuan_lama) ? row.jml*konversi_baru : row.jml/konversi_lama,
-              // 		satuan_lama: changes.satuan
-              // 	};
-              // }
+              if (hargabeliterakhir.data.value == 'YA') {
+                hargabeli = get_harga_barangbeli(row.uuidbarang, row.satuan);
+
+                row_update = {
+                  harga: hargabeli
+                };
+              }
+
               break;
           }
           if (jQuery.isEmptyObject(row_update) == false) {
@@ -745,9 +896,29 @@
     }
 
     function hitung_subtotal_detail(index, row) {
-      // hitung diskon lebih dahulu
-      var dg = $('#table_data_detail');
 
+      // hitung diskon lebih dahulu
+      var data = {};
+      var dg = $('#table_data_detail');
+      var subtotal = parseFloat(row.subtotal);
+
+      if (hargabeliterakhir.data.value == 'TIDAK') {
+        if (row.selisih == 0) {
+          data.harga = 0;
+        } else {
+          data.harga = +(Math.abs((subtotal / row.selisih)).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
+        }
+      } else {
+        data.harga = row.harga;
+      }
+
+      //DIHITUNG ULANG LAGI SUBTOTALNYA
+      data.subtotal = data.harga * row.selisih;
+
+      dg.datagrid('updateRow', {
+        index: index,
+        row: data
+      });
       // cek jika ada barang yang sama
       var rows = dg.datagrid('getRows');
 
@@ -789,94 +960,25 @@
       $("#TGLJATUHTEMPO").datebox('readonly');
     }
 
-    function insert_barang(barcodesatuan1) {
-      var barcodesatuan1string = barcodesatuan1;
-      var barcodesatuan1qty = 1;
-
-      if (barcodesatuan1.includes('*')) {
-        var barcodesatuan1split = barcodesatuan1.split('*');
-        barcodesatuan1qty = parseInt(barcodesatuan1split[0]);
-        barcodesatuan1string = barcodesatuan1split[1];
-      }
+    function get_harga_barangbeli(idbarang, satuan) {
+      var harga = 0;
 
       $.ajax({
+        dataType: "json",
         type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDataBarangBarcode,
+        async: false,
+        url: link_api.hargaBeliTerakhir,
         data: {
-          barcode: barcodesatuan1string,
+          uuidbarang: idbarang,
+          satuan: satuan
         },
         cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
         success: function(msg) {
-          $.messager.progress('close');
-
-          if (msg == null) {
-            $.messager.alert('Error', 'Barcode Tersebut Tidak Ditemukan', 'error');
-          } else {
-
-            data = msg["rows"];
-
-            var id = data ? data.id : '';
-            var kode = data ? data.kode : '';
-            var nama = data ? data.nama : '';
-            var satuan = data ? data.satuan : '';
-            var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
-            var partnumber = data.partnumber ? data.partnumber : '';
-
-            var daftar_barang = $('#table_data_detail').datagrid('getRows');
-            var data = null
-            var ada = false;
-
-            // mencari daftar barang yang sudah ada
-            for (var i in daftar_barang) {
-              if (daftar_barang[i].idbarang == id) {
-                data = {
-                  jml: (daftar_barang[i].jml + barcodesatuan1qty),
-                  satuan_lama: satuan,
-                  satuan: satuan,
-                  partnumber: partnumber,
-                }
-
-                $('#table_data_detail').datagrid('updateRow', {
-                  index: i,
-                  row: data
-                }).datagrid('gotoCell', {
-                  index: i,
-                  field: 'kodebarang'
-                });
-
-                ada = true;
-
-                hitung_subtotal_detail(i, daftar_barang[i]);
-              }
-            }
-
-            if (!ada) {
-              var row = {
-                idbarang: id,
-                kodebarang: kode,
-                namabarang: nama,
-                barcodesatuan1: barcodesatuan1,
-                partnumber: partnumber,
-                satuan_lama: satuan,
-                satuan: satuan,
-                jml: 1,
-              }
-
-              $('#table_data_detail').datagrid('appendRow', row);
-
-              hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row);
-            }
-
-            hitung_grandtotal();
-
-            $('#BARCODE').textbox('textbox').focus();
-          }
+          harga = msg.hargabeli;
         }
       });
+
+      return harga;
     }
 
     async function fetchData(url, body, isJson = true) {

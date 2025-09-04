@@ -501,7 +501,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             }
             $('#form_input').form('clear');
             $.messager.alert('Info', 'Transaksi Sukses', 'info');
-            tambah();
+            if (mode == 'ubah') {
+              ubah();
+            } else {
+              tambah();
+            }
             if (jenis_simpan == 'simpan_cetak') {
               cetak(response.data.uuidkirim);
             }

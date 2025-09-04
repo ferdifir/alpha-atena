@@ -61,13 +61,11 @@
                   <td id="label_form"><br></td>
                 </tr>
                 <tr>
-                  <td id="label_form" align="center">No. Opname Stok</td>
+                  <td id="label_form" align="center">No. Penyesuaian Stok</td>
                 </tr>
                 <tr>
-                  <td align="center">
-                    <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                      class="label_input" />
-                  </td>
+                  <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
+                      class="label_input" /></td>
                 </tr>
                 <tr>
                   <td id="label_form"><br></td>
@@ -87,12 +85,6 @@
                         <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_S') }}"> Cetak
                             (S)</label>
                         </td>
-                      </tr>
-                      <tr valign = "top">
-                        <td><input type="checkbox" value="P" name="cb_status_filter[]"></td>
-                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_P') }}"> Sudah
-                            Berlanjut Ke
-                            Penyesuaian Stok (P)</label></td>
                       </tr>
                       <tr valign = "top">
                         <td><input type="checkbox" value="D" name="cb_status_filter[]"></td>
@@ -164,7 +156,29 @@
         }
       });
 
-      create_form_login();
+      //PRINT TAB
+      $("#tab_transaksi").tabs({
+        onSelect: function() {
+          var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
+
+          if (tab_title == 'Grid') {
+            enable_button()
+          } else if (tab_title == 'Tambah') {
+            disable_button()
+          } else {
+            //AMBIL IDTRANS LEBIH DARI IDTAB
+            var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
+            //Variabel ROW diisi array object
+            row = {
+              uuidpenyesuaianstok: trans[0],
+              kodepenyesuaianstok: trans[1],
+            };
+
+            disable_button()
+          }
+        }
+      });
+
       buat_table();
 
       $("#txt_tgl_aw_filter").datebox('setValue', getTglFilterAwal());
@@ -188,7 +202,7 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Opname Stok', $("#area_cetak").html());
+            export_excel('Faktur Penyesuaian Stok', $("#area_cetak").html());
             return false;
           }
         }]
@@ -208,14 +222,29 @@
       before_add();
     });
 
+    function disable_button() {
+      $('#btn_refresh').linkbutton('disable');
+      $('#btn_batal').linkbutton('disable')
+      $('#btn_cetak').linkbutton('disable')
+      $('#btn_batal_cetak').linkbutton('disable')
+    }
+
+    function enable_button() {
+      $('#btn_refresh').linkbutton('enable');
+      $('#btn_batal').linkbutton('enable')
+      $('#btn_cetak').linkbutton('enable')
+      $('#btn_batal_cetak').linkbutton('enable')
+    }
+
     function before_add() {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Inventori Opname Stok',
-            '{{ route('atena.inventori.opnamestok.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Inventori Penyesuaian Stok',
+            '{{ route('atena.inventori.penyesuaianstok.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus');
+
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
@@ -227,33 +256,34 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'I' || data.status == 'S') {
-              var kode = row.kodeopnamestok;
-              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabOpen) {
-                $.messager.alert(
-                  'Warning',
-                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
-                  'warning'
-                );
-              } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row.uuidpenyesuaianstok,
+            function(data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
-            }
-          });
+              data = data.data;
+              if (data.status == 'I' || data.status == 'S') {
+                var kode = row.kodepenyesuaianstok;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatalkan ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.hapus == 1) {
+                      $("#alasan_pembatalan").dialog('open');
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
+              } else {
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+              }
+            });
         } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          $.messager.alert('Warning', 'Token Tidak Valid, Silahkan Login Kembali', 'warning');
         }
       }
     }
@@ -263,27 +293,34 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'S') {
-              var kode = row.kodeopnamestok;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatal Cetak ', 'warning');
-              } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.batalcetak == 1) {
-                    batal_cetak();
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+            .uuidpenyesuaianstok,
+            function(
+              data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
-            }
-          });
+              data = data.data;
+              if (data.status == 'S') {
+                var kode = row.kodepenyesuaianstok;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatal Cetak ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.batalcetak == 1) {
+                      batal_cetak();
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
+              } else {
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+              }
+            });
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
@@ -300,60 +337,45 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'S' || data.status == 'P') {
-              get_akses_cetak_ulang('inventori', function(data) {
-                if (data.hakakses == 1) {
-                  $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
-                    .uuidopnamestok);
-                  $("#form_cetak").window('open');
-                }
-              });
-            } else if (data.status == 'I') {
-              var kode = row.kodeopnamestok;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning');
-              } else {
-                cetak();
-              }
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
-            }
-          });
-        });
-      }
-    }
 
-    function batal_trans() {
-      $("#alasan_pembatalan").dialog('close');
-      alasan = $('#ALASANPEMBATALAN').val();
-      if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeopnamestok + ' ?',
-          async function(r) {
-            if (r) {
-              try {
-                bukaLoader();
-                const response = await fetchData(link_api.batalTransaksiInventoryOpnameStok, {
-                  uuidopnamestok: row.uuidopnamestok,
-                  kodeopnamestok: row.kodeopnamestok,
-                  alasan: alasan
-                });
-                if (!response.success) {
-                  throw response.message;
-                }
-                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                reload();
-              } catch (e) {
-                const error = (typeof e === 'string') ? e : e.message;
-                const textError = getTextError(error);
-                $.messager.alert('Error', textError, 'error');
-              } finally {
-                tutupLoader();
+          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+            .uuidpenyesuaianstok,
+            function(data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
               }
-            }
-          });
+              data = data.data;
+              if (data.status == 'S' || data.status == 'P') {
+                const kodemenu = modul_kode['inventori'];
+                get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.hakakses == 1) {
+                    const url = link_api.cetakInventoryPenyesuaianStok + row.uuidpenyesuaianstok;
+                    const document = getCetakDocument(url);
+                    if (document == null) {
+                      $.messager.alert('Warning', 'Terjadi kesalahan dalam memuat data', 'warning');
+                    }
+                    $("#area_cetak").html(document);
+                    $("#form_cetak").window('open');
+                  } else {
+                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses Cetak Ulang', 'warning');
+                  }
+                });
+              } else if (data.status == 'I') {
+                var kode = row.kodepenyesuaianstok;
+                const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                if (isTabOpen) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                    'warning');
+                } else {
+                  cetak();
+                }
+              } else {
+                $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+              }
+            });
+        });
       }
     }
 
@@ -394,19 +416,56 @@
       }
     }
 
-    function batal_cetak() {
+    function batal_trans() {
+      $("#alasan_pembatalan").dialog('close');
+      alasan = $('#ALASANPEMBATALAN').val();
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeopnamestok + ' ?',
+        $.messager.confirm(
+          'Confirm',
+          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodepenyesuaianstok + ' ?',
           async function(r) {
             if (r) {
               try {
                 bukaLoader();
-                const response = await fetchData(link_api.ubahStatusJadiInputInventoryOpnameStok, {
-                  uuidopnamestok: row.uuidopnamestok,
-                  kodeopnamestok: row.kodeopnamestok
+                const response = await fetchData(link_api.batalTransaksiInventoryPenyesuaianStok, {
+                  uuidpenyesuaianstok: row.uuidpenyesuaianstok,
+                  kodepenyesuaianstok: row.kodepenyesuaianstok,
+                  alasan: alasan
                 });
                 if (!response.success) {
                   throw response.message;
+                }
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } catch (e) {
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
+              }
+            }
+          }
+        );
+      }
+    }
+
+    function batal_cetak() {
+      if (row) {
+        $.messager.confirm(
+          'Confirm',
+          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodepenyesuaianstok + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                bukaLoader();
+                const response = await fetchData(link_api.ubahStatusJadiInputInventoryPenyesuaianStok, {
+                  uuidpenyesuaianstok: row.uuidpenyesuaianstok,
+                  kodepenyesuaianstok: row.kodepenyesuaianstok
+                });
+                if (!response.success) {
+                  $.messager.alert('Error', response.message, 'error');
+                  return;
                 }
                 $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
                 reload();
@@ -437,17 +496,16 @@
     async function cetak() {
       if (row) {
         try {
-          bukaLoader();
-          const response = await fetchData(link_api.ubahStatusJadiSlipInventoryOpnameStok, {
-            uuidopnamestok: row.uuidopnamestok,
-            kodeopnamestok: row.kodeopnamestok
+          const response = await fetchData(link_api.ubahStatusJadiSlipInventoryPenyesuaianStok, {
+            uuidpenyesuaianstok: row.uuidpenyesuaianstok,
+            kodepenyesuaianstok: row.kodepenyesuaianstok
           });
           if (!response.success) {
             throw response.message;
           }
           $.messager.alert('Info', 'Transaksi Sukses Dicetak', 'info');
           reload();
-          const url = link_api.cetakInventoryOpnameStok + row.uuidopnamestok;
+          const url = link_api.cetakInventoryPenyesuaianStok + row.uuidpenyesuaianstok;
           const document = await getCetakDocument(url);
           if (document == null) {
             return;
@@ -458,8 +516,6 @@
           const error = (typeof e === 'string') ? e : e.message;
           const textError = getTextError(error);
           $.messager.alert('Error', textError, 'error');
-        } finally {
-          tutupLoader();
         }
       }
     }
@@ -471,6 +527,7 @@
     function filter_data() {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
+      console.log(dataLokasi);
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
         lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
@@ -502,14 +559,17 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
-        url: link_api.loadDataGridInventoryOpnameStok,
-        onLoadSuccess: function(data) {
-          $('#table_data').datagrid('unselectAll');
-        },
+        url: link_api.loadDataGridInventoryPenyesuaianStok,
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
           else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
+        },
+        onLoadSuccess: function(data) {
+          $('#table_data').datagrid('unselectAll');
+        },
+        onLoadError: function() {
+          $.messager.alert('Error', 'Terjadi Kesalahan dalam memuat data', 'error');
         },
         frozenColumns: [
           [{
@@ -521,15 +581,20 @@
               align: 'center'
             },
             {
-              field: 'uuidopnamestok',
+              field: 'uuidpenyesuaianstok',
               hidden: true
+            },
+            {
+              field: 'kodepenyesuaianstok',
+              title: 'No. Penyesuaian Stok',
+              width: 140,
+              sortable: true
             },
             {
               field: 'kodeopnamestok',
               title: 'No. Opname Stok',
               width: 140,
-              sortable: true,
-              align: 'center'
+              sortable: true
             },
             {
               field: 'uuidperusahaan',
@@ -613,16 +678,16 @@
             var row = $('#table_data').datagrid('getSelected');
 
             $("#mode").val("ubah");
-            $("#data").val(row.uuidopnamestok);
+            $("#data").val(row.uuidpenyesuaianstok);
 
-            var row = $('#table_data').datagrid('getSelected');
-            var tab_title = row.kodeopnamestok;
+            var tab_title = row.kodepenyesuaianstok;
             parent.buka_submenu(null, tab_title,
-              '{{ route('atena.inventori.opnamestok.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              row.uuidopnamestok,
+              '{{ route('atena.inventori.penyesuaianstok.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+              row.uuidpenyesuaianstok,
               'fa fa-pencil');
+
           } else {
-            $.messager.alert('Gagal', 'Token tidak valid, silahkan login kembali', 'error');
+            $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
           }
         },
       });
@@ -669,6 +734,10 @@
           [{
               field: 'ck',
               checkbox: true
+            },
+            {
+              field: 'uuidlokasi',
+              hidden: true
             },
             {
               field: 'kode',
