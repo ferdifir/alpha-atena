@@ -7,6 +7,7 @@
                 <div data-options="region:'center',border:false ">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
                         <input type="hidden" name="mode" id="mode">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
 
                         <table style="padding:5px" id="label_form">
                             <tr>
@@ -189,6 +190,7 @@
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');
+                        await ubah();
                     }
                 } catch (error) {
         $.messager.alert("error", getTextError(error), "error");

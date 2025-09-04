@@ -32,7 +32,9 @@
                                                                 <td id="label_form"><input name="kodetransfer"
                                                                         id="KODETRANSFER" class="label_input"
                                                                         style="width:190px">
-                                                                    <input type="hidden" id="IDTRANSFER" name="uuidtransfer">
+                                                                    <input type="hidden" id="IDTRANSFER"
+                                                                        name="uuidtransfer">
+                                                                    <input type="hidden" id="TGLENTRY" name="tglentry">
                                                                 </td>
                                                             </tr>
                                                             <tr>
@@ -423,7 +425,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 $.messager.alert('Error', getTextError(error), 'error');
             }
 
-            
+
 
             clear_plugin();
             reset_detail();
@@ -574,10 +576,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     if (response.success) {
                         if (mode == 'tambah') {
                             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-                            tambah();
+                            await tambah();
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                         if (jenis_simpan == 'simpan_cetak') {
                             cetak(response.data.uuidtransfer);
@@ -776,8 +779,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     },
                     body: JSON.stringify({
                         uuidlokasi: $('#IDLOKASIASAL').combogrid('getValue'),
-			tgltrans: $('#TGLTRANS').datebox('getValue'),
-			data_detail: JSON.stringify(rows)
+                        tgltrans: $('#TGLTRANS').datebox('getValue'),
+                        data_detail: JSON.stringify(rows)
                     }),
                 }).then(response => {
                     if (!response.ok) {
@@ -1384,7 +1387,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     }
                     return response.json();
                 })
-                if (response.success&&response.data!=null) {
+                if (response.success && response.data != null) {
                     var data = response.data;
 
                     var uuidbarang = data ? data.uuidbarang : '';

@@ -9,6 +9,7 @@
 
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidsopir">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
                         <div class="easyui-tabs" style="width:100%;height:270px;" data-options="border:false;"
                             plain='true'>
                             <table style="padding:5px" id="label_form">
@@ -247,6 +248,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

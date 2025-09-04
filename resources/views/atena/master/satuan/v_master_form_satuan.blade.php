@@ -8,6 +8,7 @@
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidsatuan">
+            <input type="hidden" id="TGLENTRY" name="tglentry">
                         <table style="padding:5px" id="label_form">
                             <tr>
                                 <td align="right" id="label_form">Satuan</td>
@@ -180,6 +181,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

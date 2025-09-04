@@ -9,7 +9,7 @@
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidnontunai">
                         <input type="hidden" name="detail_lokasi" id="detail_lokasi">
-
+                        <input type="hidden" id="TGLENTRY" name="tglentry">
                         <table>
                             <tr>
                                 <td valign="top">
@@ -194,7 +194,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                var textError=getTextError(error);
+                var textError = getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
             if (row) {
@@ -209,14 +209,14 @@
                 $('#uuidperkiraan').combogrid('clear');
                 $('#uuidperkiraancharge').combogrid('clear');
 
-                if (row.uuidperkiraan !="") {
+                if (row.uuidperkiraan != "") {
                     $('#uuidperkiraan').combogrid('setValue', {
                         uuidperkiraan: row.uuidperkiraan,
                         nama: row.namaperkiraan
                     });
                 }
 
-                if (row.uuidperkiraancharge !="") {
+                if (row.uuidperkiraancharge != "") {
                     $('#uuidperkiraancharge').combogrid('setValue', {
                         uuidperkiraan: row.uuidperkiraancharge,
                         nama: row.namaperkiraancharge
@@ -273,7 +273,9 @@
                             var dataLokasi = JSON.parse(n['value']);
                             var lokasi = [];
                             $.map(dataLokasi, function(n, i) {
-                                lokasi.push({"uuidlokasi": n['uuidlokasi']});
+                                lokasi.push({
+                                    "uuidlokasi": n['uuidlokasi']
+                                });
                             });
                             body[n['name']] = lokasi;
                         } else {
@@ -309,13 +311,14 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                var textError=getTextError(error);
-                $.messager.alert('Error', getTextError(error), 'error');
+                    var textError = getTextError(error);
+                    $.messager.alert('Error', getTextError(error), 'error');
                 }
                 tutupLoaderSimpan();
             }
@@ -383,7 +386,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                var textError=getTextError(error);
+                var textError = getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
         }

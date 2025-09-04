@@ -6,7 +6,7 @@
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false ">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
-
+                        <input type="hidden" id="TGLENTRY" name="tglentry">
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuiddepartemenkerja">
 
@@ -162,7 +162,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-        $.messager.alert("error", getTextError(error), "error");
+                $.messager.alert("error", getTextError(error), "error");
                 console.log(error);
             }
             if (row) {
@@ -231,6 +231,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
+                            ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

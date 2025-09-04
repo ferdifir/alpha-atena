@@ -6,7 +6,7 @@
             <div class="easyui-layout" fit="true">
                 <div data-options="region:'center',border:false ">
                     <div class="easyui-layout" style="height:100%" id="trans_layout">
-
+                        <input type="hidden" id="TGLENTRY" name="tglentry">
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidcurrency" id="uuidcurrency">
                         <table style="padding:5px" id="label_form">
@@ -122,7 +122,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-                var textError=getTextError(error);
+                var textError = getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
             if (row) {
@@ -185,14 +185,15 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');
                     }
 
                 } catch (error) {
-                var textError=getTextError(error);
-                $.messager.alert('Error', getTextError(error), 'error');
+                    var textError = getTextError(error);
+                    $.messager.alert('Error', getTextError(error), 'error');
                 }
                 tutupLoaderSimpan();
             }

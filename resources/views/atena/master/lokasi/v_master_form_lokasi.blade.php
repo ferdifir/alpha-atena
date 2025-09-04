@@ -414,6 +414,8 @@
                     $.messager.alert('Info', 'Simpan Data Sukses', 'info');
                     if (mode == 'tambah') {
                         tambah();
+                    }else{
+                        await ubah();
                     }
                 } else {
                     $.messager.alert('Error', response.message, 'error');
