@@ -14,6 +14,7 @@
 
             <input type="hidden" name="mode" id="mode">
             <input type="hidden" name="uuidcustomer" id="IDCUSTOMER">
+            <input type="hidden" name="tglentry" id="tglentry">
             <input type="hidden" id="data_custlokasi" name="data_custlokasi">
             <input type="hidden" id="data_custbarang" name="data_custbarang">
             <input type="hidden" id="data_custnpwp" name="data_custnpwp">
@@ -919,6 +920,8 @@
             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             if (mode == 'tambah') {
               tambah();
+            } else if (mode == 'ubah') {
+              ubah();
             }
           } else {
             $.messager.alert('Error', response.message, 'error');

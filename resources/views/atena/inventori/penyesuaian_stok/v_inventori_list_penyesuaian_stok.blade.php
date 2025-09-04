@@ -35,13 +35,17 @@
                   <td id="label_form" align="center">Tgl. Transaksi</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+                  <td align="center">
+                    <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
+                  </td>
                 </tr>
                 <tr>
                   <td id="label_form" align="center">s/d</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+                  <td align="center">
+                    <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
+                  </td>
                 </tr>
                 <tr>
                   <td id="label_form"><br></td>
@@ -254,6 +258,10 @@
         if (!isTokenExpired()) {
           get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row.uuidpenyesuaianstok,
             function(data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
+              }
               data = data.data;
               if (data.status == 'I' || data.status == 'S') {
                 var kode = row.kodepenyesuaianstok;
@@ -289,6 +297,10 @@
             .uuidpenyesuaianstok,
             function(
               data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
+              }
               data = data.data;
               if (data.status == 'S') {
                 var kode = row.kodepenyesuaianstok;
@@ -329,14 +341,22 @@
           get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
             .uuidpenyesuaianstok,
             function(data) {
+              if (!data.success || data.message == 'Token tidak valid') {
+                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+                return false;
+              }
               data = data.data;
               if (data.status == 'S' || data.status == 'P') {
                 const kodemenu = modul_kode['inventori'];
                 get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', function(data) {
                   data = data.data;
                   if (data.hakakses == 1) {
-                    $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/PenyesuaianStok/cetak/" + row
-                      .uuidpenyesuaianstok);
+                    const url = link_api.cetakInventoryPenyesuaianStok + row.uuidpenyesuaianstok;
+                    const document = getCetakDocument(url);
+                    if (document == null) {
+                      $.messager.alert('Warning', 'Terjadi kesalahan dalam memuat data', 'warning');
+                    }
+                    $("#area_cetak").html(document);
                     $("#form_cetak").window('open');
                   } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses Cetak Ulang', 'warning');
@@ -438,30 +458,24 @@
           async function(r) {
             if (r) {
               try {
-
-              } catch (e) {
-                const error 
-              }
-              $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: base_url + "atena/Inventori/Transaksi/PenyesuaianStok/ubahStatusJadiInput",
-                data: "idtrans=" + row.uuidpenyesuaianstok + "&kodetrans=" + row.kodepenyesuaianstok,
-                cache: false,
-                beforeSend: function() {
-                  $.messager.progress();
-                },
-                success: function(msg) {
-                  $.messager.progress('close');
-
-                  if (msg.success) {
-                    $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
-                    reload();
-                  } else {
-                    $.messager.alert('Error', msg.errorMsg, 'error');
-                  }
+                bukaLoader();
+                const response = await fetchData(link_api.ubahStatusJadiInputInventoryPenyesuaianStok, {
+                  uuidpenyesuaianstok: row.uuidpenyesuaianstok,
+                  kodepenyesuaianstok: row.kodepenyesuaianstok
+                });
+                if (!response.success) {
+                  $.messager.alert('Error', response.message, 'error');
+                  return;
                 }
-              });
+                $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
+                reload();
+              } catch (e) {
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
+              }
             }
           });
       }
@@ -513,18 +527,18 @@
     function filter_data() {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
+      console.log(dataLokasi);
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
-        lokasi += (dataLokasi[i]["id"] + ",");
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
-      var status = $("[name='cb_status_filter[]']:checked")
-        .map(function() {
-          return this.value;
-        })
-        .get()
-        .join(",");
+      var selectedStatus = [];
+      $("[name='cb_status_filter[]']:checked").each(function() {
+        selectedStatus.push($(this).val());
+      });
+      var status = selectedStatus.length > 0 ? JSON.stringify(selectedStatus) : '';
 
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
@@ -720,6 +734,10 @@
           [{
               field: 'ck',
               checkbox: true
+            },
+            {
+              field: 'uuidlokasi',
+              hidden: true
             },
             {
               field: 'kode',

@@ -9,6 +9,7 @@
             <input type="hidden" id="mode" name="mode">
             <input type="hidden" id="IDBARANG" name="uuidbarang">
             <input type="hidden" id="uuidmerk" name="uuidmerk">
+            <input type="hidden" id="tglentry" name="tglentry">
             <input type="hidden" id="data_barangkategori" name="data_barangkategori">
             <input type="hidden" id="data_barangset" name="data_barangset">
             <input type="hidden" id="data_supplier" name="data_supplier">
@@ -1390,6 +1391,8 @@
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               if (mode == 'tambah') {
                 tambah();
+              } else if (mode == 'ubah') {
+                ubah();
               }
             } else {
               $.messager.alert('Error', response.message, 'error');

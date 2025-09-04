@@ -35,13 +35,17 @@
                   <td id="label_form" align="center">Tgl. Transaksi</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+                  <td align="center">
+                    <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
+                  </td>
                 </tr>
                 <tr>
                   <td id="label_form" align="center">s/d</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+                  <td align="center">
+                    <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
+                  </td>
                 </tr>
                 <tr>
                   <td id="label_form"><br></td>
@@ -60,8 +64,10 @@
                   <td id="label_form" align="center">No. Opname Stok</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                      class="label_input" /></td>
+                  <td align="center">
+                    <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
+                      class="label_input" />
+                  </td>
                 </tr>
                 <tr>
                   <td id="label_form"><br></td>
@@ -455,33 +461,6 @@
         } finally {
           tutupLoader();
         }
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          url: link_api.ubahStatusJadiSlipInventoryOpnameStok,
-          data: {
-            uuidopnamestok: row.uuidopnamestok,
-            kodeopnamestok: row.kodeopnamestok
-          },
-          cache: false,
-          success: function(msg) {
-            $.messager.progress('close');
-            if (msg.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Transaksi Sukses Dicetak',
-                showType: 'show'
-              });
-              $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
-                .uuidopnamestok);
-              $("#form_cetak").window('open');
-
-              reload();
-            } else {
-              $.messager.alert('Error', msg.errorMsg, 'error');
-            }
-          }
-        });
       }
     }
 
@@ -498,12 +477,11 @@
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
-      var status = $("[name='cb_status_filter[]']:checked")
-        .map(function() {
-          return this.value;
-        })
-        .get()
-        .join(",");
+      var selectedStatus = [];
+      $("[name='cb_status_filter[]']:checked").each(function() {
+        selectedStatus.push($(this).val());
+      });
+      var status = selectedStatus.length > 0 ? JSON.stringify(selectedStatus) : '';
 
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),

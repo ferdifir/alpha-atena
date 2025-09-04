@@ -216,6 +216,7 @@ var link_api = {
     loadSatuanBarang: `${base_url_api}atena/master/barang/load-satuan-barang`,
     getStokBarang: `${base_url_api}atena/master/barang/get-stok`,
     hitungStokTransaksiBarang: `${base_url_api}atena/master/barang/hitung-stok-transaksi`,
+    hargaBeliTerakhir: `${base_url_api}atena/master/barang/harga-beli-terakhir`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,
@@ -352,12 +353,17 @@ var link_api = {
     simpanInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/simpan`,
     loadDataHeaderInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/load-data-header`,
     cetakInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/cetak/`,
+    loadDataOpnamePenyesuaian: `${base_url_api}atena/inventori/opname-stok/load-data-opname-penyesuaian`,
+    browseOpnameStok: `${base_url_api}atena/inventori/opname-stok/browse`,
     //Inventory Penyesuaian Stok
     loadDataGridInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-grid`,
     batalTransaksiInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/batal-trans`,
     ubahStatusJadiSlipInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/ubah-status-jadi-slip`,
     cetakInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/cetak/`,
     ubahStatusJadiInputInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/ubah-status-jadi-input`,
+    loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
+    simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
+    loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
 };
 
 var modul_kode = {
