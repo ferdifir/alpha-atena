@@ -198,7 +198,7 @@
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Inventori Transfer',
+                    parent.buka_submenu(null, 'Tambah Inventori Pemakaian Bahan',
                         '{{ route('atena.inventori.pemakaian_bahan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
@@ -376,9 +376,9 @@
             if (row) {
                 bukaLoader();
 
-                var checkTabAvailable = parent.check_tab_exist(row.kodetransfer, 'fa fa-pencil');
+                var checkTabAvailable = parent.check_tab_exist(row.kodepemakaianbahan, 'fa fa-pencil');
                 if (checkTabAvailable) {
-                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetransfer +
+                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepemakaianbahan +
                         ', Sebelum Dibatal cetak ', 'warning');
                     tutupLoader();
                     return;
@@ -493,7 +493,7 @@
             var dataLokasi = getLokasi.datagrid('getChecked');
             var lokasi = "";
             for (var i = 0; i < dataLokasi.length; i++) {
-                lokasi += (dataLokasi[i]["id"] + ",");
+                lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
             }
             lokasi = lokasi.substring(0, lokasi.length - 1);
 

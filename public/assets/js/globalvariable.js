@@ -364,6 +364,17 @@ var link_api = {
     loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
     loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
+    //Pembelian Permintaan Barang
+    loadDataHeaderPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-header`,
+    loadConfigPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-config`,
+    loadDataGridPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-grid`,
+    batalTransPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/batal-trans`,
+    ubahStatusJadiInputPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/ubah-status-jadi-slip`,
+    cetakPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/cetak/`,
+    getStatusTransPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/get-status-trans`,
+    simpanPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/simpan`,
+    loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail`,
 };
 
 var modul_kode = {

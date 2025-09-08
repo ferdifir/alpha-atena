@@ -229,7 +229,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidsaldostok: row.uuidtrans,
+                        uuidsaldostok: uuidtrans,
                     }),
                 }).then(response => {
                     if (!response.ok) {

@@ -266,7 +266,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidtrans: row.uuidtrans,
+                        uuidtrans: uuidtrans,
                     }),
                 }).then(response => {
                     if (!response.ok) {

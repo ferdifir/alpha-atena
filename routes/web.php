@@ -614,7 +614,7 @@ Route::get('atena/inventori/penyesuaianstok/transaksi', function() {
     return view('atena.inventori.penyesuaian_stok.v_inventori_list_penyesuaian_stok', [
         'kodemenu' => request()->kode,
     ]);
-})->name('atena.inventory.penyesuaianstok.transaksi');
+})->name('atena.inventori.penyesuaianstok.transaksi');
 
 Route::get('atena/inventori/penyesuaianstok/form', function() {
     return view('atena.inventori.penyesuaian_stok.v_inventori_form_penyesuaian_stok', [
@@ -623,3 +623,18 @@ Route::get('atena/inventori/penyesuaianstok/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.inventori.penyesuaianstok.form');
+
+// Pembelian Permintaan Barang
+Route::get('atena/pembelian/permintaanbarang/transaksi', function() {
+    return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.permintaan_barang.transaksi');
+
+Route::get('atena/pembelian/permintaanbarang/form', function() {
+    return view('atena.pembelian.permintaan_barang.v_pembelian_form_permintaan_barang', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.pembelian.permintaan_barang.form');

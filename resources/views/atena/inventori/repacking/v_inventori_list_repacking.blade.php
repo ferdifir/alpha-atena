@@ -506,7 +506,7 @@
             var dataLokasi = getLokasi.datagrid('getChecked');
             var lokasi = "";
             for (var i = 0; i < dataLokasi.length; i++) {
-                lokasi += (dataLokasi[i]["id"] + ",");
+                lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
             }
             lokasi = lokasi.substring(0, lokasi.length - 1);
 
