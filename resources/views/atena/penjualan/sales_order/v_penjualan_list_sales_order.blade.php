@@ -402,8 +402,6 @@
 
       if (row) {
         if (!isTokenExpired()) {
-
-
           get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
             data = data.data;
             if (data.status == 'I') {

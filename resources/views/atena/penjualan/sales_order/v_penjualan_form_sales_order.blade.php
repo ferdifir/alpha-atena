@@ -14,6 +14,7 @@
                 <input type="hidden" id="CEKLIMITNOTA" name="ceklimitnota">
                 <input type="hidden" id="CEKNOTAJATUHTEMPO" name="ceknotajatuhtempo">
                 <input type="hidden" id="APPROVE" name="approve">
+                <input type="hidden" id="tglentry" name="tglentry">
                 <tr>
                   <td valign="top">
                     <fieldset style="height:180px;">
@@ -98,7 +99,7 @@
                           <tr>
                             <td id="label_form">Kode</td>
                             <td>
-                              <input name="idsubcustomer" class="label_input" id="IDSUBCUSTOMER" style="width:100">
+                              <input name="uuidsubcustomer" class="label_input" id="IDSUBCUSTOMER" style="width:100">
                               <input type="hidden" id="KODESUBCUSTOMER" name="kodesubcustomer">
                               <input name="namasubcustomer" class="label_input" id="NAMASUBCUSTOMER" style="width:210"
                                 readonly prompt="Nama SubPelanggan">
@@ -313,7 +314,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     style="height:164cm;padding:15px 10px 10px 10px;top:20px">
     <center>
       <div id="button_simpan">
-        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan_saja' onclick="simpan(this.id)"
+        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan' onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a><br><br>
         <a title="Simpan & Cetak" class="easyui-linkbutton button_add_print" id='simpan_cetak'
           onclick="simpan(this.id)"
@@ -328,6 +329,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 @endsection
 
 @push('js')
+  <script src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
     var indexRow = 0;
     var tutupSO = 0;
@@ -339,6 +341,37 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     let inputharga;
     let lihatharga;
     let lihathargabeli;
+    let browsemkt;
+    let kodeso;
+    let lihatsemuatrans;
+
+    async function getSOConfig() {
+      try {
+        const token = '{{ session('TOKEN') }}';
+        const [res1, res2] = await Promise.all([
+          fetchData(token, link_api.getConfig, {
+            modul: 'TSO',
+            config: 'KODESO'
+          }),
+          fetchData(token, link_api.getConfig, {
+            modul: 'TSO',
+            config: 'BROWSEMARKETING'
+          }),
+        ]);
+        if (!res1.success) {
+          throw res1.message;
+        }
+        if (!res2.success) {
+          throw res2.message;
+        }
+        browsemkt = res2.data;
+        kodeso = res1.data;
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
+    }
 
     $(document).ready(async function() {
       await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
@@ -346,6 +379,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         inputharga = data.inputharga;
         lihatharga = data.lihatharga;
         lihathargabeli = data.lihathargabeli;
+        lihatsemuatrans = data.lihatsemuatrans;
         var UT = data.cetak;
         if (UT == 1) {
           $('#simpan_cetak').css('filter', '');
@@ -357,6 +391,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $('#PEMBULATAN').numberbox({
           readonly: data.inputharga == 0
         });
+      });
+      await getSOConfig();
+      $('#KODESO').textbox({
+        readonly: kodeso.value == 'AUTO',
+        prompt: kodeso.value == 'AUTO' ? 'Auto Generate' : '',
       });
 
       $("#form_cetak").window({
@@ -404,10 +443,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         left: left
       });
 
-      get_status_trans("atena/Penjualan/Transaksi/SalesOrder", row.idso, function(data) {
-        $(".form_status").html(status_transaksi(data.status));
-      });
-
       browse_data_lokasi('#IDLOKASI');
       browse_data_customer('#IDCUSTOMER');
       browse_data_marketing('#IDMARKETING');
@@ -432,7 +467,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     for (var i = 0; i < ln; i++) {
                       var ln1 = row_detail.length;
                       for (var j = 0; j < ln1; j++) {
-                        if (curr[i].idcurrency == row_detail[j].idcurrency) {
+                        if (curr[i].uuidcurrency == row_detail[j].uuidcurrency) {
                           $('#table_data_detail').datagrid('updateRow', {
                             index: j,
                             row_detail: {
@@ -586,7 +621,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
     function tambah() {
       $('#mode').val('tambah');
-      parent.changeTitleTab($('#mode').val());
       $('#lbl_kasir, #lbl_tanggal').html('');
       $('#IDLOKASI').combogrid('readonly', false);
       $('#KODEPO').combogrid('readonly', false);
@@ -601,15 +635,13 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       $.ajax({
         type: 'POST',
-        url: base_url + 'atena/Master/Data/Lokasi/getLokasiDefault',
+        url: link_api.getLokasiDefault,
         dataType: 'json',
         cache: false,
         success: function(msg) {
-          if (msg != null) {
-            if (msg.idlokasi != null) {
-              $('#IDLOKASI').combogrid('setValue', msg.idlokasi);
-              $("#KODELOKASI").val(msg.kodelokasi);
-            }
+          if (msg.uuidlokasi != null) {
+            $('#IDLOKASI').combogrid('setValue', msg.uuidlokasi);
+            $("#KODELOKASI").val(msg.kodelokasi);
           }
         }
       });
@@ -628,6 +660,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       $('#mode').val('ubah');
 
       if (row) {
+        get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+          data = data.data;
+          $(".form_status").html(status_transaksi(data.status));
+        });
         //jika tidak punya akses input harga
         if (inputharga == 0) {
           $(':radio:not(:checked)').attr('disabled', true);
@@ -644,12 +680,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           var UT = data.ubah;
           var lihatsemuatrans = data.lihatsemuatrans;
 
-          get_status_trans("atena/Penjualan/Transaksi/SalesOrder", row.idso, function(data) {
+          get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+            data = data.data;
             if (UT == 1 && data.status == 'I') {
               if (row.userentry != '{{ session('DATAUSER')['uuid'] }}' &&
-                <
-                ?
-                = $_SESSION[NAMAPROGRAM]['LIHATSEMUATRANS'] ? > == 0) {
+                lihatsemuatrans == 0) {
                 $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
                 $('#btn_simpan_modal').removeAttr('onclick');
                 $.messager.alert('Info', 'Transaksi Tidak Dapat Diubah, Data Tidak Sesuai Dengan Pembuat Pesanan',
@@ -682,25 +717,46 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $('#TGLTRANS').datebox('readonly');
             $('#btn_browse').hide();
 
-            idtrans = row.idso;
-            load_data(row.idso);
-            load_data_pembayaran(row.idso);
+            idtrans = row.uuidso;
+            load_data(row.uuidso);
+            load_data_pembayaran(row.uuidso);
           });
         });
         //CUSTOMER
-        var url = base_url + "atena/Master/Data/Customer/comboGrid";
+        var url = link_api.browseCustomer;
         get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url);
 
         //SUBCUSTOMER
-        var url = base_url + "atena/Master/Data/Customer/comboGrid";
+        var url = link_api.browseCustomer;
         get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url);
 
-        if (row.idekspedisi != 0) {
+        if (row.uuidekspedisi != 0) {
           //EKSPEDISI
-          var url = base_url + "atena/Master/Data/Ekspedisi/comboGrid";
+          var url = link_api.browseEkspedisi;
           get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url);
         }
 
+      }
+    }
+
+    function isTokenExpired() {
+      const token = '{{ session('TOKEN') }}';
+      if (!token) {
+        return true;
+      }
+
+      try {
+        const payloadBase64 = token.split('.')[1];
+        const decodedPayload = atob(payloadBase64);
+        const payload = JSON.parse(decodedPayload);
+
+        const expirationTime = payload.exp;
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return expirationTime < currentTime;
+      } catch (e) {
+        console.error('Gagal mendekode token JWT:', e);
+        return true;
       }
     }
 
@@ -737,80 +793,40 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        validasi_session(function() {
-          var adaTrans = false;
-
-          if (mode == 'ubah') {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + 'Home/cekTanggalJamInput',
-              data: {
-                id: row.idso,
-                table: "tso",
-                whereid: "idso",
-                tgl: row.tglentry,
-                status: row.status
-              },
-              async: false,
-              success: function(msg) {
-                cekbtnsimpan = true;
-                if (!msg.success) {
-                  var errorMsg =
-                    'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal ' + msg.tgl +
-                    ' / ' + msg.jam + '.<br>Transaksi Tidak Dapat Disimpan.';
-                  $.messager.alert('Warning', errorMsg, 'warning');
-                  adaTrans = true;
+        if (!isTokenExpired()) {
+          $.ajax({
+            type: 'POST',
+            dataType: 'json',
+            url: base_url + "atena/Penjualan/Transaksi/SalesOrder/simpan/" + use,
+            data: datanya,
+            cache: false,
+            beforeSend: function() {
+              $.messager.progress();
+            },
+            success: function(msg) {
+              $.messager.progress('close');
+              cekbtnsimpan = true;
+              if (msg.success) {
+                $('#form_input').form('clear');
+                $.messager.show({
+                  title: 'Info',
+                  msg: 'Transaksi Sukses',
+                  showType: 'show'
+                });
+                tambah();
+                parent.reload();
+                if (use == 'simpan_cetak') {
+                  cetak(msg.id);
                 }
+
+              } else {
+                $.messager.alert('Error', msg.errorMsg, 'error');
               }
-            });
-          }
-
-          cek_tanggal_tutup_periode($('#TGLTRANS').datebox('getValue'), 0, function(data) {
-            cekbtnsimpan = true;
-            if (!data.success) {
-              var kode = row.kodeso ? row.kodeso : 'ini';
-
-              $.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' + kode +
-                '. Prosedur tidak dapat dilanjutkan', 'error');
-
-              adaTrans = true;
             }
           });
-
-          if (!adaTrans) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Penjualan/Transaksi/SalesOrder/simpan/" + use,
-              data: datanya,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-                cekbtnsimpan = true;
-                if (msg.success) {
-                  $('#form_input').form('clear');
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Transaksi Sukses',
-                    showType: 'show'
-                  });
-                  tambah();
-                  parent.reload();
-                  if (use == 'simpan_cetak') {
-                    cetak(msg.id);
-                  }
-
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
-              }
-            });
-          }
-        });
+        } else {
+          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+        }
       }
     }
 
@@ -824,21 +840,21 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/SalesOrder/loadData",
-        data: "idtrans=" + idtrans,
-        cache: false,
-        beforeSend: function() {
-          // $.messager.progress();
+        url: link_api.loadDataPenjualanSalesOrder,
+        data: {
+          idtrans: idtrans
         },
+        cache: false,
         success: function(msg) {
-          // $.messager.progress('close');
-
-          if (msg.success) {
+          if (msg) {
             for (var x = 0; x < msg.detail.length; x++) {
               $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: base_url + 'atena/Master/Data/Barang/satuanBarang/' + msg.detail[x].idbarang,
+                url: link_api.loadSatuanBarang,
+                data: {
+                  uuidbarang: msg.detail[x].uuidbarang
+                },
                 async: false,
                 cache: false,
                 success: function(response) {
@@ -883,8 +899,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: base_url + 'atena/Master/Data/Lokasi/comboGrid',
-        idField: 'id',
+        url: link_api.browseLokasi,
+        idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
         sortName: 'nama',
@@ -893,7 +909,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         selectFirstRow: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidlokasi',
               hidden: true
             },
             {
@@ -924,8 +940,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_customer(id) {
       $(id).combogrid({
         panelWidth: 600,
-        url: base_url + 'atena/Master/Data/Customer/comboGrid',
-        idField: 'id',
+        url: link_api.browseCustomer,
+        idField: 'uuidcustomer',
         textField: 'kode',
         mode: 'remote',
         sortName: 'nama',
@@ -933,7 +949,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         required: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidcustomer',
               hidden: true
             },
             {
@@ -961,7 +977,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               sortable: true
             },
             {
-              field: 'idsyaratbayar',
+              field: 'uuidsyaratbayar',
               hidden: true
             },
             {
@@ -976,7 +992,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           var row = $(id).combogrid('grid').datagrid('getSelected');
 
           if (row) {
-            var alamat = row.alamat == "" ? "" : (row.alamat + "\r\n");
+            var alamat = row.alamat == "" || row.alamat == null ? "" : (row.alamat + "\r\n");
             if (row.kota && row.kota != 'null') alamat += row.kota;
             if (row.propinsi && row.propinsi != 'null') alamat += "-" + row.propinsi;
             if (row.negara && row.negara != 'null') alamat += "-" + row.negara;
@@ -984,13 +1000,13 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $('#NAMACUSTOMER').textbox('setValue', row.nama);
             $('#ALAMAT').textbox('setValue', alamat);
             $('#TELP').textbox('setValue', row.telp);
-            $('#IDSYARATBAYAR').combogrid('setValue', row.idsyaratbayar);
-            $('#IDMARKETING').combogrid('setValue', row.idmarketing);
+            $('#IDSYARATBAYAR').combogrid('setValue', row.uuidsyaratbayar);
+            $('#IDMARKETING').combogrid('setValue', row.uuidmarketing);
             $('#ALAMATKIRIM').textbox('readonly', false);
             $('#ALAMATKIRIM').textbox('clear');
-            //set combogrid subcustomer
-            var url = base_url + 'atena/Master/Data/Customer/comboGrid/CHILD/' + row.id;
-            ubah_url_combogrid($("#IDSUBCUSTOMER"), url, true);
+            // subcustomer dan customer tidak saling berhubungan untuk yang baru
+            // var url = link_api.browseCustomer;
+            // ubah_url_combogrid($("#IDSUBCUSTOMER"), url, true);
             $('#NAMASUBCUSTOMER').textbox('clear');
             $('#ALAMATSUBCUSTOMER').textbox('clear');
             $('#TELPSUBCUSTOMER').textbox('clear');
@@ -1023,7 +1039,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_marketing(id) {
       $(id).combogrid({
         panelWidth: 310,
-        idField: 'id',
+        idField: 'uuidkaryawan',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
@@ -1032,12 +1048,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         onBeforeLoad: function(param) {
           param.divisi = 'marketing';
         },
-        <?php if ($BROWSEMARKETING == 'DISABLE') {
-            echo "readonly:'true',";
-        } ?>
+        readonly: browsemkt.value == 'DISABLE',
         columns: [
           [{
-              field: 'id',
+              field: 'uuidkaryawan',
               hidden: true
             },
             {
@@ -1052,9 +1066,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               width: 200,
               sortable: true
             },
-            /*{field:'ALAMAT',title:'Alamat',width:300, sortable:true},
-            {field:'KOTA',title:'Kota',width:100, sortable:true},
-            {field:'TELP',title:'Telp',width:100, sortable:true},*/
           ]
         ],
       });
@@ -1063,14 +1074,15 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_subcustomer(id) {
       $(id).combogrid({
         panelWidth: 600,
-        idField: 'id',
+        idField: 'uuidcustomer',
         textField: 'kode',
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
+        url: link_api.browseCustomer,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidcustomer',
               hidden: true
             },
             {
@@ -1098,7 +1110,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               sortable: true
             },
             {
-              field: 'idsyaratbayar',
+              field: 'uuidsyaratbayar',
               hidden: true
             },
             {
@@ -1110,14 +1122,13 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           ]
         ],
         onSelect: function(index, row) {
-          //$(id).combogrid('options').onChange.call();
           $("#IDSUBCUSTOMER").val(row.kode);
         },
         onChange: function(newVal, oldVal) {
           var row = $(id).combogrid('grid').datagrid('getSelected');
 
           if (row) {
-            var alamat = row.alamat == "" ? "" : (row.alamat + "\r\n");
+            var alamat = row.alamat == "" || row.alamat == null ? "" : (row.alamat + "\r\n");
             if (row.kota && row.kota != 'null') alamat += row.kota;
             if (row.propinsi && row.propinsi != 'null') alamat += "-" + row.propinsi;
             if (row.negara && row.negara != 'null') alamat += "-" + row.negara;
@@ -1145,22 +1156,22 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_ekspedisi(id) {
       $(id).combogrid({
         panelWidth: 490,
-        idField: 'id',
-        textField: 'kode',
-        url: base_url + 'atena/Master/Data/Ekspedisi/comboGrid',
+        idField: 'uuidekspedisi',
+        textField: 'kodeekspedisi',
+        url: link_api.browseEkspedisi,
         mode: 'remote',
         columns: [
           [{
-              field: 'id',
+              field: 'uuidekspedisi',
               hidden: true
             },
             {
-              field: 'kode',
+              field: 'kodeekspedisi',
               title: 'Kode',
               width: 80
             },
             {
-              field: 'nama',
+              field: 'namaekspedisi',
               title: 'Nama',
               width: 150
             },
@@ -1179,7 +1190,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         onChange: function() {
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if (row) {
-            $('#NAMAEKSPEDISI').textbox('setValue', row.nama);
+            $('#NAMAEKSPEDISI').textbox('setValue', row.namaekspedisi);
             $('#ALAMATEKSPEDISI').textbox('setValue', row.alamat);
             $('#TELPEKSPEDISI').textbox('setValue', row.telp);
           } else {
@@ -1195,8 +1206,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     function browse_data_syaratbayar(id) {
       $(id).combogrid({
         panelWidth: 300,
-        url: base_url + 'atena/Master/Data/SyaratBayar/comboGrid',
-        idField: 'id',
+        url: link_api.browseSyaratBayar,
+        idField: 'uuidsyaratbayar',
         textField: 'nama',
         mode: 'local',
         sortName: 'selisih',
@@ -1205,7 +1216,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         selectFirstRow: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidsyaratbayar',
               hidden: true
             },
             {
@@ -1222,9 +1233,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             },
           ]
         ],
-        onSelect: function(index, row) {
-          //$(id).combogrid('options').onChange.call();
-        },
         onChange: function(newVal, oldVal) {
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if ($('#mode').val() != '' && row) {
@@ -1287,7 +1295,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $.messager.show({
           title: 'Warning',
           msg: 'Harap pilih salah satu alamat',
-          timeout: {{ session('timeout') }},
+          timeout: {{ session('TIMEOUT') }},
         });
       }
     }
@@ -1309,52 +1317,41 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         rownumbers: true,
         data: [],
         toolbar: [{
-            text: 'Tambah',
-            iconCls: 'icon-add',
-            handler: function() {
-              if ($('#table_data_detail').datagrid('options').RowAdd == false) {
-                return false;
-              }
-
-              var index = $(dg).datagrid('getRows').length;
-              $(dg).datagrid('appendRow', {
-                kodebarang: '',
-              }).datagrid('gotoCell', {
-                index: index,
-                field: 'kodebarang'
-              });
+          text: 'Tambah',
+          iconCls: 'icon-add',
+          handler: function() {
+            if ($('#table_data_detail').datagrid('options').RowAdd == false) {
+              return false;
             }
-          }, {
-            text: 'Hapus',
-            iconCls: 'icon-remove',
-            handler: function() {
-              if ($('#table_data_detail').datagrid('options').RowDelete == false) {
-                return false;
-              }
 
-              if ($('#mode').val() == 'ubah') {
-                // if (row.omnichannel == 1) {
-                // 	$.messager.alert('Peringatan', 'Barang tidak dapat dihapus', 'warning');
-
-                // 	return false;
-                // }
-              }
-
-              $(dg).datagrid('deleteRow', indexDetail);
-              hitung_grandtotal();
-            }
+            var index = $(dg).datagrid('getRows').length;
+            $(dg).datagrid('appendRow', {
+              kodebarang: '',
+            }).datagrid('gotoCell', {
+              index: index,
+              field: 'kodebarang'
+            });
           }
-          // ,{
-          // text:'Ubah',
-          // iconCls:'icon-edit',
-          // handler:function(){
-          // $(dg).datagrid('editCell', {
-          // index: indexDetail,
-          // field: 'kodebarang'
-          // });
-          // }
-          // }
-        ],
+        }, {
+          text: 'Hapus',
+          iconCls: 'icon-remove',
+          handler: function() {
+            if ($('#table_data_detail').datagrid('options').RowDelete == false) {
+              return false;
+            }
+
+            if ($('#mode').val() == 'ubah') {
+              // if (row.omnichannel == 1) {
+              // 	$.messager.alert('Peringatan', 'Barang tidak dapat dihapus', 'warning');
+
+              // 	return false;
+              // }
+            }
+
+            $(dg).datagrid('deleteRow', indexDetail);
+            hitung_grandtotal();
+          }
+        }],
         frozenColumns: [
           [{
               field: 'cbtutupso',
@@ -1385,10 +1382,12 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     if ('undefined' === typeof param.q || param.q.length == 0) {
                       return false;
                     }
+                    param.uuidcustomer = $('#IDCUSTOMER').combogrid('getValue');
+                    param.uuidlokasi = $('#IDLOKASI').combogrid('getValue');
                   },
                   columns: [
                     [{
-                        field: 'id',
+                        field: 'uuidbarang',
                         hidden: true
                       },
                       {
@@ -1454,7 +1453,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               }
             },
             {
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
             {
@@ -1575,196 +1574,193 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               align: 'center',
               hidden: true
             },
-            {
-              field: 'idcurrency',
-              title: 'Id Currency',
-              hidden: true
-            },
-            {
-              field: 'currency',
-              title: 'Curr',
-              width: 50,
-              editor: {
-                type: 'combogrid',
-                options: {
-                  panelWidth: 200,
-                  mode: 'remote',
-                  required: false,
-                  idField: 'simbol',
-                  textField: 'simbol',
-                  url: base_url + 'atena/Master/Data/Currency/comboGrid',
-                  columns: [
-                    [{
-                        field: 'id',
-                        title: 'ID Curr',
-                        width: 100,
-                        hidden: true
-                      },
-                      {
-                        field: 'kode',
-                        title: 'Kode Curr',
-                        width: 65
-                      },
-                      {
-                        field: 'nama',
-                        title: 'Curr',
-                        width: 100
-                      },
-                      {
-                        field: 'simbol',
-                        title: 'Simbol',
-                        width: 65
-                      },
-                    ]
-                  ],
+            ...(lihatharga == 1 ? [{
+                field: 'uuidcurrency',
+                title: 'Id Currency',
+                hidden: true
+              },
+              {
+                field: 'currency',
+                title: 'Curr',
+                width: 50,
+                editor: {
+                  type: 'combogrid',
+                  options: {
+                    panelWidth: 200,
+                    mode: 'remote',
+                    required: false,
+                    idField: 'simbol',
+                    textField: 'simbol',
+                    url: link_api.browseCurrency,
+                    columns: [
+                      [{
+                          field: 'uuidcurrency',
+                          title: 'ID Curr',
+                          width: 100,
+                          hidden: true
+                        },
+                        {
+                          field: 'kode',
+                          title: 'Kode Curr',
+                          width: 65
+                        },
+                        {
+                          field: 'nama',
+                          title: 'Curr',
+                          width: 100
+                        },
+                        {
+                          field: 'simbol',
+                          title: 'Simbol',
+                          width: 65
+                        },
+                      ]
+                    ],
+                  }
+                },
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+              },
+              ...(lihatharga == 1 && lihathargabeli == 1 ? [{
+                field: 'hargabeli',
+                title: 'Harga Lama',
+                align: 'right',
+                width: 85,
+                formatter: format_amount,
+                styler: function(index, row) {
+                  if (parseFloat(row.hargabeli) > 0 && parseFloat(row.hargabeli) > parseFloat(row.harga) -
+                    parseFloat(row.disc)) return 'background-color:#ff8566';
+                }
+              }] : []),
+              {
+                field: 'hargajual',
+                title: 'Harga Lama',
+                align: 'right',
+                width: 85,
+                formatter: format_amount,
+                styler: function(index, row) {
+                  if (parseFloat(row.hargajual) > 0 && parseFloat(row.hargajual) > parseFloat(row.harga) -
+                    parseFloat(row.disc)) return 'background-color:#ff8566';
                 }
               },
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
-            },
-            <?php
-				if ($LIHATHARGA == 1) { if ($LIHATHARGABELI == 1) {
-					?> {
-              field: 'hargabeli',
-              title: 'Harga Beli',
-              align: 'right',
-              width: 85,
-              formatter: format_amount,
-              styler: function(index, row) {
-                if (parseFloat(row.hargabeli) > 0 && parseFloat(row.hargabeli) > parseFloat(row.harga) -
-                  parseFloat(row.disc)) return 'background-color:#ff8566';
-              }
-            },
-            <?php
-				}}
-				?> {
-              field: 'hargajual',
-              title: 'Harga Lama',
-              align: 'right',
-              width: 85,
-              formatter: format_amount,
-              styler: function(index, row) {
-                if (parseFloat(row.hargajual) > 0 && parseFloat(row.hargajual) > parseFloat(row.harga) -
-                  parseFloat(row.disc)) return 'background-color:#ff8566';
-              }
-            },
-            {
-              field: 'harga',
-              title: 'Harga',
-              align: 'right',
-              width: 85,
-              formatter: format_amount,
-              editor: inputharga == 1 ? {
-                type: 'numberbox',
-                options: {
-                  required: true
-                }
-              } : null,
-            },
-            {
-              field: 'discpersen',
-              title: 'Disc(%)',
-              align: 'center',
-              width: 100,
-              editor: inputharga == 1 ? {
-                type: 'textbox'
-              } : null,
-              hidden: false
-            },
-            {
-              field: 'disc',
-              title: 'Disc',
-              align: 'right',
-              width: 65,
-              formatter: format_amount,
-              editor: inputharga == 1 ? {
-                type: 'numberbox'
-              } : null,
-            },
-            {
-              field: 'subtotal',
-              title: 'Subtotal',
-              align: 'right',
-              width: 95,
-              formatter: format_amount
-            },
-            {
-              field: 'nilaikurs',
-              title: 'Kurs ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 60,
-              formatter: format_amount,
-              editor: {
-                type: 'numberbox',
-                options: {
-                  required: true,
+              {
+                field: 'harga',
+                title: 'Harga',
+                align: 'right',
+                width: 85,
+                formatter: format_amount,
+                editor: inputharga == 1 ? {
+                  type: 'numberbox',
+                  options: {
+                    required: true
+                  }
+                } : null,
+              },
+              {
+                field: 'discpersen',
+                title: 'Disc(%)',
+                align: 'center',
+                width: 100,
+                editor: inputharga == 1 ? {
+                  type: 'textbox'
+                } : null,
+                hidden: false
+              },
+              {
+                field: 'disc',
+                title: 'Disc',
+                align: 'right',
+                width: 65,
+                formatter: format_amount,
+                editor: inputharga == 1 ? {
+                  type: 'numberbox'
+                } : null,
+              },
+              {
+                field: 'subtotal',
+                title: 'Subtotal',
+                align: 'right',
+                width: 95,
+                formatter: format_amount
+              },
+              {
+                field: 'nilaikurs',
+                title: 'Kurs ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 60,
+                formatter: format_amount,
+                editor: {
+                  type: 'numberbox',
+                  options: {
+                    required: true,
+                  }
+                },
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+              },
+              {
+                field: 'hargakurs',
+                title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 85,
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+                formatter: format_amount,
+              },
+              {
+                field: 'disckurs',
+                title: 'Disc ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 65,
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+                formatter: format_amount,
+              },
+              {
+                field: 'subtotalkurs',
+                title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 95,
+                formatter: format_amount,
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+              },
+              {
+                field: 'pakaippn',
+                title: 'Pakai PPN',
+                align: 'center',
+                width: 65,
+                editor: {
+                  type: 'combobox',
+                  options: {
+                    required: true,
+                    data: [{
+                        value: 'INCL',
+                        text: 'INCL'
+                      },
+                      {
+                        value: 'EXCL',
+                        text: 'EXCL'
+                      },
+                      {
+                        value: 'TIDAK',
+                        text: 'TIDAK'
+                      },
+                    ],
+                    panelHeight: 'auto',
+                  }
                 }
               },
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
-            },
-            {
-              field: 'hargakurs',
-              title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 85,
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
-              formatter: format_amount,
-            },
-            {
-              field: 'disckurs',
-              title: 'Disc ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 65,
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
-              formatter: format_amount,
-            },
-            {
-              field: 'subtotalkurs',
-              title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 95,
-              formatter: format_amount,
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
-            },
-            {
-              field: 'pakaippn',
-              title: 'Pakai PPN',
-              align: 'center',
-              width: 65,
-              editor: {
-                type: 'combobox',
-                options: {
-                  required: true,
-                  data: [{
-                      value: 'INCL',
-                      text: 'INCL'
-                    },
-                    {
-                      value: 'EXCL',
-                      text: 'EXCL'
-                    },
-                    {
-                      value: 'TIDAK',
-                      text: 'TIDAK'
-                    },
-                  ],
-                  panelHeight: 'auto',
-                }
+              {
+                field: 'dpp',
+                title: 'DPP ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 95,
+                formatter: format_amount
+              },
+              {
+                field: 'ppnrp',
+                title: 'PPN ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 65,
+                formatter: format_amount
               }
-            },
-            {
-              field: 'dpp',
-              title: 'DPP ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 95,
-              formatter: format_amount
-            },
-            {
-              field: 'ppnrp',
-              title: 'PPN ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 65,
-              formatter: format_amount
-            },
+            ] : []),
             {
               field: 'ppn',
               hidden: true
@@ -1798,17 +1794,18 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           var ed = get_editor('#table_data_detail', index, field);
           if (field == 'kodebarang') {
             var idcustomer = $("#IDCUSTOMER").combogrid('getValue');
-            var idlokasi = $('#IDLOKASI').combogrid('getValue');
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/comboGridJualAll/' +
-              idcustomer + '/' + idlokasi;
+            if (idcustomer == '') {
+              $.messager.alert('Info', 'Customer Belum Dipilih', 'info');
+            }
+            // var idlokasi = $('#IDLOKASI').combogrid('getValue');
+            ed.combogrid('grid').datagrid('options').url = link_api.browseBarangJualAll;
             ed.combogrid('grid').datagrid('load');
             ed.combogrid('showPanel');
           } else if (field == 'satuan') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/satuanBarang/' + row
-              .idbarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             });
             ed.combogrid('showPanel');
           } else if (field == 'currency') {
@@ -1871,15 +1868,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
               var hargabarang = harga.hargamaxsatuan;
 
-              <?php
-						if (strpos($_SESSION[NAMAPROGRAM]['NAMADATABASE'], 'berlian') !== false) {
-					?>
-              if (hargabarang == 0) {
-                hargabarang = hargajual;
-              }
-              <?php
-						}
-					?>
+              @if (str_contains(session('NAMADATABASE'), 'berlian'))
+                if (hargabarang == 0) {
+                  hargabarang = hargajual;
+                }
+              @endif
 
               row_update = {
                 idbarang: id,
@@ -1898,10 +1891,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 hargabeli: hargabeli,
                 hargajual: hargajual,
                 harga: hargabarang,
-                idcurrency: '< ? = $_SESSION[NAMAPROGRAM]['
-                IDCURRENCY '] ?>',
-                currency: '< ? = $_SESSION[NAMAPROGRAM]['
-                SIMBOLCURRENCY '] ?>',
+                idcurrency: '{{ session('MAINCURRENCY') }}',
+                currency: '{{ session('SIMBOLCURRENCY') }}',
                 nilaikurs: 1,
                 discpersen: discpersen,
                 disc: 0,
@@ -1980,8 +1971,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               break;
             case 'currency':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              var idcurrency = data ? data.id : '< ? = $_SESSION[NAMAPROGRAM]['
-              IDCURRENCY '] ?>';
+              var idcurrency = data ? data.id : '{{ session('MAINCURRENCY') }}';
               var nilai = get_kurs($('#TGLTRANS').datebox('getValue'), idcurrency);
               row_update = {
                 idcurrency: idcurrency,
@@ -2016,7 +2006,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               });
 
               if (row.jenishargajual == 'JUMLAH') {
-                var harga = get_harga_barang(row.idbarang, row.jmlso);
+                var harga = get_harga_barang(row.uuidbarang, row.jmlso);
 
                 if (harga == null) {
                   $.messager.alert('Peringatan', 'Jumlah Tidak Termasuk Dalam Range Jumlah Pada Master Harga Jual',
@@ -2061,7 +2051,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $('#table_data_potensi_so').datagrid('loadData', []);
           } else {
 
-            var arrayidbarang = datatemp.map(item => item.idbarang)
+            var arrayidbarang = datatemp.map(item => item.uuidbarang)
 
             load_data_potensi_so(JSON.stringify(arrayidbarang))
 
@@ -2099,7 +2089,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 url: base_url + 'atena/Master/Data/Barang/getStokBarangSatuan',
                 async: false,
                 data: {
-                  idbarang: row.idbarang,
+                  uuidbarang: row.uuidbarang,
                   idlokasi: $('#IDLOKASI').combogrid('getValue'),
                   tgltrans: $('#TGLTRANS').datebox('getValue'),
                   satuan: row.satuan
@@ -2124,11 +2114,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: base_url + 'atena/Penjualan/Transaksi/SalesOrder/getDataSO',
+                url: link_api.getDataSO,
                 async: false,
                 data: {
-                  idcustomer: $('#IDCUSTOMER').combogrid('getValue'),
-                  idbarang: row.idbarang,
+                  uuidbarang: row.uuidbarang,
+                  uuidcustomer: $('#IDCUSTOMER').combogrid('getValue'),
                   tgltrans: $('#TGLTRANS').datebox('getValue')
                 },
                 cache: false,
@@ -2185,15 +2175,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               $.messager.show({
                 title: 'Warning',
                 msg: 'Customer Harus Diisi Telebih Dahulu',
-                timeout: {{ session('timeout') }},
+                timeout: {{ session('TIMEOUT') }},
               });
             }
           }
-
-          // $('#table_data_detail').datagrid('updateRow',{
-          // 	index: index,
-          // 	row: data
-          // }).datagrid('gotoCell', {index:index, field:'kodebarang'});
         }
       }).datagrid('enableCellEditing');
     }
@@ -2214,7 +2199,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         },
         columns: [
           [{
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
             {
@@ -2285,7 +2270,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             method: 'post',
             queryParams: {
               idtrans: idtrans,
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             },
             fitColumns: true,
             singleSelect: true,
@@ -2368,8 +2353,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             handler: function() {
               var index = $(dg).datagrid('getRows').length;
               $(dg).datagrid('appendRow', {
-                tglpembayaran: '< ? = date('
-                Y - m - d ') ?>',
+                tglpembayaran: '{{ date('Y-m-d') }}',
                 amount: 0,
               }).datagrid('gotoCell', {
                 index: index,
@@ -2519,7 +2503,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         data: [],
         columns: [
           [{
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
             {
@@ -2559,7 +2543,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       var idcustomer = $("#IDCUSTOMER").combogrid('getValue');
       var kodemerk = row.kodemerk;
-      var idbarang = row.idbarang;
+      var idbarang = row.uuidbarang;
       var namabarang = row.namabarang;
 
       var discpersenmaster = 0;
@@ -2610,7 +2594,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $.messager.show({
               title: 'Warning',
               msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-              timeout: {{ session('timeout') }},
+              timeout: {{ session('TIMEOUT') }},
             });
 
             row.discpersen = 0;
@@ -2646,7 +2630,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $.messager.alert({
               title: 'Warning',
               msg: 'Diskon untuk <br>' + row.namabarang + ' kurang dari batas minimal: ' + " " + mindiskon + " %",
-              timeout: {{ session('timeout') }},
+              timeout: {{ session('TIMEOUT') }},
             });
           } else if (hitungAkumulasiDiskonPersen(row.discpersen) > maxdiskon && maxdiskon > 0) {
             discpersen = olddiskonpersen;
@@ -2659,7 +2643,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $.messager.alert({
               title: 'Warning',
               msg: 'Diskon untuk <br>' + row.namabarang + ' melebihi batas maksimal: ' + " " + maxdiskon + " %",
-              timeout: {{ session('timeout') }},
+              timeout: {{ session('TIMEOUT') }},
             });
           }
 
@@ -2673,14 +2657,14 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 title: 'Warning',
                 msg: 'Harga Terendah untuk Barang <br>' + row.namabarang + ' adalah ' + " " + format_amount(
                   hargajualmin2) + ' (Harga Jual Maksimal - Diskon Maksimal)',
-                timeout: {{ session('timeout') }},
+                timeout: {{ session('TIMEOUT') }},
               });
             } else {
               $.messager.alert({
                 title: 'Warning',
                 msg: 'Harga Terendah untuk Barang <br>' + row.namabarang + ' adalah ' + " " + format_amount(
                   hargajualmin),
-                timeout: {{ session('timeout') }},
+                timeout: {{ session('TIMEOUT') }},
               });
             }
 
@@ -2717,7 +2701,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             $.messager.alert({
               title: 'Warning',
               msg: 'Diskon untuk <br>' + row.namabarang + ' kurang dari batas minimal: ' + " " + mindiskon + " %",
-              timeout: {{ session('timeout') }},
+              timeout: {{ session('TIMEOUT') }},
             });
           } else {
             harga -= row.disc;
@@ -2730,14 +2714,14 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   title: 'Warning',
                   msg: 'Harga Terendah untuk Barang <br>' + row.namabarang + ' adalah ' + " " + format_amount(
                     hargajualmin2) + ' (Harga Jual Maksimal - Diskon Maksimal)',
-                  timeout: {{ session('timeout') }},
+                  timeout: {{ session('TIMEOUT') }},
                 });
               } else {
                 $.messager.alert({
                   title: 'Warning',
                   msg: 'Harga Terendah untuk Barang <br>' + row.namabarang + ' adalah ' + " " + format_amount(
                     hargajualmin),
-                  timeout: {{ session('timeout') }},
+                  timeout: {{ session('TIMEOUT') }},
                 });
               }
 
@@ -2756,7 +2740,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $.messager.alert({
           title: 'Warning',
           msg: 'Customer belum dipilih',
-          timeout: {{ session('timeout') }},
+          timeout: {{ session('TIMEOUT') }},
         });
       } else if (kodemerk == "" || kodemerk == null) {
         data.disc = 0;
@@ -2764,7 +2748,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $.messager.alert({
           title: 'Warning',
           msg: 'Informasi merk belum ditentukan pada barang ' + row.namabarang + ' (' + row.kodebarang + ')',
-          timeout: {{ session('timeout') }},
+          timeout: {{ session('TIMEOUT') }},
         });
       }
 
@@ -2814,7 +2798,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Non PPN',
-            timeout: {{ session('timeout') }},
+            timeout: {{ session('TIMEOUT') }},
           });
         }
         data.pakaippn = 'TIDAK';
@@ -2840,7 +2824,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Yang Diinput Tidak Boleh Sama Dalam Satu Detail Transaksi',
-            timeout: {{ session('timeout') }},
+            timeout: {{ session('TIMEOUT') }},
           });
           dg.datagrid('deleteRow', index);
           break;
@@ -2861,7 +2845,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           $.messager.show({
             title: 'Warning',
             msg: 'Tanggal Pembayaran Harus Diantara Tanggal Trans dan Tanggal Kirim',
-            timeout: {{ session('timeout') }},
+            timeout: {{ session('TIMEOUT') }},
           });
         }
       }
@@ -2870,7 +2854,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $.messager.show({
           title: 'Warning',
           msg: 'Pembayaran tidak boleh melebihi Grand Total',
-          timeout: {{ session('timeout') }},
+          timeout: {{ session('TIMEOUT') }},
         });
       }
       $('#table_data_detail').datagrid('reloadFooter', [footer]);
@@ -2978,12 +2962,12 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               $.messager.show({
                 title: 'Warning',
                 msg: 'Customer Belum Diisi',
-                timeout: {{ session('timeout') }},
+                timeout: {{ session('TIMEOUT') }},
               });
             } else {
               data = msg["rows"];
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidbarang : '';
               var kode = data ? data.kode : '';
               var nama = data ? data.nama : '';
               var ppn = data ? data.ppn : '';
@@ -3037,7 +3021,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               var ada = false;
               // mencari daftar barang yang sudah ada
               for (var i in daftar_barang) {
-                if (daftar_barang[i].idbarang == id) {
+                if (daftar_barang[i].uuidbarang == id) {
 
                   data = {
                     jmlso: (daftar_barang[i].jmlso + barcodesatuan1qty),
@@ -3105,10 +3089,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         harga: hargasatuan,
                         hargabeli: hargabeli,
                         hargajual: hargajual,
-                        idcurrency: '< ? = $_SESSION[NAMAPROGRAM]['
-                        IDCURRENCY '] ?>',
-                        currency: '< ? = $_SESSION[NAMAPROGRAM]['
-                        SIMBOLCURRENCY '] ?>',
+                        idcurrency: '{{ session('MAINCURRENCY') }}',
+                        currency: '{{ session('SIMBOLCURRENCY') }}',
                         nilaikurs: 1,
                         discpersen: discpersen,
                         disc: disc,
@@ -3166,10 +3148,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           async: false,
           url: base_url + "atena/Master/Data/Barang/hargaBarang",
           data: {
-            idbarang: idbarang,
-            idcustomer: idcustomer,
+            uuidbarang: idbarang,
+            uuidcustomer: idcustomer,
             tgltrans: tgltrans,
-            idlokasi: idlokasi
+            uuidlokasi: idlokasi
           },
           cache: false,
           success: function(msg) {
@@ -3298,12 +3280,13 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     }
 
     function load_data_potensi_so(arrayidbarang) {
+      arrayidbarang = JSON.parse(arrayidbarang);
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/SalesOrder/getDataPotensiSO",
+        url: link_api.getDataPotensiSO,
         data: {
-          arrayidbarang: arrayidbarang
+          uuidbarang: arrayidbarang
         },
         cache: false,
         beforeSend: function() {
