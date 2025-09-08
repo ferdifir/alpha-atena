@@ -216,7 +216,7 @@
             });
         }
 
-				function before_edit() {
+        function before_edit() {
             $('#mode').val('ubah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
@@ -264,7 +264,7 @@
                 if (statusTrans == "I" || statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Batalkan Transaksi Ini ?', async function(r) {
                         if (r) {
-                bukaLoader();
+                            bukaLoader();
                             try {
                                 let url = link_api.batalTransRepacking;
                                 const response = await fetch(url, {
@@ -297,14 +297,14 @@
                                 var textError = getTextError(error);
                                 $.messager.alert('Error', getTextError(error), 'error');
                             }
-                    tutupLoader();
+                            tutupLoader();
                         }
                     });
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
                 }
 
-                            tutupLoader();
+                tutupLoader();
             }
         }
 
@@ -339,6 +339,7 @@
                 if (statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                         if (r) {
+                            bukaLoader();
                             try {
                                 let url = link_api.ubahStatusJadiInputRepacking;
                                 const response = await fetch(url, {
@@ -376,6 +377,8 @@
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
                 }
+
+                tutupLoader();
             }
         }
 
@@ -421,7 +424,7 @@
                                 })
 
                                 if (response.success) {
-                                    cetak(row.uuidrepacking);
+                                    await cetak(row.uuidrepacking);
                                     refresh_data();
                                 } else {
                                     $.messager.alert('Error', response.message, 'error');
@@ -432,7 +435,7 @@
                             }
                         }
                     } else if (statusTrans == 'S' || statusTrans == 'P') {
-                        cetak(row.uuidrepacking);
+                        await cetak(row.uuidrepacking);
                     } else {
                         $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
                     }
@@ -503,7 +506,7 @@
             var dataLokasi = getLokasi.datagrid('getChecked');
             var lokasi = "";
             for (var i = 0; i < dataLokasi.length; i++) {
-                lokasi += (dataLokasi[i]["id"] + ",");
+                lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
             }
             lokasi = lokasi.substring(0, lokasi.length - 1);
 

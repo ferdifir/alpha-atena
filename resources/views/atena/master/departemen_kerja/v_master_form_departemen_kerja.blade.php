@@ -231,7 +231,7 @@
                         } else {
                             //tutup tab dan refresh data di function
                             $.messager.alert('Info', 'Transaksi Sukses', 'info');
-                            ubah();
+                            await ubah();
                         }
                     } else {
                         $.messager.alert('Error', response.message, 'error');

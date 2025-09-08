@@ -198,7 +198,7 @@
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Inventori Transfer',
+                    parent.buka_submenu(null, 'Tambah Inventori Pemakaian Bahan',
                         '{{ route('atena.inventori.pemakaian_bahan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
                 } else {
@@ -253,7 +253,7 @@
                         uuidpemakaianbahan: row.uuidpemakaianbahan
                     });
                 if (statusTrans == "I" || statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                         if (r) {
                             bukaLoader();
                             try {
@@ -362,17 +362,7 @@
                             }
                         }
                     } else if (statusTrans == 'S' || statusTrans == 'P') {
-                        get_akses_user(modul_kode.inventori, 'bearer {{ session('TOKEN') }}', function(data) {
-                            if (data.data.hakakses == 1) {
-                                // $("#area_cetak").load(link_api.cetakInventoryTransfer + row
-                                //     .uuidtransfer);
-                                // $("#form_cetak").window('open');
-                                cetak(row.uuidpemakaianbahan);
-                            } else {
-                                $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses Cetak Ulang',
-                                    'warning');
-                            }
-                        });
+                        cetak(row.uuidpemakaianbahan);
                     } else {
                         $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
                     }
@@ -386,9 +376,9 @@
             if (row) {
                 bukaLoader();
 
-                var checkTabAvailable = parent.check_tab_exist(row.kodetransfer, 'fa fa-pencil');
+                var checkTabAvailable = parent.check_tab_exist(row.kodepemakaianbahan, 'fa fa-pencil');
                 if (checkTabAvailable) {
-                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetransfer +
+                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepemakaianbahan +
                         ', Sebelum Dibatal cetak ', 'warning');
                     tutupLoader();
                     return;
@@ -397,10 +387,10 @@
                     'bearer {{ session('TOKEN') }}', {
                         uuidpemakaianbahan: row.uuidpemakaianbahan
                     });
-                console.log(statusTrans);
                 if (statusTrans == "S") {
-                    $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
+                    $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                         if (r) {
+                            bukaLoader();
                             try {
                                 let url = link_api.ubahStatusJadiInputPemakaianBahan;
                                 const response = await fetch(url, {
@@ -410,7 +400,7 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidpemakaianbahan: uuidpemakaianbahan,
+                                        uuidpemakaianbahan: row.uuidpemakaianbahan,
                                         kodepemakaianbahan: row.kodepemakaianbahan,
                                     }),
                                 }).then(response => {
@@ -438,6 +428,7 @@
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
                 }
+                            tutupLoader();
             }
         }
 
@@ -502,7 +493,7 @@
             var dataLokasi = getLokasi.datagrid('getChecked');
             var lokasi = "";
             for (var i = 0; i < dataLokasi.length; i++) {
-                lokasi += (dataLokasi[i]["id"] + ",");
+                lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
             }
             lokasi = lokasi.substring(0, lokasi.length - 1);
 

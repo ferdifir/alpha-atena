@@ -192,7 +192,6 @@
                 $('#KODEPEMAKAIANBAHAN').textbox('clear').textbox('textbox').focus();
             }
 
-
             var lebar = $('.panel').width();
             var tabsimpan = 50;
             var modalsimpan = 174;
@@ -267,7 +266,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidtrans: row.uuidtrans,
+                        uuidtrans: uuidtrans,
                     }),
                 }).then(response => {
                     if (!response.ok) {
@@ -379,6 +378,7 @@
                         'bearer {{ session('TOKEN') }}', {
                             uuidtransfer: row.uuidtransfer
                         });
+                    $(".form_status").html(status_transaksi(statusTrans));
                     if (UT == 1 && statusTrans == 'I') {
                         //document.getElementById('btn_simpan_all').onclick = simpan; 
                         $('#btn_simpan_modal').css('filter', '');
@@ -702,7 +702,7 @@
                                                 width: 250
                                             },
                                             {
-                                                field: 'satuan',
+                                                field: 'satuanuama',
                                                 title: 'Satuan',
                                                 width: 60
                                             },
@@ -843,7 +843,7 @@
 
                             var uuidbarang = data ? data.uuidbarang : '';
                             var nama = data ? data.nama : '';
-                            var satuan = data ? data.satuan : '';
+                            var satuan = data ? data.satuanutama: '';
                             var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
                             var partnumber = data.partnumber ? data.partnumber : '';
 

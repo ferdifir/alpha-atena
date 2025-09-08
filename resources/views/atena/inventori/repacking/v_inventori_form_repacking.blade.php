@@ -377,7 +377,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidrepacking: row.uuidtrans,
+                        uuidrepacking: uuidtrans,
                     }),
                 }).then(response => {
                     if (!response.ok) {

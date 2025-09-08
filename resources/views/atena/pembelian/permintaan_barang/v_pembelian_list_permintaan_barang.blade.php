@@ -32,11 +32,18 @@
                                     <td id="label_form"></td>
                                 </tr>
                                 <tr>
-                                    <td id="label_form" align="center">No. Saldo Stok</td>
+                                    <td id="label_form" align="center">Tgl. Transaksi</td>
                                 </tr>
                                 <tr>
-                                    <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter"
-                                            style="width:100px" class="label_input" /></td>
+                                    <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px"
+                                            class="date" /></td>
+                                </tr>
+                                <tr>
+                                    <td id="label_form" align="center">s/d</td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px"
+                                            class="date" /></td>
                                 </tr>
                                 <tr>
                                     <td id="label_form"><br></td>
@@ -47,6 +54,16 @@
                                 <tr>
                                     <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px"
                                             class="label_input" /></td>
+                                </tr>
+                                <tr>
+                                    <td id="label_form"><br></td>
+                                </tr>
+                                <tr>
+                                    <td id="label_form" align="center">No. PR</td>
+                                </tr>
+                                <tr>
+                                    <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter"
+                                            style="width:100px" class="label_input" /></td>
                                 </tr>
                                 <tr>
                                     <td id="label_form"><br></td>
@@ -67,9 +84,11 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                                    <td align="center">
+                                        <a id="btn_search" class="easyui-linkbutton"
                                             data-options="iconCls:'icon-search', plain:false"
-                                            onclick="filter_data()">Tampilkan Data</a></td>
+                                            onclick="filter_data()">Tampilkan Data</a>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
@@ -81,7 +100,6 @@
             </div>
         </div>
     </div>
-
     <div id="form_cetak" title="Preview" style="width:660px; height:450px">
         <div id="area_cetak"></div>
     </div>
@@ -90,8 +108,8 @@
         <table style="padding:5px">
             <tr>
                 <td>
-                    <textarea prompt="Alasan Pembatalan" name="alasanpembatalan" class="label_input" id="ALASANPEMBATALAN" multiline="true"
-                        style="width:300px; height:55px" data-options="validType:'length[0, 500]'"></textarea>
+                    <textarea prompt="Alasan Pembatalan" name="alasanpembatalan" class="label_input" id="ALASANPEMBATALAN"
+                        multiline="true" style="width:300px; height:55px" data-options="validType:'length[0, 500]'"></textarea>
                 </td>
             </tr>
         </table>
@@ -101,7 +119,7 @@
         <table cellpadding="0" cellspacing="0" style="width:100%">
             <tr>
                 <td style="text-align:right">
-                    <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
+                    <a class="easyui-linkbutton" iconCls="icon-save" id='btn_ubah_perusahaan'
                         onclick="javascript:batal_trans()">Batal</a>
                 </td>
             </tr>
@@ -114,6 +132,7 @@
         var edit_row = false;
         var idtrans = "";
         var counter = 0;
+        var row = {};
 
         $(document).ready(function() {
             browse_data_lokasi('#txt_lokasi');
@@ -150,7 +169,7 @@
                     text: '',
                     iconCls: 'icon-excel',
                     handler: function() {
-                        export_excel('Faktur Saldo Awal Stok', $("#area_cetak").html());
+                        export_excel('Faktur Pesanan Penjualan', $("#area_cetak").html());
                         return false;
                     }
                 }]
@@ -163,8 +182,9 @@
                 buttons: '#alasan_pembatalan-buttons',
             }).dialog('close');
             tutupLoader();
-
         });
+
+        /*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
 
         shortcut.add('F2', function() {
             before_add();
@@ -172,30 +192,18 @@
 
         function enable_button() {
             $('#btn_refresh').linkbutton('enable');
-            $('#btn_batal').linkbutton('enable')
-            $('#btn_cetak').linkbutton('enable')
-            $('#btn_batal_cetak').linkbutton('enable')
+            $('#btn_batal').linkbutton('enable');
+            $('#btn_cetak').linkbutton('enable');
+            $('#btn_batal_cetak').linkbutton('enable');
         }
 
         function before_add() {
             $('#mode').val('tambah');
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.tambah == 1) {
-                    parent.buka_submenu(null, 'Tambah Saldo Awal Stok',
-                        '{{ route('atena.inventori.saldo_awal_stok.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                    parent.buka_submenu(null, 'Tambah Permintaan Barang',
+                        '{{ route('atena.pembelian.permintaan_barang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                         'fa fa-plus')
-                } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                }
-            });
-        }
-
-        function before_delete() {
-            $('#mode').val('hapus');
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                if (data.data.hapus == 1) {
-                    // batal();
-                    $("#alasan_pembatalan").dialog('open');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
@@ -207,9 +215,9 @@
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
                 if (data.data.ubah == 1 || data.data.hakakses == 1) {
                     var row = $('#table_data').datagrid('getSelected');
-                    parent.buka_submenu(null, row.kodesaldostok,
-                        '{{ route('atena.inventori.saldo_awal_stok.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                        row.uuidsaldostok,
+                    parent.buka_submenu(null, row.kodepr,
+                        '{{ route('atena.pembelian.permintaan_barang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                        row.uuidpr,
                         'fa fa-pencil');
                 } else {
                     $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -219,25 +227,31 @@
 
         function before_delete() {
             $('#mode').val('hapus');
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                if (data.data.hapus == 1) {
-                    // batal();
-                    $("#alasan_pembatalan").dialog('open');
-                } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                }
-            });
+            var row = $('#table_data').datagrid('getSelected');
+            if (row) {
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    if (data.data.hapus == 1) {
+                        // batal();
+                        $("#alasan_pembatalan").dialog('open');
+                    } else {
+                        $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                });
+            }
         }
 
         function before_delete_print() {
             $('#mode').val('hapus');
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                if (data.data.batalcetak == 1) {
-                    batal_cetak();
-                } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                }
-            });
+            var row = $('#table_data').datagrid('getSelected');
+            if (row) {
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    if (data.data.batalcetak == 1) {
+                        batal_cetak();
+                    } else {
+                        $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                });
+            }
         }
 
         function before_print() {
@@ -249,19 +263,19 @@
                         $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                         return false;
                     }
-                    var statusTrans = await getStatusTrans(link_api.getStatusTransSaldoAwalStok,
+                    var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
                         'bearer {{ session('TOKEN') }}', {
-                            uuidsaldostok: row.uuidsaldostok
+                            uuidpr: row.uuidpr
                         });
-                    var checkTabAvailable = parent.check_tab_exist(row.kodesaldostok, 'fa fa-pencil');
+                    var checkTabAvailable = parent.check_tab_exist(row.kodepr, 'fa fa-pencil');
                     if (statusTrans == 'I') {
-                        var kode = row.kodesaldostok;
+                        var kode = row.kodetransfer;
                         if (checkTabAvailable) {
                             $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                                 kode + ', Sebelum Dicetak ', 'warning');
                         } else {
                             try {
-                                let url = link_api.ubahStatusJadiSlipSaldoAwalStok;
+                                let url = link_api.ubahStatusJadiSlipPermintaanBarang;
                                 const response = await fetch(url, {
                                     method: 'POST',
                                     headers: {
@@ -269,8 +283,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidsaldostok: row.uuidsaldostok,
-                                        kodesaldostok: row.kodesaldostok,
+                                        uuidpr: row.uuidpr,
+                                        kodepr: row.kodepr,
                                     }),
                                 }).then(response => {
                                     if (!response.ok) {
@@ -282,7 +296,7 @@
                                 })
 
                                 if (response.success) {
-                                    cetak(row.uuidsaldostok);
+                                    cetak(row.uuidpr);
                                     refresh_data();
                                 } else {
                                     $.messager.alert('Error', response.message, 'error');
@@ -293,7 +307,7 @@
                             }
                         }
                     } else if (statusTrans == 'S' || statusTrans == 'P') {
-                        cetak(row.uuidsaldostok);
+                        cetak(row.uuidpr);
                     } else {
                         $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
                     }
@@ -309,23 +323,23 @@
             if (row && alasan != "") {
                 bukaLoader();
 
-                var checkTabAvailable = parent.check_tab_exist(row.kodesaldostok, 'fa fa-pencil');
+                var checkTabAvailable = parent.check_tab_exist(row.kodepr, 'fa fa-pencil');
                 if (checkTabAvailable) {
-                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodesaldostok +
+                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepr +
                         ', Sebelum Dibatalkan ', 'warning');
                     tutupLoader();
                     return;
                 }
-                var statusTrans = await getStatusTrans(link_api.getStatusTransSaldoAwalStok,
+                var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
                     'bearer {{ session('TOKEN') }}', {
-                        uuidsaldostok: row.uuidsaldostok
+                        uuidpr: row.uuidpr
                     });
                 if (statusTrans == "I" || statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                         if (r) {
                             bukaLoader();
                             try {
-                                let url = link_api.batalTransSaldoAwalStok;
+                                let url = link_api.batalTransPermintaanBarang;
                                 const response = await fetch(url, {
                                     method: 'POST',
                                     headers: {
@@ -333,8 +347,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidsaldostok: row.uuidsaldostok,
-                                        kodesaldostok: row.kodesaldostok,
+                                        uuidpr: row.uuidpr,
+                                        kodepr: row.kodepr,
                                         alasan: alasan,
                                     }),
                                 }).then(response => {
@@ -371,23 +385,23 @@
             if (row) {
                 bukaLoader();
 
-                var checkTabAvailable = parent.check_tab_exist(row.kodesaldostok, 'fa fa-pencil');
+                var checkTabAvailable = parent.check_tab_exist(row.kodepr, 'fa fa-pencil');
                 if (checkTabAvailable) {
-                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodesaldostok +
+                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepr +
                         ', Sebelum Dibatal cetak ', 'warning');
                     tutupLoader();
                     return;
                 }
-                var statusTrans = await getStatusTrans(link_api.getStatusTransSaldoAwalStok,
+                var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
                     'bearer {{ session('TOKEN') }}', {
-                        uuidsaldostok: row.uuidsaldostok
+                        uuidpr: row.uuidpr
                     });
                 if (statusTrans == "S") {
                     $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                         if (r) {
                             bukaLoader();
                             try {
-                                let url = link_api.ubahStatusJadiInputSaldoAwalStok;
+                                let url = link_api.ubahStatusJadiInputPermintaanBarang;
                                 const response = await fetch(url, {
                                     method: 'POST',
                                     headers: {
@@ -395,8 +409,8 @@
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        uuidsaldostok: row.uuidsaldostok,
-                                        kodesaldostok: row.kodesaldostok,
+                                        uuidpr: row.uuidpr,
+                                        kodepr: row.kodepr,
                                     }),
                                 }).then(response => {
                                     if (!response.ok) {
@@ -423,15 +437,15 @@
                 } else {
                     $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
                 }
+                tutupLoader();
             }
-            tutupLoader();
         }
 
         async function cetak(uuidtrans) {
             bukaLoader();
             if (row) {
                 try {
-                    let url = link_api.cetakSaldoAwalStok + uuidtrans;
+                    let url = link_api.cetakPermintaanBarang + uuidtrans;
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -439,7 +453,7 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            uuidsaldostok: uuidtrans,
+                            uuidpr: uuidtrans,
                         }),
                     }).then(response => {
                         if (!response.ok) {
@@ -482,11 +496,10 @@
             $('#table_data').datagrid('load', {
                 kodetrans: $('#txt_kodetrans_filter').val(),
                 lokasi: lokasi,
-                nama: $('#txt_nama_referensi_filter').val(),
                 perusahaan: $('#txt_perusahaan_filter').val(),
                 tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
                 tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
-                status: status,
+                status: status
             });
         }
 
@@ -498,9 +511,13 @@
                 multiSort: true,
                 striped: true,
                 rownumbers: true,
-                url: link_api.loadDataGridSaldoAwalStok,
+                pageSize: 20,                
+                url: link_api.loadDataGridPermintaanBarang,
                 pagination: true,
                 clientPaging: false,
+                onLoadSuccess: function() {
+                    $('#table_data').datagrid('unselectAll');
+                },
                 rowStyler: function(index, row) {
                     if (row.status == 'S')
                         return 'background-color:{{ session('WARNA_STATUS_S') }}';
@@ -508,9 +525,6 @@
                         return 'background-color:{{ session('WARNA_STATUS_P') }}';
                     else if (row.status == 'D')
                         return 'background-color:{{ session('WARNA_STATUS_D') }}';
-                },
-                onLoadSuccess: function() {
-                    $('#table_data').datagrid('unselectAll');
                 },
                 frozenColumns: [
                     [{
@@ -520,21 +534,6 @@
                             sortable: true,
                             formatter: ubah_tgl_indo,
                             align: 'center'
-                        },
-                        {
-                            field: 'uuidsaldostok',
-                            hidden: true
-                        },
-                        {
-                            field: 'kodesaldostok',
-                            title: 'No. Saldo Stok',
-                            width: 120,
-                            sortable: true,
-                            align: 'center'
-                        },
-                        {
-                            field: 'uuidperusahaan',
-                            hidden: true
                         },
                         {
                             field: 'uuidlokasi',
@@ -548,11 +547,39 @@
                             sortable: true,
                             align: 'center'
                         },
+                        {
+                            field: 'namalokasi',
+                            title: 'Nama Lokasi',
+                            width: 120,
+                            sortable: true,
+                            align: 'center'
+                        },
+                        {
+                            field: 'namalokasikirim',
+                            title: 'Nama Lokasi Kirim',
+                            width: 120,
+                            sortable: true,
+                            align: 'center'
+                        },
+                        {
+                            field: 'uuidpr',
+                            hidden: true
+                        },
+                        {
+                            field: 'kodepr',
+                            title: 'No. PR',
+                            width: 120,
+                            sortable: true,
+                            align: 'center'
+                        }
                     ]
                 ],
                 columns: [
-                    [
-                        //{field:'GRANDTOTAL',title:'Grand Total',width:100, sortable:true, formatter:format_amount, align:'right',},
+                    [{
+                            field: 'kodeapprovejoborder',
+                            title: 'No. Approve Job Order',
+                            width: 200
+                        },
                         {
                             field: 'catatan',
                             title: 'Catatan',
@@ -596,14 +623,7 @@
                         {
                             field: 'status',
                             title: 'Status',
-                            width: 60,
-                            sortable: true,
-                            align: 'center'
-                        },
-                        {
-                            field: 'closing',
-                            title: 'Closing',
-                            width: 60,
+                            width: 50,
                             sortable: true,
                             align: 'center'
                         }
@@ -653,36 +673,13 @@
             });
         }
 
-        function changeTitleTab(mode) {
-            //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-            var tab = $('#tab_transaksi').tabs('getSelected');
-            var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-            var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-            if (mode == 'tambah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Tambah'
-                    }
-                });
-            } else if (mode == 'ubah') {
-                $('#tab_transaksi').tabs('update', {
-                    tab: tabForm,
-                    type: 'header',
-                    options: {
-                        title: 'Ubah'
-                    }
-                });
-            }
-        }
-
         function tutupTab() {
             //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
             var tab = $('#tab_transaksi').tabs('getSelected');
             var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-            $('#tab_transaksi').tabs('close', index);
+            if ($('#tab_transaksi').tabs('getSelected').panel('options').title != "Grid") {
+                $('#tab_transaksi').tabs('close', index);
+            }
         }
 
         function reload() {

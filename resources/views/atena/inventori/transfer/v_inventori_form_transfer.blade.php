@@ -355,7 +355,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        uuidtrans: row.uuidtrans,
+                        uuidtrans: uuidtrans,
                     }),
                 }).then(response => {
                     if (!response.ok) {
@@ -471,6 +471,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         'bearer {{ session('TOKEN') }}', {
                             uuidtransfer: row.uuidtransfer
                         });
+
+                    $(".form_status").html(status_transaksi(statusTrans));
                     if (UT == 1 && statusTrans == 'I') {
                         //document.getElementById('btn_simpan_all').onclick = simpan; 
                         $('#btn_simpan_modal').css('filter', '');
@@ -1041,7 +1043,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                                                 width: 250
                                             },
                                             {
-                                                field: 'satuan',
+                                                field: 'satuanutama',
                                                 title: 'Satuan',
                                                 width: 60
                                             },
@@ -1201,7 +1203,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
                             var uuidbarang = data ? data.uuidbarang : '';
                             var nama = data ? data.nama : '';
-                            var satuan = data ? data.satuan : '';
+                            var satuan = data ? data.satuanutama : '';
                             var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
                             var partnumber = data.partnumber ? data.partnumber : '';
 

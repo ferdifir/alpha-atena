@@ -325,6 +325,22 @@
                                     keySession: "PEMANGGIL",
                                     valueSession: responseDetail.data.pemanggil ?? "",
                                 });
+                                dataSession.push({
+                                    keySession: "NAMAPERUSAHAAN",
+                                    valueSession: responseDetail.data.namaperusahaan ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "NAMADATABASE",
+                                    valueSession: responseDetail.data.namadatabase ?? "",
+                                });                                
+                                dataSession.push({
+                                    keySession: "KODEPERUSAHAAN",
+                                    valueSession: responseDetail.data.kodeperusahaan ?? "",
+                                });
+                                dataSession.push({
+                                    keySession: "PEMANGGIL",
+                                    valueSession: responseDetail.data.pemanggil ?? "",
+                                });
                             } else {
                                 Swal.close();
                                 Swal.fire({
