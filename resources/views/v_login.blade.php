@@ -403,13 +403,9 @@
                                     valueSession: responseDetail.data.namaperusahaan ?? "",
                                 });
                                 dataSession.push({
-                                    keySession: "NAMAPERUSAHAAN",
-                                    valueSession: responseDetail.data.namaperusahaan ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "ALAMATPERUSAHAAN",
-                                    valueSession: responseDetail.data.alamat ?? "",
-                                });
+                                    keySession: "NAMADATABASE",
+                                    valueSession: responseDetail.data.namadatabase ?? "",
+                                });                                
                                 dataSession.push({
                                     keySession: "KODEPERUSAHAAN",
                                     valueSession: responseDetail.data.kodeperusahaan ?? "",
