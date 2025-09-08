@@ -623,3 +623,18 @@ Route::get('atena/inventori/penyesuaianstok/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.inventori.penyesuaianstok.form');
+
+// Penjualan Sales Order
+Route::get('atena/penjualan/salesorder/transaksi', function() {
+    return view('atena.penjualan.sales_order.v_penjualan_list_sales_order', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.salesorder.transaksi');
+
+Route::get('atena/penjualan/salesorder/form', function() {
+    return view('atena.penjualan.sales_order.v_penjualan_form_sales_order', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.penjualan.salesorder.form');

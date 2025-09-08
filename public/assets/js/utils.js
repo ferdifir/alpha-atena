@@ -44,3 +44,39 @@ function getTglFilterAwal() {
     const day = String(today.getDate()).padStart(2, "0");
     return year + "-" + month + "-" + day;
 }
+
+async function fetchData(token, url, body, isJson = true) {
+    try {
+        let headers = {
+            Authorization: "Bearer " + token,
+        };
+        let requestBody = null;
+
+        if (body instanceof FormData) {
+            requestBody = body;
+        } else {
+            headers["Content-Type"] = "application/json";
+            requestBody = body ? JSON.stringify(body) : null;
+        }
+
+        const response = await fetch(url, {
+            method: "POST",
+            headers: headers,
+            body: requestBody,
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        if (isJson) {
+            return await response.json();
+        } else {
+            return await response.text();
+        }
+    } catch (e) {
+        const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert("Error", textError, "error");
+    }
+}

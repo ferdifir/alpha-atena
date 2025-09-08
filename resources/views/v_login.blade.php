@@ -440,6 +440,10 @@
                                     keySession: "TIMEOUT",
                                     valueSession: 5000,
                                 })
+                                dataSession.push({
+                                    keySession: "SIMBOLCURRENCY",
+                                    valueSession: responseGlobal.data.simbol_currency,
+                                })
                             } else {
                                 Swal.close();
                                 Swal.fire({

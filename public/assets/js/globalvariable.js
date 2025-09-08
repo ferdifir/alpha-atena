@@ -364,6 +364,13 @@ var link_api = {
     loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
     loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
+    //Penjualan Sales Order
+    loadDataGridPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-grid`,
+    browseTokoSinkronisasi: `${base_url_api}atena/penjualan/penjualan/browse-toko-sinkronisasi`,
+    ubahStatusJadiInputPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/ubah-status-jadi-slip`,
+    cetakPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/cetak/`,
+    batalTransaksiPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/batal-trans`,
 };
 
 var modul_kode = {
