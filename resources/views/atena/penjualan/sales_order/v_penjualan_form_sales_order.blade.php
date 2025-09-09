@@ -22,7 +22,7 @@
                       <table border="0">
                         <tr>
                           <td id="label_form">Lokasi</td>
-                          <td id="label_form"><input name="idlokasi" id="IDLOKASI" style="width:190px"></td>
+                          <td id="label_form"><input name="uuidlokasi" id="IDLOKASI" style="width:190px"></td>
                           <input type="hidden" id="KODELOKASI" name="kodelokasi">
                         </tr>
                         <tr>
@@ -31,7 +31,7 @@
                             <input name="kodeso" id="KODESO" class="label_input" style="width:190px">
                           </td>
                           <td>
-                            <input type="hidden" id="IDSO" name="idso">
+                            <input type="hidden" id="IDSO" name="uuidso">
                           </td>
                         </tr>
                         <tr>
@@ -64,7 +64,7 @@
                           <tr>
                             <td id="label_form">Kode</td>
                             <td>
-                              <input name="idcustomer" class="label_input" id="IDCUSTOMER" style="width:100px">
+                              <input name="uuidcustomer" class="label_input" id="IDCUSTOMER" style="width:100px">
                               <input type="hidden" id="KODECUSTOMER" name="kodecustomer">
                               <input name="namacustomer" class="label_input" id="NAMACUSTOMER" style="width:210px"
                                 readonly prompt="Nama Pelanggan">
@@ -126,7 +126,8 @@
                           <tr>
                             <td id="label_form">Syarat Bayar</td>
                             <td id="label_form">
-                              <input name="idsyaratbayar" id="IDSYARATBAYAR" class="label_input" style="width:182px">
+                              <input name="uuidsyaratbayar" id="IDSYARATBAYAR" class="label_input"
+                                style="width:182px">
                               <input name="tgljatuhtempo" id="TGLJATUHTEMPO" readonly class="date"
                                 style="width:100px">
                             </td>
@@ -134,7 +135,7 @@
                           <tr>
                             <td id="label_form">Marketing</td>
                             <td>
-                              <input name="idmarketing" class="label_input" id="IDMARKETING" style="width:285px">
+                              <input name="uuidmarketing" class="label_input" id="IDMARKETING" style="width:285px">
                               <input type="hidden" id="KODEMARKETING" name="kodemarketing">
                             </td>
                           </tr>
@@ -145,7 +146,7 @@
                           <tr>
                             <td id="label_form" valign="top">Ekspedisi </td>
                             <td id="label_form">
-                              <input name="idekspedisi" id="IDEKSPEDISI" style="width:100px">
+                              <input name="uuidekspedisi" id="IDEKSPEDISI" style="width:100px">
                               <input name="namaekspedisi" class="label_input" id="NAMAEKSPEDISI" style="width:210px"
                                 readonly prompt="Nama Ekspedisi">
                             </td>
@@ -344,11 +345,12 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     let browsemkt;
     let kodeso;
     let lihatsemuatrans;
+    let datacurrency;
 
     async function getSOConfig() {
       try {
         const token = '{{ session('TOKEN') }}';
-        const [res1, res2] = await Promise.all([
+        const [res1, res2, res3] = await Promise.all([
           fetchData(token, link_api.getConfig, {
             modul: 'TSO',
             config: 'KODESO'
@@ -357,6 +359,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             modul: 'TSO',
             config: 'BROWSEMARKETING'
           }),
+          fetchData(token, link_api.browseCurrency, null),
         ]);
         if (!res1.success) {
           throw res1.message;
@@ -364,8 +367,13 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         if (!res2.success) {
           throw res2.message;
         }
+        if (!res3.success) {
+          throw res3.message;
+        }
         browsemkt = res2.data;
         kodeso = res1.data;
+        const simbolcurrency = '{{ session('SIMBOLCURRENCY') }}';
+        datacurrency = res3.data.find(item => item.simbol == simbolcurrency);
       } catch (e) {
         const error = (typeof e === 'string') ? e : e.message;
         const textError = getTextError(error);
@@ -594,7 +602,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       if ("{{ $mode }}" == "tambah") {
         tambah();
       } else if ("{{ $mode }}" == "ubah") {
-        ubah();
+        await ubah();
       }
 
       // Menghapus loading ketika halaman sudah dimuat
@@ -615,7 +623,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
     function cetak(id) {
       $("#window_button_cetak").window('close');
-      $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/SalesOrder/cetak/" + id);
+      $("#area_cetak").load(link_api.cetakPenjualanSalesOrder + id);
       $("#form_cetak").window('open');
     }
 
@@ -655,12 +663,30 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       reset_detail();
     }
 
-    function ubah() {
+    async function ubah() {
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
 
+      try {
+        const response = await fetchData(
+          '{{ session('TOKEN') }}',
+          link_api.loadDataHeaderPenjualanSalesOrder, {
+            uuidso: '{{ $data }}'
+          }
+        );
+        if (!response.success) {
+          throw new Error(response.message);
+        }
+        row = response.data;
+      } catch (e) {
+        const error = (typeof e === "string") ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+        return;
+      }
+
       if (row) {
-        get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+        get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
           data = data.data;
           $(".form_status").html(status_transaksi(data.status));
         });
@@ -672,23 +698,23 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
 
-        // if (row.omnichannel == 1) {
-        // 	$('#table_data_detail').datagrid('options').RowDelete = false;
-        // }
-
-        get_akses_user('< ? = $kodemenu ?>', function(data) {
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          data = data.data;
           var UT = data.ubah;
           var lihatsemuatrans = data.lihatsemuatrans;
 
-          get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
             data = data.data;
             if (UT == 1 && data.status == 'I') {
               if (row.userentry != '{{ session('DATAUSER')['uuid'] }}' &&
                 lihatsemuatrans == 0) {
                 $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
                 $('#btn_simpan_modal').removeAttr('onclick');
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Diubah, Data Tidak Sesuai Dengan Pembuat Pesanan',
-                  'info');
+                $.messager.alert(
+                  'Info',
+                  'Transaksi Tidak Dapat Diubah, Data Tidak Sesuai Dengan Pembuat Pesanan',
+                  'info'
+                );
               } else {
                 $('#btn_simpan_modal').css('filter', '');
                 $('#mode').val('ubah');
@@ -730,7 +756,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         var url = link_api.browseCustomer;
         get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url);
 
-        if (row.uuidekspedisi != 0) {
+        if (row.uuidekspedisi != "" && row.uuidekspedisi != null) {
           //EKSPEDISI
           var url = link_api.browseEkspedisi;
           get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url);
@@ -760,7 +786,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       }
     }
 
-    function simpan(use) {
+    async function simpan(use) {
       $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
       var data = [];
@@ -794,36 +820,46 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
         if (!isTokenExpired()) {
-          $.ajax({
-            type: 'POST',
-            dataType: 'json',
-            url: base_url + "atena/Penjualan/Transaksi/SalesOrder/simpan/" + use,
-            data: datanya,
-            cache: false,
-            beforeSend: function() {
-              $.messager.progress();
-            },
-            success: function(msg) {
-              $.messager.progress('close');
-              cekbtnsimpan = true;
-              if (msg.success) {
-                $('#form_input').form('clear');
-                $.messager.show({
-                  title: 'Info',
-                  msg: 'Transaksi Sukses',
-                  showType: 'show'
-                });
-                tambah();
-                parent.reload();
-                if (use == 'simpan_cetak') {
-                  cetak(msg.id);
-                }
+          try {
+            const data = $("#form_input :input").serializeArray();
+            const payload = {};
 
-              } else {
-                $.messager.alert('Error', msg.errorMsg, 'error');
+            for (let i = 0; i < data.length; i++) {
+              payload[data[i].name] = data[i].value;
+              if (data[i].name == 'data_detail' || data[i].name == 'data_detail_pembayaran' || data[i].name ==
+                'data_tutup') {
+                payload[data[i].name] = JSON.parse(payload[data[i].name]);
+              }
+              if (data[i].name == 'jamkirim') {
+                payload[data[i].name] = payload[data[i].name] + ':00';
               }
             }
-          });
+            payload['jenis_simpan'] = use;
+
+            tampilLoaderSimpan();
+            const response = await fetchData('{{ session('TOKEN') }}', link_api.simpanPenjualanSalesOrder, payload);
+            cekbtnsimpan = true;
+            if (!response.success) {
+              $.messager.alert('Error', response.message, 'error');
+            } else {
+              $('#form_input').form('clear');
+              $.messager.alert('Info', 'Transaksi Sukses', 'info');
+              if (mode == 'ubah') {
+                ubah();
+              } else {
+                tambah();
+              }
+              if (use == 'simpan_cetak') {
+                cetak(response.data.uuidso);
+              }
+            }
+          } catch (e) {
+            const error = typeof e === "string" ? e : e.message;
+            const textError = getTextError(error);
+            $.messager.alert('Error', textError, 'error');
+          } finally {
+            tutupLoaderSimpan();
+          }
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
@@ -836,63 +872,61 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       $('#table_data_detail_pembayaran').datagrid('loadData', []);
     }
 
-    function load_data(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDataPenjualanSalesOrder,
-        data: {
-          idtrans: idtrans
-        },
-        cache: false,
-        success: function(msg) {
-          if (msg) {
-            for (var x = 0; x < msg.detail.length; x++) {
-              $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: link_api.loadSatuanBarang,
-                data: {
-                  uuidbarang: msg.detail[x].uuidbarang
-                },
-                async: false,
-                cache: false,
-                success: function(response) {
-                  get_konversi(response, msg.detail[x].satuan, response[0].satuan);
-                  msg.detail[x].satuan_lama = msg.detail[x].satuan;
-                  msg.detail[x].hargaterendah = ((satuan_baru > satuan_lama) ? msg.detail[x].hargaterendah /
-                    konversi_baru : msg.detail[x].hargaterendah * konversi_lama).toFixed(0);
-                }
-              });
-            }
-            $('#table_data_detail').datagrid('loadData', msg.detail);
-            $('#table_data_detail_rekap').datagrid('loadData', msg.detail);
-
-            var arrayidbarang = msg.detail.map(item => item.idbarang)
-
-            load_data_potensi_so(JSON.stringify(arrayidbarang))
+    async function load_data(idtrans) {
+      try {
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.loadDataPenjualanSalesOrder, {
+          uuidso: idtrans
+        });
+        if (!response.success) {
+          $.messager.alert('Error', response.message, 'error');
+        } else {
+          for (var x = 0; x < response.data.length; x++) {
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              url: link_api.loadSatuanBarang,
+              data: {
+                uuidbarang: response.data[x].uuidbarang
+              },
+              async: false,
+              cache: false,
+              success: function(res) {
+                get_konversi(res, response.data[x].satuan, res[0].satuan);
+                response.data[x].satuan_lama = response.data[x].satuan;
+                response.data[x].hargaterendah = ((satuan_baru > satuan_lama) ? response.data[x].hargaterendah /
+                  konversi_baru : response.data[x].hargaterendah * konversi_lama).toFixed(0);
+              }
+            });
           }
+          $('#table_data_detail').datagrid('loadData', response.data);
+          $('#table_data_detail_rekap').datagrid('loadData', response.data);
+
+          var arrayidbarang = response.data.map(item => item.uuidbarang)
+
+          load_data_potensi_so(JSON.stringify(arrayidbarang))
         }
-      });
+      } catch (e) {
+        const error = (typeof e === "string") ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
-    function load_data_pembayaran(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/SalesOrder/loadDataPembayaran",
-        data: "idtrans=" + idtrans,
-        cache: false,
-        beforeSend: function() {
-          // $.messager.progress();
-        },
-        success: function(msg) {
-          // $.messager.progress('close');
-          if (msg.success) {
-            $('#table_data_detail_pembayaran').datagrid('loadData', msg.detail);
-          }
+    async function load_data_pembayaran(idtrans) {
+      try {
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.loadDataPembayaranPenjualanSalesOrder, {
+          uuidso: idtrans
+        });
+        if (!response.success) {
+          $.messager.alert('Error', response.message, 'error');
+        } else {
+          $('#table_data_detail_pembayaran').datagrid('loadData', response.data);
         }
-      });
+      } catch (e) {
+        const error = (typeof e === "string") ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
@@ -1271,8 +1305,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/SalesOrder/combogridAlamat",
-        data: "idcustomer=" + idcustomer,
+        url: link_api.browseAlamatSalesOrder,
+        data: {
+          uuidcustomer: idcustomer
+        },
         cache: false,
         beforeSend: function() {
           $.messager.progress();
@@ -1379,11 +1415,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   idField: 'kode',
                   textField: 'kode',
                   onBeforeLoad: function(param) {
+                    param.uuidcustomer = $('#IDCUSTOMER').combogrid('getValue');
+                    param.uuidlokasi = $('#IDLOKASI').combogrid('getValue');
                     if ('undefined' === typeof param.q || param.q.length == 0) {
                       return false;
                     }
-                    param.uuidcustomer = $('#IDCUSTOMER').combogrid('getValue');
-                    param.uuidlokasi = $('#IDLOKASI').combogrid('getValue');
                   },
                   columns: [
                     [{
@@ -1622,7 +1658,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               },
               ...(lihatharga == 1 && lihathargabeli == 1 ? [{
                 field: 'hargabeli',
-                title: 'Harga Lama',
+                title: 'Harga Beli',
                 align: 'right',
                 width: 85,
                 formatter: format_amount,
@@ -1832,7 +1868,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidbarang : '';
               var ppn = data ? data.ppn : '';
               var nama = data ? data.nama : '';
               var satuan = data ? data.satuan : '';
@@ -1875,7 +1911,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               @endif
 
               row_update = {
-                idbarang: id,
+                uuidbarang: id,
                 ppn: ppn,
                 namabarang: nama,
                 kodemerk: kodemerk,
@@ -1891,7 +1927,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 hargabeli: hargabeli,
                 hargajual: hargajual,
                 harga: hargabarang,
-                idcurrency: '{{ session('MAINCURRENCY') }}',
+                uuidcurrency: datacurrency.uuidcurrency,
                 currency: '{{ session('SIMBOLCURRENCY') }}',
                 nilaikurs: 1,
                 discpersen: discpersen,
@@ -1945,72 +1981,63 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: base_url + 'atena/Master/Data/Barang/getStokBarangSatuan',
+                url: link_api.getStokBarangSatuan,
                 async: false,
                 data: {
-                  idbarang: row.idbarang,
-                  idlokasi: $('#IDLOKASI').combogrid('getValue'),
+                  uuidbarang: row.uuidbarang,
+                  uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                   satuan: changes.satuan,
                   tgltrans: $('#TGLTRANS').datebox('getValue')
                 },
                 cache: false,
                 success: function(stoksatuan) {
-
                   if (stoksatuan != null) {
-                    stok = stoksatuan;
+                    stok = stoksatuan.saldoqty;
                   }
-
                   row_update['jmlstok'] = stok;
                 }
               });
 
-              var hargabeli = get_harga_barangbeli(row.idbarang, row.satuan);
+              var hargabeli = get_harga_barangbeli(row.uuidbarang, row.satuan);
 
               row_update.hargabeli = hargabeli;
 
               break;
             case 'currency':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              var idcurrency = data ? data.id : '{{ session('MAINCURRENCY') }}';
+              var idcurrency = data ? data.uuidcurrency : datacurrency.uuidcurrency;
               var nilai = get_kurs($('#TGLTRANS').datebox('getValue'), idcurrency);
               row_update = {
-                idcurrency: idcurrency,
+                uuidcurrency: idcurrency,
                 cbtutupso: tutupSO,
                 nilaikurs: nilai ? nilai : 1
               };
               break;
-              // case 'harga':
-              // if(changes.harga < row.hargabeli)
-              // {
-              // $.messager.alert('Warning', 'Harga transaksi lebih kecil dari pada Harga Beli', 'warning');
-
-              // row_update = {
-              // harga : row.hargabeli,
-              // };
-              // }
-              // break;
             case 'jmlso':
-              // console.log(row.jmlso);
-              $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: base_url + 'atena/Master/Data/Barang/cekCollie',
-                async: false,
-                data: "idbarang=" + row.idbarang + "&jmlso=" + row.jmlso,
-                cache: false,
-                success: function(msg) {
-                  if (!msg.success) {
-                    $.messager.alert('Warning', msg.errorMsg, 'warning');
+              try {
+                fetchData('{{ session('TOKEN') }}', link_api.cekCollie, {
+                  uuidbarang: row.uuidbarang,
+                  jmlso: parseInt(row.jmlso)
+                }).then(response => {
+                  if (!response.success) {
+                    $.messager.alert('Warning', response.message, 'warning');
                   }
-                }
-              });
+                });
+              } catch (e) {
+                const error = (typeof e === 'string') ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              }
 
               if (row.jenishargajual == 'JUMLAH') {
                 var harga = get_harga_barang(row.uuidbarang, row.jmlso);
 
                 if (harga == null) {
-                  $.messager.alert('Peringatan', 'Jumlah Tidak Termasuk Dalam Range Jumlah Pada Master Harga Jual',
-                    'warning');
+                  $.messager.alert(
+                    'Peringatan',
+                    'Jumlah Tidak Termasuk Dalam Range Jumlah Pada Master Harga Jual',
+                    'warning'
+                  );
 
                   row_update = {
                     jmlso: oldjmlso
@@ -2050,34 +2077,17 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           if (datatemp.length == 0) {
             $('#table_data_potensi_so').datagrid('loadData', []);
           } else {
-
             var arrayidbarang = datatemp.map(item => item.uuidbarang)
-
             load_data_potensi_so(JSON.stringify(arrayidbarang))
-
           }
         },
         onLoadSuccess: function(data) {
           hitung_grandtotal();
         },
         onAfterDeleteRow: function(index, row_detail) {
-          if ($('#mode').val() == 'ubah') {
-            // if (row.omnichannel == 1) {
-            // 	$.messager.alert('Peringatan', 'Barang tidak dapat dihapus', 'warning');
-
-            // 	$('#table_data_detail').datagrid('insertRow', {
-            // 		index: index,
-            // 		row: row_detail
-            // 	});
-
-            // 	return false;
-            // }
-          }
-
           hitung_grandtotal();
         },
         onAfterEdit: function(index, row, changes) {
-
           hitung_subtotal_detail(index, row);
           hitung_grandtotal();
 
@@ -2086,18 +2096,18 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               $.ajax({
                 type: 'POST',
                 dataType: 'json',
-                url: base_url + 'atena/Master/Data/Barang/getStokBarangSatuan',
+                url: link_api.getStokBarangSatuan,
                 async: false,
                 data: {
                   uuidbarang: row.uuidbarang,
-                  idlokasi: $('#IDLOKASI').combogrid('getValue'),
+                  uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                   tgltrans: $('#TGLTRANS').datebox('getValue'),
                   satuan: row.satuan
                 },
                 cache: false,
-                success: function(stoksatuan) {
+                success: function(res) {
                   var data = {
-                    jmlstok: stoksatuan
+                    jmlstok: res.saldoqty
                   };
 
                   $('#table_data_detail').datagrid('updateRow', {
@@ -2109,6 +2119,43 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   });
                 }
               });
+              //   try {
+              //     for (const key in row) {
+              //       console.log(`${key}: ${row[key]}`);
+              //     }
+              //     const payload = {
+              //       uuidbarang: uuidbarang,
+              //       uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
+              //       tgltrans: $('#TGLTRANS').datebox('getValue'),
+              //       satuan: row.satuan
+              //     };
+              //     console.log(payload);
+              //     const response = await fetchData(
+              //       '{{ session('TOKEN') }}',
+              //       link_api.getStokBarangSatuan,
+              //       payload
+              //     );
+
+              //     if (!response.success) {
+              //       $.messager.alert('Warning', response.message, 'warning');
+              //     } else {
+              //       var data = {
+              //         jmlstok: response.data.saldoqty
+              //       };
+
+              //       $('#table_data_detail').datagrid('updateRow', {
+              //         index: index,
+              //         row: data
+              //       }).datagrid('gotoCell', {
+              //         index: index,
+              //         field: 'kodebarang'
+              //       });
+              //     }
+              //   } catch (e) {
+              //     const error = (typeof e === 'string') ? e : e.message;
+              //     const textError = getTextError(error);
+              //     $.messager.alert('Error', textError, 'error');
+              //   }
             }
             if ($('#IDCUSTOMER').combogrid('getValue') != '') {
               $.ajax({
@@ -2117,29 +2164,25 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 url: link_api.getDataSO,
                 async: false,
                 data: {
-                  uuidbarang: row.uuidbarang,
                   uuidcustomer: $('#IDCUSTOMER').combogrid('getValue'),
+                  uuidbarang: row.uuidbarang,
                   tgltrans: $('#TGLTRANS').datebox('getValue')
                 },
                 cache: false,
                 success: function(msg) {
-                  if (!msg.success) {
-                    return false;
-                  }
-
                   cekSO = false;
-                  for (var i = 0; i < msg.detail.length; i++) {
-                    if (msg.detail[i].kode == $("#KODESO").textbox('getValue')) //CEK SO SAMA
+                  for (var i = 0; i < msg.length; i++) {
+                    if (msg[i].kode == $("#KODESO").textbox('getValue')) //CEK SO SAMA
                     {
                       cekSO = true;
                     }
                   }
 
-                  if (msg.success && !cekSO) {
+                  if (msg.length > 0 && !cekSO) {
                     var text = 'Masih Terdapat Outstanding SO pada : <br>';
 
-                    for (var i = 0; i < msg.detail.length; i++) {
-                      text += 'Kode : ' + msg.detail[i].kode + ' &nbsp; Jumlah : ' + msg.detail[i].jml +
+                    for (var i = 0; i < msg.length; i++) {
+                      text += 'Kode : ' + msg[i].kode + ' &nbsp; Jumlah : ' + msg[i].jml +
                         '<br>';
                     }
 
@@ -2169,6 +2212,66 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   }
                 }
               });
+              //   try {
+              //     const response = await fetchData(
+              //       '{{ session('TOKEN') }}',
+              //       link_api.getDataSO, {
+              //         uuidbarang: row.uuidbarang,
+              //         uuidcustomer: $('#IDCUSTOMER').combogrid('getValue'),
+              //         tgltrans: $('#TGLTRANS').datebox('getValue')
+              //       }
+              //     );
+
+              //     if (!response.success) {
+              //       return false;
+              //     }
+
+              //     var msg = response.data;
+              //     cekSO = false;
+              //     for (var i = 0; i < msg.detail.length; i++) {
+              //       if (msg.detail[i].kode == $("#KODESO").textbox('getValue')) //CEK SO SAMA
+              //       {
+              //         cekSO = true;
+              //       }
+              //     }
+
+              //     if (msg.success && !cekSO) {
+              //       var text = 'Masih Terdapat Outstanding SO pada : <br>';
+
+              //       for (var i = 0; i < msg.detail.length; i++) {
+              //         text += 'Kode : ' + msg.detail[i].kode + ' &nbsp; Jumlah : ' + msg.detail[i].jml +
+              //           '<br>';
+              //       }
+
+              //       text += 'Apakah SO Diatas Ingin Ditutup ?';
+
+              //       $.messager.confirm('Confirm', text, function(r) {
+              //         if (r) {
+              //           $('#cbTutupSO_' + index).prop('checked', true);
+              //           row_update = {
+              //             cbtutupso: 1,
+              //           };
+              //         } else {
+              //           $('#cbTutupSO_' + index).prop('checked', false);
+              //           row_update = {
+              //             cbtutupso: 0,
+              //           };
+              //         }
+
+              //         if (jQuery.isEmptyObject(row_update) == false) {
+              //           $("#table_data_detail").datagrid('updateRow', {
+              //             index: index,
+              //             row: row_update
+              //           });
+              //         }
+
+              //       });
+              //     }
+              //   } catch (e) {
+              //     const error = (typeof e === 'string') ? e : e.message;
+              //     const textError = getTextError(error);
+              //     $.messager.alert('Error', textError, 'error');
+              //   }
             } else {
               $('#table_data_detail').datagrid('deleteRow', index);
 
@@ -2266,7 +2369,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         onExpandRow: function(index, row) {
           var ddv = $(this).datagrid('getRowDetail', index).find('table.ddv');
           ddv.datagrid({
-            url: base_url + "atena/Penjualan/Transaksi/DeliveryOrder/InformasiSO",
+            url: link_api.informasiSO,
             method: 'post',
             queryParams: {
               idtrans: idtrans,
@@ -2360,7 +2463,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 field: 'uangmuka'
               });
 
-              getRowIndex(target);
+              //   getRowIndex(target);
             }
           }, {
             text: 'Hapus',
@@ -2942,17 +3045,17 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       $.ajax({
         type: 'POST',
         dataType: 'json',
-        url: base_url + "atena/Master/Data/Barang/loadDataBarangBarcode",
+        url: link_api.loadDataBarangBarcode,
         data: {
           barcode: barcodesatuan1string,
-          idcustomer: idcustomer,
+          uuidcustomer: idcustomer,
         },
         cache: false,
         beforeSend: function() {
-          $.messager.progress();
+          bukaLoader();
         },
         success: function(msg) {
-          $.messager.progress('close');
+          tutupLoader();
 
           if (msg == null) {
             $.messager.alert('Error', 'Barcode Tersebut Tidak Ditemukan', 'error');
@@ -2965,7 +3068,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 timeout: {{ session('TIMEOUT') }},
               });
             } else {
-              data = msg["rows"];
+              data = msg;
 
               var id = data ? data.uuidbarang : '';
               var kode = data ? data.kode : '';
@@ -3049,11 +3152,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   $.ajax({
                     type: 'POST',
                     dataType: 'json',
-                    url: base_url + 'atena/Master/Data/Barang/getStokBarangSatuan',
+                    url: link_api.getStokBarangSatuan,
                     async: false,
                     data: {
-                      idbarang: id,
-                      idlokasi: $('#IDLOKASI').combogrid('getValue'),
+                      uuidbarang: id,
+                      uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                       tgl: $('#TGLTRANS').datebox('getValue'),
                       satuan: satuan,
                     },
@@ -3071,7 +3174,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                       }
 
                       var row = {
-                        idbarang: id,
+                        uuidbarang: id,
                         kodebarang: kode,
                         namabarang: nama,
                         ppn: ppn,
@@ -3085,11 +3188,11 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                         konversi: konversi,
                         jmlso: jml,
                         sisaso: 0,
-                        jmlstok: stoksatuan,
+                        jmlstok: stoksatuan.saldoqty,
                         harga: hargasatuan,
                         hargabeli: hargabeli,
                         hargajual: hargajual,
-                        idcurrency: '{{ session('MAINCURRENCY') }}',
+                        uuidcurrency: datacurrency.uuidcurrency,
                         currency: '{{ session('SIMBOLCURRENCY') }}',
                         nilaikurs: 1,
                         discpersen: discpersen,
@@ -3146,7 +3249,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           dataType: "json",
           type: 'POST',
           async: false,
-          url: base_url + "atena/Master/Data/Barang/hargaBarang",
+          url: link_api.getHargaBarang,
           data: {
             uuidbarang: idbarang,
             uuidcustomer: idcustomer,
@@ -3155,9 +3258,32 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           },
           cache: false,
           success: function(msg) {
-            harga = msg;
+            harga = msg.harga;
           }
         });
+        // const payload = {
+        //   uuidbarang: idbarang,
+        //   uuidcustomer: idcustomer,
+        //   tgltrans: tgltrans,
+        //   uuidlokasi: idlokasi,
+        //   jumlah: 0,
+        // };
+        // try {
+        //   const res = await fetchData(
+        //     '{{ session('TOKEN') }}',
+        //     link_api.getHargaBarang,
+        //     payload
+        //   );
+        //   if (!res.success) {
+        //     $.messager.alert('Warning', res.message, 'warning');
+        //   } else {
+        //     harga = res.data.harga;
+        //   }
+        // } catch (e) {
+        //   const error = (typeof e === 'string') ? e : e.message;
+        //   const textError = getTextError(error);
+        //   $.messager.alert('Error', textError, 'error');
+        // }
       }
 
       return harga;
@@ -3169,16 +3295,34 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         dataType: "json",
         type: 'POST',
         async: false,
-        url: base_url + "atena/Master/Data/Barang/hargaBeliTerakhir",
+        url: link_api.hargaBeliTerakhir,
         data: {
-          idbarang: idbarang,
+          uuidbarang: idbarang,
           satuan: satuan
         },
         cache: false,
         success: function(msg) {
-          harga = msg;
+          harga = msg.hargabeli;
         }
       });
+      //   try {
+      //     const res = await fetchData(
+      //       '{{ session('TOKEN') }}',
+      //       link_api.hargaBeliTerakhir, {
+      //         uuidbarang: idbarang,
+      //         satuan: satuan
+      //       }
+      //     );
+      //     if (!res.success) {
+      //       $.messager.alert('Warning', res.message, 'warning');
+      //     } else {
+      //       harga = res.data.hargabeli;
+      //     }
+      //   } catch (e) {
+      //     const error = (typeof e === 'string') ? e : e.message;
+      //     const textError = getTextError(error);
+      //     $.messager.alert('Error', textError, 'error');
+      //   }
       return harga;
     }
 
@@ -3189,16 +3333,34 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         dataType: "json",
         type: 'POST',
         async: false,
-        url: base_url + "atena/Master/Data/Barang/hargaJualTerakhir",
+        url: link_api.hargaJualTerakhir,
         data: {
-          idbarang: idbarang,
-          idcustomer: idcustomer
+          uuidbarang: idbarang,
+          uuidcustomer: idcustomer
         },
         cache: false,
         success: function(msg) {
-          harga = msg;
+          harga = msg.hargajual;
         }
       });
+      //   try {
+      //     const res = await fetchData(
+      //       '{{ session('TOKEN') }}',
+      //       link_api.hargaJualTerakhir, {
+      //         uuidbarang: idbarang,
+      //         uuidcustomer: idcustomer
+      //       }
+      //     );
+      //     if (!res.success) {
+      //       $.messager.alert('Warning', res.message, 'warning');
+      //     } else {
+      //       harga = res.data.hargajual;
+      //     }
+      //   } catch (e) {
+      //     const error = (typeof e === 'string') ? e : e.message;
+      //     const textError = getTextError(error);
+      //     $.messager.alert('Error', textError, 'error');
+      //   }
       return harga;
     }
 
@@ -3253,17 +3415,14 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       }
 
       $.ajax({
-        url: base_url + 'atena/Master/Data/Barang/hitungStokTransaksi',
+        url: link_api.hitungStokTransaksiBarang,
         type: 'POST',
         data: {
-          idlokasi: $('#IDLOKASI').combogrid('getValue'),
+          uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
           tgltrans: $('#TGLTRANS').datebox('getValue'),
-          data_detail: JSON.stringify(rows)
+          data_detail: rows
         },
         dataType: 'JSON',
-        beforeSend: function() {
-          $.messager.progress();
-        },
         success: function(response) {
           for (var i = 0; i < response.detail.length; i++) {
             $('#table_data_detail').datagrid('updateRow', {
@@ -3273,8 +3432,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
               }
             });
           }
-
-          $.messager.progress('close');
         }
       });
     }
@@ -3289,17 +3446,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           uuidbarang: arrayidbarang
         },
         cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
         success: function(msg) {
-          $.messager.progress('close');
-
-          if (msg.success) {
-
-            $('#table_data_potensi_so').datagrid('loadData', msg.data);
-
-          }
+          $('#table_data_potensi_so').datagrid('loadData', msg);
         }
       });
     }

@@ -650,7 +650,9 @@ function get_combogrid_data(obj_combogrid, field, table) {
         $.ajax({
             type: "POST",
             url: table,
-            data: "q=" + field,
+            data: {
+                q: field,
+            },
             cache: false,
             success: function (msg) {
                 obj_combogrid.combogrid("grid").datagrid("loadData", msg);
@@ -800,10 +802,10 @@ function get_kurs(tanggal, id) {
         async: false,
         dataType: "json",
         type: "POST",
-        url: base_url + "atena/Master/Data/Currency/rate",
+        url: link_api.getRateCurrency,
         data: {
             tanggal: tanggal,
-            idcurrency: id,
+            uuidcurrency: id,
         },
         cache: false,
         success: function (msg) {

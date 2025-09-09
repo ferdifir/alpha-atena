@@ -402,7 +402,7 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
             data = data.data;
             if (data.status == 'I') {
               var kode = row.kodeso;
@@ -434,17 +434,17 @@
 
       if (row) {
         if (!isTokenExpired()) {
-
-
-          get_status_trans("atena/penjualan/sales-order", 'uuidso', row.uuidso, function(data) {
+          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodeso;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
+              var isTabAvailable = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabAvailable) {
                 $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
                   ', Sebelum Dibatal Cetak ', 'warning');
               } else {
                 get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
                   if (data.batalcetak == 1) {
                     batal_cetak();
                   } else {
@@ -467,26 +467,54 @@
 
       if (row) {
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          data = data.data;
           if (data.cetak == 0) {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/penjualan/sales-order", 'uuidso', row.idso, function(data) {
+          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
             data = data.data;
             if (data.status == 'S' || data.status == 'P') {
-              get_akses_cetak_ulang('penjualan', function(data) {
+              const kodemenu = modul_kode['penjualan'];
+              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
+                data = data.data;
                 if (data.hakakses == 1) {
                   if ($jenis == "harga") {
-                    $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/SalesOrder/cetakHarga/" + row
-                      .idso);
+                    const document = await getCetakDocument(
+                      '{{ session('TOKEN') }}',
+                      link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                        harga: "ya"
+                      }
+                    );
+                    if (document == null) {
+                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                      return false;
+                    }
+                    $("#area_cetak").html(document);
                     $("#form_cetak").window('open');
                   } else if ($jenis == "landscape") {
-                    $("#area_cetak_landscape").load(base_url +
-                      "atena/Penjualan/Transaksi/SalesOrder/cetakLandscape/" + row.idso);
+                    const document = await getCetakDocument(
+                      '{{ session('TOKEN') }}',
+                      link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
+                    );
+                    if (document == null) {
+                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                      return false;
+                    }
+                    $("#area_cetak_landscape").html(document);
                     $("#form_cetak_landscape").window('open');
                   } else {
-                    $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/SalesOrder/cetak/" + row
-                      .idso);
+                    const document = await getCetakDocument(
+                      '{{ session('TOKEN') }}',
+                      link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                        harga: "tidak"
+                      }
+                    );
+                    if (document == null) {
+                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                      return false;
+                    }
+                    $("#area_cetak").html(document);
                     $("#form_cetak").window('open');
                   }
                 }
@@ -519,29 +547,29 @@
 
       alasan = $('#ALASANPEMBATALAN').val();
       if (row && alasan != "") {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeso + ' ?', function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeso + ' ?', async function(r) {
           if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.batalTransaksiPenjualanSalesOrder,
-              data: "idtrans=" + row.idso + "&kodetrans=" + row.kodeso + "&alasan=" + alasan,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
-
+            try {
+              bukaLoader();
+              const response = await fetchData('{{ session('TOKEN') }}', link_api
+                .batalTransaksiPenjualanSalesOrder, {
+                  uuidso: row.uuidso,
+                  kodeso: row.kodeso,
+                  alasan: alasan,
+                });
+              if (response.success) {
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } else {
+                $.messager.alert('Error', response.message, 'error');
               }
-            });
+            } catch (e) {
+              const error = (typeof e === "string") ? e : e.message;
+              const textError = getTextError(error);
+              $.messager.alert('Error', textError, 'error');
+            } finally {
+              tutupLoader();
+            }
           }
         });
       } else {
@@ -554,70 +582,91 @@
 
         $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeso + ' ?', async function(r) {
           if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.ubahStatusJadiInputPenjualanSalesOrder,
-              data: "idtrans=" + row.idso + "&kodetrans=" + row.kodeso,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
+            try {
+              bukaLoader();
+              const response = await fetchData('{{ session('TOKEN') }}', link_api
+                .ubahStatusJadiInputPenjualanSalesOrder, {
+                  uuidso: row.uuidso,
+                  kodeso: row.kodeso,
+                });
+              if (response.success) {
+                $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
+                reload();
+              } else {
+                $.messager.alert('Error', response.message, 'error');
               }
-            });
+            } catch (e) {
+              const error = (typeof e === "string") ? e : e.message;
+              const textError = getTextError(error);
+              $.messager.alert('Error', textError, 'error');
+            } finally {
+              tutupLoader();
+            }
           }
         });
       }
     }
 
-    function cetak($harga) {
-
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.ubahStatusJadiSlipPenjualanSalesOrder,
-        data: {
-          idtrans: row.idso,
-          kodetrans: row.kodeso
-        },
-        cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(msg) {
-          $.messager.progress('close');
-          if (msg.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Transaksi Sukses Dicetak',
-              showType: 'show'
-            });
-            if ($harga == "cetak") {
-              $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/SalesOrder/cetakHarga/" + row.idso);
-              $("#form_cetak").window('open');
-            } else if ($harga == "landscape") {
-              $("#area_cetak_landscape").load(base_url +
-                "atena/Penjualan/Transaksi/SalesOrder/cetakLandscape/" + row.idso);
-              $("#form_cetak_landscape").window('open');
-            } else {
-              $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/SalesOrder/cetak/" + row.idso);
-              $("#form_cetak").window('open');
-            }
-            reload();
-          } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
-          }
+    async function cetak($harga) {
+      try {
+        bukaLoader();
+        const res = await fetchData('{{ session('TOKEN') }}', link_api.ubahStatusJadiSlipPenjualanSalesOrder, {
+          uuidso: row.uuidso,
+          kodeso: row.kodeso
+        });
+        if (!res.success) {
+          throw res.message;
         }
-      });
+        $.messager.show({
+          title: 'Info',
+          msg: 'Transaksi Sukses Dicetak',
+          showType: 'show'
+        });
+        if ($harga == "harga") {
+          const document = await getCetakDocument(
+            '{{ session('TOKEN') }}',
+            link_api.cetakPenjualanSalesOrder + row.uuidso, {
+              harga: "ya"
+            }
+          );
+          if (document == null) {
+            $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+            return false;
+          }
+          $("#area_cetak").html(document);
+          $("#form_cetak").window('open');
+        } else if ($harga == "landscape") {
+          const document = await getCetakDocument(
+            '{{ session('TOKEN') }}',
+            link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
+          );
+          if (document == null) {
+            $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+            return false;
+          }
+          $("#area_cetak_landscape").html(document);
+          $("#form_cetak_landscape").window('open');
+        } else {
+          const document = await getCetakDocument(
+            '{{ session('TOKEN') }}',
+            link_api.cetakPenjualanSalesOrder + row.uuidso, {
+              harga: "tidak"
+            }
+          );
+          if (document == null) {
+            $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+            return false;
+          }
+          $("#area_cetak").html(document);
+          $("#form_cetak").window('open');
+        }
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        tutupLoader();
+      }
     }
 
     function refresh_data() {
@@ -686,7 +735,7 @@
               align: 'center'
             },
             {
-              field: 'idlokasi',
+              field: 'uuidlokasi',
               hidden: true
             },
             {
@@ -706,7 +755,7 @@
               align: 'center'
             },
             {
-              field: 'idso',
+              field: 'uuidso',
               hidden: true
             },
             {
@@ -1208,41 +1257,6 @@
     }
 
     function reload() {
-      //PELU BUAT SIMPEN INDEX
-      var row = $('#table_data').datagrid('getSelected');
-
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Ubah") {
-        //INDEX TAB
-        var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-        //ROW ID dan KODE
-        var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-        var counterTambah = trans[2];
-        tab_name = tab_name + "_" + counterTambah;
-
-        $("#mode").val("ubah");
-        $("#data").val(trans[0]);
-
-        var tab = $('#tab_transaksi').tabs('getSelected');
-        var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-        var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-        var tab_title = 'Ubah';
-        $('#form_data').attr('target', tab_name);
-
-        $('#tab_transaksi').tabs('update', {
-          tab: tabTrans,
-          type: 'header',
-          options: {
-            title: tab_title,
-            content: '<iframe frameborder="0"  class="tab_form" id="' + counterTambah + '" name="' + tab_name +
-              '" ></iframe>',
-            closable: true
-          }
-        });
-
-        $('#form_data').submit();
-      }
-
       $('#table_data').datagrid('reload');
     }
 
@@ -1256,27 +1270,30 @@
       })
     }
 
-    function tampilDataSinkronisasi() {
+    async function tampilDataSinkronisasi() {
       var token = $('#tokentokosinkronisasi').combogrid('grid').datagrid('getSelected').token;
-
-      $.ajax({
-        url: base_url + 'atena/Penjualan/Transaksi/SalesOrder/tampilDataSinkronisasi',
-        type: 'POST',
-        data: {
+      try {
+        $('#table_data_sinkronisasi').datagrid('loading');
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.tampilDataSinkronisasiSO, {
           token: token,
           tglawal: $('#TGLAWALSINKRONISASI').datebox('getValue'),
           tglakhir: $('#TGLAKHIRSINKRONISASI').datebox('getValue')
-        },
-        dataType: 'JSON',
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+        });
 
+        $('#table_data_sinkronisasi').datagrid('loaded');
+
+        if (response.success) {
           $('#table_data_sinkronisasi').datagrid('loadData', response.data);
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        tutupLoader();
+      }
     }
 
     function simpanDataSinkronisasi() {
