@@ -668,3 +668,19 @@ Route::get('atena/pembelian/permintaanbarang/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.pembelian.permintaan_barang.form');
+
+// Pesanan Pengiriman
+Route::get('atena/penjualan/deliveryorder/transaksi', function() {
+    return view('atena.penjualan.delivery_order.v_penjualan_list_delivery_order', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.deliveryorder.transaksi');
+
+Route::get('atena/penjualan/deliveryorder/form', function() {
+    return view('atena.penjualan.delivery_order.v_penjualan_form_delivery_order', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'dataref'=>request()->dataref,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.penjualan.deliveryorder.form');

@@ -36,6 +36,26 @@ async function getCetakDocument(token, url, body) {
     }
 }
 
+function isTokenExpired(token) {
+    if (!token) {
+        return true;
+    }
+
+    try {
+        const payloadBase64 = token.split(".")[1];
+        const decodedPayload = atob(payloadBase64);
+        const payload = JSON.parse(decodedPayload);
+
+        const expirationTime = payload.exp;
+        const currentTime = Math.floor(Date.now() / 1000);
+
+        return expirationTime < currentTime;
+    } catch (e) {
+        console.error("Gagal mendekode token JWT:", e);
+        return true;
+    }
+}
+
 function getTglFilterAwal() {
     const today = new Date();
     today.setDate(today.getDate() - 2);

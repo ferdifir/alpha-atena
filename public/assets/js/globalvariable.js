@@ -399,6 +399,21 @@ var link_api = {
     loadDataHeaderPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-header`,
     tampilDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/tampil-data-sinkronisasi`,
     simpanDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/simpan-data-sinkronisasi`,
+    cekBisaBerlanjutSO: `${base_url_api}atena/inventori/pesanan-penjualan/cek-bisa-berlanjut`,
+    browseSO: `${base_url_api}atena/penjualan/pesanan-penjualan/browse`,
+    loadDataDetailPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-detail`,
+    browseBarangPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
+    //Penjualan Delivery Order
+    loadDataGridPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid`,
+    loadDataGridPendingPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid-pending`,
+    cetakPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/cetak/`,
+    batalTransaksiPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/batal-trans`,
+    ubahStatusjadiInputPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/ubah-status-jadi-input`,
+    ubahStatusjadiSlipPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/ubah-status-jadi-slip`,
+    simpanPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/simpan`,
+    loadDataPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data`,
+    informasiTransReferensi: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/informasi-trans-referensi`,
+    loadDataHeaderPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-header`,
 };
 
 var modul_kode = {

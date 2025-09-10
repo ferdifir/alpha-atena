@@ -35,13 +35,15 @@
                   <td id="label_form" align="center">Tgl. Trans</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                      style="width:100px" /></td>
                 </tr>
                 <tr>
                   <td id="label_form" align="center">s/d</td>
                 </tr>
                 <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                      style="width:100px" /></td>
                 </tr>
                 <tr>
                   <td id="label_form"><br></td>
@@ -461,7 +463,8 @@
 
     async function batal_cetak() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodekirim + ' ?', async function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodekirim + ' ?', async function(
+        r) {
           if (r) {
             try {
               bukaLoader();
@@ -530,12 +533,12 @@
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
-      var status = $("[name='cb_status_filter[]']:checked")
-        .map(function() {
-          return this.value;
-        })
-        .get()
-        .join(",");
+      var selectedStatus = [];
+      $("[name='cb_status_filter[]']:checked").each(function() {
+        selectedStatus.push($(this).val());
+      });
+      var status = selectedStatus.length > 0 ? JSON.stringify(selectedStatus) : '';
+      
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
