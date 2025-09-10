@@ -500,7 +500,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           }
 
           set_ppn_aktif(newVal, function(response) {
-            ppnpersenaktif = response.ppnpersen;
+            ppnpersenaktif = response.data.ppnpersen;
 
             update_ppn_table_detail($('#table_data_detail'), ppnpersenaktif, function(index, row) {
               hitung_subtotal_detail(index, row);
@@ -1958,20 +1958,24 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
               break;
             case 'satuan':
-              get_konversi(ed.combogrid('grid').datagrid('getRows'), changes.satuan, row.satuan_lama);
+              // nilai changes.satuan tidak akan diisi secara otomatis.
+              // Ini karena combogrid tidak mengirimkan nilai yang dipilih secara langsung ke changes object
+              var satuanValue = ed.combogrid('getValue');
 
-              if (satuan_baru != 0 || satuan_lama != 0 && changes.satuan) {
+              get_konversi(ed.combogrid('grid').datagrid('getRows'), satuanValue, row.satuan_lama);
+
+              if (satuan_baru != 0 || satuan_lama != 0 && satuanValue) {
                 row_update = {
-                  harga: changes.satuan == row.satuanbesar ? row.hargamaxsatuan : (changes.satuan == row
+                  harga: satuanValue == row.satuanbesar ? row.hargamaxsatuan : (satuanValue == row
                     .satuansedang ? row.hargamaxsatuan2 : row.hargamaxsatuan3),
-                  hargakurs: changes.satuan == row.satuanbesar ? row.hargamaxsatuan : (changes.satuan == row
+                  hargakurs: satuanValue == row.satuanbesar ? row.hargamaxsatuan : (satuanValue == row
                     .satuansedang ? row.hargamaxsatuan2 : row.hargamaxsatuan3),
-                  hargaterendah: changes.satuan == row.satuanbesar ? row.hargaminsatuan : (changes.satuan == row
+                  hargaterendah: satuanValue == row.satuanbesar ? row.hargaminsatuan : (satuanValue == row
                     .satuansedang ? row.hargaminsatuan2 : row.hargaminsatuan3),
                   // harga      : ((satuan_baru>satuan_lama) ? row.harga/konversi_baru    : row.harga*konversi_lama).toFixed(0),
                   // hargakurs  : ((satuan_baru>satuan_lama) ? row.hargakurs/konversi_baru: row.hargakurs*konversi_lama).toFixed(0),
                   // hargaterendah  : ((satuan_baru>satuan_lama) ? row.hargaterendah/konversi_baru: row.hargaterendah*konversi_lama).toFixed(0),
-                  satuan_lama: changes.satuan,
+                  satuan_lama: satuanValue,
                   cbTutupSO: tutupSO,
                 };
               }
@@ -1986,7 +1990,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 data: {
                   uuidbarang: row.uuidbarang,
                   uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
-                  satuan: changes.satuan,
+                  satuan: satuanValue,
                   tgltrans: $('#TGLTRANS').datebox('getValue')
                 },
                 cache: false,
@@ -2119,43 +2123,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                   });
                 }
               });
-              //   try {
-              //     for (const key in row) {
-              //       console.log(`${key}: ${row[key]}`);
-              //     }
-              //     const payload = {
-              //       uuidbarang: uuidbarang,
-              //       uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
-              //       tgltrans: $('#TGLTRANS').datebox('getValue'),
-              //       satuan: row.satuan
-              //     };
-              //     console.log(payload);
-              //     const response = await fetchData(
-              //       '{{ session('TOKEN') }}',
-              //       link_api.getStokBarangSatuan,
-              //       payload
-              //     );
-
-              //     if (!response.success) {
-              //       $.messager.alert('Warning', response.message, 'warning');
-              //     } else {
-              //       var data = {
-              //         jmlstok: response.data.saldoqty
-              //       };
-
-              //       $('#table_data_detail').datagrid('updateRow', {
-              //         index: index,
-              //         row: data
-              //       }).datagrid('gotoCell', {
-              //         index: index,
-              //         field: 'kodebarang'
-              //       });
-              //     }
-              //   } catch (e) {
-              //     const error = (typeof e === 'string') ? e : e.message;
-              //     const textError = getTextError(error);
-              //     $.messager.alert('Error', textError, 'error');
-              //   }
             }
             if ($('#IDCUSTOMER').combogrid('getValue') != '') {
               $.ajax({

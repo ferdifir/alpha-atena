@@ -398,6 +398,7 @@ var link_api = {
     informasiSO: `${base_url_api}atena/penjualan/pesanan-pengiriman/informasi-pesanan-penjualan`,
     loadDataHeaderPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-header`,
     tampilDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/tampil-data-sinkronisasi`,
+    simpanDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/simpan-data-sinkronisasi`,
 };
 
 var modul_kode = {

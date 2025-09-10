@@ -226,8 +226,8 @@
         </td>
         <td id="label_form">Tanggal</td>
         <td>
-          <input type="text" class="date" id="TGLAWALSINKRONISASI"> s/d <input type="text" class="date"
-            id="TGLAKHIRSINKRONISASI">
+          <input type="text" class="date" id="TGLAWALSINKRONISASI" style="width: 100px"> s/d <input
+            type="text" class="date" id="TGLAKHIRSINKRONISASI" style="width: 100px">
         </td>
         <td>
           <a href="#" class="easyui-linkbutton" onclick="tampilDataSinkronisasi()">Tampilkan Data</a>
@@ -1296,43 +1296,45 @@
       }
     }
 
-    function simpanDataSinkronisasi() {
+    async function simpanDataSinkronisasi() {
       var lokasi = $('#idlokasisinkronisasi').combogrid('getValue');
       var customer = $('#idcustomersinkronisasi').combogrid('getValue');
-      var detail = JSON.stringify($('#table_data_sinkronisasi').datagrid('getRows'));
+      var detail = $('#table_data_sinkronisasi').datagrid('getRows');
 
-      $.ajax({
-        url: base_url + 'atena/Penjualan/Transaksi/SalesOrder/simpanDataSinkronisasi',
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: lokasi,
-          idcustomer: customer,
+      try {
+        bukaLoader();
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.simpanDataSinkronisasiSO, {
+          uuidlokasi: lokasi,
+          uuidcustomer: customer,
           detail: detail
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+        });
+        $('#window_sinkronisasi').window('maximize');
+        $('#window_sinkronisasi').window('restore');
 
-          if (response.success) {
-            $('#window_sinkronisasi').window({
-              closed: true
-            });
+        if (response.success) {
+          $('#window_sinkronisasi').window({
+            closed: true
+          });
 
-            reload();
+          reload();
 
-            $.messager.show({
-              title: 'Info',
-              msg: 'Transaksi Sukses',
-              showType: 'show'
-            });
-          } else {
-            $.messager.alert('Peringatan', response.errorMsg, 'warning');
-          }
+          $.messager.show({
+            title: 'Info',
+            msg: 'Transaksi Sukses',
+            showType: 'show'
+          });
+        } else {
+          $.messager.alert('Peringatan', response.message, 'warning');
         }
-      })
+      } catch (e) {
+        $('#window_sinkronisasi').window('maximize');
+        $('#window_sinkronisasi').window('restore');
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        tutupLoader();
+      }
     }
   </script>
 @endpush
