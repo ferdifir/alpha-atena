@@ -624,6 +624,21 @@ Route::get('atena/inventori/penyesuaianstok/form', function() {
     ]);
 })->name('atena.inventori.penyesuaianstok.form');
 
+// Penjualan Sales Order
+Route::get('atena/penjualan/salesorder/transaksi', function() {
+    return view('atena.penjualan.sales_order.v_penjualan_list_sales_order', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.salesorder.transaksi');
+
+Route::get('atena/penjualan/salesorder/form', function() {
+    return view('atena.penjualan.sales_order.v_penjualan_form_sales_order', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.penjualan.salesorder.form');
+
 // Pembelian Permintaan Barang
 Route::get('atena/pembelian/permintaanbarang/transaksi', function() {
     return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [
@@ -639,7 +654,7 @@ Route::get('atena/pembelian/permintaanbarang/form', function() {
     ]);
 })->name('atena.pembelian.permintaan_barang.form');
 
-// Pembelian Permintaan Barang
+// Pembelian PO
 Route::get('atena/pembelian/pesananpembelian/transaksi', function() {
     return view('atena.pembelian.pesanan_pembelian.v_pembelian_list_pesanan_pembelian', [
         'kodemenu' => request()->kode,
@@ -654,7 +669,7 @@ Route::get('atena/pembelian/pesananpembelian/form', function() {
     ]);
 })->name('atena.pembelian.pesanan_pembelian.form');
 
-// Pembelian Permintaan Barang
+// Pembelian 
 Route::get('atena/pembelian/pembelian/transaksi', function() {
     return view('atena.pembelian.pembelian.v_pembelian_list_pembelian', [
         'kodemenu' => request()->kode,
@@ -668,3 +683,19 @@ Route::get('atena/pembelian/pembelian/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.pembelian.pembelian.form');
+
+// Pesanan Pengiriman
+Route::get('atena/penjualan/deliveryorder/transaksi', function() {
+    return view('atena.penjualan.delivery_order.v_penjualan_list_delivery_order', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.deliveryorder.transaksi');
+
+Route::get('atena/penjualan/deliveryorder/form', function() {
+    return view('atena.penjualan.delivery_order.v_penjualan_form_delivery_order', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'dataref'=>request()->dataref,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.penjualan.deliveryorder.form');
