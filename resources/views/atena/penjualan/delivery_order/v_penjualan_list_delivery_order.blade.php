@@ -376,25 +376,24 @@
       if (row && alasan != "") {
         $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodedo + ' ?', function(r) {
           if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.batalTransaksiPenjualanDeliveryOrder,
-              data: "idtrans=" + row.uuiddo + "&kodetrans=" + row.kodedo + "&alasan=" + alasan,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
+            fetchData(
+              '{{ session('TOKEN') }}',
+              link_api.batalTransaksiPenjualanDeliveryOrder, {
+                uuiddo: row.uuiddo,
+                kodedo: row.kodedo,
+                alasan: alasan
               }
+            ).then(res => {
+              if (res.success) {
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } else {
+                $.messager.alert('Error', res.message, 'error');
+              }
+            }).catch(err => {
+              const error = (typeof err === 'string') ? err : err.message;
+              const textError = getTextError(error);
+              $.messager.alert('Error', textError, 'error');
             });
           }
         });
@@ -497,7 +496,7 @@
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
-        lokasi += (dataLokasi[i]["id"] + ",");
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
@@ -526,6 +525,8 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
+        pagination: true,
+        clientPaging: false,
         pageSize: 20,
         url: link_api.loadDataGridPenjualanDeliveryOrder,
         rowStyler: function(index, row) {
