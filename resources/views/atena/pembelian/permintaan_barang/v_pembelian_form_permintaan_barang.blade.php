@@ -369,14 +369,13 @@
 
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
-                    if (Array.isArray(dataLokasi)) {
-                        return;
-                    }
+                    if (!Array.isArray(dataLokasi)) 
                     if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
                         $('#idlokasi').combogrid('setValue', dataLokasi.uuidlokasi);
                         $("#kodelokasi").val(dataLokasi.kodelokasi);
                         $('#idapprovejoborder').combogrid('grid').datagrid('load');
                     }
+                }
                 } else {
                     $.messager.alert('Error', response.message, 'error');
                 }

@@ -279,13 +279,12 @@
 
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
-                    if (Array.isArray(dataLokasi)) {
-                        return;
-                    }
+                    if (!Array.isArray(dataLokasi)) 
                     if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
                         $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
                         $("#KODELOKASI").val(dataLokasi.kodelokasi);
                     }
+                }
                 } else {
                     $.messager.alert('Error', response.message, 'error');
                 }

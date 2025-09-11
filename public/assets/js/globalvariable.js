@@ -1,14 +1,4 @@
 var base_url_api = "http://192.168.1.45:8000/api/";
-function getDateMinusDays(days) {
-    const today = new Date();
-    today.setDate(today.getDate() - days);
-
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
-    const day = String(today.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-}
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -219,6 +209,7 @@ var link_api = {
     getStokBarang: `${base_url_api}atena/master/barang/get-stok`,
     hitungStokTransaksiBarang: `${base_url_api}atena/master/barang/hitung-stok-transaksi`,
     hargaBeliTerakhir: `${base_url_api}atena/master/barang/harga-beli-terakhir`,
+    getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     browseBarangJualAll: `${base_url_api}atena/master/barang/browse-jual-all`,
     hargaJualTerakhir: `${base_url_api}atena/master/barang/harga-jual-terakhir`,
     getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
@@ -381,6 +372,30 @@ var link_api = {
     getStatusTransPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/get-status-trans`,
     simpanPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/simpan`,
     loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail`,
+    //Pesanan Pembelian
+    loadDataHeaderPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-header`,
+    loadConfigPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-config`,
+    loadDataGridPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-grid`,
+    batalTransPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/batal-trans`,
+    ubahStatusJadiInputPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/ubah-status-jadi-slip`,
+    cetakPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/cetak/`,
+    cetakHargaPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/cetak-harga/`,
+    getStatusTransPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/get-status-trans`,
+    simpanPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/simpan`,
+    loadDataPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data`,
+    loadDataRekapPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-rekap`,
+    loadDataPembayaranPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-pembayaran`,
+    loadDataDetailPermintaanBarangPesananPembelian: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-pesanan-pembelian`,
+    browsePermintaanBarangPesananPembelian: `${base_url_api}atena/pembelian/permintaan-barang/browse-pesanan-pembelian`,
+    browseBarangPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/browse-barang`,
+    loadDataDetailAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data-detail-pesanan-pembelian`,
+    browseAnalisisPesananPembelianPO: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/browse-pesanan-pembelian`,
+    browseBarangBySupplier: `${base_url_api}atena/master/barang/browse-by-supplier`,
+    informasiTransRefBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/informasi-trans-referensi`,
+    getPPNAktif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
+    //pembelian
+    browseBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/browse`,
     //Penjualan Sales Order
     loadDataGridPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-grid`,
     browseTokoSinkronisasi: `${base_url_api}atena/penjualan/penjualan/browse-toko-sinkronisasi`,
@@ -426,9 +441,56 @@ var modul_kode = {
     akuntansi: 'P02MS'
 };
 
+
+function getDateMinusDays(days) {
+    const today = new Date();
+    today.setDate(today.getDate() - days);
+
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
+    const day = String(today.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
+}
+
 function getTextError(error) {
-    return `Kami mengalami sedikit masalah dalam memproses permintaan Anda.\n
-                        Detail: ${error}\n Harap ambil tangkapan layar lalu hubungi administrator.`;
+    return `Kami mengalami sedikit masalah dalam memproses permintaan Anda.<br>
+                        Detail: ${error}<br> Harap ambil tangkapan layar lalu hubungi administrator.`;
+}
+
+async function set_ppn_aktif(tanggal, token, onSuccess) {
+    if (tanggal == '') {
+        return false;
+    }
+    try {
+        let url = link_api.getPPNAktif;
+        const response = await fetch(url, {
+            method: 'POST',
+
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tglaktif: tanggal,
+            }),
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(
+                    `HTTP error! status: ${response.status} from ${url}`);
+            }
+            return response.json();
+        })
+        if (response.success&&onSuccess) {
+            await onSuccess(response);            
+        } else {
+            $.messager.alert('Error', response.message, 'error');
+        }
+    } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+    }
 }
 
 async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onError = null) {

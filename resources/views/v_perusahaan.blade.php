@@ -367,6 +367,10 @@
                                     keySession: "SIMBOLCURRENCY",
                                     valueSession: responseGlobal.data.simbol_currency,
                                 })
+                                dataSession.push({
+                                    keySession: "UUIDCURRENCY",
+                                    valueSession: responseGlobal.data.uuidcurrency,
+                                })
                             } else {
                                 Swal.close();
                                 Swal.fire({

@@ -13,6 +13,7 @@
 
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidlokasi">
+                        <input type="hidden" name="tglentry">
                         <div data-options="region:'center',border:false">
                             <table>
                                 <tr>
@@ -271,7 +272,7 @@
                     $.messager.alert('Error', response.message, 'error');
                 }
             } catch (error) {
-        $.messager.alert("error", getTextError(error), "error");
+                $.messager.alert("error", getTextError(error), "error");
                 console.log(error);
             }
             if (row) {
@@ -349,14 +350,12 @@
                             haveDefault = true;
                         } else {
 
-                        tutupLoader();
-                            $.messager.alert('Error', response.message, 'error');
-                            return;
+                            tutupLoader();
                         }
                     } catch (error) {
-        $.messager.alert("error", getTextError(error), "error");
+                        $.messager.alert("error", getTextError(error), "error");
                         tutupLoader();
-                        return ;
+                        return;
                     }
                     tutupLoader();
                 }
@@ -381,7 +380,6 @@
             try {
                 mode = $('[name=mode]').val();
                 var unindexed_array = $('#form_input :input').serializeArray();
-                console.log(unindexed_array);
 
                 let headers = {
                     'Authorization': 'bearer {{ session('TOKEN') }}',
@@ -414,7 +412,7 @@
                     $.messager.alert('Info', 'Simpan Data Sukses', 'info');
                     if (mode == 'tambah') {
                         tambah();
-                    }else{
+                    } else {
                         await ubah();
                     }
                 } else {
@@ -422,7 +420,7 @@
                 }
 
             } catch (error) {
-        $.messager.alert("error", getTextError(error), "error");
+                $.messager.alert("error", getTextError(error), "error");
             }
             tutupLoaderSimpan();
         }
@@ -473,8 +471,9 @@
             // Return array of lengths
             return lines.map(line => line.length);
         }
+
         function tutup() {
-      parent.tutupTab();
-    }
+            parent.tutupTab();
+        }
     </script>
 @endpush
