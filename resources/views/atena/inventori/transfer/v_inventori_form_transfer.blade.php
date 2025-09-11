@@ -169,6 +169,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         var config = {};
         var cekbtnsimpan = true;
         var idtrans = '';
+        var indexCellEdit=-1;
         $(document).ready(async function() {
             let check = false;
             await getConfig('KODETRANSFER', 'TTRANSFER', 'bearer {{ session('TOKEN') }}',
@@ -772,6 +773,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 return false;
             }
             try {
+                bukaLoader();
                 let url = link_api.hitungStokTransaksiBarang;
                 const response = await fetch(url, {
                     method: 'POST',
@@ -806,6 +808,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                 var textError = getTextError(error);
                 $.messager.alert('Error', getTextError(error), 'error');
             }
+            tutupLoader();
         }
 
         function browse_data_pr(id) {
@@ -1144,6 +1147,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                                     required: true,
                                     idField: 'satuan',
                                     textField: 'satuan',
+                                    onBeforeLoad: function(param) {
+                                        var row = $(this).datagrid('getRows')[indexCellEdit];
+                                        param.uuidbarang = row.uuidbarang;
+                                    },
                                     columns: [
                                         [{
                                             field: 'satuan',
@@ -1178,6 +1185,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     }
                 },
                 onCellEdit: function(index, field, val) {
+                    indexCellEdit=index;
                     var row = $(this).datagrid('getRows')[index];
                     var ed = get_editor('#table_data_detail', index, field);
                     if (field == 'kodebarang') {
@@ -1192,7 +1200,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                     }
                 },
                 onEndEdit: async function(index, row, changes) {
-                    bukaLoader();
                     var cell = $(this).datagrid('cell');
                     var ed = get_editor('#table_data_detail', index, cell.field);
                     var row_update = {};
@@ -1227,6 +1234,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                             // }
 
                             var stok = row.jmlstok;
+                            bukaLoader();
                             try {
                                 let url = link_api.getStokBarangSatuan;
                                 const response = await fetch(url, {
@@ -1258,7 +1266,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                                 var textError = getTextError(error);
                                 $.messager.alert('Error', getTextError(error), 'error');
                             }
-
+                            tutupLoader();
+                            break;
+                        case 'catatan':
+                            row_update['catatan'] = changes.catatan;
                             break;
                     }
                     if (jQuery.isEmptyObject(row_update) == false) {
@@ -1267,7 +1278,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
                             row: row_update
                         });
                     }
-                    tutupLoader();
                 },
                 onExpandRow: function(index, row) {
                     // var ddv = $(this).datagrid('getRowDetail',index).find('table.ddv');

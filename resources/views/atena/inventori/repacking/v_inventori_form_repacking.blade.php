@@ -435,7 +435,7 @@
 
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
-                    if (Array.isArray(dataLokasi) && (dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ??
+                    if (!Array.isArray(dataLokasi) && (dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ??
                             1) == 1) {
                         $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
                         $("#KODELOKASI").val(dataLokasi.kodelokasi);

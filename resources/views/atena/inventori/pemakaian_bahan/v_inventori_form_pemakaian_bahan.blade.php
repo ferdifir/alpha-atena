@@ -133,6 +133,9 @@
         var cekbtnsimpan = true;
         var config = {};
         var idtrans = '';
+        var indexDetail = -1;
+        var indexCellEdit = -1;
+
         $(document).ready(async function() {
             // let check = false;
             // await getConfig('KODETRANSFER', 'TTRANSFER', 'bearer {{ session('TOKEN') }}',
@@ -315,12 +318,12 @@
 
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
-                    if (Array.isArray(dataLokasi)) {
-                        return;
-                    }
+                    if (!Array.isArray(dataLokasi)) {
+                       
                     if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
                         $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
                         $("#KODELOKASI").val(dataLokasi.kodelokasi);
+                    } 
                     }
                 } else {
                     $.messager.alert('Error', response.message, 'error');
@@ -791,6 +794,10 @@
                             align: 'center',
                             editor: {
                                 type: 'combogrid',
+                                onBeforeLoad: function(param) {
+                                    var row = $(this).datagrid('getRows')[indexCellEdit];
+                                    param.uuidbarang = row.uuidbarang;
+                                },
                                 options: {
                                     panelWidth: 100,
                                     panelHeight: 130,
@@ -814,6 +821,7 @@
                     indexDetail = index;
                 },
                 onCellEdit: function(index, field, val) {
+                    indexCellEdit = index;
                     var row = $(this).datagrid('getRows')[index];
                     var ed = get_editor('#table_data_detail', index, field);
 
@@ -843,7 +851,7 @@
 
                             var uuidbarang = data ? data.uuidbarang : '';
                             var nama = data ? data.nama : '';
-                            var satuan = data ? data.satuanutama: '';
+                            var satuan = data ? data.satuanutama : '';
                             var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
                             var partnumber = data.partnumber ? data.partnumber : '';
 

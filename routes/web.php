@@ -638,3 +638,33 @@ Route::get('atena/pembelian/permintaanbarang/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.pembelian.permintaan_barang.form');
+
+// Pembelian Permintaan Barang
+Route::get('atena/pembelian/pesananpembelian/transaksi', function() {
+    return view('atena.pembelian.pesanan_pembelian.v_pembelian_list_pesanan_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.pesanan_pembelian.transaksi');
+
+Route::get('atena/pembelian/pesananpembelian/form', function() {
+    return view('atena.pembelian.pesanan_pembelian.v_pembelian_form_pesanan_pembelian', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.pembelian.pesanan_pembelian.form');
+
+// Pembelian Permintaan Barang
+Route::get('atena/pembelian/pembelian/transaksi', function() {
+    return view('atena.pembelian.pembelian.v_pembelian_list_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.pembelian.transaksi');
+
+Route::get('atena/pembelian/pembelian/form', function() {
+    return view('atena.pembelian.pembelian.v_pembelian_form_pembelian', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.pembelian.pembelian.form');

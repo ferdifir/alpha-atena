@@ -337,7 +337,7 @@
                             valueSession: token,
                         },
                         {
-                            keySession: "IDPERUSAHAAN",
+                            keySession: "UUIDPERUSAHAAN",
                             valueSession: dataPerusahaan[0].uuid,
                         },
                         {
@@ -432,6 +432,15 @@
                                     valueSession: conf.value??"",
                                 })
                                 }
+                                console.log()
+                                dataSession.push({
+                                    keySession: "SIMBOLCURRENCY",
+                                    valueSession: responseGlobal.data.simbol_currency,
+                                })
+                                dataSession.push({
+                                    keySession: "UUIDCURRENCY",
+                                    valueSession: responseGlobal.data.uuidcurrency,
+                                })
                                 dataSession.push({
                                     keySession: "TIMEOUT",
                                     valueSession: 5000,
