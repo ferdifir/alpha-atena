@@ -1063,40 +1063,6 @@ function hitungAkumulasiDiskonPersen(str_diskon) {
     return akumulasi;
 }
 
-/**
- * Mengambil data PPN aktif berdasarkan tanggal tertentu (versi fetch API)
- *
- * @param {string} tanggal - Tanggal dalam format YYYY-MM-DD untuk menentukan PPN aktif
- * @param {function} callback - Fungsi callback yang akan dipanggil setelah data diterima
- * @returns {boolean} false jika tanggal kosong
- */
-function set_ppn_aktif(tanggal, callback) {
-    if (tanggal == "") {
-        return false;
-    }
-
-    const formData = new FormData();
-    formData.append("tglaktif", tanggal);
-
-    fetch(link_api.getPPNAktfif, {
-        method: "POST",
-        body: formData,
-    })
-        .then((response) => response.json())
-        .then((response) => {
-            if (response.success) {
-                if (typeof callback === "function") {
-                    callback(response);
-                }
-            } else {
-                $.messager.alert("Peringatan", response.message, "error");
-            }
-        })
-        .catch((error) => {
-            $.messager.alert("Error", "Error While Process", "error");
-        });
-}
-
 function tampilLoaderSimpan() {
     $("#mask-loader-simpan").fadeIn(250);
 }

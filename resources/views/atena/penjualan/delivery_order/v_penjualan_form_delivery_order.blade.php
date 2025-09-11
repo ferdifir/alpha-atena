@@ -314,12 +314,8 @@
             kodemenu: '{{ $kodemenu }}'
           }
         );
-        const req4 = fetchData(
-          '{{ session('TOKEN') }}',
-          link_api.browseCurrency,
-        );
 
-        const [res, res2, res3, res4] = await Promise.all([req, req2, req3, req4]);
+        const [res, res2, res3] = await Promise.all([req, req2, req3]);
 
         if (!res.success) {
           throw new Error(res.message);
@@ -333,15 +329,10 @@
           throw new Error(res3.message);
         }
 
-        if (!res4.success) {
-          throw new Error(res4.message);
-        }
-
         TRANSAKSISO = res.data.value;
         INPUTHARGA = res3.data.inputharga;
         LIHATHARGA = res3.data.lihatharga;
         KODE = res2.data.value;
-        IDCURRENCY = res4.data.find(item => item.simbol == '{{ session('SIMBOLCURRENCY') }}').uuidcurrency;
 
         $('#tr_so').attr('hidden', TRANSAKSISO != 'HEADER');
         $('#KODEDO').textbox({
@@ -436,7 +427,7 @@
             hitung_stok();
           }
 
-          set_ppn_aktif(newVal, function(response) {
+          set_ppn_aktif(newVal, 'Bearer {{ session('TOKEN') }}', function(response) {
             response = response.data;
 
             ppnpersenaktif = response.ppnpersen;
@@ -1816,7 +1807,7 @@
                 jmldo: 0,
                 sisado: 0,
                 harga: harga,
-                uuidcurrency: IDCURRENCY,
+                uuidcurrency: '{{ session('UUIDCURRENCY') }}',
                 currency: '{{ session('SIMBOLCURRENCY') }}',
                 nilaikurs: 1,
                 discpersen: 0,
