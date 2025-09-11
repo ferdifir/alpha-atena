@@ -2116,6 +2116,7 @@
 
       data.jmldo = row.jmldo;
       data.sisaso = row.jmlso - row.terpenuhiso - row.jmldo;
+      if (isNaN(data.sisaso)) data.sisaso = 0;
 
       var idcustomer = $("#IDCUSTOMER").combogrid('getValue');
       var kodemerk = row.kodemerk;

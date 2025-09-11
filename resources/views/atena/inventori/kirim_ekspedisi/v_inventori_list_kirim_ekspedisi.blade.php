@@ -538,7 +538,7 @@
         selectedStatus.push($(this).val());
       });
       var status = selectedStatus.length > 0 ? JSON.stringify(selectedStatus) : '';
-      
+
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
@@ -559,6 +559,8 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
+        pagination: true,
+        clientPaging: false,
         url: link_api.loadDataGridInventoryKirimEkspedisi,
         onLoadSuccess: function(data) {
           $('#table_data').datagrid('unselectAll');

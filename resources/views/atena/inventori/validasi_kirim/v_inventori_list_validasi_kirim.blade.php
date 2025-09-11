@@ -34,27 +34,37 @@
               <td id="label_form"></td>
             </tr>
             <tr>
-              <td id="label_form" align="center"><input onchange="" type="radio" value="0" id="rbTglFilter0"
-                  name="rbtglfilter" checked>Tgl. Transaksi BBK</td>
+              <td id="label_form" align="center">
+                <input onchange="" type="radio" value="0" id="rbTglFilter0" name="rbtglfilter" checked>
+                Tgl. Transaksi BBK
+              </td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+              <td align="center">
+                <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
+              </td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+              <td align="center">
+                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
+              </td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center"><input onchange="" type="radio" value="1" id="rbTglFilter1"
-                  name="rbtglfilter"s>Tgl. Validasi Kirim</td>
+              <td id="label_form" align="center">
+                <input onchange="" type="radio" value="1" id="rbTglFilter1" name="rbtglfilter"s>
+                Tgl. Validasi Kirim
+              </td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_validasi_filter" name="txt_tgl_validasi_filter" class="date" /></td>
+              <td align="center">
+                <input id="txt_tgl_validasi_filter" name="txt_tgl_validasi_filter" class="date" style="width:100px" />
+              </td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -172,10 +182,6 @@
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
-        onClose: function() {
-          document.removeEventListener('selectstart', handleSelectStart);
-          document.removeEventListener('contextmenu', handleContextMenu, false);
-        },
         tools: [{
           text: '',
           iconCls: 'icon-print',
@@ -396,39 +402,6 @@
       }
     }
 
-    function browse_filter_customer(id, table) {
-      $(id).combogrid({
-        panelWidth: 400,
-        idField: 'nama',
-        textField: 'nama',
-        url: link_api.browseCustomer,
-        mode: 'remote',
-        columns: [
-          [{
-              field: 'id',
-              hidden: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 150
-            },
-            {
-              field: 'catatan',
-              title: 'Catatan',
-              width: 150
-            },
-          ]
-        ]
-      });
-    }
-
-
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
     function buat_table() {
       $("#table_data").datagrid({
@@ -441,6 +414,9 @@
         rownumbers: true,
         checkOnSelect: false,
         selectOnCheck: false,
+        pagination: true,
+        clientPaging: false,
+        pageSize: 30,
         url: link_api.loadDataGridValidasiKirim,
         onLoadSuccess: function(data) {
           tutupLoader();
