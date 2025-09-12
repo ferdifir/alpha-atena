@@ -213,8 +213,41 @@
     var idtrans = "";
     var urltransreferensi = "";
     var counter = 0;
+    let TRANSREFERENSI;
+    let LIHATHARGA;
 
-    $(document).ready(function() {
+    async function getKonfigurasiBBK() {
+      try {
+        const req1 = fetchData(
+          '{{ session('TOKEN') }}',
+          link_api.getConfig, {
+            modul: 'TBBK',
+            config: 'TRANSREFERENSI'
+          }
+        );
+        const req2 = fetchData(
+          '{{ session('TOKEN') }}',
+          link_api.getDataAkses, {
+            kodemenu: '{{ $kodemenu }}',
+          }
+        );
+        const [res1, res2] = await Promise.all([req1, req2]);
+
+        if (res1.success && res2.success) {
+          TRANSREFERENSI = res1.data.value;
+          LIHATHARGA = res2.data.lihatharga;
+        } else {
+          throw new Error("Gagal mendapatkan konfigurasi");
+        }
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
+    }
+
+    $(document).ready(async function() {
+      await getKonfigurasiBBK();
       browse_data_lokasi('#txt_lokasi');
       //WAKTU BATAL DI GRID, tidak bisa close
       //PRINT GRID
@@ -309,29 +342,15 @@
       $('#btn_batal_cetak').linkbutton('enable')
     }
 
-    function before_add() {
+    function before_add(idtransref, jenistransref) {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          counter++;
-          $("#mode").val("tambah");
-          $("#data").val('');
-
-          var tab_title = 'Tambah';
-          var tab_name = tab_title + "_" + counter;
-
-          $('#form_data').attr('target', tab_name);
-
-          $('#tab_transaksi').tabs('add', {
-            title: tab_title,
-            id: counter,
-            content: '<iframe frameborder="0"  class="tab_form"  id="' + counter + '" name="' + tab_name +
-              '"></iframe>',
-            closable: true
-          });
-
-          $('#form_data').submit();
+          parent.buka_submenu(null, 'Tambah Bukti Pengeluaran Barang',
+            '{{ route('atena.inventori.buktipengeluaran.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}&dataref=' +
+            idtransref + '&jenistransref=' + jenistransref,
+            'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
@@ -346,29 +365,28 @@
 
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-
-
-          get_status_trans("atena/inventori/bukti-pengeluaran-barang", "uuidbbk", row.uuidbbk, function(data) {
-            data = data.data;
-            if (data.status == 'I') {
-              var kode = row.kodebbk;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatalkan ', 'warning');
+          get_status_trans("{{ session('TOKEN') }}", "atena/inventori/bukti-pengeluaran-barang", "uuidbbk", row.uuidbbk,
+            function(data) {
+              data = data.data;
+              if (data.status == 'I') {
+                var kode = row.kodebbk;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatalkan ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.hapus == 1) {
+                      $("#alasan_pembatalan").dialog('open');
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -380,27 +398,28 @@
 
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans("atena/inventori/bukti-pengeluaran-barang", "uuidbbk", row.uuidbbk, function(data) {
-            data = data.data;
-            if (data.status == 'S') {
-              var kode = row.kodebbk;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatal Cetak ', 'warning');
+          get_status_trans("{{ session('TOKEN') }}", "atena/inventori/bukti-pengeluaran-barang", "uuidbbk", row.uuidbbk,
+            function(data) {
+              data = data.data;
+              if (data.status == 'S') {
+                var kode = row.kodebbk;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatal Cetak ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.batalcetak == 1) {
+                      batal_cetak();
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.batalcetak == 1) {
-                    batal_cetak();
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -417,33 +436,37 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/inventori/bukti-pengeluaran-barang", 'uuidbbk', row.uuidbbk, function(data) {
-            data = data.data;
-            if (data.status == 'S' || data.status == 'P') {
-              get_akses_cetak_ulang('inventori', function(data) {
-                if (data.hakakses == 1) {
-                  cetakDocument(jeniscetak, row.uuidbbk);
-                }
-              });
-            } else if (data.status == 'I') {
-              var kode = row.kodebbk;
-              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabOpen) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning');
-              } else {
-                if (jeniscetak == "collie") {
-                  cetak("collie");
-                } else if (jeniscetak == "ekspedisi") {
-                  cetak("ekspedisi");
+          get_status_trans("{{ session('TOKEN') }}", "atena/inventori/bukti-pengeluaran-barang", 'uuidbbk', row
+            .uuidbbk,
+            function(data) {
+              data = data.data;
+              if (data.status == 'S' || data.status == 'P') {
+                const kodemenu = modul_kode['inventori'];
+                get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.hakakses == 1) {
+                    cetakDocument(jeniscetak, row.uuidbbk);
+                  }
+                });
+              } else if (data.status == 'I') {
+                var kode = row.kodebbk;
+                const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                if (isTabOpen) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                    'warning');
                 } else {
-                  cetak();
+                  if (jeniscetak == "collie") {
+                    cetak("collie");
+                  } else if (jeniscetak == "ekspedisi") {
+                    cetak("ekspedisi");
+                  } else {
+                    cetak();
+                  }
                 }
+              } else {
+                $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
               }
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
-            }
-          });
+            });
         });
       }
     }
@@ -563,7 +586,7 @@
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
-        lokasi += (dataLokasi[i]["id"] + ",");
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
@@ -630,27 +653,24 @@
               sortable: true,
               align: 'center'
             },
-            // start conditon if ($TRANSREFERENSI=='HEADER')
-            {
-              field: 'uuidtransreferensi',
-              hidden: true
-            },
-            {
+            ...(TRANSREFERENSI == 'HEADER' ? [{
+                field: 'uuidtransreferensi',
+                hidden: true
+              },
+              {
+                field: 'kodetransreferensi',
+                title: 'No. Trans. Ref.',
+                width: 120,
+                sortable: true,
+                align: 'center'
+              },
+            ] : [{
               field: 'kodetransreferensi',
               title: 'No. Trans. Ref.',
               width: 120,
               sortable: true,
               align: 'center'
-            },
-            // start condition if ($TRANSREFERENSI=='DETAIL')
-            {
-              field: 'kodetransreferensi',
-              title: 'No. Trans. Ref.',
-              width: 120,
-              sortable: true,
-              align: 'center'
-            },
-            // end condition if ($TRANSREFERENSI=='DETAIL')
+            }, ]),
           ]
         ],
         columns: [
@@ -701,32 +721,31 @@
               formatter: format_amount,
               align: 'right'
             },
-            // start condition if ($LIHATHARGA==1)
-            {
-              field: 'total',
-              title: 'Total',
-              width: 100,
-              sortable: true,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
-              field: 'pembulatan',
-              title: 'Pembulatan',
-              width: 100,
-              sortable: true,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
-              field: 'grandtotal',
-              title: 'Grand Total',
-              width: 100,
-              sortable: true,
-              formatter: format_amount,
-              align: 'right'
-            },
-            // end condition if ($LIHATHARGA==1)
+            ...(LIHATHARGA == 1 ? [{
+                field: 'total',
+                title: 'Total',
+                width: 100,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+              },
+              {
+                field: 'pembulatan',
+                title: 'Pembulatan',
+                width: 100,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+              },
+              {
+                field: 'grandtotal',
+                title: 'Grand Total',
+                width: 100,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+              },
+            ] : []),
             {
               field: 'namacustomerekspedisi',
               title: 'Nama Cust.(Ekspedisi)',
@@ -830,32 +849,11 @@
         ],
         onDblClickRow: function(index, data) {
           if (!isTokenExpired('{{ session('TOKEN') }}')) {
-            counter++;
-
-            //PELU BUAT SIMPEN INDEX
-            var row = $('#table_data').datagrid('getSelected');
-
-            $("#mode").val("ubah");
-            $("#data").val(row.uuidbbk);
-
-            var tab_title = row.kodebbk;
-            var tab_name = tab_title + "_" + counter;
-
-            $('#form_data').attr('target', tab_name);
-
-            if ($('#tab_transaksi').tabs('exists', tab_title)) {
-              $('#tab_transaksi').tabs('select', tab_title);
-            } else {
-              $('#tab_transaksi').tabs('add', {
-                title: tab_title,
-                id: row.uuidbbk + "|" + row.kodebbk + "|" + counter,
-                content: '<iframe frameborder="0"  class="tab_form"  id="' + counter + '" name="' +
-                  tab_name + '"></iframe>',
-                closable: true
-              });
-
-              $('#form_data').submit();
-            }
+            const kode = data.kodebbk;
+            const url =
+              "{{ route('atena.inventori.buktipengeluaran.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=" +
+              data.uuidbbk;
+            parent.buka_submenu(null, kode, url, 'fa fa-pencil');
           } else {
             $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
           }
@@ -907,43 +905,40 @@
         onDblClickRow: async function(index, data) {
           if (!isTokenExpired('{{ session('TOKEN') }}')) {
             var url_cek = '';
+            var key = '';
 
             if (data.jenis == 'PENJUALANSO') {
               url_cek = link_api.cekBisaBerlanjutSO;
+              key = 'uuidso';
             } else if (data.jenis == 'PENJUALANDO') {
               url_cek = link_api.cekBisaBerlanjutDO;
+              key = 'uuiddo';
             } else if (data.jenis == 'RETUR') {
               url_cek = link_api.cekBisaBerlanjutReturPembelian;
+              key = 'uuidreturbeli';
             } else {
               $.messager.alert('Warning', 'Jenis Transaksi Tidak Valid', 'warning');
               return;
             }
 
-            $.ajax({
-              url: base_url + url_cek,
-              type: 'POST',
-              data: {
-                idtrans: data.idtrans
-              },
-              dataType: 'JSON',
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(response) {
-                $.messager.progress('close');
-
-                if (response.success) {
-                  $('#idtransreferensi').val(data.idtrans);
-                  $('#jenistransreferensi').val(data.jenis);
-
-                  before_add();
-                } else {
-                  $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
-
-                  reload();
-                }
+            try {
+              bukaLoader();
+              const res = await fetchData('{{ session('TOKEN') }}', url_cek, {
+                [key]: data.idtrans
+              });
+              if (res.success) {
+                before_add(data.idtrans, data.jenis);
+              } else {
+                $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
+                reload();
               }
-            });
+            } catch (e) {
+              const error = (typeof e === 'string') ? e : e.message;
+              const textError = getTextError(error);
+              $.messager.alert('Error', textError, 'error');
+            } finally {
+              tutupLoader();
+            }
           } else {
             $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
           }

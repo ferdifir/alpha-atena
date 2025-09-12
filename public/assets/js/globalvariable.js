@@ -143,6 +143,7 @@ var link_api = {
     getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
     loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
     hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
+    browseKendaraan: `${base_url_api}atena/master/kendaraan/browse`,
     //jenis pemakaian
     simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
     getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
@@ -370,6 +371,8 @@ var link_api = {
     cetakInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak/`,
     cetakCollieInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-collie/`,
     cetakEkspedisiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-ekspedisi/`,
+    loadDataBarangKeluarBarcode: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-barcode`,
+    browseBBKInventoryBarangKeluar: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-bukti-pengeluaran-barang`,
     //Pembelian Permintaan Barang
     loadDataHeaderPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-header`,
     loadConfigPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-config`,
@@ -438,7 +441,7 @@ var link_api = {
     loadDataPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data`,
     informasiTransReferensi: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/informasi-trans-referensi`,
     loadDataHeaderPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-header`,
-    cekBisaBerlanjutDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/cek-bisa-lanjut`,
+    cekBisaBerlanjutDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/cek-bisa-berlanjut`,
     //Retur Pembelian
     cekBisaBerlanjutReturPembelian: `${base_url_api}atena/inventori/retur-pembelian/cek-bisa-berlanjut`,
 };

@@ -356,7 +356,8 @@
               });
             } else if (data.status == 'I') {
               var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
+              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
                 $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
                   'warning');
               } else {
@@ -367,7 +368,6 @@
             }
           });
         });
-        //window.open(url, 'Cetak Pesanan Pembelian', 'width=850, height=842, scrollbars=yes');
       }
     }
 
