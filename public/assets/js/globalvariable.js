@@ -1,4 +1,4 @@
-var base_url_api = "http://192.168.1.45:8000/api/";
+var base_url_api = "https://api.atena.id/api/";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -361,6 +361,15 @@ var link_api = {
     loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
     loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
+    //Inventory Barang Keluar
+    loadDataGridInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-grid`,
+    batalTransaksiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/batal-trans`,
+    loadDataGridPendingInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-grid-pending`,
+    ubahStatusJadiInputInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/ubah-status-jadi-slip`,
+    cetakInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak/`,
+    cetakCollieInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-collie/`,
+    cetakEkspedisiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-ekspedisi/`,
     //Pembelian Permintaan Barang
     loadDataHeaderPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-header`,
     loadConfigPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-config`,
@@ -429,6 +438,9 @@ var link_api = {
     loadDataPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data`,
     informasiTransReferensi: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/informasi-trans-referensi`,
     loadDataHeaderPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-header`,
+    cekBisaBerlanjutDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/cek-bisa-lanjut`,
+    //Retur Pembelian
+    cekBisaBerlanjutReturPembelian: `${base_url_api}atena/inventori/retur-pembelian/cek-bisa-berlanjut`,
 };
 
 var modul_kode = {
@@ -482,7 +494,7 @@ async function set_ppn_aktif(tanggal, token, onSuccess) {
             return response.json();
         })
         if (response.success&&onSuccess) {
-            await onSuccess(response);            
+            await onSuccess(response);
         } else {
             $.messager.alert('Error', response.message, 'error');
         }

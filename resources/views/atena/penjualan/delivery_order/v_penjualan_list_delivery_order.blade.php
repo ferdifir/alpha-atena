@@ -299,7 +299,8 @@
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
+              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
                 $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
                   ', Sebelum Dibatal Cetak ', 'warning');
               } else {
