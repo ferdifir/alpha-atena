@@ -1,6 +1,6 @@
 @extends('template.app')
 
-@section('content')
+@push('css')
   <style>
     .tree-icon {
       display: none;
@@ -19,7 +19,9 @@
       transform: scale(1.15);
     }
   </style>
+@endpush
 
+@section('content')
   <div class="easyui-layout" fit="true">
     <div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
       <a id="btn_tambah" href="#" title="Tambah" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
@@ -193,7 +195,7 @@
           if (row.status == 0) return 'background-color:#a8aea6';
         },
         onLoadSuccess: function(data) {
-            $('#table_data').datagrid('unselectAll');
+          $('#table_data').datagrid('unselectAll');
         },
         frozenColumns: [
           [{
@@ -248,8 +250,7 @@
         onDblClickRow: function(index, row) {
           before_edit();
         },
-      }).datagrid('enableFilter', [
-        {
+      }).datagrid('enableFilter', [{
           field: 'tglentry',
           type: 'datebox',
           options: {

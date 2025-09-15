@@ -257,11 +257,10 @@
         }
       });
 
-      buat_table();
-      buat_table_pending();
-
       $('#txt_jenistransaksi_filter').combobox('setValue', '');
       $("#txt_tgl_aw_filter").datebox('setValue', getTglFilterAwal());
+      buat_table();
+      buat_table_pending();
 
       $("#form_cetak").window({
         collapsible: false,
@@ -354,9 +353,6 @@
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
-
-        $('#idtransreferensi').val(null);
-        $('#jenistransreferensi').val(null);
       });
     }
 
@@ -565,9 +561,7 @@
         collie: link_api.cetakCollieInventoryBarangKeluar,
         ekspedisi: link_api.cetakEkspedisiInventoryBarangKeluar
       };
-
       const url = `${urlMap[jenisCetak] || link_api.cetakInventoryBarangKeluar}${id}`;
-
       const doc = await getCetakDocument('{{ session('TOKEN') }}', url);
 
       if (doc) {
@@ -924,10 +918,10 @@
             try {
               bukaLoader();
               const res = await fetchData('{{ session('TOKEN') }}', url_cek, {
-                [key]: data.idtrans
+                [key]: data.uuidtrans
               });
               if (res.success) {
-                before_add(data.idtrans, data.jenis);
+                before_add(data.uuidtrans, data.jenis);
               } else {
                 $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
                 reload();

@@ -256,7 +256,8 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row.uuidpenyesuaianstok,
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+            .uuidpenyesuaianstok,
             function(data) {
               if (!data.success || data.message == 'Token tidak valid') {
                 $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
@@ -293,7 +294,7 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
             .uuidpenyesuaianstok,
             function(
               data) {
@@ -338,7 +339,7 @@
             return false;
           }
 
-          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
             .uuidpenyesuaianstok,
             function(data) {
               if (!data.success || data.message == 'Token tidak valid') {

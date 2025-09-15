@@ -27,6 +27,7 @@ function getCurrentDateTime() {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+
 async function getCetakDocument(token, url, body) {
     try {
         const response = await fetchData(token, url, body, false);

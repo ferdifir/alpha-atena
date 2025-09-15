@@ -716,3 +716,10 @@ Route::get('atena/penjualan/deliveryorder/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.penjualan.deliveryorder.form');
+
+// Tutup Pesanan Penjualan
+Route::get('atena/penjualan/tutupsalesorder/transaksi', function() {
+    return view('atena.penjualan.tutup_pesanan_penjualan.v_penjualan_list_tutup_pesanan_penjualan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.tutuppesananpenjualan.transaksi');
