@@ -328,6 +328,7 @@ var link_api = {
     //pembelian - permintaan barang
     loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
     broswePermintaanBarangTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
+    browseFilterPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/browse-filter`,
     //Inventory Kirim Ekspedisi
     ubahStatusJadiSlipInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-slip`,
     cetakInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/cetak/`,
@@ -455,6 +456,11 @@ var link_api = {
     browseBBKReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/browse-bukti-pengeluaran-barang`,
     loadDataDetailReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-detail`,
     loadDataHeaderReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-header`,
+    //Tutup Permintaan Barang
+    loadDataGridTutupPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/load-data-grid`,
+    tutupTransaksiPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans`,
+    tutupTransaksiBarangPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans-barang`,
+    loadDataTutupPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-tutup-permintaan-barang`,
 };
 
 var modul_kode = {

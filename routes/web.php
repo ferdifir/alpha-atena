@@ -701,6 +701,20 @@ Route::get('atena/pembelian/pembelian/form', function() {
     ]);
 })->name('atena.pembelian.pembelian.form');
 
+// Tutup Permintaan Barang
+Route::get('atena/pembelian/tutuppermintaanbarang/transaksi', function() {
+    return view('atena.pembelian.tutup_permintaan_barang.v_pembelian_list_tutup_permintaan_barang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.tutup_permintaan_barang.transaksi');
+
+// Tutup Pesanan Pembelian
+Route::get('atena/pembelian/tutuppesananpembelian/transaksi', function() {
+    return view('atena.pembelian.tutup_pesanan_pembelian.v_pembelian_list_tutup_pesanan_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.tutup_pesanan_pembelian.transaksi');
+
 // Pesanan Pengiriman
 Route::get('atena/penjualan/deliveryorder/transaksi', function() {
     return view('atena.penjualan.delivery_order.v_penjualan_list_delivery_order', [
