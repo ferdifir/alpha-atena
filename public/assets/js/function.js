@@ -630,7 +630,7 @@ function ubah_status_trans(v_kodetrans, v_table, v_field, v_status, callback) {
     });
 }
 
-function get_combogrid_data(obj_combogrid, field, table) {
+function get_combogrid_data(obj_combogrid, field, table, token) {
     var data = obj_combogrid.combogrid("grid").datagrid("getData").firstRows;
     var data =
         typeof data != "undefined"
@@ -647,19 +647,20 @@ function get_combogrid_data(obj_combogrid, field, table) {
         }
     }
     if (!ketemu) {
-        $.ajax({
-            type: "POST",
-            url: table,
-            data: {
-                q: field,
+        fetch(table, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
             },
-            cache: false,
-            success: function (msg) {
-                obj_combogrid.combogrid("grid").datagrid("loadData", msg);
-                // obj_combogrid.combogrid('setValue', field);
-                obj_combogrid.combogrid("options").onChange.call();
-            },
-        });
+            body: JSON.stringify({ q: field }),
+            cache: "no-cache",
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                obj_combogrid.combogrid("grid").datagrid("loadData", data.data);
+                obj_combogrid.combogrid('options').onChange.call();
+            })
+            .catch((error) => console.error("Error:", error));
     }
 }
 

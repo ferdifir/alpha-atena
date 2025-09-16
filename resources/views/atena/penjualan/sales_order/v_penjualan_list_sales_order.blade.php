@@ -402,7 +402,8 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(
+            data) {
             data = data.data;
             if (data.status == 'I') {
               var kode = row.kodeso;
@@ -434,7 +435,8 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(
+            data) {
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodeso;
@@ -472,71 +474,73 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
-            data = data.data;
-            if (data.status == 'S' || data.status == 'P') {
-              const kodemenu = modul_kode['penjualan'];
-              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
-                data = data.data;
-                if (data.hakakses == 1) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso,
+            function(data) {
+              data = data.data;
+              if (data.status == 'S' || data.status == 'P') {
+                const kodemenu = modul_kode['penjualan'];
+                get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
+                  data = data.data;
+                  if (data.hakakses == 1) {
+                    if ($jenis == "harga") {
+                      const document = await getCetakDocument(
+                        '{{ session('TOKEN') }}',
+                        link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                          harga: "ya"
+                        }
+                      );
+                      if (document == null) {
+                        $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                        return false;
+                      }
+                      $("#area_cetak").html(document);
+                      $("#form_cetak").window('open');
+                    } else if ($jenis == "landscape") {
+                      const document = await getCetakDocument(
+                        '{{ session('TOKEN') }}',
+                        link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
+                      );
+                      if (document == null) {
+                        $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                        return false;
+                      }
+                      $("#area_cetak_landscape").html(document);
+                      $("#form_cetak_landscape").window('open');
+                    } else {
+                      const document = await getCetakDocument(
+                        '{{ session('TOKEN') }}',
+                        link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                          harga: "tidak"
+                        }
+                      );
+                      if (document == null) {
+                        $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
+                        return false;
+                      }
+                      $("#area_cetak").html(document);
+                      $("#form_cetak").window('open');
+                    }
+                    reload();
+                  }
+                });
+              } else if (data.status == 'I') {
+                var kode = row.kodeso;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                    'warning');
+                } else {
                   if ($jenis == "harga") {
-                    const document = await getCetakDocument(
-                      '{{ session('TOKEN') }}',
-                      link_api.cetakPenjualanSalesOrder + row.uuidso, {
-                        harga: "ya"
-                      }
-                    );
-                    if (document == null) {
-                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
-                      return false;
-                    }
-                    $("#area_cetak").html(document);
-                    $("#form_cetak").window('open');
+                    cetak($jenis);
                   } else if ($jenis == "landscape") {
-                    const document = await getCetakDocument(
-                      '{{ session('TOKEN') }}',
-                      link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
-                    );
-                    if (document == null) {
-                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
-                      return false;
-                    }
-                    $("#area_cetak_landscape").html(document);
-                    $("#form_cetak_landscape").window('open');
+                    cetak($jenis);
                   } else {
-                    const document = await getCetakDocument(
-                      '{{ session('TOKEN') }}',
-                      link_api.cetakPenjualanSalesOrder + row.uuidso, {
-                        harga: "tidak"
-                      }
-                    );
-                    if (document == null) {
-                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
-                      return false;
-                    }
-                    $("#area_cetak").html(document);
-                    $("#form_cetak").window('open');
+                    cetak($jenis);
                   }
                 }
-              });
-            } else if (data.status == 'I') {
-              var kode = row.kodeso;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning');
               } else {
-                if ($jenis == "harga") {
-                  cetak($jenis);
-                } else if ($jenis == "landscape") {
-                  cetak($jenis);
-                } else {
-                  cetak($jenis);
-                }
+                $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
               }
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
-            }
-          });
+            });
         });
         //window.open(url, 'Cetak Pesanan Pembelian', 'width=850, height=842, scrollbars=yes');
       }

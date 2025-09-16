@@ -187,7 +187,7 @@ var link_api = {
     getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
     loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
     hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
-    getPPNAktfif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
+    // getPPNAktfif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
     //Barang
     loadDataGridBarang: `${base_url_api}atena/master/barang/load-data-grid`,
     simpanBarang: `${base_url_api}atena/master/barang/simpan`,
@@ -438,6 +438,7 @@ var link_api = {
     loadDataDetailPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-detail`,
     browseBarangPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
     browseBarangSO: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
+    loadDataRekapPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-rekap`,
     //Penjualan Delivery Order
     loadDataGridPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid`,
     loadDataGridPendingPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid-pending`,
@@ -451,6 +452,8 @@ var link_api = {
     loadDataHeaderPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-header`,
     cekBisaBerlanjutDO: `${base_url_api}atena/inventori/pesanan-pengiriman/cek-bisa-lanjut`,
     browseBarangDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-barang`,
+    loadDataDetailPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-detail`,
+    browseBBKPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-bukti-pengeluaran-barang`,
     //Retur Pembelian
     cekBisaBerlanjutReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/cek-bisa-berlanjut`,
     browseBBKReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/browse-bukti-pengeluaran-barang`,
@@ -461,6 +464,16 @@ var link_api = {
     tutupTransaksiPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans`,
     tutupTransaksiBarangPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans-barang`,
     loadDataTutupPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-tutup-permintaan-barang`,
+    //Tutup Pesanan Pembelian
+    loadDataGridTutupPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/load-data-grid`,
+    browseFilterPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-filter`,
+    tutupTransaksiPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/tutup-trans`,
+    tutupTransaksiBarangPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/tutup-trans-barang`,
+    //Tutup Pesanan Penjualan
+    loadDataGridTutupPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/load-data-grid`,
+    browseFilterPesananPenjualan: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-filter`,
+    tutupTransaksiPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans`,
+    tutupTransaksiBarangPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans-barang`,
 };
 
 var modul_kode = {

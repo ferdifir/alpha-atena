@@ -263,27 +263,28 @@
       $('#mode').val('hapus');
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
-            data = data.data;
-            if (data.status == 'I') {
-              var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatalkan ', 'warning');
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo,
+            function(data) {
+              data = data.data;
+              if (data.status == 'I') {
+                var kode = row.kodedo;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatalkan ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.hapus == 1) {
+                      $("#alasan_pembatalan").dialog('open');
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -295,7 +296,7 @@
 
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodedo;
@@ -334,7 +335,7 @@
             return false;
           }
 
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
             data = data.data;
             if (data.status == 'S' || data.status == 'P') {
               const kodemenu = modul_kode['penjualan'];

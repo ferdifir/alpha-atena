@@ -601,16 +601,10 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       if ("{{ $mode }}" == "tambah") {
         tambah();
+        tutupLoader();
       } else if ("{{ $mode }}" == "ubah") {
-        await ubah();
+        ubah();
       }
-
-      // Menghapus loading ketika halaman sudah dimuat
-      setTimeout(function() {
-        $('#mask-loader').fadeOut(500, function() {
-          $(this).hide()
-        })
-      }, 250)
     });
 
     shortcut.add('F8', function() {
@@ -691,7 +685,8 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       }
 
       if (row) {
-        get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
+        get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(
+          data) {
           data = data.data;
           $(".form_status").html(status_transaksi(data.status));
         });
@@ -708,63 +703,64 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
           var UT = data.ubah;
           var lihatsemuatrans = data.lihatsemuatrans;
 
-          get_status_trans("atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso, function(data) {
-            data = data.data;
-            if (UT == 1 && data.status == 'I') {
-              if (row.userentry != '{{ session('DATAUSER')['uuid'] }}' &&
-                lihatsemuatrans == 0) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-penjualan", 'uuidso', row.uuidso,
+            function(data) {
+              data = data.data;
+              if (UT == 1 && data.status == 'I') {
+                if (row.userentry != '{{ session('DATAUSER')['uuid'] }}' &&
+                  lihatsemuatrans == 0) {
+                  $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+                  $('#btn_simpan_modal').removeAttr('onclick');
+                  $.messager.alert(
+                    'Info',
+                    'Transaksi Tidak Dapat Diubah, Data Tidak Sesuai Dengan Pembuat Pesanan',
+                    'info'
+                  );
+                } else {
+                  $('#btn_simpan_modal').css('filter', '');
+                  $('#mode').val('ubah');
+                }
+              } else {
                 $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
                 $('#btn_simpan_modal').removeAttr('onclick');
-                $.messager.alert(
-                  'Info',
-                  'Transaksi Tidak Dapat Diubah, Data Tidak Sesuai Dengan Pembuat Pesanan',
-                  'info'
-                );
-              } else {
-                $('#btn_simpan_modal').css('filter', '');
-                $('#mode').val('ubah');
               }
-            } else {
-              $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-              $('#btn_simpan_modal').removeAttr('onclick');
-            }
 
-            $("#form_input").form('load', row);
-            $('#IDLOKASI').combogrid('readonly');
+              $("#form_input").form('load', row);
+              $('#IDLOKASI').combogrid('readonly');
 
-            if (row.maxcredit > 0) {
-              $('#CEKLIMITPIUTANG').val(true);
-            }
+              if (row.maxcredit > 0) {
+                $('#CEKLIMITPIUTANG').val(true);
+              }
 
-            if (row.maxnota > 0) {
-              $('#CEKLIMITNOTA').val(true);
-            }
+              if (row.maxnota > 0) {
+                $('#CEKLIMITNOTA').val(true);
+              }
 
-            if (row.ceknotajatuhtempo == 1) {
-              $("#CEKNOTAJATUHTEMPO").val(true);
-            }
+              if (row.ceknotajatuhtempo == 1) {
+                $("#CEKNOTAJATUHTEMPO").val(true);
+              }
 
-            $('#KODEPO').combogrid('readonly');
-            $('#TGLTRANS').datebox('readonly');
-            $('#btn_browse').hide();
+              $('#KODEPO').combogrid('readonly');
+              $('#TGLTRANS').datebox('readonly');
+              $('#btn_browse').hide();
 
-            idtrans = row.uuidso;
-            load_data(row.uuidso);
-            load_data_pembayaran(row.uuidso);
-          });
+              idtrans = row.uuidso;
+              load_data(row.uuidso);
+              load_data_pembayaran(row.uuidso);
+            });
         });
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url);
+        get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url, '{{ session('TOKEN') }}');
 
         //SUBCUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url);
+        get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url, '{{ session('TOKEN') }}');
 
         if (row.uuidekspedisi != "" && row.uuidekspedisi != null) {
           //EKSPEDISI
           var url = link_api.browseEkspedisi;
-          get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url);
+          get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url, '{{ session('TOKEN') }}');
         }
 
       }
@@ -892,7 +888,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             if (!res.success) {
               $.messager.alert('Error', res.message, 'error');
             } else {
-              get_konversi(res, response.data[x].satuan, res[0].satuan);
+              get_konversi(res.data, response.data[x].satuan, res.data[0].satuan);
               response.data[x].satuan_lama = response.data[x].satuan;
               response.data[x].hargaterendah = ((satuan_baru > satuan_lama) ? response.data[x].hargaterendah /
                 konversi_baru : response.data[x].hargaterendah * konversi_lama).toFixed(0);
@@ -3320,7 +3316,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
     }
 
     function load_data_potensi_so(arrayidbarang) {
-      arrayidbarang = JSON.parse(arrayidbarang);
+      //   arrayidbarang = JSON.parse(arrayidbarang);
       fetchData(
         '{{ session('TOKEN') }}',
         link_api.getDataPotensiSO, {

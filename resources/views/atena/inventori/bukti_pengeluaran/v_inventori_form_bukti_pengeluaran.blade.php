@@ -326,6 +326,7 @@
     let INPUTHARGA = null;
     let LIHATHARGA = null;
     let SCANBARCODE = null;
+    let tablereferensi = null;
 
     $(document).ready(async function() {
       await getKonfigurasiBBK();
@@ -569,7 +570,7 @@
               prompt: 'Telp Customer'
             });
 
-            urltransreferensi = 'atena/Penjualan/Transaksi/DeliveryOrder/comboGridBBK'; // belum ada
+            urltransreferensi = link_api.browseBBKPenjualanDeliveryOrder; // belum ada
             $("#IDTRANSREFERENSI").combogrid({
               columns: [
                 [{
@@ -716,7 +717,7 @@
         browse_data_referensi('#IDREFERENSI', 'customer');
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url);
+        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#NAMAREFERENSI").textbox('clear');
         $("#ALAMAT").textbox('clear');
@@ -791,7 +792,7 @@
         browse_data_referensi('#IDREFERENSI', 'customer');
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url);
+        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#NAMAREFERENSI").textbox('clear');
         $("#ALAMAT").textbox('clear');
@@ -811,7 +812,7 @@
           prompt: 'Telp Customer'
         });
 
-        urltransreferensi = 'atena/Penjualan/Transaksi/DeliveryOrder/comboGridBBK'; // belum ada
+        urltransreferensi = link_api.browseBBKPenjualanDeliveryOrder; // belum ada
         $("#IDTRANSREFERENSI").combogrid({
           columns: [
             [{
@@ -865,7 +866,7 @@
 
         //SUPPLIER
         var url = link_api.browseSupplier;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url);
+        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#IDREFERENSI").combogrid({
           prompt: 'Kode Supplier',
@@ -956,7 +957,6 @@
 
       if ("{{ $mode }}" == "tambah") {
         tambah();
-        tutupLoader();
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
@@ -1083,6 +1083,7 @@
       reset_detail();
 
       fill_form_transreferensi();
+      tutupLoader();
     }
 
     async function fill_form_transreferensi() {
@@ -1365,8 +1366,9 @@
               $('#IDREFERENSI').combogrid('readonly');
               $('#IDTRANSREFERENSI').combogrid('readonly');
               $('#IDLOKASI').combogrid('readonly');
+              const keyreferensi = 'uuid' + tablereferensi;
               $("#IDREFERENSI").combogrid('setValue', {
-                uuidreferensi: row.uuidreferensi,
+                [keyreferensi]: row.uuidreferensi,
                 kode: row.kodereferensi
               });
               $("#IDKENDARAAN").combogrid('setValue', {
@@ -1415,6 +1417,7 @@
       if (SCANBARCODE == 'YA') {
         isValid = cek_jumlah_dan_barcode();
         if (!isValid) {
+          console.log('cek_jumlah_dan_barcode');
           return false;
         }
       }
@@ -1452,8 +1455,10 @@
                 ubah();
               } else {
                 $('#form_input').form('clear');
-                transreferensi = null;
-                jenistransreferensi = '';
+                if ('{{ $dataref }}' == 'undefined') {
+                  jenistransreferensi = '';
+                  transreferensi = null;
+                }
                 tambah();
               }
 
@@ -1531,7 +1536,7 @@
           url = link_api.loadDataDetailPenjualanSalesOrder;
           key = "uuidso";
         } else if (jenis == "PENJUALANDO") {
-          url = 'atena/Penjualan/Transaksi/DeliveryOrder/loadDataDetail'; // belum ada
+          url = link_api.loadDataDetailPenjualanDeliveryOrder;
           key = "uuiddo";
         } else if (jenis == "RETUR") {
           url = link_api.loadDataDetailReturPembelian;
@@ -1906,7 +1911,7 @@
         onChange: function(newVal, oldVal) {
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if (row) {
-            $('#NAMAEKSPEDISI').textbox('setValue', row.nama);
+            $('#NAMAEKSPEDISI').textbox('setValue', row.namaekspedisi);
             $('#ALAMATEKSPEDISI').textbox('setValue', row.alamat);
             $('#TELPEKSPEDISI').textbox('setValue', row.telp);
           } else {
@@ -1920,6 +1925,7 @@
 
     function browse_data_referensi(id, table) {
       //table = supplier / customer
+      tablereferensi = table;
       var jenis = $('#JENISTRANSAKSI').combobox('getValue');
 
       if (table === undefined) {
@@ -1996,7 +2002,7 @@
             if (jenis == "PENJUALANSO") {
               urltransreferensi = link_api.browseBBKInventoryBarangKeluar;
             } else if (jenis == "PENJUALANDO") {
-              urltransreferensi = 'atena/Penjualan/Transaksi/DeliveryOrder/comboGridBBK'; // belum ada api
+              urltransreferensi = link_api.browseBBKPenjualanDeliveryOrder;
             } else if (jenis == "RETUR") {
               urltransreferensi = link_api.browseBBKReturPembelian;
             }
@@ -2748,7 +2754,7 @@
             if (jenis == "PENJUALANSO") {
               urltransreferensi = link_api.browseBBKInventoryBarangKeluar;
             } else if (jenis == "PENJUALANDO") {
-              urltransreferensi = 'atena/Penjualan/Transaksi/DeliveryOrder/comboGridBBK'; // belum ada api
+              urltransreferensi = link_api.browseBBKPenjualanDeliveryOrder;
             } else if (jenis == "RETUR") {
               urltransreferensi = link_api.browseBBKReturPembelian;
             }
@@ -3781,8 +3787,7 @@
       }
 
       $.ajax({
-        // TODO: sementara skip dulu
-        // url: 'base_url('asiaelectrindo/Produksi/Transaksi/PembuatanBarcode/cekBarcodePengeluaranBarang') ?>',
+        // url: 'http://localhost/alpha_atena/asiaelectrindo/Produksi/Transaksi/PembuatanBarcode/cekBarcodePengeluaranBarang',
         type: 'POST',
         data: {
           barcode: barcode,
