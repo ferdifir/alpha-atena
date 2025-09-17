@@ -239,6 +239,7 @@
         pageSize: 20,
         sortName: 'KODEBARANG',
         sortOrder: 'asc',
+        clientPaging: false,
         url: link_api.loadDataGridBarang,
         onLoadSuccess: function(data) {
           // clear selection

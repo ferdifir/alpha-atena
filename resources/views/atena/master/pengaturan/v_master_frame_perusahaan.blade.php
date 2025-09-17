@@ -31,7 +31,7 @@
         <tr>
           <td align="right" id="label_form">Nama</td>
           <td id="label_form">
-            <input id="NAMAPERUSAHAAN" name="namaperusahaan" style="width:300px" class="label_input" required="true"
+            <input id="NAMAPERUSAHAAN" name="namaperusahaan" style="width:294px" class="label_input" required="true"
               validType='length[0,300]'>
             {{-- signup condition --}}
             <input type="checkbox" name="prosesopname" id="prosesopname" value="1"> Proses Opname
@@ -43,26 +43,26 @@
           <td id="label_form"><input id="ALAMAT" name="alamat" style="width:400px" class="label_input"
               validType='length[0,300]'>
             &nbsp;&nbsp; Kode Pos
-            <input id="KODEPOS" name="kodepos" style="width:122px" class="label_input" validType='length[0,100]'>
+            <input id="KODEPOS" name="kodepos" style="width:150px" class="label_input" validType='length[0,100]'>
           </td>
         </tr>
         <tr>
           <td align="right" id="label_form">Kota</td>
           <td id="label_form">
             <input id="KOTA" name="kota" style="width:180px" class="label_input" validType='length[0,100]'>
-            &nbsp;&nbsp;Propinsi
-            <input id="PROPINSI" name="propinsi" style="width:150px" class="label_input" validType='length[0,100]'>
-            &nbsp;&nbsp;Negara
+            &nbsp;&nbsp;&nbsp;&nbsp;Propinsi
+            <input id="PROPINSI" name="propinsi" style="width:160px" class="label_input" validType='length[0,100]'>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Negara
             <input id="NEGARA" name="negara" style="width:150px" class="label_input" validType='length[0,100]'>
           </td>
         </tr>
         <tr>
           <td align="right" id="label_form">Telp/HP</td>
-          <td><input id="TELP" name="telp" style="width:250px" class="label_input" validType='length[0,50]'></td>
+          <td><input id="TELP" name="telp" style="width:400px" class="label_input" validType='length[0,50]'></td>
         </tr>
         <tr>
           <td align="right" id="label_form">NPWP</td>
-          <td><input id="NPWP" name="npwp" style="width:250px" class="label_input" validType='length[0,50]'></td>
+          <td><input id="NPWP" name="npwp" style="width:400px" class="label_input" validType='length[0,50]'></td>
         </tr>
         <tr hidden>
           <td align="right" id="label_form" valign="top">Perhitungan HPP</td>
@@ -82,7 +82,7 @@
         <tr>
           <td align="right" id="label_form" valign="top">Tanggal Awal Transaksi</td>
           <td id="label_form">
-            <input class="date" name="tglawaltrans" id="tglawaltrans" required>
+            <input class="date" name="tglawaltrans" id="tglawaltrans" required style="width:400px">
           </td>
         </tr>
         <tr>
@@ -99,7 +99,7 @@
         <tr>
           <td align="right" valign="top" id="label_form">Informasi Rekening</td>
           <td>
-            <textarea id="INFORMASIREKENING" name="informasirekening" style="width:350px; height:80px" class="label_input"
+            <textarea id="INFORMASIREKENING" name="informasirekening" style="width:400px; height:80px" class="label_input"
               multiline="true" validType='length[0,500]'></textarea>
           </td>
         </tr>
@@ -107,7 +107,7 @@
         <tr>
           <td align="right" valign="top" id="label_form">Catatan</td>
           <td>
-            <textarea id="CATATAN" name="catatan" style="width:350px; height:80px" class="label_input" multiline="true"
+            <textarea id="CATATAN" name="catatan" style="width:400px; height:80px" class="label_input" multiline="true"
               validType='length[0,300]'></textarea>
           </td>
         </tr>

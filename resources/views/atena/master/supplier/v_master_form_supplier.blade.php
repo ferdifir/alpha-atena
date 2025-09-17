@@ -483,7 +483,6 @@
       try {
         const form = new FormData();
         form.append('uuidsupplier', uuidsupplier);
-        console.log('UUID Supplier', uuidsupplier);
         const response = await fetchData(link_api.getHutangBelumLunas, form);
         if (response.success) {
           $('#table_data_riwayat_hutang').datagrid('loadData', response.data);

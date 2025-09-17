@@ -201,17 +201,10 @@
 
       if ("{{ $mode }}" == "tambah") {
         tambah();
+        tutupLoader();
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
-
-      // Menghapus loading ketika halaman sudah dimuat
-      setTimeout(function() {
-        $('#mask-loader').fadeOut(500, function() {
-          $(this).hide()
-        })
-      }, 250)
-
     })
 
     shortcut.add('F8', function() {
@@ -287,37 +280,40 @@
         return;
       }
       if (row) {
-        get_status_trans("atena/inventori/opname-stok", "uuidopnamestok", row.uuidopnamestok, function(data) {
-          data = data.data;
-          $(".form_status").html(status_transaksi(data.status));
-        });
+        get_status_trans('{{ session('TOKEN') }}', "atena/inventori/opname-stok", "uuidopnamestok", row.uuidopnamestok,
+          function(data) {
+            data = data.data;
+            $(".form_status").html(status_transaksi(data.status));
+          });
 
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;
-          get_status_trans("atena/inventori/opname-stok", "uuidopnamestok", row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (UT == 1 && data.status == 'I') {
-              $('#btn_simpan_modal').css('filter', '');
-              $('#mode').val('ubah');
-            } else {
-              document.getElementById('btn_simpan_modal').onclick = '';
-              $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-              $('#btn_simpan_modal').removeAttr('onclick');
-            }
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/opname-stok", "uuidopnamestok", row
+            .uuidopnamestok,
+            function(data) {
+              data = data.data;
+              if (UT == 1 && data.status == 'I') {
+                $('#btn_simpan_modal').css('filter', '');
+                $('#mode').val('ubah');
+              } else {
+                document.getElementById('btn_simpan_modal').onclick = '';
+                $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+                $('#btn_simpan_modal').removeAttr('onclick');
+              }
 
-            $("#form_input").form('load', row);
-            $('#IDLOKASI').combogrid('readonly');
+              $("#form_input").form('load', row);
+              $('#IDLOKASI').combogrid('readonly');
 
-            //get_combogrid_data ($('#KODESUPPLIER'), row.KODESUPPLIER, 'supplier');
-            //get_combogrid_data ($('#KODEPERKIRAANBIAYA'), row.KODEPERKIRAANBIAYA, 'kode_perkiraan&jenis=detail');
-            idtrans = row.uuidopnamestok;
-            load_data(row.uuidopnamestok);
+              //get_combogrid_data ($('#KODESUPPLIER'), row.KODESUPPLIER, 'supplier');
+              //get_combogrid_data ($('#KODEPERKIRAANBIAYA'), row.KODEPERKIRAANBIAYA, 'kode_perkiraan&jenis=detail');
+              idtrans = row.uuidopnamestok;
+              load_data(row.uuidopnamestok);
 
-            $('#lbl_kasir').html(row.userentry);
-            $('#lbl_tanggal').html(row.tglentry);
+              $('#lbl_kasir').html(row.userentry);
+              $('#lbl_tanggal').html(row.tglentry);
 
-          });
+            });
         });
       }
     }

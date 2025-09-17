@@ -205,16 +205,11 @@
 
       if ("{{ $mode }}" == "tambah") {
         tambah();
+        tutupLoader();
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
 
-      // Menghapus loading ketika halaman sudah dimuat
-      setTimeout(function() {
-        $('#mask-loader').fadeOut(500, function() {
-          $(this).hide()
-        })
-      }, 250)
 
     })
 
@@ -257,17 +252,17 @@
       $('#IDLOKASI').combogrid('readonly', false);
       idtrans = "";
 
-      $.ajax({
-        type: 'POST',
-        url: link_api.getLokasiDefault,
-        dataType: 'json',
-        cache: false,
-        success: function(msg) {
-          if (msg.uuidlokasi != null) {
-            $('#IDLOKASI').combogrid('setValue', msg.uuidlokasi);
-            $("#KODELOKASI").val(msg.kodelokasi);
-          }
+      fetchData(
+        link_api.getLokasiDefault,
+      ).then(res => {
+        if (res.success && res.data.uuidlokasi != null) {
+          $('#IDLOKASI').combogrid('setValue', res.data.uuidlokasi);
+          $("#KODELOKASI").val(res.data.kodelokasi);
         }
+      }).catch(err => {
+        const error = (typeof err === 'string') ? err : err.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
       });
 
       clear_plugin();
@@ -294,6 +289,7 @@
 
       if (row) {
         get_status_trans(
+          '{{ session('TOKEN') }}',
           "atena/inventori/penyesuaian-stok",
           'uuidpenyesuaianstok',
           row.uuidpenyesuaianstok,
@@ -305,7 +301,8 @@
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;
-          get_status_trans("atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row.uuidpenyesuaianstok,
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/penyesuaian-stok", 'uuidpenyesuaianstok', row
+            .uuidpenyesuaianstok,
             function(data) {
               data = data.data;
               if (UT == 1 && data.status == 'I') {
@@ -431,29 +428,29 @@
       $('#table_data_detail_po').datagrid('loadData', []);
     }
 
-    function load_data(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDataInventoryPenyesuaianStok,
-        data: {
+    async function load_data(idtrans) {
+      try {
+        const response = await fetchData(link_api.loadDataInventoryPenyesuaianStok, {
           uuidpenyesuaianstok: idtrans
-        },
-        cache: false,
-        success: function(msg) {
-          $('#table_data_detail').datagrid('loadData', msg);
-          var rows = msg;
-          for (var i = 0; i < rows.length; i++) {
-            hitung_subtotal_detail(i, rows[i])
-          }
-          hitung_grandtotal();
+        });
+        if (!response.success) {
+          throw new Error(response.message || 'Gagal mengambil data');
         }
-      });
+        $('#table_data_detail').datagrid('loadData', response.data);
+        var rows = response.data;
+        for (var i = 0; i < rows.length; i++) {
+          hitung_subtotal_detail(i, rows[i])
+        }
+        hitung_grandtotal();
+      } catch (e) {
+        const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
     function browse_data_lokasi(id, table) {
-      console.log(id, table);
       $(id).combogrid({
         panelWidth: 400,
         url: link_api.browseLokasi,
@@ -559,21 +556,13 @@
           var row = $(id).combogrid('grid').datagrid('getSelected');
 
           if (row && $('#mode').val() != '') {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.loadDataOpnamePenyesuaian,
-              data: {
-                uuidopnamestok: row.uuidopnamestok
-              },
-              cache: false,
-              beforeSend: function() {
-                $('#table_data_detail').datagrid('loading');
-              },
-              success: function(msg) {
+            fetchData(link_api.loadDataOpnamePenyesuaian, {
+              uuidopnamestok: row.uuidopnamestok
+            }).then(res => {
+              if (res.success) {
                 $('#table_data_detail').datagrid('loaded');
-                $('#table_data_detail').datagrid('loadData', msg.detail);
-                var rows = msg.detail;
+                $('#table_data_detail').datagrid('loadData', res.data.detail);
+                var rows = res.data.detail;
                 for (var i = 0; i < rows.length; i++) {
                   hitung_subtotal_detail(i, rows[i])
                 }
@@ -583,7 +572,12 @@
                 dg.RowDelete = false;
                 dg.RowEdit = true;
                 $('#TGLTRANS').datebox('setValue', row.tgltrans).datebox('readonly');
+              } else {
+                $.messager.alert('Error', res.message, 'error');
               }
+            }).catch(err => {
+              const error = typeof err === 'string' ? err : err.message;
+              $.messager.alert('Error', getTextError(error), 'error');
             });
           } else {
             var dg = $('#table_data_detail').datagrid('options');
@@ -832,7 +826,7 @@
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
           var row_update = {};
@@ -849,7 +843,7 @@
               var hargabeli = 0;
 
               if (hargabeliterakhir.data.value == 'YA') {
-                hargabeli = get_harga_barangbeli(id, satuan);
+                hargabeli = await get_harga_barangbeli(id, satuan);
               }
 
               row_update = {
@@ -866,7 +860,7 @@
               break;
             case 'satuan':
               if (hargabeliterakhir.data.value == 'YA') {
-                hargabeli = get_harga_barangbeli(row.uuidbarang, row.satuan);
+                hargabeli = await get_harga_barangbeli(row.uuidbarang, row.satuan);
 
                 row_update = {
                   harga: hargabeli
@@ -960,23 +954,23 @@
       $("#TGLJATUHTEMPO").datebox('readonly');
     }
 
-    function get_harga_barangbeli(idbarang, satuan) {
+    async function get_harga_barangbeli(idbarang, satuan) {
       var harga = 0;
 
-      $.ajax({
-        dataType: "json",
-        type: 'POST',
-        async: false,
-        url: link_api.hargaBeliTerakhir,
-        data: {
+      try {
+        const response = await fetchData(link_api.hargaBeliTerakhir, {
           uuidbarang: idbarang,
           satuan: satuan
-        },
-        cache: false,
-        success: function(msg) {
-          harga = msg.hargabeli;
+        });
+        if (!response.success) {
+          throw new Error(response.message || 'Gagal mengambil data');
         }
-      });
+        harga = response.data.hargabeli;
+      } catch (e) {
+        const error = typeof e === 'string' ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
 
       return harga;
     }

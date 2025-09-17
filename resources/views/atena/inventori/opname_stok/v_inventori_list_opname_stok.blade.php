@@ -227,7 +227,7 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
             data = data.data;
             if (data.status == 'I' || data.status == 'S') {
               var kode = row.kodeopnamestok;
@@ -263,7 +263,7 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodeopnamestok;
@@ -300,7 +300,7 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
+          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
             data = data.data;
             if (data.status == 'S' || data.status == 'P') {
               get_akses_cetak_ulang('inventori', function(data) {

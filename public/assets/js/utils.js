@@ -1,10 +1,13 @@
-function get_status_trans(v_link, v_idtranskey, v_idtrans, callback) {
+function get_status_trans(token, v_link, v_idtranskey, v_idtrans, callback) {
     const form = new FormData();
     form.append(v_idtranskey, v_idtrans);
     fetch(base_url_api + v_link + "/get-status-trans", {
         method: "POST",
         body: form,
         cache: "no-cache",
+        headers: {
+            Authorization: 'Bearer ' + token,
+        }
     })
         .then((response) => response.json())
         .then((data) => callback(data))
@@ -23,6 +26,7 @@ function getCurrentDateTime() {
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
+
 
 async function getCetakDocument(token, url, body) {
     try {

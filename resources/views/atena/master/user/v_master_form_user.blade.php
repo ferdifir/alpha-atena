@@ -244,54 +244,8 @@
 
     $(function() {
       browse_data_perkiraan('#UUIDPERKIRAAN');
-
-      $('#form_input').form({
-        url: link_api.simpanUser,
-        ajax: true,
-        iframe: false,
-        success: function(msg) {
-          tutupLoaderSimpan();
-          //   msg = JSON.parse(msg);
-          //   var mode = $('#mode').val();
-          //   if (msg.success) {
-          //     if (mode == 'tambah') {
-          //       $.messager.alert(
-          //         'Info',
-          //         'Berhasil menyimpan data. Segera melakukan verifikasi melalui email yang telah kami kirim',
-          //         'info',
-          //       );
-          //       tambah();
-          //     } else {
-          //       $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-          //     }
-          console.log(msg);
-
-          location.reload();
-          //   } else {
-          //     $.messager.alert('Error', msg.message, 'error');
-          //   }
-        },
-        loader: function(param, success, error) {
-          console.log(param);
-          $.ajax({
-            url: link_api.simpanUser,
-            type: 'POST',
-            data: $(this).serialize(),
-            dataType: 'json',
-            success: function(response) {
-              success(response);
-            },
-            error: function(xhr, status, err) {
-              error(xhr, status, err);
-            }
-          });
-        }
-      });
-
       buat_table_perkiraan();
-
       buat_table_jamakses();
-
       buat_table_akses_dashboard();
 
       $("#table_data_lokasi").datagrid({
@@ -707,7 +661,7 @@
           downloadingImage.onload = function() {
             image.src = this.src;
           };
-          downloadingImage.src = base_url + "assets/foto_user/" + gambar + '?' + new Date().getTime();
+          downloadingImage.src = gambar + '?' + new Date().getTime();
           // akhir script load gambar
         } else {
           $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
@@ -980,10 +934,10 @@
               tambah();
             } else {
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-              location.reload();
+              ubah();
             }
           } else {
-            $.messager.alert('Error', msg.message, 'error');
+            $.messager.alert('Error', response.message, 'error');
           }
         } catch (error) {
           tutupLoaderSimpan();
@@ -1051,7 +1005,7 @@
         const response = await fetchData(link_api.getLokasiTransferPerUser, form);
         var rows = $('#table_data_lokasi_transfer').datagrid('getRows');
         var ln = rows.length;
-        console.log(response);
+
         for (var i = 0; i < ln; i++) {
 
           var data = response.data;
@@ -1304,7 +1258,6 @@
           }
         },
         onLoadSuccess: function(data) {
-          console.log(data);
           for (var i = 0; i < data.rows.length; i++) {
             if (data.rows[i].hakakses == 1) {
               $(this).datagrid('checkRow', i);
@@ -1408,7 +1361,7 @@
 
     function copyDataAksesPOSDesktop() {
       var id = $('#USERCOPYAKSESPOSDESKTOP').combogrid('getValue')
-      console.log(id);
+
       $('#menu_tree_pos_desktop').treegrid('load', {
         kode: id
       });
@@ -1529,6 +1482,63 @@
           return '';
         }
       }
+    }
+
+    function cek_header(a, induk) {
+      var check = $('#cb-' + a + '-' + induk).prop('checked') ? 1 : 0;
+
+      var tg = $('#menu_tree');
+
+      $('.cb-' + a + '-' + induk).each(function() {
+        var kodemenu = $(this).val();
+
+        var row = tg.treegrid('find', kodemenu);
+
+        if (typeof row.hakakses == 'undefined')
+          row.hakakses = 0;
+        if (typeof row.tambah == 'undefined')
+          row.tambah = 0;
+        if (typeof row.ubah == 'undefined')
+          row.ubah = 0;
+        if (typeof row.hapus == 'undefined')
+          row.hapus = 0;
+        if (typeof row.cetak == 'undefined')
+          row.cetak = 0;
+        if (typeof row.batalcetak == 'undefined')
+          row.batalcetak = 0;
+        if (typeof row.inputharga == 'undefined')
+          row.inputharga = 0;
+        if (typeof row.lihatharga == 'undefined')
+          row.lihatharga = 0;
+        if (typeof row.lihatsemuatrans == 'undefined')
+          row.lihatsemuatrans = 0;
+
+        if (a == 'hakakses')
+          row.hakakses = check;
+        if (a == 'tambah')
+          row.tambah = check;
+        if (a == 'ubah')
+          row.ubah = check;
+        if (a == 'hapus')
+          row.hapus = check;
+        if (a == 'cetak')
+          row.cetak = check;
+        if (a == 'batalcetak')
+          row.batalcetak = check;
+        if (a == 'inputharga')
+          row.inputharga = check;
+        if (a == 'lihatharga')
+          row.lihatharga = check;
+        if (a == 'lihatsemuatrans')
+          row.lihatsemuatrans = check;
+
+        $('#menu_tree').treegrid('update', {
+          id: kodemenu,
+          row: row
+        });
+      });
+
+      tg.treegrid('showLines');
     }
 
     function is_loaded() {

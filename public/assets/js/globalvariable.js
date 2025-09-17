@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 // var base_url_api = "http://192.168.1.45:8000/api/";
 var base_url_api = "https://dev.atena.id/api/";
+=======
+var base_url_api = "https://api.atena.id/api/";
+>>>>>>> 18c17b23cea0ef01f0ba24fa542d11aa9e350b09
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -144,6 +148,7 @@ var link_api = {
     getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
     loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
     hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
+    browseKendaraan: `${base_url_api}atena/master/kendaraan/browse`,
     //jenis pemakaian
     simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
     getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
@@ -187,7 +192,7 @@ var link_api = {
     getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
     loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
     hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
-    getPPNAktfif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
+    // getPPNAktfif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
     //Barang
     loadDataGridBarang: `${base_url_api}atena/master/barang/load-data-grid`,
     simpanBarang: `${base_url_api}atena/master/barang/simpan`,
@@ -213,7 +218,7 @@ var link_api = {
     getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     browseBarangJualAll: `${base_url_api}atena/master/barang/browse-jual-all`,
     hargaJualTerakhir: `${base_url_api}atena/master/barang/harga-jual-terakhir`,
-    getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
+    // getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     cekCollie: `${base_url_api}atena/master/barang/cek-collie`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
@@ -328,6 +333,7 @@ var link_api = {
     //pembelian - permintaan barang
     loadDataDetailPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-detail-transfer`,
     broswePermintaanBarangTransfer: `${base_url_api}atena/pembelian/permintaan-barang/browse-transfer`,
+    browseFilterPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/browse-filter`,
     //Inventory Kirim Ekspedisi
     ubahStatusJadiSlipInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/ubah-status-jadi-slip`,
     cetakInventoryKirimEkspedisi: `${base_url_api}atena/inventori/kirim-ekspedisi/cetak/`,
@@ -362,6 +368,23 @@ var link_api = {
     loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
     loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
+    //Inventory Barang Keluar
+    loadDataGridInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-grid`,
+    batalTransaksiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/batal-trans`,
+    loadDataGridPendingInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-grid-pending`,
+    ubahStatusJadiInputInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/ubah-status-jadi-input`,
+    ubahStatusJadiSlipInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/ubah-status-jadi-slip`,
+    cetakInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak/`,
+    cetakCollieInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-collie/`,
+    cetakEkspedisiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cetak-ekspedisi/`,
+    loadDataBarangKeluarBarcode: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-barcode`,
+    browseBBKInventoryBarangKeluar: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-bukti-pengeluaran-barang`,
+    cekValidUangMuka: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cek-valid-uang-muka`,
+    simpanInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/simpan`,
+    loadDataHeaderInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-header`,
+    loadDataInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data`,
+    loadDataRekapInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-rekap`,
+    loadDataDetailTransInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-detail-trans`,
     //Pembelian Permintaan Barang
     loadDataHeaderPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-header`,
     loadConfigPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-config`,
@@ -415,10 +438,12 @@ var link_api = {
     loadDataHeaderPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-header`,
     tampilDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/tampil-data-sinkronisasi`,
     simpanDataSinkronisasiSO: `${base_url_api}atena/penjualan/pesanan-penjualan/simpan-data-sinkronisasi`,
-    cekBisaBerlanjutSO: `${base_url_api}atena/inventori/pesanan-penjualan/cek-bisa-berlanjut`,
+    cekBisaBerlanjutSO: `${base_url_api}atena/inventori/pesanan-penjualan/cek-bisa-lanjut`,
     browseSO: `${base_url_api}atena/penjualan/pesanan-penjualan/browse`,
     loadDataDetailPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-detail`,
     browseBarangPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
+    browseBarangSO: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
+    loadDataRekapPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-rekap`,
     //Penjualan Delivery Order
     loadDataGridPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid`,
     loadDataGridPendingPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid-pending`,
@@ -430,6 +455,30 @@ var link_api = {
     loadDataPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data`,
     informasiTransReferensi: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/informasi-trans-referensi`,
     loadDataHeaderPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-header`,
+    cekBisaBerlanjutDO: `${base_url_api}atena/inventori/pesanan-pengiriman/cek-bisa-lanjut`,
+    browseBarangDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-barang`,
+    loadDataDetailPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-detail`,
+    browseBBKPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-bukti-pengeluaran-barang`,
+    //Retur Pembelian
+    cekBisaBerlanjutReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/cek-bisa-berlanjut`,
+    browseBBKReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/browse-bukti-pengeluaran-barang`,
+    loadDataDetailReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-detail`,
+    loadDataHeaderReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-header`,
+    //Tutup Permintaan Barang
+    loadDataGridTutupPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/load-data-grid`,
+    tutupTransaksiPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans`,
+    tutupTransaksiBarangPermintaanBarang: `${base_url_api}atena/pembelian/tutup-permintaan-barang/tutup-trans-barang`,
+    loadDataTutupPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-tutup-permintaan-barang`,
+    //Tutup Pesanan Pembelian
+    loadDataGridTutupPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/load-data-grid`,
+    browseFilterPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-filter`,
+    tutupTransaksiPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/tutup-trans`,
+    tutupTransaksiBarangPesananPembelian: `${base_url_api}atena/pembelian/tutup-pesanan-pembelian/tutup-trans-barang`,
+    //Tutup Pesanan Penjualan
+    loadDataGridTutupPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/load-data-grid`,
+    browseFilterPesananPenjualan: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-filter`,
+    tutupTransaksiPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans`,
+    tutupTransaksiBarangPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans-barang`,
 };
 
 var modul_kode = {
@@ -483,7 +532,7 @@ async function set_ppn_aktif(tanggal, token, onSuccess) {
             return response.json();
         })
         if (response.success&&onSuccess) {
-            await onSuccess(response);            
+            await onSuccess(response);
         } else {
             $.messager.alert('Error', response.message, 'error');
         }

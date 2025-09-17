@@ -624,6 +624,23 @@ Route::get('atena/inventori/penyesuaianstok/form', function() {
     ]);
 })->name('atena.inventori.penyesuaianstok.form');
 
+// Inventory Bukti Pengeluaran
+Route::get('atena/inventori/barangkeluar/transaksi', function() {
+    return view('atena.inventori.bukti_pengeluaran.v_inventori_list_bukti_pengeluaran', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.buktipengeluaran.transaksi');
+
+Route::get('atena/inventori/barangkeluar/form', function() {
+    return view('atena.inventori.bukti_pengeluaran.v_inventori_form_bukti_pengeluaran', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+        'dataref'=>request()->dataref,
+        'jenistransref'=>request()->jenistransref,
+    ]);
+})->name('atena.inventori.buktipengeluaran.form');
+
 // Penjualan Sales Order
 Route::get('atena/penjualan/salesorder/transaksi', function() {
     return view('atena.penjualan.sales_order.v_penjualan_list_sales_order', [
@@ -669,7 +686,7 @@ Route::get('atena/pembelian/pesananpembelian/form', function() {
     ]);
 })->name('atena.pembelian.pesanan_pembelian.form');
 
-// Pembelian 
+// Pembelian
 Route::get('atena/pembelian/pembelian/transaksi', function() {
     return view('atena.pembelian.pembelian.v_pembelian_list_pembelian', [
         'kodemenu' => request()->kode,
@@ -683,6 +700,20 @@ Route::get('atena/pembelian/pembelian/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.pembelian.pembelian.form');
+
+// Tutup Permintaan Barang
+Route::get('atena/pembelian/tutuppermintaanbarang/transaksi', function() {
+    return view('atena.pembelian.tutup_permintaan_barang.v_pembelian_list_tutup_permintaan_barang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.tutup_permintaan_barang.transaksi');
+
+// Tutup Pesanan Pembelian
+Route::get('atena/pembelian/tutuppesananpembelian/transaksi', function() {
+    return view('atena.pembelian.tutup_pesanan_pembelian.v_pembelian_list_tutup_pesanan_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.tutup_pesanan_pembelian.transaksi');
 
 // Pesanan Pengiriman
 Route::get('atena/penjualan/deliveryorder/transaksi', function() {
@@ -699,3 +730,10 @@ Route::get('atena/penjualan/deliveryorder/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.penjualan.deliveryorder.form');
+
+// Tutup Pesanan Penjualan
+Route::get('atena/penjualan/tutupsalesorder/transaksi', function() {
+    return view('atena.penjualan.tutup_pesanan_penjualan.v_penjualan_list_tutup_pesanan_penjualan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.tutuppesananpenjualan.transaksi');

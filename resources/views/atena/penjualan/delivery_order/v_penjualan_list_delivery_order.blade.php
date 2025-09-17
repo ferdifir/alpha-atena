@@ -263,27 +263,28 @@
       $('#mode').val('hapus');
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
-            data = data.data;
-            if (data.status == 'I') {
-              var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatalkan ', 'warning');
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo,
+            function(data) {
+              data = data.data;
+              if (data.status == 'I') {
+                var kode = row.kodedo;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatalkan ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.hapus == 1) {
+                      $("#alasan_pembatalan").dialog('open');
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -295,11 +296,12 @@
 
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
             data = data.data;
             if (data.status == 'S') {
               var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
+              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
                 $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
                   ', Sebelum Dibatal Cetak ', 'warning');
               } else {
@@ -333,7 +335,7 @@
             return false;
           }
 
-          get_status_trans("atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
+          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo, function(data) {
             data = data.data;
             if (data.status == 'S' || data.status == 'P') {
               const kodemenu = modul_kode['penjualan'];
@@ -355,7 +357,8 @@
               });
             } else if (data.status == 'I') {
               var kode = row.kodedo;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
+              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
                 $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
                   'warning');
               } else {
@@ -366,7 +369,6 @@
             }
           });
         });
-        //window.open(url, 'Cetak Pesanan Pembelian', 'width=850, height=842, scrollbars=yes');
       }
     }
 
@@ -376,25 +378,24 @@
       if (row && alasan != "") {
         $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodedo + ' ?', function(r) {
           if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: link_api.batalTransaksiPenjualanDeliveryOrder,
-              data: "idtrans=" + row.uuiddo + "&kodetrans=" + row.kodedo + "&alasan=" + alasan,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                if (msg.success) {
-                  $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
-                  reload();
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
+            fetchData(
+              '{{ session('TOKEN') }}',
+              link_api.batalTransaksiPenjualanDeliveryOrder, {
+                uuiddo: row.uuiddo,
+                kodedo: row.kodedo,
+                alasan: alasan
               }
+            ).then(res => {
+              if (res.success) {
+                $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
+                reload();
+              } else {
+                $.messager.alert('Error', res.message, 'error');
+              }
+            }).catch(err => {
+              const error = (typeof err === 'string') ? err : err.message;
+              const textError = getTextError(error);
+              $.messager.alert('Error', textError, 'error');
             });
           }
         });
@@ -497,7 +498,7 @@
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
       for (var i = 0; i < dataLokasi.length; i++) {
-        lokasi += (dataLokasi[i]["id"] + ",");
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
       }
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
@@ -526,6 +527,8 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
+        pagination: true,
+        clientPaging: false,
         pageSize: 20,
         url: link_api.loadDataGridPenjualanDeliveryOrder,
         rowStyler: function(index, row) {

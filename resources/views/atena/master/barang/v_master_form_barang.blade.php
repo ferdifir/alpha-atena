@@ -30,7 +30,7 @@
                                 <tr>
                                   <td style="width:100px" align="right" id="label_form">Kode Barang</td>
                                   <td>
-                                    <input id="KODEBARANG" name="kodebarang" style="width:110px" class="label_input">
+                                    <input id="KODEBARANG" name="kodebarang" style="width:248px" class="label_input">
                                     <label id="label_form"><input type="checkbox" id="STATUS" name="status"
                                         value="1"> Aktif</label>
                                     <!--<label id="label_form"><input type="checkbox" id="SET" name="set" value="1"> Set</label>!-->
@@ -47,14 +47,14 @@
                                 <tr>
                                   <td style="width:100px" align="right" id="label_form">Kode Barang Pajak</td>
                                   <td>
-                                    <input id="KODEBARANGPAJAK" name="kodebarangpajak" style="width:110px"
+                                    <input id="KODEBARANGPAJAK" name="kodebarangpajak" style="width:300px"
                                       class="label_input">
                                   </td>
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Nama Barang</td>
                                   <td>
-                                    <input name="namabarang" style="width:250px" class="label_input" required="true"
+                                    <input name="namabarang" style="width:300px" class="label_input" required="true"
                                       validType='length[0,200]'>
                                   </td>
                                 </tr>
@@ -75,24 +75,26 @@
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Merk</td>
-                                  <td><input id="KODEMERKBARANG" name="kodemerk" style="width:130px"
-                                      class="label_input" required>
+                                  <td>
+                                    <input id="KODEMERKBARANG" name="kodemerk" style="width:268px" class="label_input"
+                                      required>
                                     <a id="tambah_merk" title="Input Merk Baru"
                                       class="easyui-tooltip easyui-linkbutton" plain="true" iconCls="icon-add"
-                                      onclick="pilih_merk()"></a>
+                                      onclick="pilih_merk()">
+                                    </a>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Part Number</td>
                                   <td>
-                                    <input name="partnumber" style="width:250px" class="label_input"
+                                    <input name="partnumber" style="width:300px" class="label_input"
                                       validType='length[0,200]'>
                                   </td>
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Isi Collie</td>
                                   <td>
-                                    <input name="isicollie" id="ISICOLLIE" style="width:250px;" class="number"
+                                    <input name="isicollie" id="ISICOLLIE" style="width:300px;" class="number"
                                       min="0">
                                   </td>
                                 </tr>
@@ -101,23 +103,35 @@
                                   <td valign="top" colspan="2">
                                     <span id="label_form">Merupakan Hal Penting Dalam Penggunaan Aplikasi Atena Pos.
                                       <br>Harap Mengisi Minimal 1 Kategori Dan Menentukan Kategori Utama.</span>
-                                    <div id="daftar_kategori">
-                                      <div id="kategori_1"><input id="nama_kategori_1" style="font-size: 18px;"><a
-                                          class="easyui-linkbutton" plain="true" iconCls="icon-remove"
-                                          onclick="hapusKategori(1)"></a><input type="checkbox" id="cb_kategori_1"
-                                          name="cb_kategori_utama" value="1" checked></div>
-                                      <div id="kategori_2"><input id="nama_kategori_2" style="font-size: 18px;"><a
-                                          class="easyui-linkbutton" plain="true" iconCls="icon-remove"
-                                          onclick="hapusKategori(2)"></a><input type="checkbox" id="cb_kategori_2"
-                                          name="cb_kategori_utama" value="2"></div>
-                                      <div id="kategori_3"><input id="nama_kategori_3" style="font-size: 18px;"><a
-                                          class="easyui-linkbutton" plain="true" iconCls="icon-remove"
-                                          onclick="hapusKategori(3)"></a><input type="checkbox" id="cb_kategori_3"
-                                          name="cb_kategori_utama" value="3"></div>
-                                      <div id="kategori_4"><input id="nama_kategori_4" style="font-size: 18px;"><a
-                                          class="easyui-linkbutton" plain="true" iconCls="icon-remove"
-                                          onclick="hapusKategori(4)"></a><input type="checkbox" id="cb_kategori_4"
-                                          name="cb_kategori_utama" value="4"></div>
+                                    <div id="daftar_kategori" style="width: 300">
+                                      <div id="kategori_1">
+                                        <input id="nama_kategori_1" style="font-size: 18px;">
+                                        <a class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                                          onclick="hapusKategori(1)"></a>
+                                        <input type="checkbox" id="cb_kategori_1" name="cb_kategori_utama"
+                                          value="1" checked>
+                                      </div>
+                                      <div id="kategori_2">
+                                        <input id="nama_kategori_2" style="font-size: 18px;">
+                                        <a class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                                          onclick="hapusKategori(2)"></a>
+                                        <input type="checkbox" id="cb_kategori_2" name="cb_kategori_utama"
+                                          value="2">
+                                      </div>
+                                      <div id="kategori_3">
+                                        <input id="nama_kategori_3" style="font-size: 18px;">
+                                        <a class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                                          onclick="hapusKategori(3)"></a>
+                                        <input type="checkbox" id="cb_kategori_3" name="cb_kategori_utama"
+                                          value="3">
+                                      </div>
+                                      <div id="kategori_4">
+                                        <input id="nama_kategori_4" style="font-size: 18px;">
+                                        <a class="easyui-linkbutton" plain="true" iconCls="icon-remove"
+                                          onclick="hapusKategori(4)"></a>
+                                        <input type="checkbox" id="cb_kategori_4" name="cb_kategori_utama"
+                                          value="4">
+                                      </div>
                                       <input id="nama_kategori" style="font-size: 18px;">
                                       <a class="easyui-linkbutton" plain="true" iconCls="icon-add"
                                         onclick="tambahKategori()"></a>
@@ -135,7 +149,7 @@
                                     <b>Contoh Input Satuan </b>
                                   </td>
                                   <td>
-                                    <textarea id="CONTOHSATUAN" style="width:310px; height:95px" class="label_input" multiline="true"
+                                    <textarea id="CONTOHSATUAN" style="width:300px; height:95px" class="label_input" multiline="true"
                                       validType='length[0,300]' readonly></textarea>
                                   </td>
                                 </tr>
@@ -147,10 +161,10 @@
                                 <tr>
                                   <td align="right" id="label_form">Satuan 1</td>
                                   <td>
-                                    <input id="SATUAN" name="satuan" style="width:40px"
+                                    <input id="SATUAN" name="satuan" style="width:45px"
                                       class="easyui-validatebox label_input" validType='length[0,100]' required="true">
                                     <span id="label_form">Barcode Satuan 1</span>
-                                    <input name="barcodesatuan1" style="width:120px" class="label_input"
+                                    <input name="barcodesatuan1" style="width:125px" class="label_input"
                                       validType='length[0,200]'>
                                     <a id="tambah_satuan_1" class="easyui-linkbutton" plain="true"
                                       iconCls="icon-add" onclick="tambahSatuan()"></a>
@@ -192,7 +206,7 @@
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Harga Beli</td>
-                                  <td><input name="hargabeli" id="HARGABELI" style="width:100px;" class="number"></td>
+                                  <td><input name="hargabeli" id="HARGABELI" style="width:300px;" class="number"></td>
                                 </tr>
                                 <tr>
                                   <td align="right" id="label_form">Harga Jual Berdasarkan</td>
@@ -216,10 +230,10 @@
                                 <tr>
                                   <td align="right" id="label_form">Limit Min</td>
                                   <td id="label_form">
-                                    <input name="limitmin" id="LIMITMIN" style="width:100px;" class="number"
+                                    <input name="limitmin" id="LIMITMIN" style="width:132px;" class="number"
                                       min="0">
                                     &nbsp;&nbsp;Max
-                                    <input name="limitmax" id="LIMITMAX" style="width:100px;" class="number"
+                                    <input name="limitmax" id="LIMITMAX" style="width:133px;" class="number"
                                       min="0">
                                   </td>
                                 </tr>

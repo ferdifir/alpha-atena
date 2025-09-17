@@ -387,7 +387,6 @@
           options: {
             onChange: function(value) {
               if (value) {
-                console.log(value);
                 $('#table_data').datagrid('addFilterRule', {
                   field: 'tglentry',
                   op: 'contains',
