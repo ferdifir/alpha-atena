@@ -18,7 +18,7 @@
                                     <table style="padding:5px">
                                         <tr>
                                             <td align="right" id="label_form">NIK</td>
-                                            <td><input id="kodekaryawan" name="kodekaryawan" style="width:200px"
+                                            <td><input id="kodekaryawan" name="kodekaryawan" style="width:290px"
                                                     class="label_input">
                                                 <label id="label_form"><input type="checkbox" id="status" name="status"
                                                         value="1"> Aktif</label>
@@ -27,62 +27,65 @@
                                         <tr>
                                             <td align="right" id="label_form">User</td>
                                             <td>
-                                                <input name="uuiduser" id="uuiduser" style="width:250px">
+                                                <input name="uuiduser" id="uuiduser" style="width:350px">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Nama</td>
-                                            <td><input id="namakaryawan" name="namakaryawan" style="width:250px"
+                                            <td><input id="namakaryawan" name="namakaryawan" style="width:350px"
                                                     class="label_input" required="true" validType='length[0,300]'></td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Departemen Kerja</td>
                                             <td>
                                                 <input name="uuiddepartemenkerja" id="uuiddepartemenkerja"
-                                                    style="width:250px" required>
+                                                    style="width:350px" required>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Supervisor</td>
                                             <td>
-                                                <input name="uuidsupervisor" id="uuidsupervisor" style="width:250px">
+                                                <input name="uuidsupervisor" id="uuidsupervisor" style="width:350px">
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Alamat</td>
-                                            <td id="label_form"><input name="alamat" style="width:250px"
+                                            <td id="label_form"><input name="alamat" style="width:350px"
                                                     class="label_input" validType='length[0,300]'>
-                                                &nbsp; Kode Pos
-                                                <input name="kodepos" style="width:100px" class="label_input"
-                                                    validType='length[0,100]'>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td align="right" id="label_form">Kota</td>
+                                            <td align="right" id="label_form">Kode Pos</td>
                                             <td id="label_form">
-                                                <input name="kota" style="width:150px" class="label_input"
+                                                <input name="kodepos" style="width:80px" class="label_input"
                                                     validType='length[0,100]'>
-                                                &nbsp; Propinsi
-                                                <input name="propinsi" style="width:150px" class="label_input"
+                                                &nbsp; Kota
+                                                <input name="kota" style="width:232px" class="label_input"
+                                                    validType='length[0,100]'>
+                                            </td>
+                                        </tr><tr>
+                                            <td align="right" id="label_form">Propinsi</td>
+                                            <td id="label_form">
+                                                <input name="propinsi" style="width:160px" class="label_input"
                                                     validType='length[0,100]'>
                                                 &nbsp; Negara
-                                                <input name="negara" style="width:150px" class="label_input"
+                                                <input name="negara" style="width:137px" class="label_input"
                                                     validType='length[0,100]'>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Email</td>
-                                            <td><input id="email" name="email" style="width:250px" class="label_input"
+                                            <td><input id="email" name="email" style="width:350px" class="label_input"
                                                     validType="email" required></td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">Telp.</td>
-                                            <td><input name="telp" style="width:250px" class="label_input"
+                                            <td><input name="telp" style="width:350px" class="label_input"
                                                     validType='length[0,50]'></td>
                                         </tr>
                                         <tr>
                                             <td align="right" id="label_form">HP</td>
-                                            <td><input name="hp" style="width:250px" class="label_input"
+                                            <td><input name="hp" style="width:350px" class="label_input"
                                                     validType='length[0,50]'></td>
                                         </tr>
                                         <tr>
