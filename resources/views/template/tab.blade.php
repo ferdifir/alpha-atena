@@ -85,7 +85,9 @@
                               '&kodeinduk=' .
                               $menuLv1['kodemenu'] .
                               '&kodelaporan=' .
-                              $menuLv2['kodemenu'];
+                              $menuLv2['kodemenu'].
+                              '$jenis='.
+                              $menuLv3['jenis'];
                         @endphp
 
                         <a href="#" id="linkLaporan" class="Links"
