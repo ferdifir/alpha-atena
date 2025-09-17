@@ -1,3 +1,4 @@
+// var base_url_api = "http://192.168.1.45:8000/api/";
 var base_url_api = "https://api.atena.id/api/";
 var link_api = {
     //login
@@ -187,7 +188,7 @@ var link_api = {
     getHeaderPPN: `${base_url_api}atena/master/ppn/load-data-header`,
     loadDataGridPPN: `${base_url_api}atena/master/ppn/load-data-grid`,
     hapusPPN: `${base_url_api}atena/master/ppn/hapus`,
-    // getPPNAktfif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
+    getPPNAktif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
     //Barang
     loadDataGridBarang: `${base_url_api}atena/master/barang/load-data-grid`,
     simpanBarang: `${base_url_api}atena/master/barang/simpan`,
@@ -213,7 +214,6 @@ var link_api = {
     getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     browseBarangJualAll: `${base_url_api}atena/master/barang/browse-jual-all`,
     hargaJualTerakhir: `${base_url_api}atena/master/barang/harga-jual-terakhir`,
-    // getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     cekCollie: `${base_url_api}atena/master/barang/cek-collie`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
@@ -412,7 +412,6 @@ var link_api = {
     browseAnalisisPesananPembelianPO: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/browse-pesanan-pembelian`,
     browseBarangBySupplier: `${base_url_api}atena/master/barang/browse-by-supplier`,
     informasiTransRefBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/informasi-trans-referensi`,
-    getPPNAktif: `${base_url_api}atena/master/ppn/get-ppn-aktif`,
     //pembelian
     browseBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/browse`,
     //Penjualan Sales Order

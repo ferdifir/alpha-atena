@@ -604,7 +604,7 @@
                 ],
                 columns: [
                     [{
-                            field: 'idbarang',
+                            field: 'uuidbarang',
                             hidden: true
                         },
                         {
