@@ -182,15 +182,23 @@
     $(document).ready(function() {
       buat_table_informasi_hutang();
 
-      //   <?php
-      // 	if (!$FITURINFORASIHUTANGSUPPLIER) {
-      //
-      ?>
-      //   $('#tabs').tabs('disableTab', 3);
-      //   <?php
-      // 	}
-      //
-      ?>
+      fetchData(
+        link_api.getAksesFitur, {
+          uuiduser: '{{ session('DATAUSER')['uuid'] }}',
+          kodemenu: 'I8K83',
+        }).then(res => {
+        if (res.success) {
+          if (!res.data.akses) {
+            $('#tabs').tabs('disableTab', 3);
+          }
+        } else {
+          $.messager.alert('Error', res.message, 'error');
+        }
+      }).catch(err => {
+        const error = (typeof err === 'string') ? err : err.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      });
 
       $('[name=uuidsyaratbayar]').combogrid({
         required: true,

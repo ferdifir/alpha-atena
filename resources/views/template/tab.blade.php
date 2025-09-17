@@ -562,7 +562,7 @@
     function halamanPilihPerusahaan() {
       $.messager.confirm('Question', 'Anda Yakin Akan Kembali ke Halaman Pilih Perusahaan ?', function(r) {
         if (r) {
-          window.location = '/hompage-perusahaan';
+          window.location = '{{ route('homepage.perusahaan') }}';
         }
       });
     }

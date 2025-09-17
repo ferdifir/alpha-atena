@@ -246,17 +246,17 @@
       $('#IDLOKASI').combogrid('readonly', false);
       idtrans = "";
 
-      $.ajax({
-        type: 'POST',
-        url: link_api.getLokasiDefault,
-        dataType: 'json',
-        cache: false,
-        success: function(msg) {
-          if (msg.uuidlokasi != null) {
-            $('#IDLOKASI').combogrid('setValue', msg.uuidlokasi);
-            $("#KODELOKASI").val(msg.kodelokasi);
-          }
+      fetchData(link_api.getLokasiDefault).then(res => {
+        if (res.success && res.data.uuidlokasi != null) {
+          $('#IDLOKASI').combogrid('setValue', res.data.uuidlokasi);
+          $("#KODELOKASI").val(res.data.kodelokasi);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
+      }).catch(e => {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
       });
 
       clear_plugin();
@@ -421,28 +421,31 @@
       $('#table_data_detail_po').datagrid('loadData', []);
     }
 
-    function load_data(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDataInventoryOpnameStok,
-        data: {
+    async function load_data(idtrans) {
+      try {
+        $('#table_data_detail').datagrid('loading');
+        const res = await fetchData(link_api.loadDataInventoryOpnameStok, {
           uuidopnamestok: idtrans
-        },
-        cache: false,
-        beforeSend: function() {
-          $('#table_data_detail').datagrid('loading');
-        },
-        success: function(msg) {
-          $('#table_data_detail').datagrid('loaded');
+        });
+        $('#table_data_detail').datagrid('loaded');
+        if (res.success) {
+          const msg = res.data;
           $('#table_data_detail').datagrid('loadData', msg);
           var rows = msg;
           for (var i = 0; i < rows.length; i++) {
             hitung_subtotal_detail(i, rows[i])
           }
           hitung_grandtotal();
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        $('#table_data_detail').datagrid('loaded');
+      }
     }
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
@@ -785,7 +788,7 @@
       $("#TGLJATUHTEMPO").datebox('readonly');
     }
 
-    function insert_barang(barcodesatuan1) {
+    async function insert_barang(barcodesatuan1) {
       var barcodesatuan1string = barcodesatuan1;
       var barcodesatuan1qty = 1;
 
@@ -795,84 +798,77 @@
         barcodesatuan1string = barcodesatuan1split[1];
       }
 
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDataBarangBarcode,
-        data: {
-          barcode: barcodesatuan1string,
-        },
-        cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(msg) {
-          $.messager.progress('close');
+      try {
+        bukaLoader();
+        const res = await fetchData(link_api.loadDataBarangBarcode, {
+          barcode: barcodesatuan1string
+        });
+        if (res.success) {
+          var data = res.data;
 
-          if (msg == null) {
-            $.messager.alert('Error', 'Barcode Tersebut Tidak Ditemukan', 'error');
-          } else {
+          var id = data ? data.uuidbarang : '';
+          var kode = data ? data.kode : '';
+          var nama = data ? data.nama : '';
+          var satuan = data ? data.satuan : '';
+          var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
+          var partnumber = data.partnumber ? data.partnumber : '';
 
-            data = msg["rows"];
+          var daftar_barang = $('#table_data_detail').datagrid('getRows');
+          var data = null
+          var ada = false;
 
-            var id = data ? data.id : '';
-            var kode = data ? data.kode : '';
-            var nama = data ? data.nama : '';
-            var satuan = data ? data.satuan : '';
-            var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
-            var partnumber = data.partnumber ? data.partnumber : '';
-
-            var daftar_barang = $('#table_data_detail').datagrid('getRows');
-            var data = null
-            var ada = false;
-
-            // mencari daftar barang yang sudah ada
-            for (var i in daftar_barang) {
-              if (daftar_barang[i].idbarang == id) {
-                data = {
-                  jml: (daftar_barang[i].jml + barcodesatuan1qty),
-                  satuan_lama: satuan,
-                  satuan: satuan,
-                  partnumber: partnumber,
-                }
-
-                $('#table_data_detail').datagrid('updateRow', {
-                  index: i,
-                  row: data
-                }).datagrid('gotoCell', {
-                  index: i,
-                  field: 'kodebarang'
-                });
-
-                ada = true;
-
-                hitung_subtotal_detail(i, daftar_barang[i]);
-              }
-            }
-
-            if (!ada) {
-              var row = {
-                idbarang: id,
-                kodebarang: kode,
-                namabarang: nama,
-                barcodesatuan1: barcodesatuan1,
-                partnumber: partnumber,
+          // mencari daftar barang yang sudah ada
+          for (var i in daftar_barang) {
+            if (daftar_barang[i].uuidbarang == id) {
+              data = {
+                jml: (daftar_barang[i].jml + barcodesatuan1qty),
                 satuan_lama: satuan,
                 satuan: satuan,
-                jml: 1,
+                partnumber: partnumber,
               }
 
-              $('#table_data_detail').datagrid('appendRow', row);
+              $('#table_data_detail').datagrid('updateRow', {
+                index: i,
+                row: data
+              }).datagrid('gotoCell', {
+                index: i,
+                field: 'kodebarang'
+              });
 
-              hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row);
+              ada = true;
+
+              hitung_subtotal_detail(i, daftar_barang[i]);
+            }
+          }
+
+          if (!ada) {
+            var row = {
+              uuidbarang: id,
+              kodebarang: kode,
+              namabarang: nama,
+              barcodesatuan1: barcodesatuan1,
+              partnumber: partnumber,
+              satuan_lama: satuan,
+              satuan: satuan,
+              jml: 1,
             }
 
-            hitung_grandtotal();
+            $('#table_data_detail').datagrid('appendRow', row);
 
-            $('#BARCODE').textbox('textbox').focus();
+            hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row);
           }
+
+          hitung_grandtotal();
+
+          $('#BARCODE').textbox('textbox').focus();
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        tutupLoader();
+      }
     }
 
     async function fetchData(url, body, isJson = true) {

@@ -26,7 +26,7 @@
 
       <input type="hidden" name="act">
       <input type="hidden" id="mode" name="mode">
-      <input type="hidden" name="gambar">
+      <input type="hidden" name="gambar" id="gambar">
       <input type="hidden" name="tglentry">
       <input type="hidden" id="uuiduser" name="uuiduser">
       <input type="hidden" name="fingerprint1">
@@ -112,7 +112,7 @@
                       <div style="width:100px; height:100px">
                         <img id="preview-image" style="width:100%; height:100%" />
                       </div>
-                      <input id="FILEGAMBAR" name="gambar" class="easyui-filebox"
+                      <input id="FILEGAMBAR" name="filegambar" class="easyui-filebox"
                         data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:100px">
                     </td>
                   </tr>
@@ -228,6 +228,7 @@
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
   </script>
   <script>
+    let fileGambar = null;
     var loaded = {
       menu: false,
       menu_pos: false,
@@ -530,8 +531,10 @@
         accept: 'image/*',
         onChange: function(newVal, oldVal) {
           var input = $(this).next().find('.textbox-value')[0];
+          $('#gambar').val(newVal);
 
           if (input.files && input.files[0]) {
+            fileGambar = input.files[0];
             var reader = new FileReader();
 
             reader.onload = function(e) {
@@ -546,7 +549,7 @@
           '#USERCOPY, #USERCOPYAKSESPOS, #USERCOPYAKSESPOSDESKTOP, #USERCOPYPERKIRAAN, #USERCOPYJAMAKSES, #USERCOPYDASHBOARD'
         )
         .combogrid({
-          panelWidth: 450,
+          panelWidth: 220,
           url: link_api.browseUser,
           idField: 'uuiduser',
           textField: 'nama',
@@ -556,7 +559,8 @@
                 field: 'uuiduser',
                 title: 'User ID',
                 width: 220,
-                sortable: true
+                sortable: true,
+                hidden: true
               },
               {
                 field: 'nama',
@@ -602,13 +606,8 @@
       $('#mode').val('tambah');
       $('[name=authentication]').add($('[name=priority]'))
         .add($('[name=aksesutama]')).prop('checked', true)
-      $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
-      var image = $('#preview-image')[0];
-      var downloadingImage = new Image();
-      downloadingImage.onload = function() {
-        image.src = this.src;
-      };
-      downloadingImage.src = base_url + "assets/foto_user/NO_IMAGE.jpg";
+
+      $('#preview-image').attr('src', "{{ asset('assets/foto_user/NO_IMAGE.jpg') }}");
     }
 
     async function ubah() {
@@ -650,21 +649,13 @@
         });
 
         // remove image
-        $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
+        // $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
 
         // load gambar
-        var gambar = row.gambar;
+        var gambar = row.gambar_full_path;
 
         if (gambar && gambar != "") {
-          var image = $('#preview-image')[0];
-          var downloadingImage = new Image();
-          downloadingImage.onload = function() {
-            image.src = this.src;
-          };
-          downloadingImage.src = gambar + '?' + new Date().getTime();
-          // akhir script load gambar
-        } else {
-          $('#preview-image').removeAttr('src').replaceWith($('#preview-image').clone());
+          $('#preview-image').attr('src', gambar);
         }
 
         $('#UUIDPERKIRAAN').combogrid('setValue', {
@@ -885,43 +876,37 @@
     }
 
     async function simpan() {
-      $('#data_detail').val(JSON.stringify($('#menu_tree').treegrid('getData')));
-      $('#data_akses_pos').val(JSON.stringify($('#menu_tree_pos').treegrid('getData')));
-      $('#data_akses_pos_desktop').val(JSON.stringify($('#menu_tree_pos_desktop').treegrid('getData')));
-
-      $('#data_jamakses').val(JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
-
-      $('#data_lokasi').val(JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
-      $('#data_lokasi_transfer').val(JSON.stringify($('#table_data_lokasi_transfer').datagrid('getChecked')));
-      $('#data_perkiraan').val(JSON.stringify($('#datagrid_perkiraan').datagrid('getChecked')));
-      $('#data_dashboard').val(JSON.stringify($('#table_data_akses_dashboard').datagrid('getChecked')));
-
       var isValid = $('#form_input').form('validate');
       if (isValid && !isTokenExpired()) {
         tampilLoaderSimpan();
-        // $('#form_input').submit();
+        const formData = new FormData();
+        const data = $('#form_input :input').serializeArray();
+
         const data_array = ['data_detail', 'data_akses_pos', 'data_akses_pos_desktop', 'data_jamakses', 'data_lokasi',
           'data_lokasi_transfer', 'data_perkiraan', 'data_dashboard'
         ];
-        let payload = {};
-        const data = $('#form_input').serializeArray();
+
         for (const item of data) {
-          if (data_array.includes(item.name)) {
-            continue;
-          } else {
-            payload[item.name] = item.value;
+          if (!data_array.includes(item.name)) {
+            formData.append(item.name, item.value);
           }
         }
-        payload.data_detail = $('#menu_tree').treegrid('getData');
-        payload.data_akses_pos = $('#menu_tree_pos').treegrid('getData');
-        payload.data_akses_pos_desktop = $('#menu_tree_pos_desktop').treegrid('getData');
-        payload.data_jamakses = $('#table_data_jamakses').datagrid('getRows');
-        payload.data_lokasi = $('#table_data_lokasi').datagrid('getChecked');
-        payload.data_lokasi_transfer = $('#table_data_lokasi_transfer').datagrid('getChecked');
-        payload.data_perkiraan = $('#datagrid_perkiraan').datagrid('getChecked');
-        payload.data_dashboard = $('#table_data_akses_dashboard').datagrid('getChecked');
+
+        if (fileGambar) {
+          formData.append('filegambar', fileGambar);
+        }
+        formData.append('data_detail', JSON.stringify($('#menu_tree').treegrid('getData')));
+        formData.append('data_akses_pos', JSON.stringify($('#menu_tree_pos').treegrid('getData')));
+        formData.append('data_akses_pos_desktop', JSON.stringify($('#menu_tree_pos_desktop').treegrid('getData')));
+        formData.append('data_jamakses', JSON.stringify($('#table_data_jamakses').datagrid('getRows')));
+        formData.append('data_lokasi', JSON.stringify($('#table_data_lokasi').datagrid('getChecked')));
+        formData.append('data_lokasi_transfer', JSON.stringify($('#table_data_lokasi_transfer').datagrid(
+          'getChecked')));
+        formData.append('data_perkiraan', JSON.stringify($('#datagrid_perkiraan').datagrid('getChecked')));
+        formData.append('data_dashboard', JSON.stringify($('#table_data_akses_dashboard').datagrid('getChecked')));
+
         try {
-          const response = await fetchData(link_api.simpanUser, payload);
+          const response = await fetchData(link_api.simpanUser, formData);
           tutupLoaderSimpan();
           var mode = $('#mode').val();
           if (response.success) {
