@@ -86,7 +86,7 @@
                               $menuLv1['kodemenu'] .
                               '&kodelaporan=' .
                               $menuLv2['kodemenu'].
-                              '$jenis='.
+                              '&jenis='.
                               $menuLv3['jenis'];
                         @endphp
 
