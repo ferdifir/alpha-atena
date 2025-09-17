@@ -203,6 +203,7 @@
               title: 'User ID',
               width: 220,
               sortable: true,
+              hidden: true
             },
             {
               field: 'username',

@@ -54,21 +54,24 @@
               <td id="label_form" align="center">Customer</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_customer_filter" name="txt_customer_filter" style="width:100px"
-                  class="label_input" /></td>
+              <td align="center">
+                <input id="txt_customer_filter" name="txt_customer_filter" style="width:100px" class="label_input" />
+              </td>
             </tr>
             <tr>
               <td id="label_form" align="center">No. Pesanan Penjualan</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_kodetrans_aw_filter" name="txt_kodetrans_aw_filter" style="width:100px" />
+              <td align="center">
+                <input id="txt_kodetrans_aw_filter" name="txt_kodetrans_aw_filter" style="width:100px" />
               </td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_kodetrans_ak_filter" name="txt_kodetrans_ak_filter" style="width:100px" />
+              <td align="center">
+                <input id="txt_kodetrans_ak_filter" name="txt_kodetrans_ak_filter" style="width:100px" />
               </td>
             </tr>
             <tr>
@@ -79,23 +82,30 @@
             </tr>
             <tr>
               <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter"style="width:100px"
-                  class="date" /></td>
+                  class="date" />
+              </td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter"style="width:100px"
-                  class="date" /></td>
+              <td align="center">
+                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter"style="width:100px" class="date" />
+              </td>
             </tr>
             <tr>
-              <td align="center"><input type="radio" name="rd_tutup" value="tidak" checked>Tidak Close</td>
+              <td align="center">
+                <input type="radio" name="rd_tutup" value="tidak" checked>Tidak Close
+              </td>
             </tr>
             <tr>
-              <td align="center"><input type="radio" name="rd_tutup" value="sudah" checked>Sudah Close</td>
+              <td align="center">
+                <input type="radio" name="rd_tutup" value="sudah" checked>Sudah Close
+              </td>
             </tr>
             <tr>
-              <td align="center"><input type="radio" name="rd_tutup" value="semua" id="rd_tutup_semua" checked>Semua
+              <td align="center">
+                <input type="radio" name="rd_tutup" value="semua" id="rd_tutup_semua" checked>Semua
               </td>
             </tr>
             <tr>
@@ -461,17 +471,17 @@
     function browse_filter_kodetrans(id, table) {
       $(id).combogrid({
         panelWidth: 640,
-        idField: 'kodetrans',
-        textField: 'kodetrans',
+        idField: 'kodeso',
+        textField: 'kodeso',
         mode: 'remote',
         url: link_api.browseFilterPesananPenjualan,
         columns: [
           [{
-              field: 'idtrans',
+              field: 'uuidso',
               hidden: true
             },
             {
-              field: 'kodetrans',
+              field: 'kodeso',
               title: 'Kode',
               width: 150
             },
@@ -532,7 +542,7 @@
               checkbox: true
             },
             {
-              field: 'idso',
+              field: 'uuidso',
               hidden: true
             },
             {
@@ -637,11 +647,11 @@
               checkbox: true
             },
             {
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
             {
-              field: 'idso',
+              field: 'uuidso',
               hidden: true
             },
             {
