@@ -1,4 +1,5 @@
-var base_url_api = "http://192.168.1.45:8000/api/";
+// var base_url_api = "http://192.168.1.45:8000/api/";
+var base_url_api = "https://dev.atena.id/api/";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
