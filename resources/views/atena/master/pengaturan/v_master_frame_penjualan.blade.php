@@ -674,7 +674,7 @@
 
     async function getDataConfig(modul) {
       try {
-        const response = await parent.fetchData(link_api.loadConfigPenjualan, {
+        const response = await parent.fetchData(link_api.loadDataConfigPenjualan, {
           modul: modul
         });
 

@@ -366,7 +366,8 @@
               data = data.data;
               if (data.status == 'I') {
                 var kode = row.kodebbk;
-                if ($('#tab_transaksi').tabs('exists', kode)) {
+                let isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                if (isTabOpen) {
                   $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
                     ', Sebelum Dibatalkan ', 'warning');
                 } else {
@@ -399,7 +400,8 @@
               data = data.data;
               if (data.status == 'S') {
                 var kode = row.kodebbk;
-                if ($('#tab_transaksi').tabs('exists', kode)) {
+                let isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                if (isTabOpen) {
                   $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
                     ', Sebelum Dibatal Cetak ', 'warning');
                 } else {
