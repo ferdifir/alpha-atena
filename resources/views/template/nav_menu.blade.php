@@ -42,7 +42,7 @@
 
 			// Parameter kodeinduk disini mereferensikan kodemenu pada parent menu yang paling atas (menu level 1),
 			// gunanya untuk bisa mendapatkan menu level 1 dari menu level 3 yang sedang dibuka
-			$link = url('') . '/' . ($menuutama . '/' . str_replace(' ', '', $menuLv2['namamenu']) . '/' . $item['namaclass']) . "?kode=" . $item['kodemenu'] . '&kodeinduk=' . $menuLv1['kodemenu'];
+			$link = url('') . '/' . ($menuutama . '/' . str_replace(' ', '', $menuLv2['namamenu']) . '/' . $item['namaclass']) . "?kode=" . $item['kodemenu'] . '&kodeinduk=' . $menuLv1['kodemenu']. '&kodeinduk=' .$menuLv3['jenis'];
 
 			// jika menu level 1 adalah laporan
 			// maka menambah parameter kode laporan pada URL
