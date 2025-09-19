@@ -473,6 +473,46 @@ var link_api = {
     browseFilterPesananPenjualan: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-filter`,
     tutupTransaksiPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans`,
     tutupTransaksiBarangPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans-barang`,
+
+    //Kas
+    loadTransaksiDataGridKas  : `${base_url_api}atena/akuntansi/kas/load-data-grid`,
+    loadTransaksiDataHeaderKas: `${base_url_api}atena/akuntansi/kas/load-data-header`,
+    loadTransaksiDataDetailKas: `${base_url_api}atena/akuntansi/kas/load-data-detail`,
+    loadGiroBelumCair         : `${base_url_api}atena/akuntansi/kas/get-giro-belum-cair`,
+    loadJurnalLinkKas         : `${base_url_api}atena/akuntansi/kas/get-jurnal-link/`,
+    loadJurnalGiro            : `${base_url_api}atena/akuntansi/kas/load-jurnal-giro`,
+    simpanTransaksiKas        : `${base_url_api}atena/akuntansi/kas/simpan/`,
+    cetakTransaksiKas         : `${base_url_api}atena/akuntansi/kas/cetak/`,
+    getStatusTransaksiKas     : `${base_url_api}atena/akuntansi/kas/get-status-trans`,
+    // simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan`,
+
+    //Saldo Awal Perkiraan
+    loadDataGridSaldoAwalPerkiraan       : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-grid`,
+    loadDataHeaderSaldoAwalPerkiraan     : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-header`,
+    simpanSaldoAwalPerkiraan             : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/simpan`,
+    loadDataSaldoAwalPerkiraan           : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data`,
+    cetakSaldoAwalPerkiraan              : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/cetak/`,
+    batalSaldoAwalPerkiraan              : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/batal-trans`,
+    ubahStatusjadiInputSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-input`,
+    ubahStatusjadiSlipSaldoAwalPerkiraan : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-slip`,
+    getStatusSaldoAwalPerkiraan          : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/get-status-trans`,
+
+    //Tutup Periode Akuntansi
+    simpanTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/simpan`,
+    batalTutupPeriodeAkuntansi : `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
+    browseTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/browse`,
+
+
+    loadTransaksiDataGridFakturPajak  : `${base_url_api}atena/akuntansi/faktur-pajak/load-data-grid`,
+    loadTransaksiDataHeaderFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-header`,
+    batalFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/batal-trans`,
+    ubahStatusjadiSlipFakturPajak     : `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-slip`,
+    ubahStatusjadiInputFakturPajak    : `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-input`,
+    cetakFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/cetak/`,
+    eksporCSVFakturPajak              : `${base_url_api}atena/akuntansi/faktur-pajak/eksporCSV/`,
+    ekporXMLFakturPajak               : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML/`,
+    eksporXMLRetailFakturPajak        : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML-retail/`,
+    getStatusFakturPajak              : `${base_url_api}atena/akuntansi/faktur-pajak/get-status-trans`,
 };
 
 var modul_kode = {
@@ -698,4 +738,107 @@ const getStatusTrans = async (url, token, param) => {
         $.messager.alert('Error', getTextError(error), 'error');
     }
     return status;
+}
+
+async function downloadXML(apiUrl, uuid, token = null) {
+    try {
+        const url = apiUrl + uuid;
+        
+        const authToken = token;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `bearer ${authToken}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const xmlText = await response.text();
+        
+        // Ambil filename dari Content-Disposition header
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename = 'download.xml'; // fallback filename
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1].replace(/['"]/g, '');
+            }
+        }
+        
+        const blob = new Blob([xmlText], { type: 'application/xml' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Error download XML:', error);
+        alert('Gagal mengunduh file XML: ' + error.message);
+        return false;
+    }
+}
+
+async function downloadCSV(apiUrl, uuid, token = null) {
+    try {
+        const url = apiUrl + uuid;
+        
+        // Gunakan token yang diberikan atau ambil dari session
+        const authToken = token;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `bearer ${authToken}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const csvText = await response.text();
+        
+        // Ambil filename dari Content-Disposition header
+        const contentDisposition = response.headers.get('Content-Disposition');
+        let filename = 'download.csv'; // fallback filename
+        
+        if (contentDisposition) {
+            const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            if (filenameMatch && filenameMatch[1]) {
+                filename = filenameMatch[1].replace(/['"]/g, '');
+            }
+        }
+        
+        const blob = new Blob([csvText], { type: 'text/csv' });
+        const downloadUrl = window.URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = downloadUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+        
+        return true;
+        
+    } catch (error) {
+        console.error('Error download CSV:', error);
+        alert('Gagal mengunduh file CSV: ' + error.message);
+        return false;
+    }
 }
