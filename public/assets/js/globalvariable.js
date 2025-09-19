@@ -503,6 +503,7 @@ var link_api = {
     simpanPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/simpan`,
     loadDataRekapPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-rekap`,
     browseOrderJual: `${base_url_api}atena/penjualan/order-penjualan/browse`,
+    loadDataHeaderPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-header`,
 };
 
 var modul_kode = {

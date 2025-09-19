@@ -1133,16 +1133,16 @@
         const res = await fetchData(link_api.loadLastPerkiraan);
         if (res.success) {
           $('#KODEPERKIRAANPERSEDIAAN').combogrid('setValue', {
-            kode: res.kodeperkiraanpersediaan,
-            nama: res.namaperkiraanpersediaan
+            kode: res.data.kodeperkiraanpersediaan,
+            nama: res.data.namaperkiraanpersediaan
           });
           $('#KODEPERKIRAANHPP').combogrid('setValue', {
-            kode: res.kodeperkiraanhpp,
-            nama: res.namaperkiraanhpp
+            kode: res.data.kodeperkiraanhpp,
+            nama: res.data.namaperkiraanhpp
           });
 
-          $('#IDPERKIRAANPERSEDIAAN').val(res.uuidperkiraanpersediaan);
-          $('#IDPERKIRAANHPP').val(res.uuidperkiraanhpp);
+          $('#IDPERKIRAANPERSEDIAAN').val(res.data.uuidperkiraanpersediaan);
+          $('#IDPERKIRAANHPP').val(res.data.uuidperkiraanhpp);
         } else {
           $.messager.alert('Error', res.message, 'error');
         }
