@@ -504,6 +504,16 @@ var link_api = {
     loadDataRekapPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-rekap`,
     browseOrderJual: `${base_url_api}atena/penjualan/order-penjualan/browse`,
     loadDataHeaderPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-header`,
+    browsePenjualan: `${base_url_api}atena/penjualan/penjualan/browse`,
+    // Retur Penjualan
+    loadDataGridReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-grid`,
+    batalTransaksiReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/batal-trans`,
+    ubahStatusJadiInputReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-slip`,
+    cetakReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cetak/`,
+    loadConfigReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-config`,
+    loadDataTagihanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-tagihan`,
+    loadDataReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data`,
 };
 
 var modul_kode = {
