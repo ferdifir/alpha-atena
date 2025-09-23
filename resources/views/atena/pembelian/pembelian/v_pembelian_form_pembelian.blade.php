@@ -9,7 +9,7 @@
             <script>
               if (screen.height < 450) $("#trans_layout").css('height', "450px");
             </script>
-            <div data-options="region:'north',border:false" style="width:100%; height:170px;">
+            <div data-options="region:'north',border:false" style="width:100%; height:180px;">
 
               <div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
 
@@ -18,7 +18,7 @@
               <table>
                 <tr>
                   <td valign="top">
-                    <fieldset style="height:150px;">
+                    <fieldset style="height:170px;">
                       <legend id="label_laporan">Info Transaksi</legend>
                       <table border="0">
                         <tr>
@@ -35,10 +35,13 @@
                         <tr>
                           <td id="label_form" valign="top">Jenis Transaksi</td>
                           <td id="label_form" style="display: flex">
-                            <input type="radio" style="margin: 0" name="jenistransaksi" id="jenistransaksi_beli" value="BELI" checked>
+                            <input type="radio" style="margin: 0" name="jenistransaksi" id="jenistransaksi_beli"
+                              value="BELI" checked>
                             <label for="jenistransaksi_beli" style="margin-left :4px;margin-right :4px ">Beli</label><br>
-                            <input type="radio" style="margin: 0" name="jenistransaksi" id="jenistransaksi_beli_langsung" value="BELI LANGSUNG" >
-                            <label for="jenistransaksi_beli_langsung" style="margin-left :4px;margin-right :4px ">Beli Langsung</label>
+                            <input type="radio" style="margin: 0" name="jenistransaksi"
+                              id="jenistransaksi_beli_langsung" value="BELI LANGSUNG">
+                            <label for="jenistransaksi_beli_langsung" style="margin-left :4px;margin-right :4px ">Beli
+                              Langsung</label>
                           </td>
                         </tr>
                         <tr>
@@ -60,7 +63,7 @@
                     </fieldset>
                   </td>
                   <td align="left" valign="top">
-                    <div id="tab trans" class="easyui-tabs" style="width:380px;height:155px;">
+                    <div id="tab_trans" class="easyui-tabs" style="width:380px;height:170px;">
                       <div title="Info Supplier">
                         <table border="0">
                           <tr>
@@ -110,7 +113,8 @@
                           <tr>
                             <td id="label_form">Syarat Bayar</td>
                             <td id="label_form" colspan="3">
-                              <input name="uuidsyaratbayar" id="IDSYARATBAYAR" class="label_input" style="width:182px">
+                              <input name="uuidsyaratbayar" id="IDSYARATBAYAR" class="label_input"
+                                style="width:182px">
                               <input name="tgljatuhtempo" id="TGLJATUHTEMPO" readonly class="date"
                                 style="width:100px">
                             </td>
@@ -122,7 +126,7 @@
                           <tr>
                             <td id="label_form">Kode</td>
                             <td>
-                              <input id="IDSUPPLIERKIRIM" name="idsupplierkirim" style="width: 100px;">
+                              <input id="IDSUPPLIERKIRIM" name="uuidsupplierkirim" style="width: 100px;">
                               <input name="namasupplierkirim" class="label_input" id="NAMASUPPLIERKIRIM"
                                 style="width:210px" readonly prompt="Nama Supplier">
                             </td>
@@ -324,45 +328,46 @@
 
     $(document).ready(async function() {
       var check = false;
-      await getConfig('KODEBELI', 'TBELI', 'bearer {{ session('TOKEN') }}',
-        function(response) {
-          if (response.success) {
-            config = response.data;
-            check = true;
-          } else {
-            if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
-              window.alert("Login session sudah habis. Silahkan Login Kembali");
+      var check2 =false;
+      var promises = [
+        getConfig('KODEBELI', 'TBELI', 'bearer {{ session('TOKEN') }}',
+          function(response) {
+            if (response.success) {
+              config = response.data;
+              check = true;
             } else {
-              $.messager.alert('Error', error, 'error');
+              if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
+                window.alert("Login session sudah habis. Silahkan Login Kembali");
+              } else {
+                $.messager.alert('Error', error, 'error');
+              }
             }
+          },
+          function(error) {
+            $.messager.alert('Error', "Request Config Error", 'error');
+          }),
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          var UT = data.data.cetak;
+          lihatHarga = data.data.lihatharga == 1;
+          inputHarga = data.data.inputharga == 1;
+          check2=true;
+          if (UT == 1) {
+            $('#simpan_cetak').css('filter', '');
+          } else {
+            $('#simpan_cetak').css('filter', 'grayscale(100%)');
+            $('#simpan_cetak').removeAttr('onclick');
           }
-        },
-        function(error) {
-          $.messager.alert('Error', "Request Config Error", 'error');
-        });
-      if (!check) return;
+
+        }, false),
+      ];
+      await Promise.all(promises);
+      if (!check||!check2) return;
 
       if (transaksiBBM == "HEADER") {
         $("#KOLOMBBM").show();
       } else {
         $("#KOLOMBBM").hide();
       }
-
-      if (lihatHarga) {
-        $("#KOLOM_TOTAL").show();
-        $("#GRAND_TOTAL_TABLE").show();
-      } else {
-        $("#KOLOM_TOTAL").hide();
-        $("#GRAND_TOTAL_TABLE").hide();
-      }
-
-      if (!inputHarga) {
-        $('#DISKON').prop('readonly', true);
-        $('#DISKONRP').prop('readonly', true);
-        $('#PEMBULATAN').prop('readonly', true);
-        $('#BIAYAKIRIM').prop('readonly', true);
-      }
-
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
@@ -416,6 +421,7 @@
       browse_data_supplierkirim('#IDSUPPLIERKIRIM');
       browse_data_lokasi('#IDLOKASI');
       browse_data_bbm('#IDBBM');
+      browse_data_supplier("#KODESUPPLIER");
 
       $("#TGLTRANS").datebox({
         onChange: function(newVal, oldVal) {
@@ -465,8 +471,6 @@
         }
       });
 
-      buat_table_detail();
-
       $('#PERHITUNGANBIAYAKIRIM').combobox({
         onChange: function(newValue, oldValue) {
           hitung_biayakirim_detail();
@@ -481,29 +485,31 @@
         }
       })
 
+      buat_table_detail();
       @if ($mode == 'tambah')
         @if ($data != '')
           uuidRef = "{{ $data }}";
         @endif
-        var promises = [
-          tambah(),
-          get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-            var UT = data.data.cetak;
-            lihatHarga = data.data.lihatharga == 1;
-            inputHarga = data.data.inputharga == 1;
-
-            if (UT == 1) {
-              $('#simpan_cetak').css('filter', '');
-            } else {
-              $('#simpan_cetak').css('filter', 'grayscale(100%)');
-              $('#simpan_cetak').removeAttr('onclick');
-            }
-          }, false),
-        ];
-        await Promise.all(promises);
+        await tambah();
       @elseif ($mode == 'ubah')
         await ubah();
       @endif
+
+
+      if (lihatHarga) {
+        $("#KOLOM_TOTAL").show();
+        $("#GRAND_TOTAL_TABLE").show();
+      } else {
+        $("#KOLOM_TOTAL").hide();
+        $("#GRAND_TOTAL_TABLE").hide();
+      }
+
+      if (!inputHarga) {
+        $('#DISKON').prop('readonly', true);
+        $('#DISKONRP').prop('readonly', true);
+        $('#PEMBULATAN').prop('readonly', true);
+        $('#BIAYAKIRIM').prop('readonly', true);
+      }
 
       // Menghapus loading ketika halaman sudah dimuat
       tutupLoader();
@@ -513,6 +519,50 @@
     shortcut.add('F8', function() {
       simpan();
     });
+
+    $('[name=jenistransaksi]').change(function() {
+      ubahJenis();
+    });
+
+    function ubahJenis() {
+      var val = $('[name=jenistransaksi]:checked').val();
+      var mode = $('#mode').val();
+
+      if (val == 'BELI LANGSUNG') {
+        $('#TGLTRANS').datebox('readonly', false);
+        $("#IDLOKASI").combogrid({
+          required: true,
+          readonly: false,
+        });
+        $("#IDBBM").combogrid({
+          required: false,
+          readonly: true,
+        });
+        $("#IDBBM").combogrid('clear');
+        $('#KODESUPPLIER').combogrid({
+          required: true,
+          readonly: false
+        });
+
+        $('#tab_trans').tabs('select', 0);
+      } else if (val == 'BELI') {
+        $('#TGLTRANS').datebox('readonly', true);
+        $("#IDLOKASI").combogrid({
+          required: false,
+          readonly: true,
+        });
+        $("#IDBBM").combogrid({
+          required: true,
+          readonly: false,
+        });
+        $('#KODESUPPLIER').combogrid({
+          required: false,
+          readonly: true
+        });
+      }
+    }
+
+    
 
     async function get_header_ref() {
       try {
@@ -595,13 +645,13 @@
     async function tambah() {
       $('#mode').val('tambah');
       $('#jenistransaksi_beli').prop('checked', true);
-      
+
       $('#lbl_kasir, #lbl_tanggal').html('');
 
       $('#JENISTRANSAKSI').combobox('setValue', 'PEMBELIAN');
       $('#IDBBM').combogrid('readonly', false);
       $('#IDLOKASI').combogrid('readonly');
-      $('#KODESUPPLIER').textbox('readonly');
+      // $('#KODESUPPLIER').textbox('readonly');
       $('#TGLTRANS').datebox('readonly');
       idtrans = "";
       urlbbm = 'atena/Inventori/Transaksi/BarangMasuk/comboGrid';
@@ -642,6 +692,7 @@
 
       clear_plugin();
       reset_detail();
+      ubahJenis();
 
       $('#PERHITUNGANBIAYAKIRIM').combobox('setValue', 4);
 
@@ -702,6 +753,7 @@
           promises.push(getHeaderSyaratBayar(transreferensi.uuidsyaratbayar));
         }
         await Promise.all(promises);
+        ubahJenis();
       }
     }
 
@@ -792,6 +844,7 @@
         })
         if (response.success) {
           row = response.data;
+          console.log(row);
         } else {
           $.messager.alert('Error', response.message, 'error');
         }
@@ -801,51 +854,13 @@
       if (row) {
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
-        try {
-          let url = link_api.loadDataPembelian;
-          const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-              'Authorization': 'bearer {{ session('TOKEN') }}',
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              uuidbeli: '{{ $data }}',
-              mode: "ubah",
-            }),
-          }).then(response => {
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status} from ${url}`);
-            }
-            return response.json();
-          })
-          if (response.success) {
-            row = response.data;
-          } else {
-            $.messager.alert('Error', response.message, 'error');
-          }
-        } catch (error) {
-          var textError = getTextError(error);
-          $.messager.alert('Error', getTextError(error), 'error');
-        }
-
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-          var UT = data.data.cetak;
-          lihatHarga = data.data.lihatharga == 1;
-          inputHarga = data.data.inputharga == 1;
-          if (inputHarga) {
-            $(':radio:not(:checked)').attr('disabled', true);
-          }
-          if (UT == 1) {
-            $('#simpan_cetak').css('filter', '');
-          } else {
-            $('#simpan_cetak').css('filter', 'grayscale(100%)');
-            $('#simpan_cetak').removeAttr('onclick');
-          }
-          UT = data.ubah;
+            $('#jenistransaksi_beli').attr('disabled', true);
+            $('#jenistransaksi_beli_langsung').attr('disabled', true);
+          UT = data.data.ubah;
           var statusTrans = await getStatusTrans(link_api.getStatusTransPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidbeli: row.uuidbeli
+              uuidbeli: '{{ $data }}'
             });
           $(".form_status").html(status_transaksi(statusTrans));
           if (UT == 1 && statusTrans == 'I') {
@@ -882,30 +897,46 @@
             kodebbm: row.kodebbm
           });
 
-          $('#KODESUPPLIER').textbox('setValue', row.kodesupplier);
+          if (row.jenistransaksi == "BELI LANGSUNG") {
+            $('#jenistransaksi_beli_langsung').prop('checked', true);
+          } else {
+            $('#jenistransaksi_beli').prop('checked', true);
+          }
+          $('[name=jenistransaksi]:checked').val(row.jenistransaksi);
+
+          ubahJenis();
+
+          $('#KODESUPPLIER').combogrid('setValue', row.kodesupplier);
+          $('#KODESUPPLIER').combogrid('readonly',true);
+          $('#IDLOKASI').combogrid('readonly',true);
           $('#NAMASUPPLIER').textbox('setValue', row.namasupplier);
           $('#ALAMAT').textbox('setValue', row.alamatsupplier);
           $('#TELP').textbox('setValue', row.telpsupplier);
           $('#NOREKENING').textbox('setValue', row.norekening);
           $('#CONTACTPERSON').textbox('setValue', row.contactperson);
           $('#TELPCP').textbox('setValue', row.telpcp);
+          $('#TGLTRANS').datebox('setValue', row.tgltrans);
+          $('#IDLOKASI').combogrid('setValue', {
+            uuidlokasi: row.uuidlokasi,
+            kodelokasi: row.kodelokasi
+          });
 
           $('#IDSUPPLIERKIRIM').combogrid('setValue', {
-            uuidsupplier: row.idsupplierkirim,
+            uuidsupplier: row.uuidsupplierkirim,
             kode: row.kodesupplierkirim
           });
 
           uangmuka = row.uangmuka;
 
           idtrans = row.uuidbbm;
-          load_data(row.uuidbeli);
+          load_data('{{ $data }}');
 
         });
       }
     }
 
     async function simpan(jenis_simpan) {
-      $(':radio:not(:checked)').attr('disabled', false);
+      // $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
 
       $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
@@ -920,8 +951,8 @@
         for (var i = 0; i < rows.length; i++) {
           totalbiayakirim += parseFloat(rows[i].biayakirim);
         }
-
-        if (biayakirim != totalbiayakirim) {
+        var val = $('[name=jenistransaksi]:checked').val();
+        if (biayakirim != totalbiayakirim && val == 'BELI LANGSUNG') {
           $.messager.alert('Peringatan', 'Total Biaya Kirim Pada Detail Transaksi Tidak Sesuai', 'warning');
 
           return false;
@@ -950,22 +981,23 @@
           $.map(unindexed_array, function(n, i) {
             if (n['name'] == "data_detail") {
               var datadetail = $('#table_data_detail').datagrid('getRows');
-              var sendDetail = [];
-              for (var i = 0; i < datadetail.length; i++) {
-                sendDetail.push({
-                  uuidbarang: datadetail[i].uuidbarang,
-                  pakaipo: datadetail[i].pakaipo,
-                  jml: datadetail[i].jmlpr,
-                  satuan: datadetail[i].satuan,
-                  catatan: datadetail[i].catatan,
-                })
-              }
-              body[n['name']] = sendDetail;
+              // var sendDetail = [];
+              // for (var i = 0; i < datadetail.length; i++) {
+              //   sendDetail.push({
+              //     uuidbarang: datadetail[i].uuidbarang,
+              //     pakaipo: datadetail[i].pakaipo,
+              //     jml: datadetail[i].jmlpr,
+              //     satuan: datadetail[i].satuan,
+              //     catatan: datadetail[i].catatan,
+              //   })
+              // }
+              body[n['name']] = datadetail;
             } else {
               body[n['name']] = n['value'];
             }
           });
           body['jenis_simpan'] = jenis_simpan;
+          body['jenistransaksi']=$('[name=jenistransaksi]:checked').val();
           // Cek apakah body adalah instance dari FormData
           if (body instanceof FormData) {
             // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
@@ -975,7 +1007,7 @@
             headers['Content-Type'] = 'application/json';
             requestBody = body ? JSON.stringify(body) : null;
           }
-          let url = link_api.simpanPermintaanBarang;
+          let url = link_api.simpanPembelian;
           const response = await fetch(url, {
             method: 'POST',
             headers: headers,
@@ -1000,12 +1032,14 @@
 
             transreferensi = null;
 
-            tambah();
-
-            parent.reload();
-
             if (jenis_simpan == 'simpan_cetak') {
               cetak(response.data.uuidbeli);
+            }
+
+            if (mode == 'tambah') {
+              await tambah();
+            } else {
+              await ubah()
             }
           } else {
             $.messager.alert('Error', response.message, 'error');
@@ -1022,7 +1056,6 @@
     }
 
     function reset_detail() {
-      console.log(reset_detail);
       $('#table_data_detail').datagrid('loadData', []);
     }
 
@@ -1046,7 +1079,6 @@
           return response.json();
         })
         if (response.success) {
-          console.log("load data")
           $('#table_data_detail').datagrid('loadData', response.data ?? []);
         } else {
           $.messager.alert('Error', response.message, 'error');
@@ -1078,7 +1110,6 @@
         })
         if (response.success) {
           $('#table_data_detail').datagrid('loadData', response.data.detail ?? []);
-          console.log(response.data.detail);
           var rows = response.data.detail;
           for (var i = 0; i < rows.length; i++) {
             hitung_subtotal_detail(i, rows[i])
@@ -1189,6 +1220,100 @@
             get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), row.selisih)
           }
         },
+      });
+    }
+
+    function browse_data_supplier(id) {
+      $(id).combogrid({
+        panelWidth: 600,
+        url: link_api.browseSupplier,
+        idField: 'uuidsupplier',
+        textField: 'kode',
+        mode: 'remote',
+        sortName: 'nama',
+        sortOrder: 'asc',
+        required: true,
+        columns: [
+          [{
+              field: 'uuidsupplier',
+              hidden: true
+            },
+            {
+              field: 'kode',
+              title: 'Kode',
+              width: 150,
+              sortable: true
+            },
+            {
+              field: 'nama',
+              title: 'Nama',
+              width: 200,
+              sortable: true
+            },
+            {
+              field: 'kota',
+              title: 'Kota',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'alamat',
+              title: 'Alamat',
+              width: 300,
+              sortable: true
+            },
+            {
+              field: 'telp',
+              title: 'Telp',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'norekening',
+              title: 'No. Rekening',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'contactperson',
+              title: 'Contact Person',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'telpcp',
+              title: 'Telp CP',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'uuidsyaratbayar',
+              hidden: true
+            },
+          ]
+        ],
+        onSelect: function(index, row) {
+          $(id).combogrid('options').onChange.call();
+        },
+        onChange: function(newVal, oldVal) {
+          var row = $(id).combogrid('grid').datagrid('getSelected');
+          if (row) {
+            $('#NAMASUPPLIER').textbox('setValue', row.nama);
+            $("#IDSUPPLIER").val(row.uuidsupplier);
+            $("#KODESUPPLIER").val(row.kode);
+            $('#ALAMAT').textbox('setValue', row.alamat);
+            $('#TELP').textbox('setValue', row.telp);
+            $('#NOREKENING').textbox('setValue', row.norekening);
+            $('#CONTACTPERSON').textbox('setValue', row.contactperson);
+            $('#TELPCP').textbox('setValue', row.telpcp);
+            $('#IDSYARATBAYAR').combogrid('setValue', row.uuidsyaratbayar);
+          } else {
+            $('#NAMASUPPLIER').textbox('clear');
+          }
+          if ($('#mode').val() != '') {
+            reset_detail();
+          }
+        }
       });
     }
 
@@ -1624,7 +1749,7 @@
               }
             },
             {
-              field: 'satuan_lama', 
+              field: 'satuan_lama',
               title: 'Satuan',
               width: 45,
               align: 'center',
@@ -1659,7 +1784,7 @@
               }
             },
             {
-              field: 'satuanutama', 
+              field: 'satuanutama',
               title: 'Satuan Utama',
               width: 50,
               align: 'center',
@@ -1997,7 +2122,7 @@
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
           var row_update = {};
@@ -2022,8 +2147,8 @@
               var satuan = data ? data.satuan : '';
               var satuanutama = data ? data.satuanutama : '';
               var konversi = data ? data.konversi : '';
-              var harga = get_harga_barang(uuidbarang);
-              var hargabeli = get_harga_barangbeli(uuidbarang, satuan);
+              var harga = await get_harga_barang(uuidbarang);
+              var hargabeli = await get_harga_barangbeli(uuidbarang, satuan);
               var kodemerk = data ? data.kodemerk : 0;
               var subtotal = harga * 1;
               var kodebrg = data ? data.kode : '';
@@ -2038,7 +2163,7 @@
               var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
               var partnumber = data.partnumber ? data.partnumber : '';
               var kategori = data.kategori ? data.kategori : '';
-
+              console.log(harga);
               pakaippn = defaultpakaippn;
 
               if (pakaippn == 0) pakaippn = "TIDAK";
@@ -2046,7 +2171,7 @@
               else if (pakaippn == 2) pakaippn = "INCL";
 
               row_update = {
-                idbarang: uuidbarang,
+                uuidbarang: uuidbarang,
                 ppn: ppn,
                 namabarang: nama,
                 barcodesatuan1: barcodesatuan1,
@@ -2060,10 +2185,10 @@
                 kategori: kategori,
                 jml: 0,
                 jmlbeli: 1,
-                hargabeli: hargabeli.hargabeli,
-                satuanbeliterakhir: hargabeli.satuan,
+                hargabeli: hargabeli,
+                satuanbeliterakhir: satuan,
                 harga: harga,
-                idcurrency: '{{ session('IDCURRENCY') }}',
+                uuidcurrency: '{{ session('UUIDCURRENCY') }}',
                 currency: '{{ session('SIMBOLCURRENCY') }}',
                 nilaikurs: 1,
                 discpersen: 0,
@@ -2085,7 +2210,7 @@
               }
               break;
             case 'satuan':
-              var hargabeli = get_harga_barangbeli(row.uuidbarang, row.satuan);
+              var hargabeli = await get_harga_barangbeli(row.uuidbarang, row.satuan);
 
               row_update = {
                 hargabeli: hargabeli
@@ -2128,6 +2253,9 @@
               row: row_update
             });
           }
+
+          hitung_subtotal_detail(index, row);
+          hitung_grandtotal();
         },
         onLoadSuccess: function(data) {
           hitung_grandtotal();
@@ -2135,10 +2263,7 @@
         onAfterDeleteRow: function(index, row) {
           hitung_grandtotal();
         },
-        onAfterEdit: function(index, row, changes) {
-          hitung_subtotal_detail(index, row);
-          hitung_grandtotal();
-        },
+        onAfterEdit: function(index, row, changes) {},
       }).datagrid('enableCellEditing');
     }
 
