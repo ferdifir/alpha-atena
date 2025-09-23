@@ -334,9 +334,6 @@ async function simpan(jenis_simpan) {
         isValid = cek_datagrid($('#table_data_detail'));
     }
 
-	console.log(mode)
-	console.log(isValid)
-
     if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
         tampilLoaderSimpan();

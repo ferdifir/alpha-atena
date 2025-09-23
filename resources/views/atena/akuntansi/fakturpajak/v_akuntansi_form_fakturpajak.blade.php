@@ -21,7 +21,7 @@
 											<tr>
 												<td id="label_form">No. SPT</td>
 												<td id="label_form"><input name="nospt" id="NOSPT" class="label_input" style="width:250px"></td>
-												<input type="hidden" id="IDFAKTURPAJAK" name="idfakturpajak">
+												<input type="hidden" id="UUIDFAKTURPAJAK" name="uuidfakturpajak">
 											</tr>
 											<tr>
 												<td id="label_form">Tgl. Trans</td>
@@ -127,7 +127,7 @@
 						<table id="trans_footer" width="100%">
 							<tr>
 								<td align="left" id="label_form"><label style="font-weight:normal" id="label_form">User Input :</label> <label id="lbl_kasir"></label> <label style="font-weight:normal" id="label_form">| Tgl. Input :</label> <label id="lbl_tanggal"></label></td>
-								<td align='right' valign='top' <?php if ($LIHATHARGA == 0) echo "hidden"; ?>>
+								<td id="HIDDENTOTAL" align='right' valign='top'>
 									<table>
 										<tr>
 											DPP
@@ -162,11 +162,11 @@
 	<div data-options="region:'east',border:false" style="width:50px; padding:5px; border-left:1px solid #29b6f6; ">
 		<br>
 
-		<a  title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false" id='btn_simpan_modal' onclick="$('#window_button_simpan').window('open')"><img src="<?= base_url() ?>/assets/images/simpan.png"></a>
+		<a  title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false" id='btn_simpan_modal' onclick="$('#window_button_simpan').window('open')"><img src="{{ asset('assets/images/simpan.png') }}"></a>
 
 
 		<br><br>
-		<a  title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false" onclick="javascript:tutup()"><img src="<?= base_url() ?>/assets/images/cancel.png"></a>
+		<a  title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false" onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
 	</div>
 </div>
 <br>
@@ -188,16 +188,26 @@
 @endsection
 
 @push('js')
+<script src="{{ asset('assets/js/utils.js') }}"></script>
 <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
 <script>
 var cekbtnsimpan = true; //CEK APAKAH TOMBOL SIMPAN BISA DITEKAN ATAU BELUM (SUPAYA TIDAK TERKLIK 2x)
 var row = {};
 var indexCellEdit = -1;
-$(document).ready(function() {
+var lihatHarga = false
+$(document).ready(async function() {
+	await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        lihatHarga=data.data.lihatharga == 1;
+		if(!lihatHarga) {
+			$('#HIDDENTOTAL').hide()
+		}
+    },false);
+
 	let check1 = false;
 	let aksesubah = 0;
+	let config
 	const promises = [];
-	promises.push(getConfig('TFAKTURPAJAK', 'NOSPT', 'bearer {{ session('TOKEN') }}',
+	promises.push(getConfig('NOSPT', 'TFAKTURPAJAK',  'bearer {{ session('TOKEN') }}',
 		function(response) {
 			if (response.success) {
 				config = response.data;
@@ -297,11 +307,35 @@ function tutup() {
 	parent.tutupTab();
 }
 
+async function cetak(uuidtrans) {
+    bukaLoader();
+    if (row) {
+        try {
+            let url = link_api.cetakFakturPajak + uuidtrans;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                },
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP error! status: ${response.status} from ${url}`
+                    );
+                }
+                return response.text();
+            })
 
-function cetak(id) {
-	$("#window_button_cetak").window('close');
-	$("#area_cetak").load(base_url + "atena/Akuntansi/Transaksi/FakturPajak/cetak/" + id);
-	$("#form_cetak").window('open');
+
+            $("#area_cetak").html(response);
+            $("#form_cetak").window('open');
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+    }
+    tutupLoader();
 }
 
 var idTrans = "";
@@ -312,7 +346,6 @@ function tambah() {
 
 
 	$('#lbl_kasir, #lbl_tanggal').html('');
-	$('#NOSPT').textbox('readonly', false);
 	$('#TGLTRANS').datebox('readonly');
 	$('#PEMBETULANKE').numberspinner('readonly', false).numberspinner('setValue', 0);
 	$('#TXTTAHUN').numberspinner('readonly', false).numberspinner('setValue', '{{ date('Y') }}');
@@ -331,92 +364,90 @@ async function ubah() {
 	$('#mode').val('ubah');
 
 	try {
-        const response = await fetchData(
-          '{{ session('TOKEN') }}',
-          link_api.loadTransaksiDataHeaderFakturPajak, {
-            uuidso: '{{ $data }}'
-          }
-        );
-        if (!response.success) {
-          throw new Error(response.message);
-        }
-        row = response.data;
-      } catch (e) {
-        const error = (typeof e === "string") ? e : e.message;
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.loadTransaksiDataHeaderFakturPajak, {
+			uuidfakturpajak: '{{ $data }}'
+			}
+		);
+		if(response.success) {
+			row = response.data;
+		} else {
+			$.messager.alert('Error', res.message, 'error');
+		}
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
         const textError = getTextError(error);
         $.messager.alert('Error', textError, 'error');
-        return;
-      }
+	}
 
 	if (row) {
-
-		//jika tidak punya akses input harga
-		<?php if ($INPUTHARGA == 0) { ?>
-			$(':radio:not(:checked)').attr('disabled', true);
-		<?php } ?>
 
 		$('#lbl_kasir').html(row.userbuat);
 		$('#lbl_tanggal').html(row.tglentry);
 
-		get_akses_user('<?= $kodemenu ?>', function(data) {
-			var UT = data.ubah;
-			get_status_trans("atena/Akuntansi/Transaksi/FakturPajak", row.idfakturpajak, function(data) {
-				if (UT == 1 && data.status == 'I') {
-					$('#btn_simpan_modal').css('filter', '');
-					$('#mode').val('ubah');
-				} else {
-					document.getElementById('btn_simpan_modal').onclick = '';
-					$('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-					$('#btn_simpan_modal').removeAttr('onclick');
-				}
+		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          data = data.data;
+          var UT = data.ubah;
+		  console.log('ubah' + UT)
+          get_status_trans('{{ session("TOKEN") }}', "atena/akuntansi/faktur-pajak", "uuidfakturpajak", row.uuidfakturpajak, function(data) {
+            if (UT == 1 && data.data.status == 'I') {
+				$('#btn_simpan_modal').css('filter', '');
+				$('#mode').val('ubah');
+			} else {
+				document.getElementById('btn_simpan_modal').onclick = '';
+				$('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+				$('#btn_simpan_modal').removeAttr('onclick');
+			}
 
-				$("#form_input").form('load', row);
-				$('#TGLTRANS').datebox('readonly', false);
-				$('#NOSPT').textbox('readonly');
-				$('#TGLTRANS').combobox('readonly');
-				$('#TXTTAHUN').numberspinner('readonly').numberspinner('setValue', row.tahun);;
-				$('#BULANAWAL').combobox('readonly').combobox('setValue', row.bulanawal.padStart(2, '0'));
-				// $('#BULANAKHIR').combobox('readonly').combobox('setValue',row.BULANAKHIR.padStart(2, '0'));
-				// $('#PEMBETULANKE').numberspinner('readonly').numberspinner('setValue',parseFloat(row.PEMBETULANKE) + 1);
-				$('#btn_tampil').linkbutton('disable');
+			$("#form_input").form('load', row);
+			$('#TGLTRANS').datebox('readonly', false);
+			$('#NOSPT').textbox('readonly');
+			$('#TGLTRANS').combobox('readonly');
+			$('#TXTTAHUN').numberspinner('readonly').numberspinner('setValue', row.tahun);;
+			$('#BULANAWAL').combobox('readonly').combobox('setValue', 
+				String(row.bulanawal).padStart(2, '0')
+			);
+			// $('#BULANAKHIR').combobox('readonly').combobox('setValue',row.BULANAKHIR.padStart(2, '0'));
+			// $('#PEMBETULANKE').numberspinner('readonly').numberspinner('setValue',parseFloat(row.PEMBETULANKE) + 1);
+			$('#btn_tampil').linkbutton('disable');
 
-				load_data(row.idfakturpajak);
+			load_data(row.uuidfakturpajak);
 
-			});
-		});
+          });
+        });
 	}
 }
 
-function tampil() {
+async function tampil() {
 	//var idlokasi = $("#IDLOKASI").combogrid('getValue');
 	var tahun = $("#TXTTAHUN").textbox('getValue');
 	var blnawal = $("#BULANAWAL").textbox('getValue');
 	// var blnakhir = $("#BULANAKHIR").textbox('getValue');
 	reset_detail();
 
-	$.ajax({
-		type: 'POST',
-		dataType: 'json',
-		url: base_url + "atena/Akuntansi/Transaksi/FakturPajak/tampilTransaksi",
-		data: "tahun=" + tahun + "&bulanawal=" + blnawal,
-		cache: false,
-		beforeSend: function() {
-			$.messager.progress();
-		},
-		success: function(msg) {
-			$.messager.progress('close');
-			//alert(msg);	
-			if (msg.success) {
-				$('#table_data_detail').datagrid('loadData', msg.detail);
-				hitung_grandtotal();
-			} else {
-				$.messager.alert('Error', msg.errorMsg, 'error');
+	try {
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.tampilTransaksiFakturPajak, {
+				tahun: tahun,
+				bulanawal : +blnawal
 			}
+		);
+		if(response.success) {
+			$('#table_data_detail').datagrid('loadData', response.data);
+			hitung_grandtotal();
+		} else {
+			$.messager.alert('Error', res.message, 'error');
 		}
-	});
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+	}
 }
 
-function simpan(jenis_simpan) {
+async function simpan(jenis_simpan) {
 	$(':radio:not(:checked)').attr('disabled', false);
 	var mode = $("#mode").val();
 
@@ -432,78 +463,71 @@ function simpan(jenis_simpan) {
 	// }
 	if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
 		cekbtnsimpan = false;
-		validasi_session(function () {
-			var adaTrans = false;
+        tampilLoaderSimpan();
+        
+        try {
+            let headers = {
+                'Authorization': 'bearer {{ session('TOKEN') }}',
+                'Content-Type': 'application/json'
+            };
 
-			if (mode == 'ubah') {
-				$.ajax({
-					type: 'POST',
-					dataType: 'json',
-					url: base_url + 'Home/cekTanggalJamInput',
-					data: {
-						id     : row.idfakturpajak,
-						table  : "tfakturpajak",
-						whereid: "idfakturpajak",
-						tgl    : row.tglentry,
-						status : row.status
-					},
-					async: false,
-					success: function(msg) {
-						cekbtnsimpan = true;
-						if (!msg.success) {
-							var errorMsg = 'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal ' + msg.tgl + ' / ' + msg.jam + '.<br>Transaksi Tidak Dapat Disimpan.';
-							$.messager.alert('Warning', errorMsg, 'warning');
-							adaTrans = true;
-						}
-					}
-				});
-			}
+            var requestBody = {};
 
-			cek_tanggal_tutup_periode($('#TGLTRANS').datebox('getValue'), 1, function(data) {
-				cekbtnsimpan = true;
-				if (!data.success) {
-					var kode = row.nospt ? row.nospt : 'ini';
+            $('#form_input :input').each(function() {
+                if (this.name) {
+                    requestBody[this.name] = $(this).val();
+                }
+            });
 
-					$.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' + kode + '. Prosedur tidak dapat dilanjutkan', 'error');
+			// harus integer
+			requestBody['bulanawal'] = +requestBody['bulanawal']
 
-					adaTrans = true;
-				}
-			});
+            requestBody.data_detail = $('#table_data_detail').datagrid('getChecked');
 
-			if (!adaTrans) {
-				$.ajax({
-					type: 'POST',
-					dataType: 'json',
-					url: base_url + "atena/Akuntansi/Transaksi/FakturPajak/simpan/" + jenis_simpan,
-					data: datanya,
-					cache: false,
-					beforeSend: function() {
-						$.messager.progress();
-					},
-					success: function(msg) {
-						$.messager.progress('close');
-						cekbtnsimpan = true;
-						if (msg.success) {
+            requestBody.jenis_simpan = jenis_simpan;
 
-							$('#form_input').form('clear');
-							$.messager.show({
-								title: 'Info',
-								msg: 'Transaksi Sukses',
-								showType: 'show'
-							});
-							tambah();
-							parent.reload();
-							if (jenis_simpan == 'simpan_cetak') {
-								cetak(msg.id);
-							}
+            let url = link_api.simpanFakturPajak;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+                }
+                return response.json();
+            });
 
-						} else {
-							$.messager.alert('Error', msg.errorMsg, 'error');
-						}
-					}
-				});
-			}
-		});
+            if (response.success) {
+                $('#form_input').form('clear');
+
+                $.messager.show({
+                    title: 'Info',
+                    msg: 'Transaksi Sukses',
+                    showType: 'show'
+                });
+
+                if (mode == "tambah") {
+                    await tambah();
+                    $('#table_data_detail').datagrid('loadData', []);
+                } else {
+                    await ubah();
+                }
+
+                if (jenis_simpan == 'simpan_cetak') {
+                    await cetak(response.data.uuidfakturpajak);
+                }
+            } else {
+                $.messager.alert('Error', response.message, 'error');
+            }
+
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+
+        cekbtnsimpan = true;
+        tutupLoaderSimpan();
 	}
 }
 
@@ -527,27 +551,32 @@ function reset_detail() {
 	$('#table_data_detail').datagrid('loadData', []);
 }
 
-function load_data(idtrans) {
-	$.ajax({
-		type: 'POST',
-		dataType: 'json',
-		url: base_url + "atena/Akuntansi/Transaksi/FakturPajak/loadData",
-		data: "idtrans=" + idtrans,
-		cache: false,
-		success: function(msg) {
-			if (msg.success) {
-				$('#table_data_detail').datagrid('loadData', msg.detail).datagrid('checkAll');
+async function load_data(uuidfakturpajak) {
+	try {
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.loadDataFakturPajak, {
+				uuidfakturpajak: uuidfakturpajak
 			}
+		);
+		if(response.success) {
+			$('#table_data_detail').datagrid('loadData', response.data).datagrid('checkAll');
+		} else {
+			$.messager.alert('Error', res.message, 'error');
 		}
-	});
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+	}
 }
 
 /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
 function browse_data_lokasi(id) {
 	$(id).combogrid({
 		panelWidth: 400,
-		url: base_url + 'atena/Master/Data/Lokasi/comboGrid',
-		idField: 'id',
+		url: link_api.browseLokasi,
+		idField: 'uuidlokasi',
 		textField: 'nama',
 		mode: 'local',
 		sortName: 'kode',
@@ -557,7 +586,7 @@ function browse_data_lokasi(id) {
 		selectFirstRow: true,
 		columns: [
 			[{
-					field: 'id',
+					field: 'uuidlokasi',
 					hidden: true
 				},
 				{
@@ -740,13 +769,13 @@ function buat_table_detail() {
 				ed.combogrid('showPanel');
 			}
 		},
-		onEndEdit: function(index, row, changes) {
+		onEndEdit: async function(index, row, changes) {
 			var cell = $(this).datagrid('cell');
 			var ed = get_editor('#table_data_detail', index, cell.field);
 			var row_update = {};
 
 			if (changes.nofakturpajak) {
-				cekNoFakturPajak(changes.nofakturpajak, row.kodejual, index);
+				await cekNoFakturPajak(changes.nofakturpajak, row.kodejual, index);
 			}
 
 			if (jQuery.isEmptyObject(row_update) == false) {
@@ -771,7 +800,7 @@ function buat_table_detail() {
 	}).datagrid('enableCellEditing');
 }
 
-function cekNoFakturPajak(no_faktur, kodejual, index) {
+async function cekNoFakturPajak(no_faktur, kodejual, index) {
 	// mengecek apakah sudah ada pada datagrid
 	var rows = $('#table_data_detail').datagrid('getRows');
 
@@ -791,26 +820,29 @@ function cekNoFakturPajak(no_faktur, kodejual, index) {
 	}
 
 	// mengecek apakah sudah ada pada database
-	$.ajax({
-		url: base_url + 'atena/Akuntansi/Transaksi/FakturPajak/cekNoFaktur',
-		type: 'POST',
-		data: {
-			no_faktur: no_faktur,
-			kodejual: kodejual
-		},
-		success: function (response) {
-			if (!response.success) {
-				$.messager.alert('Peringatan', response.errorMsg, 'error');
-
-				$('#table_data_detail').datagrid('updateRow', {
-					index: index,
-					row: {
-						nofakturpajak: before_edited.nofakturpajak
-					}
-				});
+	try {
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.cekNoFakturPajak, {
+				no_faktur: no_faktur,
+				kodejual: kodejual
 			}
+		);
+		if (!response.success) {
+			$.messager.alert('Peringatan', response.errorMsg, 'error');
+	
+			$('#table_data_detail').datagrid('updateRow', {
+				index: index,
+				row: {
+					nofakturpajak: before_edited.nofakturpajak
+				}
+			});
 		}
-	})
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+	}
 }
 
 function hitung_grandtotal() {

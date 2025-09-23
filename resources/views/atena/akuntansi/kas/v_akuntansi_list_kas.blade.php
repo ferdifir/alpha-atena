@@ -36,9 +36,9 @@ else if (strtoupper($jenis)=='MEMORIAL')
 						<table border="0">
 							<tr><td id="label_form"></td></tr>
 							<tr><td id="label_form" align="center">Tgl. Transaksi</td></tr>
-							<tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"/></td></tr>
+							<tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px" class="date"/></td></tr>
 							<tr><td id="label_form" align="center">s/d</td></tr>
-							<tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"/></td></tr>
+							<tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px" class="date"/></td></tr>
 							<tr>
 								<td id="label_form"><br></td>
 							</tr>
@@ -186,10 +186,6 @@ shortcut.add('F2', function() {
     before_add();
 });
 
-shortcut.add('F8', function() {
-    simpan();
-});
-
 function disable_button() {
     $('#btn_refresh').linkbutton('disable');
     $('#btn_batal').linkbutton('disable')
@@ -208,8 +204,8 @@ function before_add() {
     $('#mode').val('tambah');
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Permintaan Barang',
-                '{{ route('atena.akuntansi.kas.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah {{ ucfirst(strtolower($jenis)) }}',
+                '{{ route('atena.akuntansi.kas.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '', 'jenis' => $jenis]) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -261,7 +257,7 @@ function before_delete_print() {
     }
 }
 
-function before_print() {
+async function before_print() {
     $('#mode').val('cetak');
     var row = $('#table_data').datagrid('getSelected');
     if (row) {
@@ -270,19 +266,19 @@ function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
+            var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
                 'bearer {{ session('TOKEN') }}', {
                     uuidkas: row.uuidkas
                 });
             var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
             if (statusTrans == 'I') {
-                var kode = row.kodetransfer;
+                var kode = row.kodekas;
                 if (checkTabAvailable) {
                     $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusJadiSlipPermintaanBarang;
+                        let url = link_api.ubahStatusjadiSlipKas;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -303,7 +299,7 @@ function before_print() {
                         })
 
                         if (response.success) {
-                            cetak(row.uuidkas);
+                            await cetak(row.uuidkas);
                             refresh_data();
                         } else {
                             $.messager.alert('Error', response.message, 'error');
@@ -314,7 +310,7 @@ function before_print() {
                     }
                 }
             } else if (statusTrans == 'S' || statusTrans == 'P') {
-                cetak(row.uuidkas);
+                await cetak(row.uuidkas);
             } else {
                 $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
             }
@@ -337,7 +333,7 @@ async function batal_trans() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
             'bearer {{ session('TOKEN') }}', {
                 uuidkas: row.uuidkas
             });
@@ -346,7 +342,7 @@ async function batal_trans() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransPermintaanBarang;
+                        let url = link_api.batalTransaksiKas;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -399,7 +395,7 @@ async function batal_cetak() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
             'bearer {{ session('TOKEN') }}', {
                 uuidkas: row.uuidkas
             });
@@ -408,7 +404,7 @@ async function batal_cetak() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusJadiInputPermintaanBarang;
+                        let url = link_api.ubahStatusjadiInputKas;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -452,7 +448,7 @@ async function cetak(uuidtrans) {
     bukaLoader();
     if (row) {
         try {
-            let url = link_api.cetakPermintaanBarang + uuidtrans;
+            let url = link_api.cetakTransaksiKas + uuidtrans;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -503,12 +499,13 @@ function filter_data() {
 
     $('#table_data').datagrid('load', {
         jenistransaksi: $('#txt_jenis_trans').combobox('getValue'),
-        tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
-        tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
-        kodetrans: $('#txt_kodetrans_filter').val(),
-        referensi: $('#txt_referensi_filter').val(),
-        status: status,
-        lokasi: lokasi,
+        tglawal       : $('#txt_tgl_aw_filter').datebox('getValue'),
+        tglakhir      : $('#txt_tgl_ak_filter').datebox('getValue'),
+        kodetrans     : $('#txt_kodetrans_filter').val(),
+        referensi     : $('#txt_referensi_filter').val(),
+        jenis         : '{{ $jenis }}',
+        status        : status,
+        lokasi        : lokasi,
     });
 }
 
@@ -521,7 +518,10 @@ function buat_table() {
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadTransaksiDataGridKas + '/' + '{{ $jenis }}',
+        url         : link_api.loadTransaksiDataGridKas,
+        queryParams     : {
+            jenis: '{{ $jenis }}',
+        },
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {

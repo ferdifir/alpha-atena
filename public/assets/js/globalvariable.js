@@ -485,11 +485,14 @@ var link_api = {
     //Kas
     loadTransaksiDataGridKas  : `${base_url_api}atena/akuntansi/kas/load-data-grid`,
     loadTransaksiDataHeaderKas: `${base_url_api}atena/akuntansi/kas/load-data-header`,
-    loadTransaksiDataDetailKas: `${base_url_api}atena/akuntansi/kas/load-data-detail`,
+    loadTransaksiDataDetailKas: `${base_url_api}atena/akuntansi/kas/load-data`,
     loadGiroBelumCair         : `${base_url_api}atena/akuntansi/kas/get-giro-belum-cair`,
     loadJurnalLinkKas         : `${base_url_api}atena/akuntansi/kas/get-jurnal-link/`,
     loadJurnalGiro            : `${base_url_api}atena/akuntansi/kas/load-jurnal-giro`,
     simpanTransaksiKas        : `${base_url_api}atena/akuntansi/kas/simpan/`,
+    batalTransaksiKas         : `${base_url_api}atena/akuntansi/kas/batal-trans`,
+    ubahStatusjadiInputKas    : `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-input`,
+    ubahStatusjadiSlipKas     : `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-slip`,
     cetakTransaksiKas         : `${base_url_api}atena/akuntansi/kas/cetak/`,
     getStatusTransaksiKas     : `${base_url_api}atena/akuntansi/kas/get-status-trans`,
     // simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan`,
@@ -510,7 +513,7 @@ var link_api = {
     batalTutupPeriodeAkuntansi : `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
     browseTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/browse`,
 
-
+    //Faktur Pajak
     loadTransaksiDataGridFakturPajak  : `${base_url_api}atena/akuntansi/faktur-pajak/load-data-grid`,
     loadTransaksiDataHeaderFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-header`,
     batalFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/batal-trans`,
@@ -521,6 +524,11 @@ var link_api = {
     ekporXMLFakturPajak               : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML/`,
     eksporXMLRetailFakturPajak        : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML-retail/`,
     getStatusFakturPajak              : `${base_url_api}atena/akuntansi/faktur-pajak/get-status-trans`,
+    simpanFakturPajak                 : `${base_url_api}atena/akuntansi/faktur-pajak/simpan`,
+    loadDataFakturPajak               : `${base_url_api}atena/akuntansi/faktur-pajak/load-data`,
+    tampilTransaksiFakturPajak        : `${base_url_api}atena/akuntansi/faktur-pajak/tampil-transaksi`,
+    cekNoFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/cek-no-faktur`,
+
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,

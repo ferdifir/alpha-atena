@@ -323,8 +323,8 @@ async function batal_trans() {
                             },
                             body: JSON.stringify({
                                 uuidfakturpajak: row.uuidfakturpajak,
-                                kodefakturpajak: row.kodefakturpajak,
-                                alasan: alasan,
+                                nospt          : row.nospt,
+                                alasan         : alasan,
                             }),
                         }).then(response => {
                             if (!response.ok) {

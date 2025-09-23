@@ -49,7 +49,7 @@ else if (strtoupper($jenis)=='MEMORIAL')
 											<tr>
 												<td id="label_form">Lokasi</td>
 												<td id="label_form">
-													<input name="idlokasi" id="IDLOKASI" style="width:190px">
+													<input name="uuidlokasi" id="UUIDLOKASI" style="width:190px">
 													<input type="hidden" id="KODELOKASI" name="kodelokasi">
 												</td>
 											</tr>
@@ -70,7 +70,7 @@ else if (strtoupper($jenis)=='MEMORIAL')
 										<table border="0" style="padding:2px">
 											<tr>
 												<td id="label_form" align="left">Akun Kas/Bank</td>
-												<td><input id="IDPERKIRAANKAS" name="idperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="NAMAPERKIRAANKAS" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
+												<td><input id="UUIDPERKIRAANKAS" name="uuidperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="NAMAPERKIRAANKAS" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
 											</tr>
 											<tr>
 												<td id="label_form"></td>
@@ -82,7 +82,7 @@ else if (strtoupper($jenis)=='MEMORIAL')
 												<td id="label_form" align="left">Nominal</td>
 												<td>
 													<input id="AMOUNT" name="amount" style="width:110px;" class="number" min="0">
-													<input id="IDCURRENCY" name="idcurrency" style="width:50px;"/>
+													<input id="UUIDCURRENCY" name="uuidcurrency" style="width:50px;"/>
 													<input id="NILAIKURS" name="nilaikurs" style="width:65px;" class="number" min="0">
 													<input id="AMOUNTKURS" name="amountkurs" style="width:130px;" class="number" readonly>
 												</td>
@@ -94,7 +94,7 @@ else if (strtoupper($jenis)=='MEMORIAL')
 										</table>
 									</fieldset>
 								</td>
-								<td id="fm-giro" <?php echo in_array($jenis, ['GIRO']) ? '' : 'hidden'?>>
+								<td id="fm-giro" <?php echo in_array(strtoupper($jenis), ['GIRO']) ? '' : 'hidden'?>>
 									<fieldset style="height:150px">
 										<legend>Informasi Giro Masuk / Keluar</legend>
 										<table border="0" style="padding:2px">
@@ -123,12 +123,12 @@ else if (strtoupper($jenis)=='MEMORIAL')
 										</table>
 									</fieldset>
 								</td>
-								<td <?php echo in_array($jenis, ['MEMORIAL']) ? 'hidden' : ''?>>
+								<td <?php echo in_array(strtoupper($jenis), ['MEMORIAL']) ? 'hidden' : ''?>>
 									<fieldset style="height:150px">
 										<legend>Informasi Lain</legend>
 										<table style="padding:2px">
-											<tr id="fm-giro-cair" <?php echo in_array($jenis, ['GIRO', 'KAS_BANK']) ? '' : 'hidden'?>>
-												<td id="label_form" align="left">No Giro <?=$jenis=='BANK' ? 'Cair' : '' ?><?=$jenis=='GIRO' ? 'Tolak' : '' ?></td>
+											<tr id="fm-giro-cair" <?php echo in_array(strtoupper($jenis), ['GIRO', 'KAS_BANK']) ? '' : 'hidden'?>>
+												<td id="label_form" align="left">No Giro <?=strtoupper($jenis)=='BANK' ? 'Cair' : '' ?><?=strtoupper($jenis)=='GIRO' ? 'Tolak' : '' ?></td>
 												<td><input id="NOGIROCAIRTOLAK" name="nogirocairtolak" style="width:140px" ></td>
 											</tr>
 											<tr hidden>
@@ -195,6 +195,7 @@ var inputharga;
 var lihatharga;
 var row = {};
 $(document).ready(async function(){
+console.log('{{ $jenis }}')
   let check1 = false;
   let check2 = false;
   const promises = [];
@@ -291,18 +292,18 @@ $(document).ready(async function(){
         left       : left
     });
 
-	browse_data_lokasi('#IDLOKASI');
+	browse_data_lokasi('#UUIDLOKASI');
 	browse_data_currency('#UUIDCURRENCY');
 	browse_data_referensi('#REFERENSI');
-	browse_data_kas_bank('#IDPERKIRAANKAS','kas');
+	browse_data_kas_bank('#UUIDPERKIRAANKAS','kas');
 	browse_data_giro('#NOGIROCAIRTOLAK');
 	//browse_data_po('#IDPO');
 
 	$('#JENISKAS').combobox({
 		required:true,
-		onChange:function(newVal, oldVal){
+		onChange: async function(newVal, oldVal){
 			if ($('#mode').val() != '')
-				ubah_jenis_kas();
+				await ubah_jenis_kas();
 		}
 	});
 
@@ -354,25 +355,25 @@ $(document).ready(async function(){
 	buat_table_detail();
 
 	@if ($mode == 'tambah')
-  await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-          var UT = data.data.cetak;
-          if (UT == 1) {
-              $('#simpan_cetak').css('filter', '');
-          } else {
-              $('#simpan_cetak').css('filter', 'grayscale(100%)');
-              $('#simpan_cetak').removeAttr('onclick');
-          }
-      }, false);
-      await tambah();
-  @elseif ($mode == 'ubah')
-      await ubah();
-  @endif
+	await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+			var UT = data.data.cetak;
+			if (UT == 1) {
+				$('#simpan_cetak').css('filter', '');
+			} else {
+				$('#simpan_cetak').css('filter', 'grayscale(100%)');
+				$('#simpan_cetak').removeAttr('onclick');
+			}
+		}, false);
+		await tambah();
+	@elseif ($mode == 'ubah')
+		await ubah();
+	@endif
 
-  tutupLoader();
+	tutupLoader();
 	
 });
 
-function ubah_jenis_kas(){
+async function ubah_jenis_kas(){
 	
 	var jeniskas = $('#JENISKAS').combobox('getValue');
 	var tipe = jeniskas.split(' '); // pecah jeniskas
@@ -413,9 +414,9 @@ function ubah_jenis_kas(){
 		'required': (jeniskas == 'GIRO MASUK' || jeniskas == 'GIRO KELUAR')
 	});
 
-	$('#IDPERKIRAANKAS').add($('#UUIDCURRENCY')).combogrid('readonly', readonly_prop);
+	$('#UUIDPERKIRAANKAS').add($('#UUIDCURRENCY')).combogrid('readonly', readonly_prop);
 	$('#AMOUNT').add($('#NILAIKURS')).numberbox('readonly', readonly_prop);
-	$('#IDPERKIRAANKAS').combogrid(validation_prop);
+	$('#UUIDPERKIRAANKAS').combogrid(validation_prop);
 	$('#KETERANGAN').textbox(validation_prop);
 
 	// referensi
@@ -437,7 +438,7 @@ function ubah_jenis_kas(){
 
 	// clear component
 	$('#KODEKAS, #NOBUKTIMANUAL, #NAMAPERKIRAANKAS, #KETERANGAN, #NOGIRO, #NAMABANKGIRO').textbox('clear');
-	$('#IDPERKIRAANKAS, #REFERENSI').combogrid('clear');
+	$('#UUIDPERKIRAANKAS, #REFERENSI').combogrid('clear');
 	$('#TGLTRANS').add($('#TGLCAIRGIRO')).datebox('setValue', date_format());
 	$('#AMOUNT').add($('#AMOUNTGIRO')).numberbox('setValue', 0);
 	$('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('loadData', []);
@@ -452,20 +453,18 @@ function ubah_jenis_kas(){
 		if (tipe[0] == 'BANK')
 			temp_jenisgiro = 'GIRO ' + tipe[1];
 
-		$.ajax({
-			type    : 'POST',
-			dataType: 'json',
-			url     : link_api.loadGiroBelumCair,
-			data    : {jtrans: temp_jenisgiro},
-			cache   : false,
-			success : function(msg){
-				if (msg.success) {
-					$('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('loadData', msg.data_detail);
-				} else {
-					$.messager.alert('Error', msg.errorMsg, 'error');
-				}
+
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.loadGiroBelumCair, {
+			
 			}
-		});
+		);
+		if(response.success) {
+			$('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('loadData', response.data);
+		} else {
+			$.messager.alert('Error', res.message, 'error');
+		}
 	} else {
 		$('#NOGIROCAIRTOLAK').combogrid('readonly')
 	}
@@ -480,7 +479,7 @@ function ubah_jenis_kas(){
 		$('#fm-giro').hide()
 	}
 	if (tipe[0]!=undefined){
-	  browse_data_kas_bank('#IDPERKIRAANKAS',tipe[0]);
+	  browse_data_kas_bank('#UUIDPERKIRAANKAS',tipe[0]);
 	}  
 	$('#SAMAKANDEBETKREDIT').prop("checked",false);
 	$('#SAMAKANDEBETKREDIT').prop("checked",true);
@@ -509,14 +508,26 @@ function tutup(){
 	parent.tutupTab();
 }
 
-function cetak(uuid) {
+async function cetak(uuid) {
     $("#window_button_cetak").window('close');
     $("#area_cetak").load(link_api.cetak + uuid);
     $("#form_cetak").window('open');
+	const doc = await getCetakDocument(
+		'{{ session('TOKEN') }}',
+		link_api.cetakTransaksiKas + uuid
+	);
+	if (doc == null) {
+		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
+			'warning');
+		return false;
+	}
+	$("#area_cetak").html(doc);
+	$("#form_cetak").window('open');
 }
 
 async function tambah() {
 	$('#form_input').form('clear');
+	$('#mode').val('tambah');
 	
 	$('#SAMAKANDEBETKREDIT').prop("checked",true);
 	
@@ -524,12 +535,10 @@ async function tambah() {
 	$("#UUIDCURRENCY").combogrid("readonly",true);
 	$("#NILAIKURS").numberbox("readonly",true);
 	
-	$('#mode').val('tambah'); parent.changeTitleTab($('#mode').val());
-	
 	$('#lbl_kasir, #lbl_tanggal').html('');
 	$('#JENISKAS').combobox('readonly', false);
 	
-	$('#IDPERKIRAANKAS').combogrid('readonly', false);
+	$('#UUIDPERKIRAANKAS').combogrid('readonly', false);
 
 	clear_plugin();
 	reset_detail();
@@ -598,19 +607,19 @@ async function ubah() {
       }
       
       $('#JENISKAS').combobox('setValue', row.jeniskas).combobox('readonly');
-      ubah_jenis_kas();
-      //console.log(row);
+      await ubah_jenis_kas();
+	  
       $('#form_input').form('load', row);
-      load_data(row.uuidkas, row.jeniskas);
+      await load_data(row.uuidkas, row.jeniskas);
       $('#NAMAPERKIRAANKAS').textbox('setValue',row.namaperkiraankas);
       $('#UUIDCURRENCY').combogrid('setValue', row.uuidcurrency);
       $("#txt_tgl_aw").add($("#txt_tgl_ak")).datebox('setValue', date_format());
       $('#lbl_kasir').html(row.userbuat);
       $('#lbl_tanggal').html(row.tglentry);
       
-      $('#IDLOKASI').combogrid('setValue', {
-        id: row.idlokasi,
-        nama: row.namalokasi
+      $('#UUIDLOKASI').combogrid('setValue', {
+        uuidlokasi: row.uuidlokasi,
+        nama      : row.namalokasi
       });
 
       if (data.status != 'I'){
@@ -621,20 +630,20 @@ async function ubah() {
         $("#NILAIKURS").numberbox('readonly');
         $("#KETERANGAN").textbox('readonly');
         $("#NOGIROCAIRTOLAK").combogrid('readonly');
-        $('#IDPERKIRAANKAS').combogrid('readonly');
+        $('#UUIDPERKIRAANKAS').combogrid('readonly');
         $("#NOGIRO").combogrid('readonly');
         $("#AMOUNTGIRO").numberbox('readonly');
         $("#NAMABANKGIRO").textbox('readonly');
         $("#TGLCAIRGIRO").datebox('readonly');
       } else {
         $("#NOGIROCAIRTOLAK").combogrid('readonly',false);
-        $('#IDPERKIRAANKAS').combogrid('readonly',false);
+        $('#UUIDPERKIRAANKAS').combogrid('readonly',false);
       }
     })
 	}
 }
 
-function simpan(jenis_simpan) {
+async function simpan(jenis_simpan) {
 	$('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
 	$('#data_giro').val(JSON.stringify($('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('getSelected')));
 
@@ -644,7 +653,7 @@ function simpan(jenis_simpan) {
 	var referensi = $('#REFERENSI').combogrid('grid').datagrid('getSelected');
 
 	if (referensi)
-		datanya += '&KODEREFERENSI='+referensi.KODE;
+		datanya += '&KODEREFERENSI='+referensi.kode;
 
 	$('#window_button_simpan').window('close');	
 
@@ -662,70 +671,72 @@ function simpan(jenis_simpan) {
 
 	if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
 		cekbtnsimpan = false;
-		validasi_session(function () {
+        tampilLoaderSimpan();
+        
+        try {
+            let headers = {
+                'Authorization': 'bearer {{ session('TOKEN') }}',
+                'Content-Type': 'application/json'
+            };
 
-			var adaTrans = false;
+            var requestBody = {};
 
-			if (mode == 'ubah') {
-				$.ajax({
-					type    : 'POST',
-					dataType: 'json',
-					url     : base_url+'Home/cekTanggalJamInput',
-					data	: {id:row.uuidkas,table:"tkas",whereid:"uuidkas",tgl:row.tglentry,status:row.status},
-					async	: false,
-					success : function(msg){
-						cekbtnsimpan = true;
-						if(!msg.success)
-						{
-							var errorMsg = 'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal '+msg.tgl+' / '+msg.JAM+'.<br>Transaksi Tidak Dapat Disimpan.';
-							$.messager.alert('Warning', errorMsg, 'warning');
-							adaTrans = true;
-						}
-					}
-				});
+            $('#form_input :input').each(function() {
+                if (this.name) {
+                    requestBody[this.name] = $(this).val();
+                }
+            });
+
+            requestBody.data_detail = $('#table_data_detail').datagrid('getRows');
+
+			if(requestBody.data_giro == 'null') {
+				delete requestBody.data_giro;
 			}
 
-			cek_tanggal_tutup_periode($('#TGLTRANS').datebox('getValue'), 1, function (data) {
-				cekbtnsimpan = true;
-				if (!data.success) {
-					var kode = row.kodekas ? row.kodekas : 'ini';
-					$.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' + kode + '. Prosedur tidak dapat dilanjutkan', 'error');
-					adaTrans = true;
-				}
-			});
+            requestBody.jenis_simpan = jenis_simpan;
 
-			if (!adaTrans) {
-				$.ajax({
-					type      : 'POST',
-					dataType  : 'json',
-					url       : link_api.simpanTransaksiKas + jenis_simpan,
-					data      : datanya,
-					cache     : false,
-					beforeSend: function (){
-						$.messager.progress();
-					},
-					success: function(msg){
-						$.messager.progress('close');
-						cekbtnsimpan = true;
-						if (msg.success) {
-							$('#form_input').form('clear');
-							$.messager.show({
-								title   : 'Info',
-								msg     : 'Transaksi Sukses',
-								showType: 'show'
-							});
-							tambah();
-							parent.reload();
-							if(jenis_simpan == 'simpan_cetak'){
-								cetak(msg.id);
-							}
-						} else {
-							$.messager.alert('Error', msg.errorMsg, 'error');
-						}
-					}
-				});
-			}
-		});
+            let url = link_api.simpanTransaksiKas;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+                }
+                return response.json();
+            });
+
+            if (response.success) {
+                $('#form_input').form('clear');
+
+                $.messager.show({
+                    title: 'Info',
+                    msg: 'Transaksi Sukses',
+                    showType: 'show'
+                });
+
+                if (mode == "tambah") {
+                    await tambah();
+                    $('#table_data_detail').datagrid('loadData', []);
+                } else {
+                    await ubah();
+                }
+
+                if (jenis_simpan == 'simpan_cetak') {
+                    await cetak(response.data.uuidkas);
+                }
+            } else {
+                $.messager.alert('Error', response.message, 'error');
+            }
+
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+
+        cekbtnsimpan = true;
+        tutupLoaderSimpan();
 	}
 }
 
@@ -735,7 +746,7 @@ function reset_detail() {
 
 async function load_data(uuidkas, jtrans) {
   try {
-    let url = link_api.loadTransaksiDataKas;
+    let url = link_api.loadTransaksiDataDetailKas;
     const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -744,7 +755,7 @@ async function load_data(uuidkas, jtrans) {
         },
         body: JSON.stringify({
             uuidkas: uuidkas,
-            mode: "ubah",
+            jtrans: jtrans,
         }),
     }).then(response => {
         if (!response.ok) {
@@ -753,17 +764,17 @@ async function load_data(uuidkas, jtrans) {
         return response.json();
     })
     if (response.success) {
-        $('#form_input').form('load', response.header_giro);
-				$('#table_data_detail').datagrid('loadData', response.detail);
-				$('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('loadData', response.detail_giro);
-				if ((response.detail_giro).length > 0) {
-					$('#NOGIROCAIRTOLAK').combogrid('setValue', (response.detail_giro)[0].nogiro)
-				}
+		var data = response.data
+        $('#form_input').form('load', data.header_giro);
+		$('#table_data_detail').datagrid('loadData', data.detail);
+		$('#NOGIROCAIRTOLAK').combogrid('grid').datagrid('loadData', data.detail_giro);
+		if ((data.detail_giro).length > 0) {
+			$('#NOGIROCAIRTOLAK').combogrid('setValue', (data.detail_giro)[0].nogiro)
+		}
     } else {
         $.messager.alert('Error', response.message, 'error');
     }
   } catch (error) {
-      console.log(error);
       var textError = getTextError(error);
       $.messager.alert('Error', getTextError(error), 'error');
   }
@@ -808,7 +819,7 @@ function hitung_debet_kredit(){
 	$('#TOTALKREDIT').numberbox('setValue', totalkredit);
 }
 
-function get_jurnal_giro() {
+async function get_jurnal_giro() {
 	var row      = $("#NOGIROCAIRTOLAK").combogrid('grid').datagrid('getSelected');
 	var jeniskas = $('#JENISKAS').combobox('getValue').split(' ');
 
@@ -824,18 +835,16 @@ function get_jurnal_giro() {
 			keterangan = 'TOLAKAN';
 		}
 		$('#KETERANGAN').textbox('setValue', keterangan + ' ' + row.jenistransaksi + ' ' + row.nogiro + ' ' + row.namabank + (row.referensi == null ? '' : ' (' + row.referensi + ')'));
-		$.ajax({
-			type    : 'POST',
-			dataType: 'json',
-			url     : link_api.loadJurnalLinkKas + jenis,
-			data    : row,
-			cache   : false,
-			success : function(msg){
-				if (msg.success)  {
-					$('#table_data_detail').datagrid('loadData', msg.data_detail);
-				}
-			}
-		});
+
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.loadJurnalLinkKas + jenis, row
+		);
+		if(response.success) {
+			$('#table_data_detail').datagrid('loadData', msg.data);
+		} else {
+			$.messager.alert('Error', res.message, 'error');
+		}
 	} else {
 		$('#table_data_detail').datagrid('loadData', []);
 		$('#KETERANGAN').textbox('clear')
@@ -971,7 +980,6 @@ async function generate_jurnal_giro() {
 			$.messager.alert('Error', response.message, 'error');
 		}
 	} catch (error) {
-		console.log(error);
 		var textError = getTextError(error);
 		$.messager.alert('Error', getTextError(error), 'error');
 	}
@@ -994,7 +1002,7 @@ function browse_data_giro(id) {
 			{field:'hutang',hidden:true},
 			{field:'piutang',hidden:true},
 		]],
-		onSelect: function(index, data) {
+		onSelect: async function(index, data) {
 			var jenisKas = $('#JENISKAS').combobox('getValue');
 			if (jenisKas == 'BANK KELUAR' && data.hutang != 'S') {
 				$.messager.alert('Error', 'Transaksi Pelunasan Hutang / Piutang Belum Dicetak, Lakukan Cetak Terhadap Pelunasan Terlebih Dahulu', 'error');
@@ -1003,7 +1011,7 @@ function browse_data_giro(id) {
 				$.messager.alert('Error', 'Transaksi Pelunasan Hutang / Piutang Belum Dicetak, Lakukan Cetak Terhadap Pelunasan Terlebih Dahulu', 'error');
 			}
 			else{
-				get_jurnal_giro();
+				await get_jurnal_giro();
 			}
 		}
 	});
@@ -1074,8 +1082,6 @@ function buat_table_detail() {
 					index: index,
 					field: 'kodeperkiraan'
 				});
-
-				getRowIndex(target);
 			}
 		}, {
 			text   : 'Hapus',
@@ -1259,7 +1265,7 @@ function buat_table_detail() {
 			hitung_debet_kredit();
 
 			// cek jika salah satu akun detil sama dengan akun kas/bank di header maka hapus detailnya
-			var kodeheader = $('#IDPERKIRAANKAS').combogrid('getValue');
+			var kodeheader = $('#UUIDPERKIRAANKAS').combogrid('getValue');
 			if (kodeheader == row.kodeperkiraan) {
 				$.messager.alert('Error', 'Kode Perkiraan tidak boleh sama dengan Akun Kas/Bank', 'error');
 				$(this).datagrid('deleteRow', index);
