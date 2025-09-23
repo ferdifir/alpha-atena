@@ -14,7 +14,7 @@
             <input type="hidden" id="data_barangset" name="data_barangset">
             <input type="hidden" id="data_supplier" name="data_supplier">
             <input type="hidden" id="data_lokasi" name="data_lokasi">
-            <input type="hidden" name="gambar">
+            <input type="hidden" id="gambar" name="gambar">
 
             <div data-options="region:'center',border:false">
               <table style="padding:5px" id="label_form">
@@ -304,21 +304,21 @@
                         <tr>
                           <td align="right" id="label_form">Akun Persediaan</td>
                           <td>
-                            <input id="KODEPERKIRAANPERSEDIAAN" name="kodeperkiraanpersediaan" style="width:250px">
+                            <input id="KODEPERKIRAANPERSEDIAAN" name="kodeperkiraanpersediaan" style="width:300px">
                             <input type="hidden" name="uuidperkiraanpersediaan" id="IDPERKIRAANPERSEDIAAN">
                           </td>
                         </tr>
                         <tr>
                           <td align="right" id="label_form">Akun HPP</td>
                           <td>
-                            <input id="KODEPERKIRAANHPP" name="kodeperkiraanhpp" style="width:250px">
+                            <input id="KODEPERKIRAANHPP" name="kodeperkiraanhpp" style="width:300px">
                             <input type="hidden" name="uuidperkiraanhpp" id="IDPERKIRAANHPP">
                           </td>
                         </tr>
                         <tr>
                           <td align="right" valign="top" id="label_form">Catatan</td>
                           <td>
-                            <textarea name="catatan" style="width:310px; height:60px" class="label_input" multiline="true"
+                            <textarea name="catatan" style="width:300px; height:60px" class="label_input" multiline="true"
                               validType='length[0,300]'></textarea>
                           </td>
                         </tr>
@@ -513,6 +513,8 @@
     var indexCbKategori = 1;
     var indexSelectedBarangset = -1;
     var indexSelectedSupplier = -1;
+    let fileGambar;
+    let row = {};
 
     async function fetchData(url, body) {
       try {
@@ -521,13 +523,9 @@
           'Authorization': 'bearer ' + token,
         };
         let requestBody = null;
-
-        // Cek apakah body adalah instance dari FormData
         if (body instanceof FormData) {
-          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
           requestBody = body;
         } else {
-          // Default: Jika bukan FormData, asumsikan itu JSON.
           headers['Content-Type'] = 'application/json';
           requestBody = body ? JSON.stringify(body) : null;
         }
@@ -545,8 +543,7 @@
         const data = await response.json();
         return data;
       } catch (error) {
-        console.error("Terjadi kesalahan:", error);
-        throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
+        throw error;
       }
     }
 
@@ -743,8 +740,6 @@
               }
 
               var data = ed.combogrid('grid').datagrid('getSelected');
-              console.log('data on end edit', data);
-              console.log('changes on end edit', changes);
               var nama = data ? data.nama : changes.nama.toUpperCase();
               var id = data ? data.uuidbarang : changes.uuidbarang;
               var barcodesatuan1 = data ? data.barcodesatuan1 : changes.barcodesatuan1.toUpperCase();
@@ -969,10 +964,8 @@
               });
               tambah();
             } else {
-              //tutup tab dan refresh data di function
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
             }
-            // parent.reload();
           } else {
             $.messager.alert('Error', msg.message, 'error');
           }
@@ -983,8 +976,10 @@
         accept: 'image/*',
         onChange: function(newVal, oldVal) {
           var input = $(this).next().find('.textbox-value')[0];
+          $('#gambar').val(newVal);
 
           if (input.files && input.files[0]) {
+            fileGambar = input.files[0];
             var reader = new FileReader();
 
             reader.onload = function(e) {
@@ -1077,7 +1072,8 @@
       parent.tutupTab();
     }
 
-    function tambah() {
+    async function tambah() {
+      $('#preview-image').attr('src', "{{ asset('assets/foto_barang/NO_IMAGE.jpg') }}");
       get_akses_user('QTIO7', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         const akseshargajualsatuan = data.hakakses == 1;
@@ -1133,28 +1129,28 @@
         required: false
       });
 
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadLastPerkiraan,
-        cache: false,
-        success: function(msg) {
-          console.log('loadLastPerkiraan', msg);
-          if (msg.tglentry != null) {
-            $('#KODEPERKIRAANPERSEDIAAN').combogrid('setValue', {
-              kode: msg.kodeperkiraanpersediaan,
-              nama: msg.namaperkiraanpersediaan
-            });
-            $('#KODEPERKIRAANHPP').combogrid('setValue', {
-              kode: msg.kodeperkiraanhpp,
-              nama: msg.namaperkiraanhpp
-            });
+      try {
+        const res = await fetchData(link_api.loadLastPerkiraan);
+        if (res.success) {
+          $('#KODEPERKIRAANPERSEDIAAN').combogrid('setValue', {
+            kode: res.kodeperkiraanpersediaan,
+            nama: res.namaperkiraanpersediaan
+          });
+          $('#KODEPERKIRAANHPP').combogrid('setValue', {
+            kode: res.kodeperkiraanhpp,
+            nama: res.namaperkiraanhpp
+          });
 
-            $('#IDPERKIRAANPERSEDIAAN').val(msg.uuidperkiraanpersediaan);
-            $('#IDPERKIRAANHPP').val(msg.uuidperkiraanhpp);
-          }
+          $('#IDPERKIRAANPERSEDIAAN').val(res.uuidperkiraanpersediaan);
+          $('#IDPERKIRAANHPP').val(res.uuidperkiraanhpp);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
 
       getConfig("KODEBARANG", "MBARANG", 'bearer {{ session('TOKEN') }}',
         function(response) {
@@ -1189,16 +1185,14 @@
         uuidbarang: '{{ $data }}'
       });
       const data = response.data;
-      const row = data.row;
+      row = data.row;
 
       const akseshargajualsatuan = data.akseshargajualsatuan;
       const ubahhargajualsatuan = data.ubahhargajualsatuan;
       if (akseshargajualsatuan) $('#akseshargajualsatuan').show();
       if (ubahhargajualsatuan) $('#ubahhargajualsatuan').show();
-      tutupLoader();
 
       if (row) {
-
         $('#KODEMERK').textbox({
           prompt: "Auto Generate",
           readonly: true,
@@ -1212,17 +1206,12 @@
         $('#form_input').form('load', row);
         $('#mode').val('ubah');
 
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          url: link_api.cekTransaksiBarang,
-          data: {
+        try {
+          const res = await fetchData(link_api.cekTransaksiBarang, {
             uuidbarang: row.uuidbarang
-          },
-          async: false,
-          cache: false,
-          success: function(msg) {
-            opt = msg.ada_transaksi;
+          });
+          if (res.success) {
+            opt = res.data.ada_transaksi;
 
             $("#SATUAN").add($("#KONVERSI1")).add($("#SATUAN2")).add($("#KONVERSI2")).add($("#SATUAN3")).textbox(
               'readonly', opt);
@@ -1236,7 +1225,10 @@
               $("#satuanbarangtranskasi").show();
             }
           }
-        });
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          $.messager.alert('Error', getTextError(error), 'error');
+        }
 
         $('#scanbarcodebbk').prop('checked', row.scanbarcodebbk == 1);
         $('#detailsetubah').prop('checked', row.detailsetubah == 1);
@@ -1259,13 +1251,12 @@
         $("#hapus_satuan_3").show();
 
         // load gambar
-        var gambar = row.gambar;
+        var gambar = row.gambar_full_path;
 
-        if (row.gambar != 'NO_IMAGE.jpg') {
-          $('#preview-image').attr('src', base_url + 'assets/foto_barang/{{ session('IDPERUSAHAAN') }}/' +
-            row.gambar);
+        if (gambar) {
+          $('#preview-image').attr('src', gambar);
         } else {
-          $('#preview-image').attr('src', base_url + 'assets/foto_barang/NO_IMAGE.jpg');
+          $('#preview-image').attr('src', '{{ asset('assets/foto_barang/NO_IMAGE.jpg') }}');
         }
 
         if (row.satuan2 == null || row.satuan2 == "") {
@@ -1313,12 +1304,12 @@
 
         $('#JMLHASILSET').numberbox('setValue', row.jmlhasilset);
         $('#KODEPERKIRAANPERSEDIAAN').combogrid('setValue', {
-          id: row.uuidperkiraanpersediaan,
+          uuidperkiraan: row.uuidperkiraanpersediaan,
           kode: row.kodeperkiraanpersediaan,
           nama: row.namaperkiraanpersediaan
         });
         $('#KODEPERKIRAANHPP').combogrid('setValue', {
-          id: row.uuidperkiraanhpp,
+          uuidperkiraanhpp: row.uuidperkiraanhpp,
           kode: row.kodeperkiraanhpp,
           nama: row.namaperkiraanhpp
         });
@@ -1382,25 +1373,32 @@
             undefined));
           $('#data_supplier').val(JSON.stringify(filteredData));
 
-          const data = $('#form_input').serializeArray();
-          const payload = {};
-          for (let i = 0; i < data.length; i++) {
-            if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
-              data[i].value = JSON.parse(data[i].value);
-            }
-            payload[data[i].name] = data[i].value;
+          const formData = new FormData($('#form_input')[0]);
+          if (fileGambar) {
+            // backend hanya menerima satu file
+            formData.set('filegambar', fileGambar);
           }
+          //   const data = $('#form_input').serializeArray();
+          //   const payload = {};
+          //   for (let i = 0; i < data.length; i++) {
+          //     if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
+          //       data[i].value = JSON.parse(data[i].value);
+          //     }
+          //     payload[data[i].name] = data[i].value;
+          //   }
           if ('{{ $mode }}' == 'ubah') {
-            const barangset = payload.data_barangset;
+            // const barangset = payload.data_barangset;
+            const barangset = JSON.parse(formData.get('data_barangset'));
             for (let i = 0; i < barangset.length; i++) {
-              barangset[i].uuidbarangset = payload.uuidbarang;
+              //   barangset[i].uuidbarangset = payload.uuidbarang;
+              barangset[i].uuidbarang = formData.get('uuidbarang');
             }
-            payload.data_barangset = barangset;
+            // payload.data_barangset = barangset;
+            formData.set('data_barangset', JSON.stringify(barangset));
           }
 
           try {
-            const response = await fetchData(link_api.simpanBarang, payload);
-            tutupLoaderSimpan();
+            const response = await fetchData(link_api.simpanBarang, formData);
             if (response.success) {
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               if (mode == 'tambah') {
@@ -1412,11 +1410,12 @@
               $.messager.alert('Error', response.message, 'error');
             }
           } catch (error) {
-            tutupLoaderSimpan();
             const e = (typeof error === 'string') ? error : error.message;
             var textError = getTextError(e);
             $.messager.alert('Error', textError, 'error');
             return;
+          } finally {
+            tutupLoaderSimpan();
           }
         }
       } else {
@@ -1440,24 +1439,17 @@
 
         return expirationTime < currentTime;
       } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
         return true;
       }
     }
 
-    function load_data_barangset(idbarang) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadBarangSet,
-        data: {
+    async function load_data_barangset(idbarang) {
+      try {
+        const res = await fetchData(link_api.loadBarangSet, {
           uuidbarang: idbarang
-        },
-        cache: false,
-        beforeSend: function() {
-          $('#table_data_barangset').datagrid('loading');
-        },
-        success: function(msg) {
+        });
+        if (res.success) {
+          const msg = res.data;
           $('#table_data_barangset').datagrid('loaded');
           for (var i = 0; i < msg.length; i++) {
             msg[i].kode = msg[i].kodebarang;
@@ -1465,60 +1457,70 @@
             msg[i].jml = msg[i].jmldibutuhkan;
           }
           $('#table_data_barangset').datagrid('loadData', msg);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
-    function load_data_supplier(idbarang) {
-      $.ajax({
-        url: link_api.loadDataSupplier,
-        type: 'POST',
-        data: {
+    async function load_data_supplier(idbarang) {
+      try {
+        $('#table_data_supplier').datagrid('loading');
+        const res = await fetchData(link_api.loadDataSupplier, {
           uuidbarang: idbarang
-        },
-        dataType: 'JSON',
-        beforeSend: function() {
-          $('#table_data_supplier').datagrid('loading');
-        },
-        success: function(response) {
+        });
+        if (res.success) {
+          const msg = res.data;
           $('#table_data_supplier').datagrid('loaded');
-          $('#table_data_supplier').datagrid('loadData', response);
+          $('#table_data_supplier').datagrid('loadData', msg);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      })
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      } finally {
+        $('#table_data_supplier').datagrid('loaded');
+      }
     }
 
-    function load_data_lokasi(idbarang) {
-      $.ajax({
-        url: link_api.loadDataLokasi,
-        type: 'POST',
-        data: {
+    async function load_data_lokasi(idbarang) {
+      try {
+        const res = await fetchData(link_api.loadDataLokasi, {
           uuidbarang: idbarang
-        },
-        dataType: 'JSON',
-        success: function(response) {
+        });
+        if (res.success) {
           var daftarlokasi = $('#table_data_lokasi').datagrid('getRows');
 
-          for (var i = 0; i < response.length; i++) {
+          for (var i = 0; i < res.data.length; i++) {
             for (var j = 0; j < daftarlokasi.length; j++) {
-              if (response[i].uuidlokasi == daftarlokasi[j].uuidlokasi) {
+              if (res.data[i].uuidlokasi == daftarlokasi[j].uuidlokasi) {
                 $('#table_data_lokasi').datagrid('checkRow', j);
               }
             }
           }
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      })
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
-    function load_data_barangkategori(idbarang) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.loadDaftarKategori,
-        data: {
+    async function load_data_barangkategori(idbarang) {
+      try {
+        const res = await fetchData(link_api.loadDaftarKategori, {
           uuidbarang: idbarang
-        },
-        cache: false,
-        success: function(msg) {
+        });
+        if (res.success) {
+          const msg = res.data;
           $('#table_data_barangkategori').datagrid('loadData', msg);
 
           var rows = $('#table_data_barangkategori').datagrid('getRows');
@@ -1539,16 +1541,29 @@
             indexKategori++;
 
           }
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     function previewGambar() {
-      if (row.gambar != 'NO_IMAGE.jpg') {
-        window.open(base_url + 'assets/foto_barang/{{ session('IDPERUSAHAAN') }}/' + row.gambar, 'Gambar',
-          'resizable,scrollbars,status');
+      if (row.gambar_full_path) {
+        window.open(
+          row.gambar_full_path,
+          'Gambar',
+          'resizable,scrollbars,status'
+        );
       } else {
-        window.open(base_url + 'assets/foto_barang/NO_IMAGE.jpg', 'Gambar', 'resizable,scrollbars,status');
+        window.open(
+          '{{ asset('assets/foto_barang/NO_IMAGE.jpg') }}',
+          'Gambar',
+          'resizable,scrollbars,status'
+        );
       }
     }
 
@@ -1588,7 +1603,7 @@
       });
     }
 
-    function simpan_merk() {
+    async function simpan_merk() {
 
       var cekDiskon = cek_format($('#DISCOUNTMINMERK').textbox('getValue'));
 
@@ -1615,26 +1630,27 @@
         return false;
       }
 
-      $.ajax({
-        type: 'POST',
-        url: link_api.simpanMerk,
-        data: $('#form_merk :input').serialize() + "&mode=tambah&aktif=1",
-        dataType: 'json',
-        success: function(msg) {
-          if (msg.success) {
-            $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-            $("#form_merk").dialog('close');
-            $('#KODEMERKBARANG').combogrid('grid').datagrid('reload');
-            $('#KODEMERKBARANG').combogrid('setValue', {
-              kode: msg.kodemerk,
-              nama: msg.namamerk
-            });
-          } else {
-            $.messager.alert('Error', msg.message, 'error');
-          }
+      try {
+        const data = $('#form_merk :input').serializeArray();
+        data.mode = 'tambah';
+        data.aktif = 1;
+        const res = await fetchData(link_api.simpanMerk, data);
+        if (res.success) {
+          $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+          $("#form_merk").dialog('close');
+          $('#KODEMERKBARANG').combogrid('grid').datagrid('reload');
+          $('#KODEMERKBARANG').combogrid('setValue', {
+            kode: res.data.kodemerk,
+            nama: res.data.namamerk
+          });
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
-
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     function tutup_merk() {
@@ -2101,18 +2117,21 @@
       });
     }
 
-    function tampil_hargajual_berdasarkan_satuan(idbarang) {
-      $.ajax({
-        url: link_api.loadHargaJualTerakhirBerdasarkanSatuan,
-        data: {
+    async function tampil_hargajual_berdasarkan_satuan(idbarang) {
+      try {
+        const res = await fetchData(link_api.loadHargaJualTerakhirBerdasarkanSatuan, {
           uuidbarang: idbarang
-        },
-        type: 'POST',
-        dataType: 'JSON',
-        success: function(response) {
-          $('#table_hargajual_berdasarkan_satuan').datagrid('loadData', response);
+        });
+        if (res.success) {
+          $('#table_hargajual_berdasarkan_satuan').datagrid('loadData', res.data);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     function tampil_window_ubah_hargajual(event) {
@@ -2168,16 +2187,15 @@
             },
           ]
         ],
-        onSelect: function(index, row) {
-          $.ajax({
-            url: link_api.loadHargaJual,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
+        onSelect: async function(index, row) {
+          try {
+            const res = await fetchData(link_api.loadHargaJual, {
               uuidbarang: $('#IDBARANG').val(),
               uuidlokasi: row.uuidlokasi
-            },
-            success: function(data) {
+            });
+
+            if (res.success) {
+              const data = res.data;
               $('#LABEL_HARGAJUAL_SATUAN').text(data[0].satuan);
               $('#HARGAJUALMIN_SATUAN').numberbox('setValue', data[0].hargajualmin);
               $('#HARGAJUALMAX_SATUAN').numberbox('setValue', data[0].hargajualmax);
@@ -2193,24 +2211,27 @@
                 $('#HARGAJUALMIN_SATUAN3').numberbox('setValue', data[2].hargajualmin);
                 $('#HARGAJUALMAX_SATUAN3').numberbox('setValue', data[2].hargajualmax);
               }
+            } else {
+              $.messager.alert('Error', res.message, 'error');
             }
-          })
+          } catch (e) {
+            const error = (typeof e === 'string') ? e : e.message;
+            var textError = getTextError(error);
+            $.messager.alert('Error', textError, 'error');
+          }
         }
       });
     }
 
-    function simpan_hargajual() {
+    async function simpan_hargajual() {
       if ($('#LOKASIHARGAJUAL').combogrid('getValue') == '') {
         $.messager.alert('Peringatan', 'Lokasi belum dipilih', 'warning');
 
         return false;
       }
 
-      $.ajax({
-        url: link_api.simpanHargaJual,
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
+      try {
+        const res = await fetchData(link_api.simpanHargaJual, {
           uuidbarang: $('#IDBARANG').val(),
           hargajualminmsatuan: $('#HARGAJUALMIN_SATUAN').numberbox('getValue'),
           hargajualmaxsatuan: $('#HARGAJUALMAX_SATUAN').numberbox('getValue'),
@@ -2219,25 +2240,27 @@
           hargajualminmsatuan3: $('#HARGAJUALMIN_SATUAN3').numberbox('getValue'),
           hargajualmaxsatuan3: $('#HARGAJUALMAX_SATUAN3').numberbox('getValue'),
           uuidlokasi: $('#LOKASIHARGAJUAL').combogrid('getValue')
-        },
-        success: function(response) {
-          if (response.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Simpan Harga Jual Sukses',
-              showType: 'show'
-            });
+        });
+        if (res.success) {
+          $.messager.show({
+            title: 'Info',
+            msg: 'Simpan Harga Jual Sukses',
+            showType: 'show'
+          });
 
-            $('#window_ubah_hargajual').window({
-              closed: true
-            });
+          $('#window_ubah_hargajual').window({
+            closed: true
+          });
 
-            tampil_hargajual_berdasarkan_satuan($('#IDBARANG').val());
-          } else {
-            $.messager.alert('Error', response.message, 'error');
-          }
+          tampil_hargajual_berdasarkan_satuan($('#IDBARANG').val());
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      })
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     function tambah_detail_barangset() {

@@ -9,7 +9,7 @@
                         <form id="form_input" enctype="multipart/form-data">
                             <input type="hidden" name="mode" id="mode">
                             <input type="hidden" name="uuidalatbayar">
-                            <input type="hidden" name="gambar">
+                            <input type="hidden" name="gambar" id="gambar">
                             <input type="hidden" id="TGLENTRY" name="tglentry">
                             <table style="padding:5px" id="label_form">
                                 <tr>
@@ -121,6 +121,7 @@
                 accept: 'image/*',
                 onChange: function(newVal, oldVal) {
                     var input = $(this).next().find('.textbox-value')[0];
+                    $('#gambar').val(newVal);
 
                     if (input.files && input.files[0]) {
                         var reader = new FileReader();
@@ -198,6 +199,8 @@
                 });
                 $('#KODEALATBAYAR').textbox('clear').textbox('textbox').focus();
             }
+            $('#FILEGAMBAR').filebox('clear');
+            $('#preview-image').attr('src', '{{ asset('assets/foto_barang/NO_IMAGE.jpg') }}');
         }
 
         async function ubah() {
@@ -242,10 +245,10 @@
                 $('#UUIDPERKIRAANKAS').combogrid('setValue', row.uuidperkiraan);
 
                 // load gambar
-                var gambar = row.gambar;
+                var gambar = row.gambar_full_path;
 
-                if (row.gambar != 'NO_IMAGE.jpg') {
-                    $('#preview-image').attr('src', row.gambar);
+                if (gambar) {
+                    $('#preview-image').attr('src', gambar);
                 } else {
                     $('#preview-image').attr('src', base_url + 'assets/foto_alatbayar/NO_IMAGE.jpg');
                 }
@@ -264,6 +267,8 @@
 
             if (isValid) {
                 tampilLoaderSimpan();
+                const body = new FormData($('#form_input')[0]);
+
                 var mode = '{{ $mode }}';
                 try {
                     let headers = {
@@ -272,10 +277,10 @@
                     let requestBody = null;
                     var unindexed_array = $('#form_input :input').serializeArray();
 
-                    var body = {};
-                    $.map(unindexed_array, function(n, i) {
-                        body[n['name']] = n['value'];
-                    });
+                    // var body = {};
+                    // $.map(unindexed_array, function(n, i) {
+                    //     body[n['name']] = n['value'];
+                    // });
                     // Cek apakah body adalah instance dari FormData
                     if (body instanceof FormData) {
                         // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
@@ -319,10 +324,10 @@
         }
 
         function previewGambar() {
-            if (row.gambar != 'NO_IMAGE.jpg') {
-                window.open(row.gambar, 'Gambar', 'resizable,scrollbars,status');
+            if (row.gambar_full_path != 'NO_IMAGE.jpg') {
+                window.open(row.gambar_full_path, 'Gambar', 'resizable,scrollbars,status');
             } else {
-                window.open('{{ asset('assets/foto_user/NO_IMAGE.jpg') }}', 'Gambar',
+                window.open('{{ asset('assets/foto_barang/NO_IMAGE.jpg') }}', 'Gambar',
                     'resizable,scrollbars,status');
             }
         }
