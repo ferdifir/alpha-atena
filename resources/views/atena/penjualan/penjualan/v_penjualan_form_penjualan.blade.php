@@ -131,7 +131,7 @@
                           <tr id="tr_pengeluaran">
                             <td id="label_form" align="left">No. Pengeluaran</td>
                             <td id="label_form" align="left" colspan="2"><input name="uuidbbk" id="IDBBK"
-                                style="width:210px"></td>
+                                style="width:254px"></td>
                             <input type="hidden" id="KODEBBK" name="kodebbk">
                           </tr>
                           <tr>
@@ -299,7 +299,7 @@
     </table>
   </div>
 
-  <div id="window_repacking" title="Daftar Repacking" style="width: 450px; height: 300px">
+  <div id="window_repacking" title="Daftar Repacking" style="width: 475px; height: 300px">
     <div class="easyui-layout" style="height: 100%;width: 100%">
       <div data-options="region: 'north'" style="height: 50px;">
         <table style="padding:5px">
@@ -350,6 +350,7 @@
     var ppnpersenaktif = 0;
     let transreferensi = null;
     let row = {};
+    let prosessimpan = false;
 
     // menyimpan nilai uang muka sebelum disesuaikan dengan grandtotal
     var uangmuka = 0;
@@ -375,7 +376,7 @@
             $('#simpan_cetak').removeAttr('onclick');
           }
         },
-        '{{ $mode }}' == 'tambah'
+        '{{ $mode }}' == 'tambah' // set tanpa loader
       );
 
       $("#form_cetak").window({
@@ -521,7 +522,8 @@
               ppnpersenaktif = response.ppnpersen;
 
               update_ppn_table_detail($('#table_data_detail'), ppnpersenaktif, function(index, row) {
-                hitung_subtotal_detail(index, row);
+
+                hitung_subtotal_detail(index, row, 1);
               });
 
               hitung_grandtotal();
@@ -544,7 +546,7 @@
           total = $('#TOTAL').numberbox('getValue');
           diskon = $('#DISCPERSEN').numberbox('getValue');
           var data = $("#table_data_detail").datagrid('getRows');
-
+          console.log('data', data.length, data);
           for (var i = 0; i < data.length; i++) {
             oldharga = data[i].harga;
             olddiskonpersen = data[i].discpersen;
@@ -573,7 +575,8 @@
               data[i] = $('#table_data_detail').datagrid('getRows')[i];
             }
 
-            hitung_subtotal_detail(i, data[i]);
+
+            hitung_subtotal_detail(i, data[i], 2);
           }
 
           $('#DISCRP').numberbox('setValue', (total * (diskon / 100))).prop('readonly', (diskon > 0 ? true :
@@ -797,7 +800,6 @@
       reset_detail();
 
       fill_form_transreferensi();
-      tutupLoader();
     }
 
     async function fill_form_transreferensi() {
@@ -856,7 +858,7 @@
             }
           ).then(res => {
             if (res.success) {
-              get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), response.selisih);
+              get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), res.data.selisih);
             } else {
               $.messager.alert('Error', res.message, 'error');
             }
@@ -923,7 +925,7 @@
             }
 
             reset_detail();
-            load_data_detail(transreferensi.uuidbbk);
+            load_data_detail(transreferensi.uuidbbk, false);
           } else {
             $.messager.alert('Error', res.message, 'error');
           }
@@ -1065,17 +1067,16 @@
 
       $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
 
-      var datanya = $("#form_input :input").serialize();
-      var isValid = $('#form_input').form('validate');
+      var isValid = $('#form_input :input').form('validate');
 
       $('#window_button_simpan').window('close');
-
 
       $("#APPROVE").val('0');
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
         if (!isTokenExpired(jwt)) {
+          prosessimpan = true;
           try {
             tampilLoaderSimpan();
             const data = $("#form_input :input").serializeArray();
@@ -1094,6 +1095,7 @@
             if (res.success) {
               $('#form_input').form('clear');
               uangmuka = 0;
+              transreferensi = null;
               $.messager.show({
                 title: 'Info',
                 msg: 'Transaksi Sukses',
@@ -1124,6 +1126,9 @@
             $.messager.alert('Error', textError, 'error');
           } finally {
             tutupLoaderSimpan();
+            setTimeout(() => {
+              prosessimpan = false;
+            }, 1000);
           }
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
@@ -1189,9 +1194,9 @@
       }
     }
 
-    async function load_data_detail(idtrans) {
+    async function load_data_detail(idtrans, showloader = true) {
       try {
-        bukaLoader();
+        if (showloader) bukaLoader();
         const res = await fetchData(
           jwt, link_api.loadDataPenjualanBarangKeluar, {
             uuidbbk: idtrans,
@@ -1244,7 +1249,8 @@
         olddiskonpersen = '0';
         olddiskonrp = 0;
 
-        hitung_subtotal_detail(i, rows[i]);
+
+        hitung_subtotal_detail(i, rows[i], 3);
       }
 
       hitung_grandtotal();
@@ -2565,7 +2571,6 @@
                   row_update["selisih"] = selisihval;
                 }
               }
-              console.log('onenedit field barang sudah selesai');
               break;
             case 'satuan':
               get_konversi(ed.combogrid('grid').datagrid('getRows'), changes.satuan, row.satuan_lama);
@@ -2695,7 +2700,8 @@
               }
             }
           }
-          hitung_subtotal_detail(index, row);
+
+          hitung_subtotal_detail(index, row, 4);
           hitung_grandtotal();
         },
         onLoadSuccess: function(data) {
@@ -2864,26 +2870,30 @@
         rownumbers: true,
         columns: [
           [{
-            field: 'kodebarang',
-            title: 'Kode Barang',
-            width: 85
-          }, {
-            field: 'namabarang',
-            title: 'Nama Barang',
-            width: 200
-          }, {
-            field: 'jml',
-            title: 'Jumlah',
-            align: 'right',
-            width: 60,
-            formatter: format_qty
-          }, {
-            field: 'harga',
-            title: 'Harga',
-            align: 'right',
-            width: 80,
-            formatter: format_amount
-          }]
+              field: 'kodebarang',
+              title: 'Kode Barang',
+              width: 85
+            },
+            {
+              field: 'namabarang',
+              title: 'Nama Barang',
+              width: 200
+            },
+            {
+              field: 'jml',
+              title: 'Jumlah',
+              align: 'right',
+              width: 60,
+              formatter: format_qty
+            },
+            {
+              field: 'harga',
+              title: 'Harga',
+              align: 'right',
+              width: 80,
+              formatter: format_amount
+            }
+          ]
         ],
         onLoadSuccess: function(data) {
           hitung_grandtotal_repacking();
@@ -2891,7 +2901,7 @@
       });
     }
 
-    function hitung_subtotal_detail(index, row) {
+    function hitung_subtotal_detail(index, row, urutan) {
       // hitung diskon lebih dahulu
       var data = {};
       var harga = parseFloat(row.harga);
@@ -3113,12 +3123,14 @@
         //BIARKAN
       } else if (idcustomer == "" || idcustomer == null) {
         data.disc = 0;
-
-        $.messager.alert({
-          title: 'Warning',
-          msg: 'Customer belum dipilih',
-          timeout: {{ session('TIMEOUT') }},
-        });
+        console.log(prosessimpan, urutan);
+        if (!prosessimpan) {
+          $.messager.alert({
+            title: 'Warning',
+            msg: 'Customer belum dipilih ' + urutan,
+            timeout: {{ session('TIMEOUT') }},
+          });
+        }
       } else if (kodemerk == "" || kodemerk == null) {
         data.disc = 0;
 
@@ -3686,7 +3698,8 @@
 
           $('#table_data_detail').datagrid('appendRow', row);
 
-          hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row);
+
+          hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row, 5);
           hitung_grandtotal();
         } else {
           $.messager.alert('Error', res.message, 'error');
@@ -3801,7 +3814,8 @@
                   });
 
                   ada = true;
-                  hitung_subtotal_detail(i, daftar_barang[i]);
+
+                  hitung_subtotal_detail(i, daftar_barang[i], 6);
                 }
               }
 
@@ -3874,7 +3888,8 @@
                     }
                     $('#table_data_detail').datagrid('appendRow', row);
 
-                    hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row);
+
+                    hitung_subtotal_detail($('#table_data_detail').datagrid('getRows').length - 1, row, 7);
                   } else {
                     $.messager.alert('Warning', res2.message, 'warning');
                   }

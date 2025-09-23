@@ -301,11 +301,12 @@
       });
     }
 
-    function before_edit() {
+    function before_edit(row) {
       $('#mode').val('ubah');
+          console.log(row.uuidbeli);
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
-          var row = $('#table_data').datagrid('getSelected');
+          // var row = $('#table_data').datagrid('getSelected');
           parent.buka_submenu(null, row.kodebeli,
             '{{ route('atena.pembelian.pembelian.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
             row.uuidbeli,
@@ -840,7 +841,7 @@
           ]
         ],
         onDblClickRow: function(index, data) {
-          before_edit();
+          before_edit(data);
         },
       });
     }
