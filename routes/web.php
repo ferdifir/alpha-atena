@@ -290,6 +290,21 @@ Route::get('atena/master/alatbayar/form', function() {
     ]);
 })->name('atena.master.alat_bayar.form');
 
+// Master servis
+Route::get('atena/master/servis/data', function() {
+    return view('atena.master.servis.v_master_list_servis', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.master.servis.data');
+
+Route::get('atena/master/servis/form', function() {
+    return view('atena.master.servis.v_master_form_servis', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.master.servis.form');
+
 // Master alat bayar non tunai
 Route::get('atena/master/alatbayarnontunai/data', function() {
     return view('atena.master.alat_bayar_non_tunai.v_master_list_alat_bayar_non_tunai', [

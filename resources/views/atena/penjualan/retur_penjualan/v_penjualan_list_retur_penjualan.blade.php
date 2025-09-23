@@ -233,7 +233,6 @@
     }
 
     function before_add() {
-      $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
@@ -697,7 +696,7 @@
             var tab_title = row.kodereturjual;
             parent.buka_submenu(null, tab_title,
               '{{ route('atena.penjualan.returpenjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              row.idreturjual,
+              row.uuidreturjual,
               'fa fa-pencil');
           } else {
             $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');

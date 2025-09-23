@@ -20,16 +20,16 @@
                     <fieldset style="height:150px;">
                       <legend id="label_laporan">Info Transaksi</legend>
                       <table border="0">
-                        <input name="idperusahaan" id="IDPERUSAHAAN" type="hidden" style="width:190px">
+                        <input name="uuidperusahaan" id="IDPERUSAHAAN" type="hidden" style="width:190px">
                         <tr>
                           <td id="label_form">No. Retur Jual</td>
                           <td id="label_form"><input name="kodereturjual" id="KODERETURJUAL" class="label_input"
                               style="width:190px" prompt="Auto Generate" readonly></td>
-                          <input type="hidden" id="IDRETURJUAL" name="idreturjual">
+                          <input type="hidden" id="IDRETURJUAL" name="uuidreturjual">
                         </tr>
                         <tr>
                           <td id="label_form">Lokasi</td>
-                          <td id="label_form"><input name="idlokasi" id="IDLOKASI" style="width:190px"></td>
+                          <td id="label_form"><input name="uuidlokasi" id="IDLOKASI" style="width:190px"></td>
                           <input type="hidden" id="KODELOKASI" name="kodelokasi">
                         </tr>
                         <tr>
@@ -57,7 +57,7 @@
                           <tr>
                             <td id="label_form">Kode</td>
                             <td>
-                              <input name="idcustomer" class="label_input" id="IDCUSTOMER" style="width:100px"
+                              <input name="uuidcustomer" class="label_input" id="IDCUSTOMER" style="width:100px"
                                 prompt="Kode Customer">
                               <input type="hidden" id="KODECUSTOMER" name="kodecustomer">
                               <input name="namacustomer" class="label_input" id="NAMACUSTOMER" style="width:210px"
@@ -81,7 +81,7 @@
                           <tr>
                             <td id="label_form">Marketing</td>
                             <td>
-                              <input name="idmarketing" class="label_input" id="IDMARKETING" style="width:313px">
+                              <input name="uuidmarketing" class="label_input" id="IDMARKETING" style="width:313px">
                               <input type="hidden" id="KODEMARKETING" name="kodemarketing">
                             </td>
                           </tr>
@@ -92,7 +92,7 @@
                           <tr>
                             <td id="label_form">Kode</td>
                             <td>
-                              <input name="idsubcustomer" class="label_input" id="IDSUBCUSTOMER" style="width:100">
+                              <input name="uuidsubcustomer" class="label_input" id="IDSUBCUSTOMER" style="width:100">
                               <input type="hidden" id="KODESUBCUSTOMER" name="kodesubcustomer">
                               <input name="namasubcustomer" class="label_input" id="NAMASUBCUSTOMER"
                                 style="width:210px" readonly prompt="Nama SubCustomer">
@@ -120,7 +120,7 @@
                           <tr>
                             <td id="label_form">Syarat Bayar</td>
                             <td id="label_form">
-                              <input name="idsyaratbayar" id="IDSYARATBAYAR" readonly class="label_input"
+                              <input name="uuidsyaratbayar" id="IDSYARATBAYAR" readonly class="label_input"
                                 style="width:182px">
                               <input name="tgljatuhtempo" id="TGLJATUHTEMPO" readonly class="date"
                                 style="width:100px">
@@ -128,7 +128,7 @@
                           </tr>
                           <tr id="tr_transaksi_jual">
                             <td id="label_form">No. Jual</td>
-                            <td id="label_form"><input name="idjual" id="IDPENJUALAN" style="width:285px"></td>
+                            <td id="label_form"><input name="uuidjual" id="IDPENJUALAN" style="width:285px"></td>
                             <input type="hidden" id="KODEJUAL" name="kodejual">
                           </tr>
                         </table>
@@ -228,10 +228,10 @@
     <center>
       <div id="button_simpan">
 
-        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan_saja' onclick="simpan(this.uuid)"
+        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan' onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a><br><br>
         <a title="Simpan & Cetak" class="easyui-linkbutton button_add_print" id='simpan_cetak'
-          onclick="simpan(this.uuid)"
+          onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan & Cetak</a>
 
         <div>
@@ -251,6 +251,7 @@
     let TRANSAKSIJUAL;
     let LIHATHARGA;
     let INPUTHARGA;
+    let barangparamreq = {};
     let olddiskonpersen = 0.00;
     let olddiskonrp = 0.00;
     let olddiskonglobalpersen = 0.00;
@@ -327,7 +328,7 @@
 
       $('#TGLTRANS').datebox({
         onChange: function(newVal, oldVal) {
-          set_ppn_aktif(newVal, function(response) {
+          set_ppn_aktif(newVal, 'Bearer {{ session('TOKEN') }}', function(response) {
             response = response.data;
             ppnpersenaktif = response.ppnpersen;
 
@@ -419,7 +420,6 @@
 
       buat_table_detail();
       {{ $mode }}();
-      tutupLoader();
     })
 
     shortcut.add('F8', function() {
@@ -433,6 +433,8 @@
     }
 
     async function tambah() {
+      // remove readonly from idsyaratbayar
+      $('#IDSYARATBAYAR').combogrid('readonly', false);
       $('#mode').val('tambah');
 
       $('#lbl_kasir, #lbl_tanggal').html('');
@@ -468,19 +470,40 @@
 
       clear_plugin();
       reset_detail();
+      tutupLoader();
     }
 
-    function ubah() {
+    async function ubah() {
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
 
-      if (row) {
+      try {
+        const res = await fetchData(
+          '{{ session('TOKEN') }}',
+          link_api.loadDataHeaderPenjualanReturPenjualan, {
+            uuidreturjual: '{{ $data }}'
+          }
+        );
 
-        get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/retur-penjualan", "uuidreturjual", row.uuidreturjual,
+        if (res.success) {
+          row = res.data;
+        } else {
+          throw res.message;
+        }
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
+
+      if (row) {
+        get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/retur-penjualan", "uuidreturjual", row
+          .uuidreturjual,
           function(data) {
             data = data.data;
             $(".form_status").html(status_transaksi(data.status));
           });
+
         //jika tidak punya akses input harga
         if (INPUTHARGA == 0) {
           $(':radio:not(:checked)').attr('disabled', true);
@@ -514,24 +537,23 @@
           $('#TGLTRANS').datebox('readonly');
 
           //ubah url jual sesuai dengan jenis transaksi
-          url = base_url + 'atena/Penjualan/Transaksi/Penjualan/comboGrid' + '/' + row.uuidlokasi + '/' + row
-            .uuidcustomer;
+          url = link_api.browsePenjualan;
           ubah_url_combogrid($("#IDPENJUALAN"), url, true);
           $('#IDPENJUALAN').combogrid('setValue', {
-            idjual: row.uuidjual,
+            uuidjual: row.uuidjual,
             kodejual: row.kodejual
           });
 
           $('#IDCUSTOMER').combogrid('setValue', {
-            id: row.uuidcustomer,
+            uuidcustomer: row.uuidcustomer,
             kode: row.kodecustomer
           });
           $('#IDSUBCUSTOMER').combogrid('setValue', {
-            id: row.uuidsubcustomer,
+            uuidsubcustomer: row.uuidsubcustomer,
             kode: row.kodesubcustomer
           });
           $('#IDSYARATBAYAR').combogrid('setValue', {
-            id: row.uuidsyaratbayar,
+            uuidsyaratbayar: row.uuidsyaratbayar,
             nama: row.namasyaratbayar
           });
 
@@ -544,18 +566,23 @@
 
           idtrans = row.uuidreturjual;
           load_data(row.uuidreturjual);
-
-        });
+        }, false);
       }
     }
 
-    function cetak(id) {
+    async function cetak(id) {
       $("#window_button_cetak").window('close');
-      $("#area_cetak").load(base_url + "atena/Penjualan/Transaksi/ReturPenjualan/cetak/" + id);
+      const url = link_api.cetakReturPenjualan + id;
+      const doc = await getCetakDocument('{{ session('TOKEN') }}', url);
+      if (doc == null) {
+        $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
+        return false;
+      }
+      $("#area_cetak").html(doc);
       $("#form_cetak").window('open');
     }
 
-    function simpan(jenis_simpan) {
+    async function simpan(jenis_simpan) {
       var arrid = [];
 
       if (TRANSAKSIJUAL == 'HEADER') {
@@ -566,83 +593,86 @@
         }
       }
 
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/ReturPenjualan/cekTransaksiSudahAdaRetur",
-        data: "idtrans=" + $("#IDRETURJUAL").val() + "&idtransreferensi=" + JSON.stringify(arrid),
-        cache: false,
-        success: function(msg) {
-          if (msg.message == "") {
+      try {
+        const res = await fetchData('{{ session('TOKEN') }}', link_api.cekTransaksiSudahAdaReturPenjualan, {
+          uuidreturjual: $("#IDRETURJUAL").val(),
+          uuidtransreferensi: arrid
+        });
+        if (res.success) {
+          if (!res.data.msg) {
             simpanRetur(jenis_simpan);
-          } else // BILA SUDAH PERNAH BUAT RETUR ATAS PENJUALAN TERSEBUT
-          {
-            $.messager.confirm('Confirm', msg.message, function(r) {
+          } else { // BILA SUDAH PERNAH BUAT RETUR ATAS PENJUALAN TERSEBUT
+            $.messager.confirm('Confirm', res.data.msg, function(r) {
               if (r) {
                 simpanRetur(jenis_simpan);
               }
             });
           }
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
-    function simpanRetur(jenis_simpan) {
+    async function simpanRetur(jenis_simpan) {
       var mode = $("#mode").val();
-
-      $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
 
       $(':radio:not(:checked)').attr('disabled', false);
       var isValid = $('#form_input').form('validate');
 
       $('#window_button_simpan').window('close');
 
-      var datanya = $("#form_input :input").serialize();
-
       if (isValid) {
         isValid = cek_datagrid($('#table_data_detail'));
       }
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
-        validasi_session(function() {
+        if (!isTokenExpired('{{ session('TOKEN') }}')) {
           cekbtnsimpan = false;
-          var adaTrans = false;
 
-          if (!adaTrans) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Penjualan/Transaksi/ReturPenjualan/simpan/" + jenis_simpan,
-              data: datanya,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-                cekbtnsimpan = true;
-                if (msg.success) {
-                  $('#form_input').form('clear');
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Transaksi Sukses',
-                    showType: 'show'
-                  });
+          try {
+            const data = $('#form_input :input').serializeArray();
+            const payload = {};
+            for (var i = 0; i < data.length; i++) {
+              payload[data[i].name] = data[i].value;
+            }
+            payload['data_detail'] = $('#table_data_detail').datagrid('getRows');
+            payload['jenis_simpan'] = jenis_simpan;
 
-                  tambah();
+            tampilLoaderSimpan();
+            const res = await fetchData('{{ session('TOKEN') }}', link_api.simpanReturPenjualan, payload);
+            cekbtnsimpan = true;
+            if (res.success) {
+              @if ($mode == 'tambah')
+                $('#form_input').form('clear');
+              @endif
+              $.messager.show({
+                title: 'Info',
+                msg: 'Transaksi Sukses',
+                showType: 'show'
+              });
+              {{ $mode }}();
 
-                  parent.reload();
-
-                  if (jenis_simpan == 'simpan_cetak') {
-                    cetak(msg.data.uuidreturjual);
-                  }
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
+              if (jenis_simpan == 'simpan_cetak') {
+                cetak(res.data.uuidreturjual);
               }
-            });
+            } else {
+              $.messager.alert('Error', res.message, 'error');
+            }
+          } catch (e) {
+            const error = (typeof e === 'string') ? e : e.message;
+            const textError = getTextError(error);
+            $.messager.alert('Error', textError, 'error');
+          } finally {
+            tutupLoaderSimpan();
           }
-        });
+        } else {
+          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+        }
       }
     }
 
@@ -653,6 +683,7 @@
 
     async function load_data(idtrans) {
       try {
+        $('#table_data_detail').datagrid('loading');
         const res = await fetchData('{{ session('TOKEN') }}', link_api.loadDataReturPenjualan, {
           uuidreturjual: idtrans
         });
@@ -665,49 +696,8 @@
         const error = (typeof e === 'string') ? e : e.message;
         const textError = getTextError(error);
         $.messager.alert('Error', textError, 'error');
-      }
-    }
-
-    async function load_detail(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + "atena/Penjualan/Transaksi/Penjualan/loaddetail",
-        data: "idtrans=" + idtrans,
-        cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(msg) {
-          $.messager.progress('close');
-          if (msg.success) {
-            for (var x = 0; x < msg.detail.length; x++) {
-              $.ajax({
-                type: 'POST',
-                dataType: 'json',
-                url: base_url + 'atena/Master/Data/Barang/satuanBarang/' + msg.detail[x].uuidbarang,
-                async: false,
-                cache: false,
-                success: function(response) {
-                  get_konversi(response, msg.detail[x].satuan, response[0].satuan);
-                  msg.detail[x].satuan_lama = msg.detail[x].satuan;
-                  msg.detail[x].hargaterendah = ((satuan_baru > satuan_lama) ? msg.detail[x].hargaterendah /
-                    konversi_baru : msg.detail[x].hargaterendah * konversi_lama).toFixed(0);
-                }
-              });
-            }
-            $('#table_data_detail').datagrid('loadData', msg.detail);
-          }
-        }
-      });
-      try {
-        const res = await fetchData('{{ session('TOKEN') }}', link_api.loadConfigReturPenjualan, {
-
-        })
-      } catch (e) {
-        const error = (typeof e === 'string') ? e : e.message;
-        const textError = getTextError(error);
-        $.messager.alert('Error', textError, 'error');
+      } finally {
+        $('#table_data_detail').datagrid('loaded');
       }
     }
 
@@ -747,10 +737,15 @@
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if (row) {
             $("#KODELOKASI").val(row.kode);
-            var supp = $("#IDCUSTOMER").combogrid('getValue');
-            url = base_url + 'atena/Penjualan/Transaksi/Penjualan/comboGrid' + '/' + row.id + '/' + supp;
+            var customer = $("#IDCUSTOMER").combogrid('getValue');
 
-            ubah_url_combogrid($("#IDPENJUALAN"), url, true);
+            $('#IDPENJUALAN').combogrid('grid').datagrid('options').url = link_api.browsePenjualan;
+            $('#IDPENJUALAN').combogrid('clear');
+            $('#IDPENJUALAN').combogrid('grid').datagrid('load', {
+              uuidlokasi: row.uuidlokasi,
+              uuidcustomer: customer,
+              q: ''
+            });
           }
           if ($('#mode').val() != '') {
             reset_detail();
@@ -856,7 +851,7 @@
 
           if (row) {
             $("#KODECUSTOMER").val(row.kode);
-            var alamat = row.alamat == "" ? "" : (row.alamat + "\r\n");
+            var alamat = row.alamat == "" || row.alamat == null ? "" : (row.alamat + "\r\n");
             if (row.kota && row.kota != 'null') alamat += row.kota;
             if (row.propinsi && row.propinsi != 'null') alamat += "-" + row.propinsi;
             if (row.negara && row.negara != 'null') alamat += "-" + row.negara;
@@ -865,22 +860,27 @@
             $('#ALAMAT').textbox('setValue', alamat);
             $('#TELP').textbox('setValue', row.telp);
             $('#IDSYARATBAYAR').combogrid('setValue', {
-              id: row.uuidsyaratbayar,
+              uuidsyaratbayar: row.uuidsyaratbayar,
               nama: row.namasyaratbayar
             });
-            $('#IDMARKETING').combogrid('setValue', row.idmarketing);
+            $('#IDMARKETING').combogrid('setValue', row.uuidmarketing);
 
             //set combogrid subcustomer
-            var url = base_url + 'atena/Master/Data/Customer/comboGrid/CHILD/' + row.id;
-            ubah_url_combogrid($("#IDSUBCUSTOMER"), url, true);
-            $('#NAMASUBCUSTOMER').textbox('clear');
-            $('#ALAMATSUBCUSTOMER').textbox('clear');
-            $('#TELPSUBCUSTOMER').textbox('clear');
+            // var url = base_url + 'atena/Master/Data/Customer/comboGrid/CHILD/' + row.id;
+            // ubah_url_combogrid($("#IDSUBCUSTOMER"), url, true);
+            // $('#NAMASUBCUSTOMER').textbox('clear');
+            // $('#ALAMATSUBCUSTOMER').textbox('clear');
+            // $('#TELPSUBCUSTOMER').textbox('clear');
 
             var lokasi = $("#IDLOKASI").combogrid('getValue');
-            url = base_url + 'atena/Penjualan/Transaksi/Penjualan/comboGrid' + '/' + lokasi + '/' + row.id;
 
-            ubah_url_combogrid($("#IDPENJUALAN"), url, true);
+            $('#IDPENJUALAN').combogrid('grid').datagrid('options').url = link_api.browsePenjualan;
+            $('#IDPENJUALAN').combogrid('clear');
+            $('#IDPENJUALAN').combogrid('grid').datagrid('load', {
+              uuidlokasi: lokasi,
+              uuidcustomer: row.uuidcustomer,
+              q: ''
+            });
           } else {
             $('#NAMACUSTOMER').textbox('clear');
           }
@@ -951,6 +951,7 @@
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
+        url: link_api.browseCustomer,
         columns: [
           [{
               field: 'uuidcustomer',
@@ -999,7 +1000,7 @@
           var row = $(id).combogrid('grid').datagrid('getSelected');
 
           if (row) {
-            var alamat = row.alamat == "" ? "" : (row.alamat + "\r\n");
+            var alamat = row.alamat == "" || row.alamat == null ? "" : (row.alamat + "\r\n");
             if (row.kota && row.kota != 'null') alamat += row.kota;
             if (row.propinsi && row.propinsi != 'null') alamat += "-" + row.propinsi;
             if (row.negara && row.negara != 'null') alamat += "-" + row.negara;
@@ -1009,8 +1010,14 @@
             $('#TELPSUBCUSTOMER').textbox('setValue', row.telp);
 
             var lokasi = $("#IDLOKASI").combogrid('getValue');
-            url = base_url + 'atena/Penjualan/Transaksi/Penjualan/comboGrid' + '/' + lokasi + '/' + row.uuid;
-            ubah_url_combogrid($("#IDPENJUALAN"), url, true);
+
+            $('#IDPENJUALAN').combogrid('grid').datagrid('options').url = link_api.browsePenjualan;
+            $('#IDPENJUALAN').combogrid('clear');
+            $('#IDPENJUALAN').combogrid('grid').datagrid('load', {
+              uuidlokasi: lokasi,
+              uuidcustomer: row.uuidcustomer,
+              q: ''
+            });
           } else {
             $('#NAMASUBCUSTOMER').textbox('clear');
             $('#ALAMATSUBCUSTOMER').textbox('clear');
@@ -1107,14 +1114,14 @@
             var index = $(dg).datagrid('getRows').length;
             $(dg).datagrid('appendRow', {
               kodejual: '',
-              idbarang: '',
+              uuidbarang: '',
               jmlbonus: 0,
             }).datagrid('gotoCell', {
               index: index,
               field: 'kodejual'
             });
 
-            getRowIndex(target);
+            // getRowIndex(target);
           }
         }, {
           text: 'Hapus',
@@ -1192,6 +1199,11 @@
                   onBeforeLoad: function(param) {
                     if ('undefined' === typeof param.q || param.q.length == 0) {
                       return false;
+                    }
+                    if (barangparamreq.id == 'jual') {
+                      param.uuidjual = barangparamreq.val;
+                    } else if (barangparamreq.id == 'customer') {
+                      param.uuidcustomer = barangparamreq.val;
                     }
                   },
                   columns: [
@@ -1318,9 +1330,7 @@
           ]
         ],
         columns: [
-          [
-
-            {
+          [{
               field: 'jmlreturjual',
               title: 'Jumlah',
               align: 'right',
@@ -1376,7 +1386,7 @@
                       field: 'satuan',
                       title: 'Satuan',
                       width: 80
-                    }, ]
+                    }]
                   ],
                 }
               }
@@ -1560,14 +1570,16 @@
           if (field == 'kodejual') {
             var lokasi = $("#IDLOKASI").combogrid('getValue');
             var customer = $("#IDSUBCUSTOMER").combogrid('getValue');
-            if (customer == 0) {
+            // pakai negasi dari truthy karena sebelumnya id pakai int, sekarang pakai string
+            if (!customer) {
               //jika tidak memilih subcustomer, gunakan idcustomer
               customer = $("#IDCUSTOMER").combogrid('getValue');
             }
 
-            ed.combogrid('grid').datagrid('options').url = base_url +
-              'atena/Penjualan/Transaksi/Penjualan/comboGrid/' + lokasi + '/' + customer;
+            ed.combogrid('grid').datagrid('options').url = link_api.browsePenjualan;
             ed.combogrid('grid').datagrid('load', {
+              uuidcustomer: customer,
+              uuidlokasi: lokasi,
               q: ''
             });
             ed.combogrid('showPanel');
@@ -1581,22 +1593,28 @@
               idjual = $("#IDPENJUALAN").combogrid('getValue');
             }
 
+            // ed.combogrid('showPanel');
             if (idjual == '') {
               var idcustomer = $("#IDCUSTOMER").combogrid('getValue');
-              ed.combogrid('showPanel');
-              ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/comboGridJual/' +
-                idcustomer;
+              barangparamreq.id = 'customer';
+              barangparamreq.val = idcustomer;
+              ed.combogrid('grid').datagrid('options').url = link_api.browseBarangJual;
+              ed.combogrid('grid').datagrid('load', {
+                q: '',
+                uuidcustomer: idcustomer
+              });
             } else {
-              ed.combogrid('grid').datagrid('options').url = base_url +
-                'atena/Penjualan/Transaksi/Penjualan/comboGridBarang/' + idjual;
+              barangparamreq.id = 'jual';
+              barangparamreq.val = idjual;
+              ed.combogrid('grid').datagrid('options').url = link_api.browseBarangPenjualan;
+              ed.combogrid('grid').datagrid('load', {
+                q: '',
+                uuidjual: idjual
+              });
             }
-            ed.combogrid('grid').datagrid('load', {
-              q: ''
-            });
             ed.combogrid('showPanel');
           } else if (field == 'satuan') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/satuanBarang/' + row
-              .uuidbarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
               uuidbarang: row.uuidbarang
@@ -1606,7 +1624,7 @@
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
           var row_update = {};
@@ -1647,7 +1665,7 @@
               break;
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
-
+              console.log(data);
               var id = data ? data.uuidbarang : '';
               var ppn = data ? data.ppn : '';
               var nama = data ? data.nama : '';
@@ -1782,7 +1800,7 @@
                 satuankecil: hargajual.satuan3
               };
 
-              if ($TRANSAKSIJUAL == 'HEADER') {
+              if (TRANSAKSIJUAL == 'HEADER') {
                 row_update["kodejual"] = $("#KODEJUAL").val();
                 row_update["uuidjual"] = $("#IDPENJUALAN").combogrid('getValue');
               }
@@ -2051,7 +2069,7 @@
         data.discpersen = discDescription == "" || discDescription == null ? olddiskonpersen : discDescription;
       }
 
-      row.jmlreturjual = parseFloat(row.jmlreturjual).toFixed({{ 'DECIMALDIGITQTY' }});
+      row.jmlreturjual = parseFloat(row.jmlreturjual).toFixed({{ session('DECIMALDIGITQTY') }});
 
       data.subtotal = harga * row.jmlreturjual;
 
@@ -2178,6 +2196,7 @@
         var namabarang = data[i].namabarang;
         var discpersenmaster = 0;
         var errorMsg = '';
+        var dpp = 0;
 
         if (idcustomer != "" && idbarang != "") {
           //CEK DISKON GLOBAL
