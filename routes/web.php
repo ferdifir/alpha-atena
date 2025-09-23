@@ -656,6 +656,22 @@ Route::get('atena/penjualan/salesorder/form', function() {
     ]);
 })->name('atena.penjualan.salesorder.form');
 
+// Penjualan
+Route::get('atena/penjualan/penjualan/transaksi', function() {
+    return view('atena.penjualan.penjualan.v_penjualan_list_penjualan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.penjualan.transaksi');
+
+Route::get('atena/penjualan/penjualan/form', function() {
+    return view('atena.penjualan.penjualan.v_penjualan_form_penjualan', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+        'dataref'=>request()->dataref,
+    ]);
+})->name('atena.penjualan.penjualan.form');
+
 // Pembelian Permintaan Barang
 Route::get('atena/pembelian/permintaanbarang/transaksi', function() {
     return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [

@@ -226,6 +226,7 @@
           $.messager.alert('Error', "Request Config Error", 'error');
         }
       );
+      tutupLoader();
     }
 
     async function ubah() {
@@ -473,25 +474,24 @@
       }).datagrid('enableCellEditing');
     }
 
-    function load_data_promo(idpromo) {
-      $.ajax({
-        url: link_api.loadDataPromo,
-        type: 'POST',
-        data: {
+    async function load_data_promo(idpromo) {
+      try {
+        const res = await fetchData(link_api.loadDataPromo, {
           uuidpromo: idpromo
-        },
-        dataType: 'JSON',
-        beforeSend: function() {
-          $('#table_detail_barang').datagrid('loading');
-        },
-        success: function(response) {
-          console.log(response);
+        });
+        if (res.success) {
           $('#table_detail_barang').datagrid('loaded');
 
-          $('#table_detail_barang').datagrid('loadData', response.detail_barang);
-          $('#table_detail_syarat').datagrid('loadData', response.detail_syarat);
+          $('#table_detail_barang').datagrid('loadData', res.data.detail_barang);
+          $('#table_detail_syarat').datagrid('loadData', res.data.detail_syarat);
+        } else {
+          $.messager.alert('Error', res.message, 'error');
         }
-      });
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        var textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
     }
 
     function buat_table_detail_syarat() {

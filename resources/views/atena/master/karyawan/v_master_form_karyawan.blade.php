@@ -9,7 +9,7 @@
 
                         <input type="hidden" name="mode" id="mode">
                         <input type="hidden" name="uuidkaryawan">
-                        <input type="hidden" name="gambar">
+                        <input type="hidden" name="foto" id="gambar">
             <input type="hidden" id="TGLENTRY" name="tglentry">
 
                         <table>
@@ -139,6 +139,7 @@
 @push('js')
     <script>
         var row = {};
+        let fileGambar = null;
         $(document).ready(async function() {
             browse_data_departemen_kerja('#uuiddepartemenkerja');
             browse_data_supervisor('#uuidsupervisor');
@@ -155,8 +156,10 @@
                 accept: 'image/*',
                 onChange: function(newVal, oldVal) {
                     var input = $(this).next().find('.textbox-value')[0];
+                    $('#gambar').val(newVal);
 
                     if (input.files && input.files[0]) {
+                        fileGambar = input.files[0];
                         var reader = new FileReader();
                         reader.onload = function(e) {
                             $('#preview-image').attr('src', e.target.result);
@@ -231,14 +234,13 @@
                 $('#lbl_tanggal').html(row.tglentry);
                 $('#kodekaryawan').textbox('readonly', true);
 
-                if ((row.foto ?? "") != '') {
-                    $('#preview-image').attr('src', row.foto + '?' +
+                if ((row.foto_full_path ?? "") != '') {
+                    $('#preview-image').attr('src', row.foto_full_path + '?' +
                         new Date().getTime())
                 } else {
                     $('#preview-image').attr('src', '{{ asset('assets/foto_user/NO_IMAGE.jpg') }}')
                 }
                 if (row.uuiddepartemenkerja != "") {
-                  console.log(row);
                     $('#uuiddepartemenkerja').combogrid('setValue', {
                         uuiddepartemenkerja: row.uuiddepartemenkerja,
                         nama: row.namadepartemenkerja
@@ -262,6 +264,11 @@
 
         async function simpan() {
             var isValid = $('#form_input').form('validate');
+            const formData = new FormData($('#form_input')[0]);
+            if (fileGambar) {
+                // backend hanya menerima satu file
+                formData.set('filegambar', fileGambar);
+            }
 
             if (isValid) {
                 mode = $('[name=mode]').val();
@@ -275,7 +282,7 @@
                         method: 'POST',
                         headers: headers,
                         // body: requestBody,
-                        body:new FormData($('#form_input')[0]),
+                        body: formData,
                     }).then(response => {
                         if (!response.ok) {
                             throw new Error(
@@ -285,6 +292,7 @@
                     })
                     if (response.success) {
                         if (mode == 'tambah') {
+                            fileGambar = null;
                             $.messager.alert('Info', 'Simpan Data Sukses', 'info');
 
                             tambah();

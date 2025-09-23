@@ -571,16 +571,16 @@
             });
         }
 
-        /**
-         * fungsi untuk kembali ke halaman pilih perusahaan
-         */
-        function halamanPilihPerusahaan() {
-            $.messager.confirm('Question', 'Anda Yakin Akan Kembali ke Halaman Pilih Perusahaan ?', function(r) {
-                if (r) {
-                    window.location = '/hompage-perusahaan';
-                }
-            });
+    /**
+     * fungsi untuk kembali ke halaman pilih perusahaan
+     */
+    function halamanPilihPerusahaan() {
+      $.messager.confirm('Question', 'Anda Yakin Akan Kembali ke Halaman Pilih Perusahaan ?', function(r) {
+        if (r) {
+          window.location = '{{ route('homepage.perusahaan') }}';
         }
+      });
+    }
 
         /**
          * menutup popup daftar menu/modul

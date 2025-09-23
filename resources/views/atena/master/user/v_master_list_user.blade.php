@@ -52,7 +52,6 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/js/globalVariable.js') . '?v=' . time() }}"></script>
   <script>
     var counter = 0;
 

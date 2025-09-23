@@ -615,9 +615,14 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       parent.tutupTab();
     }
 
-    function cetak(id) {
+    async function cetak(id) {
       $("#window_button_cetak").window('close');
-      $("#area_cetak").load(link_api.cetakPenjualanSalesOrder + id);
+      const doc = await getCetakDocument('{{ session('TOKEN') }}', link_api.cetakPenjualanSalesOrder + id);
+      if (doc == null) {
+        $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
+        return false;
+      }
+      $("#area_cetak").html(doc);
       $("#form_cetak").window('open');
     }
 
