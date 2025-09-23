@@ -874,8 +874,8 @@ function cek_datagrid(dg) {
         var i = 0;
         while (i < fields.length) {
             var col = dg.datagrid("getColumnOption", fields[i]);
-            if (typeof col != "undefined" && col != "null") {
-                if (typeof col.editor != "undefined" && col.editor != "null") {
+            if (typeof col != undefined && col !=null) {
+                if (typeof col.editor != undefined && col.editor != null) {
                     if (
                         typeof col.editor.options != "undefined" &&
                         col.editor.options != "null"

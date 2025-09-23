@@ -1435,6 +1435,10 @@
             payload[data[i].name] = data[i].value;
           }
           payload['jenis_simpan'] = use;
+          if (TRANSREFERENSI != 'HEADER') {
+            payload['uuidtransreferensi'] = payload['data_detail'][0].uuidtransreferensi;
+            payload['kodetransreferensi'] = payload['data_detail'][0].kodetransreferensi;
+          }
 
           try {
             tampilLoaderSimpan();
@@ -3959,7 +3963,7 @@
           }
         );
 
-        if (!res.success || !res.data.valid) {
+        if (!res.success) {
           $.messager.alert('Peringatan', res.message, 'warning');
           $('#table_data_detail').datagrid('deleteRow', index);
         } else {

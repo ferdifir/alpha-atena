@@ -207,8 +207,8 @@
     <table border="0">
       <tr>
         <td id="label_form" width="60px">Tgl Nota</td>
-        <td id="label_form" width="220px"><input style="width: 90px" id="FILTERTGLAWALTRANS"
-            name="filtertgltransawal" class="date" />&nbsp;s/d&nbsp;<input style="width: 90px"
+        <td id="label_form" width="220px"><input style="width: 95px" id="FILTERTGLAWALTRANS"
+            name="filtertgltransawal" class="date" />&nbsp;s/d&nbsp;<input style="width: 95px"
             id="FILTERTGLAKHIRTRANS" name="filtertgltransakhir" class="date" /></td>
         <td><a id="btn_filter" class="easyui-linkbutton" data-options="iconCls:'', plain:false"
             onclick="tampilkan_data_cetak()">Tampilkan Data</a></td>
@@ -269,8 +269,8 @@
         </td>
         <td id="label_form">Tanggal</td>
         <td>
-          <input type="text" class="date" id="TGLAWALSINKRONISASI"> s/d <input type="text" class="date"
-            id="TGLAKHIRSINKRONISASI">
+          <input type="text" class="date" id="TGLAWALSINKRONISASI" style="width: 95px"> s/d <input
+            type="text" class="date" id="TGLAKHIRSINKRONISASI" style="width: 95px">
         </td>
         <td>
           <a href="#" class="easyui-linkbutton" onclick="tampilDataSinkronisasi(event)">Tampilkan Data</a>
@@ -482,7 +482,14 @@
 
     async function tampilkan_data_cetak() {
       $('#mode').val('cetak');
+      //   minimize form_cetak_filter
+      $("#form_cetak_filter").window('minimize');
+
       await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
+        // restore form_cetak_filter
+        $("#form_cetak_filter").window('maximize');
+        $("#form_cetak_filter").window('restore');
+
         data = data.data;
         if (data.cetak == 0) {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -497,6 +504,7 @@
         if (valid) {
           try {
             bukaLoader();
+            $("#table_data_cetak").datagrid('loading');
             const res = await fetchData(
               jwt,
               link_api.loadDataCetakPenjualanPenjualan, {
@@ -504,6 +512,7 @@
                 tglakhirtrans: tglakhirtrans,
               }
             );
+            $("#table_data_cetak").datagrid('loaded');
             if (!res.success) {
               $.messager.alert('Error', res.message, 'error');
             } else {
@@ -515,6 +524,7 @@
             const error = (typeof e === 'string') ? e : e.message;
             $.messager.alert('Error', getTextError(error), 'error');
           } finally {
+            $("#table_data_cetak").datagrid('loaded');
             tutupLoader();
           }
         }
@@ -542,7 +552,7 @@
       if (row) {
         if (!isTokenExpired(jwt)) {
 
-          get_status_trans("atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
+          get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
             data = data.data;
             if (data.status == 'I') {
               var kode = row.kodejual;
@@ -596,7 +606,7 @@
                   'warning'
                 );
               } else {
-                get_status_trans("atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
+                get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
                   data = data.data;
                   if (data.status == 'S') {
                     var kode = row.kodejual;
@@ -642,7 +652,7 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans("atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
+          get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
             data = data.data;
             if (data.status == 'I') {
               if (row.jenistransaksi != "POS") {
@@ -820,20 +830,20 @@
             const doc = await getCetakDocument(jwt, link_api.cetakKecilPenjualanPenjualan + row.uuidjual);
             if (doc) {
               $("#area_cetak_kecil").html(doc);
+              $("#form_cetak_kecil").window('open');
             } else {
               $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
-              return false;
             }
-            $("#form_cetak_kecil").window('open');
           } else {
-            const doc = await getCetakDocument(jwt, link_api.cetakPenjualanPenjualan + row.uuidjual);
+            const doc = await getCetakDocument(jwt, link_api.cetakPenjualanPenjualan + row.uuidjual, {
+              npwp: npwp
+            });
             if (doc) {
               $("#area_cetak").html(doc);
+              $("#form_cetak").window('open');
             } else {
               $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
-              return false;
             }
-            $("#form_cetak").window('open');
           }
           reload();
         }
@@ -847,12 +857,20 @@
 
     async function cetak_banyak(bentuk_cetak) {
       var data = $("#table_data_cetak").datagrid('getChecked');
+      // data is array of object, convert into array of string of uuidjual
+      data = data.map(function(item) {
+        return item.uuidjual;
+      });
+
+      //   minimize form_cetak_filter
+      $("#form_cetak_filter").window('minimize');
+
       try {
         bukaLoader();
         const res = await fetchData(
           jwt,
           link_api.ubahStatusJadiSlipFilterPenjualanPenjualan, {
-            data: JSON.stringify(data)
+            data: data
           }
         );
         if (!res.success) {
@@ -860,26 +878,30 @@
           return;
         }
         if (res.data.length > 0) {
+          const payloadCetak = {
+            data: res.data,
+            bentuk_cetak: bentuk_cetak
+          }
           if (bentuk_cetak == "kecil") {
-            cetak_banyak_SJ(bentuk_cetak);
-            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan);
+            cetak_banyak_SJ(payloadCetak);
+            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan, payloadCetak);
             if (doc) {
               $("#area_cetak_kecil").html(doc);
+              $("#form_cetak_kecil").window('open');
             } else {
               $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
               return false;
             }
-            $("#form_cetak_kecil").window('open');
           } else {
-            cetak_banyak_SJ(bentuk_cetak);
-            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan);
+            cetak_banyak_SJ(payloadCetak);
+            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan, payloadCetak);
             if (doc) {
               $("#area_cetak").html(doc);
+              $("#form_cetak").window('open');
             } else {
               $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
               return false;
             }
-            $("#form_cetak").window('open');
           }
 
           reload();
@@ -900,51 +922,54 @@
         const error = (typeof e === 'string') ? e : e.message;
         $.messager.alert('Error', getTextError(error), 'error');
       } finally {
+        // restore form_cetak_filter
+        $("#form_cetak_filter").window('maximize');
+        $("#form_cetak_filter").window('restore');
         tutupLoader();
       }
     }
 
     async function cetak_SJ(bentuk_cetak) {
-      if (bentuk_cetak == "besar") {
-        const doc = await getCetakDocument(jwt, link_api.cetakSJPenjualanPenjualan + row.uuidjual);
-        if (doc) {
-          $("#area_cetak_sj").html(doc);
-        } else {
+      const isBesar = bentuk_cetak == "besar";
+      const areaCetakId = isBesar ? "#area_cetak_sj" : "#area_cetak_sj_kecil";
+      const formCetakId = isBesar ? "#form_cetak_sj" : "#form_cetak_sj_kecil";
+      const payload = {
+        bentuk_cetak: bentuk_cetak,
+      };
+      try {
+        const url = link_api.cetakSJPenjualanPenjualan + row.uuidjual;
+        const doc = await getCetakDocument(jwt, url, payload);
+
+        if (!doc) {
           $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
           return false;
         }
-        $("#form_cetak_sj").window('open');
-      } else if (bentuk_cetak == "kecil") {
-        const doc = await getCetakDocument(jwt, link_api.cetakSJPenjualanPenjualan + row.uuidjual);
-        if (doc) {
-          $("#area_cetak_sj_kecil").html(doc);
-        } else {
-          $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
-          return false;
-        }
-        $("#form_cetak_sj_kecil").window('open');
+
+        $(areaCetakId).html(doc);
+        $(formCetakId).window('open');
+      } catch (error) {
+        $.messager.alert('Error', 'Terjadi kesalahan sistem saat memproses cetak transaksi.', 'error');
       }
     }
 
-    async function cetak_banyak_SJ(bentuk_cetak) {
-      if (bentuk_cetak == "besar") {
-        const doc = await getCetakDocument(jwt, link_api.cetakBanyakSJPenjualanPenjualan + row.uuidjual);
-        if (doc) {
-          $("#area_cetak_sj").html(doc);
-        } else {
+    async function cetak_banyak_SJ(payload) {
+      const isBesar = payload.bentuk_cetak == "besar";
+      const areaCetak = isBesar ? "#area_cetak_sj" : "#area_cetak_sj_kecil";
+      const formCetak = isBesar ? "#form_cetak_sj" : "#form_cetak_sj_kecil";
+
+      try {
+        const doc = await getCetakDocument(jwt, link_api.cetakBanyakSJPenjualanPenjualan, payload);
+
+        if (!doc) {
           $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
           return false;
         }
-        $("#form_cetak_sj").window('open');
-      } else if (bentuk_cetak == "kecil") {
-        const doc = await getCetakDocument(jwt, link_api.cetakBanyakSJPenjualanPenjualan + row.uuidjual);
-        if (doc) {
-          $("#area_cetak_sj_kecil").html(doc);
-        } else {
-          $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
-          return false;
-        }
-        $("#form_cetak_sj_kecil").window('open');
+
+        $(areaCetak).html(doc);
+        $(formCetak).window('open');
+      } catch (e) {
+        const error = (typeof e === 'string') ? e : e.message;
+        $.messager.alert('Error', getTextError(error), 'error');
       }
     }
 
@@ -999,8 +1024,8 @@
         },
         rowStyler: function(index, row) {
           if (row.statusjual == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
-          else if (row.statusjual == 'P') return 'background-color:{{ session('WARNA_STATUS_S') }}';
-          else if (row.statusjual == 'D') return 'background-color:{{ session('WARNA_STATUS_S') }}';
+          else if (row.statusjual == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
+          else if (row.statusjual == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
         frozenColumns: [
           [{
@@ -1225,35 +1250,10 @@
         ],
         onDblClickRow: function(index, data) {
           if (!isTokenExpired(jwt)) {
-            counter++;
-
-            //PELU BUAT SIMPEN INDEX
-            var row = $('#table_data').datagrid('getSelected');
-
-            $("#mode").val("ubah");
-            $("#data").val(row.idjual);
-
-            var tab_title = row.kodejual;
-            var tab_name = tab_title + "_" + counter;
-
-            $('#form_data').attr('target', tab_name);
-
-            const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-            if (isTabOpen) {
-              $('#tab_transaksi').tabs('select', tab_title);
-            } else {
-              $('#tab_transaksi').tabs('add', {
-                title: tab_title,
-                id: row.idjual + "|" + row.kodejual + "|" + counter,
-                content: '<iframe frameborder="0"  class="tab_form"  id="' + counter + '" name="' +
-                  tab_name + '"></iframe>',
-                closable: true
-              });
-
-              $('#form_data').submit();
-            }
-
-
+            const kode = data.kodejual;
+            parent.buka_submenu(null, kode,
+              '{{ route('atena.penjualan.penjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+              data.uuidjual, 'fa fa-plus');
           } else {
             $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
           }
@@ -1703,9 +1703,13 @@
       event.preventDefault();
 
       var token = $('#tokentokosinkronisasi').combogrid('grid').datagrid('getSelected').token;
+      if (!token) {
+        $.messager.alert('Error', 'Toko belum dipilih', 'error');
+        return;
+      }
 
       try {
-        bukaLoader();
+        $('#table_data_sinkronisasi').datagrid('loading');
         const res = await fetchData(
           jwt,
           link_api.tampilDataSinkronisasiPenjualan, {
@@ -1714,6 +1718,7 @@
             tglakhir: $('#TGLAKHIRSINKRONISASI').datebox('getValue')
           }
         );
+        $('#table_data_sinkronisasi').datagrid('loaded');
         if (!res.success) {
           throw new Error(res.message);
         } else {
@@ -1724,7 +1729,7 @@
         const textError = getTextError(error);
         $.messager.alert('Error', textError, 'error');
       } finally {
-        tutupLoader();
+        $('#table_data_sinkronisasi').datagrid('loaded');
       }
     }
 
@@ -1732,6 +1737,18 @@
       var lokasi = $('#idlokasisinkronisasi').combogrid('getValue');
       var customer = $('#idcustomersinkronisasi').combogrid('getValue');
       var detail = $('#table_data_sinkronisasi').datagrid('getRows');
+
+      if (lokasi == '' || customer == '') {
+        $.messager.alert('Peringatan', 'Toko dan Customer belum dipilih', 'warning');
+        return;
+      }
+
+      if (detail.length == 0) {
+        $.messager.alert('Peringatan', 'Data belum dipilih', 'warning');
+        return;
+      }
+
+      $('#window_sinkronisasi').window('minimize');
 
       try {
         bukaLoader();
@@ -1744,6 +1761,8 @@
           }
         );
         if (!res.success) {
+          $('#window_sinkronisasi').window('maximize');
+          $('#window_sinkronisasi').window('restore');
           throw new Error(res.message);
         } else {
           $('#window_sinkronisasi').window({
