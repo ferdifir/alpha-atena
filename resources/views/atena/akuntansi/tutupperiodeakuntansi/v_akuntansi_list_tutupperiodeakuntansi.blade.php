@@ -7,7 +7,7 @@
             <tr>
                 <td id="label_form">Bulan</td>
                 <td>
-					<select id="sb_bulan" class="easyui-combobox" required="true" name="sb_bulan" style="width:150px">
+					<select id="sb_bulan" class="easyui-combobox" required="true" name="bulan" style="width:150px">
 						<option value="01">Januari</option>
 						<option value="02">Februari</option>
 						<option value="03">Maret</option>
@@ -23,7 +23,7 @@
 					</select>
 				</td>
                 <td id="label_form">Tahun</td>
-                <td><input name="txt_tahun" type="text" class="easyui-numberspinner" required="true" id="txt_tahun" style="width:60px" maxlength="4" data-options="min:1990" value="<?=date("Y")?>"></td>
+                <td><input name="tahun" type="text" class="easyui-numberspinner" required="true" id="txt_tahun" style="width:60px" maxlength="4" data-options="min:1990" value="<?=date("Y")?>"></td>
             </tr>
 			<tr>
                 <td colspan="4" align="right"><a id="btn_simpan"  class="easyui-linkbutton" data-options="iconCls:'icon-ok'">Tutup Periode</a></td>
@@ -57,14 +57,10 @@ $(document).ready(function(){
 });
 
 $("#btn_simpan").click(function(){
-	validasi_session(function() {
-		simpan();
-	});
+	simpan();
 });
 $("#btn_batal").click(function(){
-	validasi_session(function() {
-		batal_trans();
-	});
+	batal_trans();
 });
 
 async function simpan() {
@@ -76,30 +72,17 @@ async function simpan() {
                 };
 
                 let requestBody = null;
-                var unindexed_array = $('#menu-1 :input').serializeArray();
-                
-                // PERBAIKAN 1: Deklarasi variabel body
-                let body = {};
 
-                $.map(unindexed_array, function(n, i) {
-                    body[n['name']] = n['value'];
-                });
-
-                if (body instanceof FormData) {
-                    // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
-                    requestBody = body;
-                } else {
-                    // Default: Jika bukan FormData, asumsikan itu JSON.
-                    headers['Content-Type'] = 'application/json';
-                    requestBody = body ? JSON.stringify(body) : null;
-                }
+                const formData = new FormData();
+                formData.append('bulan', +$('#sb_bulan').combobox('getValue'));
+                formData.append('tahun', $('#txt_tahun').numberspinner('getValue'));
 
                 let url = link_api.simpanTutupPeriodeAkuntansi;
                 
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: headers,
-                    body: requestBody,
+                    body: formData,
                 });
 
                 if (!response.ok) {
@@ -120,8 +103,6 @@ async function simpan() {
                 var textError = typeof getTextError === 'function' ? getTextError(error) : error.message;
                 $.messager.alert('Error', textError, 'error');
             }
-
-            cekbtnsimpan = true;
             tutupLoaderSimpan();
         }
     });
@@ -130,7 +111,7 @@ async function simpan() {
 async function batal_trans (){
 	var uuidtrans = $("#IDCLOSING").combogrid('getValue');
 	var kodetrans = $("#IDCLOSING").combogrid('getText');
-	if (idtrans != '') {
+	if (uuidtrans != '') {
 		$.messager.confirm('Perhatian', 'Anda Yakin Membatalkan No Faktur '+kodetrans+' dan Tutup Periode Sesudahnya ?', async function(r){
 			if (r) {
                 bukaLoader();
@@ -143,8 +124,8 @@ async function batal_trans (){
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            uuidtrans: row.uuidtrans,
-                            kodetrans: row.kodetrans,
+                            uuidclosing: uuidtrans,
+                            kodeclosing: kodetrans,
                         }),
                     }).then(response => {
                         if (!response.ok) {
@@ -162,10 +143,10 @@ async function batal_trans (){
                         $.messager.alert('Error', response.message, 'error');
                     }
                 } catch (error) {
-                    console.log(error);
                     var textError = getTextError(error);
                     $.messager.alert('Error', getTextError(error), 'error');
                 }
+                tutupLoader()
 			}
 		});
 	}
@@ -175,7 +156,7 @@ function browse_kodetrans() {
 	$("#IDCLOSING").combogrid({
 		panelWidth: 400,
 		mode      : 'remote',
-		idField   : 'idclosing',
+		idField   : 'uuidclosing',
 		textField : 'kodeclosing',
 		sortName  : 'tglawal',
 		sortOrder : 'desc',
