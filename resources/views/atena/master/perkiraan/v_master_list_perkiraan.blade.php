@@ -366,7 +366,7 @@
                         },
                         {
                             field: 'simbol',
-                            title: 'Currency',
+                            title: 'Mata Uang',
                             width: 70,
                             sortable: true,
                         },

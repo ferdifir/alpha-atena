@@ -1712,7 +1712,7 @@
             },
             {
               field: 'currency',
-              title: 'Curr',
+              title: 'Mata Uang',
               width: 50,
               hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
               editor: {

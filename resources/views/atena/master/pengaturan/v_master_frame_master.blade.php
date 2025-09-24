@@ -132,7 +132,7 @@
           <td align="left" id="label_form"><label id="LABELJENISPEMAKAIAN"></label></td>
         </tr>
         <tr>
-          <td align="right" id="label_form">Kode Currency</td>
+          <td align="right" id="label_form">Kode Mata Uang</td>
           <td align="center" id="label_form"><input id="SBCURRENCY" name="sbcurrency" class="easyui-switchbutton"
               checked style="width:75px" data-options="onText:'Auto',offText:'Manual',value:'AUTO'"></td>
           <td align="center" id="label_form"><input id="PREFIXCURRENCY" name="prefixcurrency" style="width:40px"
@@ -723,7 +723,8 @@
         if (response.success) {
           return true;
         } else {
-          throw new Error(response.message || 'Failed to save data.');
+          $.messager.alert('Error', response.message || 'Gagal memuat data', 'error');
+          return false;
         }
       } catch (e) {
         throw new Error(e.message || 'An error occurred during data saving.');
@@ -736,7 +737,10 @@
       if (isValid) {
         try {
           tampilLoaderSimpan();
-          await simpanData();
+          const result = await simpanData();
+          if (!result) {
+            return;
+          }
           if (typeof onSuccessCallback === 'function') {
             onSuccessCallback();
           }

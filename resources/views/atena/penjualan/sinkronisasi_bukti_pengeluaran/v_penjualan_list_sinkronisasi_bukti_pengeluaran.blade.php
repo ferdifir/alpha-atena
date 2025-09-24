@@ -252,8 +252,8 @@
                 },
                 {
                   field: 'currency',
-                  title: 'Curr',
-                  width: 50,
+                  title: 'Mata Uang',
+                  width: 70,
                   align: 'center',
                   hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
                 },
