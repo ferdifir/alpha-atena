@@ -11,7 +11,7 @@
                 <tr>
                   <td id="label_form">Lokasi</td>
                   <td>
-                    <input id="IDLOKASI" style="width: 150px">
+                    <input id="IDLOKASI" style="width: 225px">
                   </td>
                 </tr>
                 <tr>
@@ -437,16 +437,16 @@
       });
     }
 
-    function simpan() {
+    async function simpan() {
       $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
       var data = [];
 
       var isValid = $('#form_input').form('validate');
 
-      var data_detail = JSON.stringify($('#table_data_detail').datagrid('getRows').filter(function(item) {
+      var data_detail = $('#table_data_detail').datagrid('getRows').filter(function(item) {
         return item.selected == 1;
-      }));
+      });
 
       $('#window_button_simpan').window('close');
 
@@ -457,43 +457,34 @@
       if (cekbtnsimpan && isValid) {
         cekbtnsimpan = false;
 
-        validasi_session(function() {
-          var adaTrans = false;
-
-          if (!adaTrans) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Penjualan/Transaksi/SinkronisasiPenjualan/simpanSinkronisasiPenjualan",
-              data: {
-                tgltrans: $('#TGLTRANS').datebox('getValue'),
-                data_detail: data_detail
-              },
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-
-                cekbtnsimpan = true;
-
-                if (msg.success) {
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Transaksi Sukses',
-                    showType: 'show'
-                  });
-
-                  $('#table_data_detail').datagrid('loadData', []);
-                  $('#table_data_detail_rekap').datagrid('loadData', []);
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
-              }
+        try {
+          bukaLoader();
+          const res = await fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.simpanDataSPJ, {
+              tgltrans: $('#TGLTRANS').datebox('getValue'),
+              data_detail: data_detail
+            }
+          );
+          if (res.success) {
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
             });
+
+            $('#table_data_detail').datagrid('loadData', []);
+            $('#table_data_detail_rekap').datagrid('loadData', []);
+          } else {
+            $.messager.alert('Error', res.message, 'error');
           }
-        });
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoader();
+        }
       }
     }
 

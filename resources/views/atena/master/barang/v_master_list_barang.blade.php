@@ -18,7 +18,7 @@
     </div>
     <div data-options="region: 'center'">
       <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
-        <div title="Grid" id="Grid">
+        <div title="List Barang" id="Grid">
           <div class="easyui-layout" style="width:100%;height:100%" fit="true">
             <div data-options="region:'center',">
               <table id="table_data" idField="kodebarang"></table>
@@ -74,39 +74,6 @@
         }
       });
 
-      //PRINT TAB
-      $("#tab_transaksi").tabs({
-        onSelect: function() {
-          var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-          if (tab_title == 'Grid') {
-            enable_button();
-          } else if (tab_title == 'Tambah') {
-            disable_button();
-          } else {
-
-            if (row.partnumber === null || row.partnumber == "") {
-
-              tab_title = row.namabarang;
-            } else {
-
-              tab_title = row.partnumber;
-            }
-
-            //AMBIL IDTRANS LEBIH DARI IDTAB
-            var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-            //Variabel ROW diisi array object
-            row = {
-              uuidbarang: trans[0],
-              kodebarang: trans[1],
-            };
-
-            disable_button();
-          }
-        }
-      });
-
-      create_form_login();
       buat_table();
       tutupLoader();
     });
@@ -586,131 +553,11 @@
     }
 
     function refresh_data() {
-
-      //JIKA BERADA PADA TAB FORM TAMBAH / UBAH
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Tambah" || $('#tab_transaksi').tabs(
-          'getSelected').panel('options').title == "Ubah") {
-        row = {
-          uuidbarang: "",
-          kodebarang: "",
-        };
-
-        $("#mode").val("tambah");
-        $("#data").val('');
-
-        var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-        if (tab_name == "Tambah") { //TAMBAH LANGSUNG AMBIL DARI ID
-
-          var counterTambah = $('#tab_transaksi').tabs('getSelected').panel('options').id;
-          tab_name = tab_name + "_" + counterTambah;
-        } else { //UBAH DIAMBIL DARI ID POTONGAN
-          var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-          var counterTambah = trans[2];
-          tab_name = tab_name + "_" + counterTambah;
-
-        }
-
-        var tab_title = 'Tambah';
-
-        var tab = $('#tab_transaksi').tabs('getSelected');
-        var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-
-        var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-        $('#form_data').attr('target', tab_name);
-
-        $('#tab_transaksi').tabs('update', {
-          tab: tabTrans,
-          type: 'header',
-          options: {
-            title: tab_title,
-            content: '<iframe frameborder="0"  class="tab_form" id="' + counterTambah + '" name="' + tab_name +
-              '" ></iframe>',
-            closable: true
-          }
-        });
-        $('#form_data').submit();
-
-      } else {
-        //JIKA DI TAB GRID
-        $('#table_data').datagrid('reload');
-      }
-
-    }
-
-    function changeTitleTab(mode) {
-      //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-      var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-      if (mode == 'tambah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Tambah'
-          }
-        });
-      } else if (mode == 'ubah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Ubah'
-          }
-        });
-      }
-    }
-
-    function tutupTab() {
-      //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-      if (index != 0) {
-        $('#tab_transaksi').tabs('close', index);
-      }
+      $('#table_data').datagrid('reload');
     }
 
     function reload() {
-      //PELU BUAT SIMPEN INDEX
-      var row = $('#table_data').datagrid('getSelected');
-
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Ubah") {
-        //INDEX TAB
-        var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-        //ROW ID dan KODE
-        var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-        var counterTambah = trans[2];
-        tab_name = tab_name + "_" + counterTambah;
-
-        $("#mode").val("ubah");
-        $("#data").val(trans[0]);
-
-        var tab = $('#tab_transaksi').tabs('getSelected');
-        var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-        var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-        var tab_title = 'Ubah';
-        $('#form_data').attr('target', tab_name);
-
-        $('#tab_transaksi').tabs('update', {
-          tab: tabTrans,
-          type: 'header',
-          options: {
-            title: tab_title,
-            content: '<iframe frameborder="0"  class="tab_form" id="' + counterTambah + '" name="' + tab_name +
-              '" ></iframe>',
-            closable: true
-          }
-        });
-        $('#form_data').submit();
-
-
-      }
-
       $('#table_data').datagrid('reload');
-
     }
 
     function tampilDialogImport() {

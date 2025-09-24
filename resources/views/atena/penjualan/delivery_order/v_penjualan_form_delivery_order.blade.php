@@ -1578,8 +1578,8 @@
               },
               {
                 field: 'currency',
-                title: 'Curr',
-                width: 50
+                title: 'Mata Uang',
+                width: 70
               },
               {
                 field: 'harga',

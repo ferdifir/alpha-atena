@@ -23,7 +23,7 @@
 
     <div data-options="region: 'center'">
       <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="Grid" id="Grid">
+        <div title="List Transaksi Retur Penjualan" id="Grid">
           <div class="easyui-layout" fit="true">
             <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
               style="width:150px;" align="center">

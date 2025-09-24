@@ -103,7 +103,7 @@
                                   <td valign="top" colspan="2">
                                     <span id="label_form">Merupakan Hal Penting Dalam Penggunaan Aplikasi Atena Pos.
                                       <br>Harap Mengisi Minimal 1 Kategori Dan Menentukan Kategori Utama.</span>
-                                    <div id="daftar_kategori" style="width: 300">
+                                    <div id="daftar_kategori">
                                       <div id="kategori_1">
                                         <input id="nama_kategori_1" style="font-size: 18px;">
                                         <a class="easyui-linkbutton" plain="true" iconCls="icon-remove"
@@ -132,7 +132,7 @@
                                         <input type="checkbox" id="cb_kategori_4" name="cb_kategori_utama"
                                           value="4">
                                       </div>
-                                      <input id="nama_kategori" style="font-size: 18px;">
+                                      <input id="nama_kategori" style="font-size: 18px;width: 268px;">
                                       <a class="easyui-linkbutton" plain="true" iconCls="icon-add"
                                         onclick="tambahKategori()"></a>
                                     </div>
@@ -304,21 +304,21 @@
                         <tr>
                           <td align="right" id="label_form">Akun Persediaan</td>
                           <td>
-                            <input id="KODEPERKIRAANPERSEDIAAN" name="kodeperkiraanpersediaan" style="width:300px">
+                            <input id="KODEPERKIRAANPERSEDIAAN" name="kodeperkiraanpersediaan" style="width:100%">
                             <input type="hidden" name="uuidperkiraanpersediaan" id="IDPERKIRAANPERSEDIAAN">
                           </td>
                         </tr>
                         <tr>
                           <td align="right" id="label_form">Akun HPP</td>
                           <td>
-                            <input id="KODEPERKIRAANHPP" name="kodeperkiraanhpp" style="width:300px">
+                            <input id="KODEPERKIRAANHPP" name="kodeperkiraanhpp" style="width:100%">
                             <input type="hidden" name="uuidperkiraanhpp" id="IDPERKIRAANHPP">
                           </td>
                         </tr>
                         <tr>
                           <td align="right" valign="top" id="label_form">Catatan</td>
                           <td>
-                            <textarea name="catatan" style="width:300px; height:60px" class="label_input" multiline="true"
+                            <textarea name="catatan" style="width:100%; height:60px" class="label_input" multiline="true"
                               validType='length[0,300]'></textarea>
                           </td>
                         </tr>

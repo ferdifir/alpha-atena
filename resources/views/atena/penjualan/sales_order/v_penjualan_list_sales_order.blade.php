@@ -35,7 +35,7 @@
 
     <div data-options="region: 'center'">
       <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="Grid" id="Grid">
+        <div title="List Transaksi Pesanan Penjualan" id="Grid">
           <div class="easyui-layout" fit="true">
             <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
               style="width:150px;" align="center">
@@ -1248,15 +1248,6 @@
             title: 'Ubah'
           }
         });
-      }
-    }
-
-    function tutupTab() {
-      //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title != "Grid") {
-        $('#tab_transaksi').tabs('close', index);
       }
     }
 
