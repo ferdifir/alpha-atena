@@ -1643,7 +1643,7 @@
                 align: 'right',
                 width: 65,
                 formatter: format_amount,
-                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }}
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'false' : 'true' }}
               },
               {
                 field: 'subtotalkurs',
@@ -1651,7 +1651,7 @@
                 align: 'right',
                 width: 95,
                 formatter: format_amount,
-                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }}
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'false' : 'true' }}
               },
               {
                 field: 'pakaippn',

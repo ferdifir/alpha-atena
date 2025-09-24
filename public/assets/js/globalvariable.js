@@ -499,48 +499,48 @@ var link_api = {
     tutupTransaksiPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans`,
     tutupTransaksiBarangPesananPenjualan: `${base_url_api}atena/penjualan/tutup-pesanan-penjualan/tutup-trans-barang`,
     //Kas
-    loadTransaksiDataGridKas  : `${base_url_api}atena/akuntansi/kas/load-data-grid`,
+    loadTransaksiDataGridKas: `${base_url_api}atena/akuntansi/kas/load-data-grid`,
     loadTransaksiDataHeaderKas: `${base_url_api}atena/akuntansi/kas/load-data-header`,
     loadTransaksiDataDetailKas: `${base_url_api}atena/akuntansi/kas/load-data`,
-    loadGiroBelumCair         : `${base_url_api}atena/akuntansi/kas/get-giro-belum-cair`,
-    loadJurnalLinkKas         : `${base_url_api}atena/akuntansi/kas/get-jurnal-link/`,
-    loadJurnalGiro            : `${base_url_api}atena/akuntansi/kas/load-jurnal-giro`,
-    simpanTransaksiKas        : `${base_url_api}atena/akuntansi/kas/simpan/`,
-    batalTransaksiKas         : `${base_url_api}atena/akuntansi/kas/batal-trans`,
-    ubahStatusjadiInputKas    : `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-input`,
-    ubahStatusjadiSlipKas     : `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-slip`,
-    cetakTransaksiKas         : `${base_url_api}atena/akuntansi/kas/cetak/`,
-    getStatusTransaksiKas     : `${base_url_api}atena/akuntansi/kas/get-status-trans`,
+    loadGiroBelumCair: `${base_url_api}atena/akuntansi/kas/get-giro-belum-cair`,
+    loadJurnalLinkKas: `${base_url_api}atena/akuntansi/kas/get-jurnal-link/`,
+    loadJurnalGiro: `${base_url_api}atena/akuntansi/kas/load-jurnal-giro`,
+    simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan/`,
+    batalTransaksiKas: `${base_url_api}atena/akuntansi/kas/batal-trans`,
+    ubahStatusjadiInputKas: `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-input`,
+    ubahStatusjadiSlipKas: `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-slip`,
+    cetakTransaksiKas: `${base_url_api}atena/akuntansi/kas/cetak/`,
+    getStatusTransaksiKas: `${base_url_api}atena/akuntansi/kas/get-status-trans`,
     // simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan`,
     //Saldo Awal Perkiraan
-    loadDataGridSaldoAwalPerkiraan       : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-grid`,
-    loadDataHeaderSaldoAwalPerkiraan     : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-header`,
-    simpanSaldoAwalPerkiraan             : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/simpan`,
-    loadDataSaldoAwalPerkiraan           : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data`,
-    cetakSaldoAwalPerkiraan              : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/cetak/`,
-    batalSaldoAwalPerkiraan              : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/batal-trans`,
+    loadDataGridSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-grid`,
+    loadDataHeaderSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-header`,
+    simpanSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/simpan`,
+    loadDataSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data`,
+    cetakSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/cetak/`,
+    batalSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/batal-trans`,
     ubahStatusjadiInputSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-input`,
-    ubahStatusjadiSlipSaldoAwalPerkiraan : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-slip`,
-    getStatusSaldoAwalPerkiraan          : `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/get-status-trans`,
+    ubahStatusjadiSlipSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-slip`,
+    getStatusSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/get-status-trans`,
     //Tutup Periode Akuntansi
     simpanTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/simpan`,
-    batalTutupPeriodeAkuntansi : `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
+    batalTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
     browseTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/browse`,
     //Faktur Pajak
-    loadTransaksiDataGridFakturPajak  : `${base_url_api}atena/akuntansi/faktur-pajak/load-data-grid`,
+    loadTransaksiDataGridFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-grid`,
     loadTransaksiDataHeaderFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-header`,
-    batalFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/batal-trans`,
-    ubahStatusjadiSlipFakturPajak     : `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-slip`,
-    ubahStatusjadiInputFakturPajak    : `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-input`,
-    cetakFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/cetak/`,
-    eksporCSVFakturPajak              : `${base_url_api}atena/akuntansi/faktur-pajak/eksporCSV/`,
-    ekporXMLFakturPajak               : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML/`,
-    eksporXMLRetailFakturPajak        : `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML-retail/`,
-    getStatusFakturPajak              : `${base_url_api}atena/akuntansi/faktur-pajak/get-status-trans`,
-    simpanFakturPajak                 : `${base_url_api}atena/akuntansi/faktur-pajak/simpan`,
-    loadDataFakturPajak               : `${base_url_api}atena/akuntansi/faktur-pajak/load-data`,
-    tampilTransaksiFakturPajak        : `${base_url_api}atena/akuntansi/faktur-pajak/tampil-transaksi`,
-    cekNoFakturPajak                  : `${base_url_api}atena/akuntansi/faktur-pajak/cek-no-faktur`,
+    batalFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/batal-trans`,
+    ubahStatusjadiSlipFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-slip`,
+    ubahStatusjadiInputFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/ubah-status-jadi-input`,
+    cetakFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/cetak/`,
+    eksporCSVFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/eksporCSV/`,
+    ekporXMLFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML/`,
+    eksporXMLRetailFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/eksporXML-retail/`,
+    getStatusFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/get-status-trans`,
+    simpanFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/simpan`,
+    loadDataFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data`,
+    tampilTransaksiFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/tampil-transaksi`,
+    cekNoFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/cek-no-faktur`,
     //Inventori Bukti Penerimaan Barang
     loadDataHeaderBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-header`,
     loadDataUangMukaPOBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-uang-muka-pesanan-pembelian`,
@@ -567,6 +567,22 @@ var link_api = {
     loadDataRekapPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-rekap`,
     browseOrderJual: `${base_url_api}atena/penjualan/order-penjualan/browse`,
     loadDataHeaderPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-header`,
+    // pembelian retur pembelian
+    loadDataHeaderReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-header`,
+    loadConfigReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-config`,
+    loadDataGridReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-grid`,
+    batalTransaksiReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/batal-trans`,
+    ubahStatusJadiInputReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/ubah-status-jadi-slip`,
+    cetakReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/cetak/`,
+    getStatusTransaksiReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/get-status-trans`,
+    simpanReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/simpan`,
+    loadDataReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data`,
+    cekTransaksiSudahAdaReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/cek-transaksi-sudah-ada-retur`,
+    browsePembelian: `${base_url_api}atena/pembelian/pembelian/browse`,
+    browseBarangPembelian: `${base_url_api}atena/pembelian/pembelian/browse-barang`,
+    loadDataDetailBuktiPengeluaranBarang: `${base_url_api}atena/pembelian/bukti-pengeluaran-barang/load-data-detail`,
+    browseReturBuktiPengeluaranBarang: `${base_url_api}atena/pembelian/bukti-pengeluaran-barang/browse-retur`,
 };
 
 var modul_kode = {
@@ -797,7 +813,7 @@ const getStatusTrans = async (url, token, param) => {
 async function downloadXML(apiUrl, uuid, token = null) {
     try {
         const url = apiUrl + uuid;
-        
+
         const authToken = token;
 
         const response = await fetch(url, {
@@ -813,21 +829,21 @@ async function downloadXML(apiUrl, uuid, token = null) {
         }
 
         const xmlText = await response.text();
-        
+
         // Ambil filename dari Content-Disposition header
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'download.xml'; // fallback filename
-        
+
         if (contentDisposition) {
             const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
             if (filenameMatch && filenameMatch[1]) {
                 filename = filenameMatch[1].replace(/['"]/g, '');
             }
         }
-        
+
         const blob = new Blob([xmlText], { type: 'application/xml' });
         const downloadUrl = window.URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = downloadUrl;
         a.download = filename;
@@ -835,9 +851,9 @@ async function downloadXML(apiUrl, uuid, token = null) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
         return true;
-        
+
     } catch (error) {
         console.error('Error download XML:', error);
         alert('Gagal mengunduh file XML: ' + error.message);
@@ -848,7 +864,7 @@ async function downloadXML(apiUrl, uuid, token = null) {
 async function downloadCSV(apiUrl, uuid, token = null) {
     try {
         const url = apiUrl + uuid;
-        
+
         // Gunakan token yang diberikan atau ambil dari session
         const authToken = token;
 
@@ -865,21 +881,21 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         }
 
         const csvText = await response.text();
-        
+
         // Ambil filename dari Content-Disposition header
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'download.csv'; // fallback filename
-        
+
         if (contentDisposition) {
             const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
             if (filenameMatch && filenameMatch[1]) {
                 filename = filenameMatch[1].replace(/['"]/g, '');
             }
         }
-        
+
         const blob = new Blob([csvText], { type: 'text/csv' });
         const downloadUrl = window.URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = downloadUrl;
         a.download = filename;
@@ -887,9 +903,9 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
         return true;
-        
+
     } catch (error) {
         console.error('Error download CSV:', error);
         alert('Gagal mengunduh file CSV: ' + error.message);

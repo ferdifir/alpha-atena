@@ -1714,7 +1714,7 @@
               field: 'currency',
               title: 'Curr',
               width: 50,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
+              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
               editor: {
                 type: 'combogrid',
                 options: {
@@ -1816,7 +1816,7 @@
               align: 'right',
               width: 60,
               formatter: format_amount,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
+              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
               editor: {
                 type: 'numberbox',
                 options: {
@@ -1829,7 +1829,7 @@
               title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 85,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
+              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
               formatter: format_amount
             },
             {
@@ -1837,7 +1837,7 @@
               title: 'Disc ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 65,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
+              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
               formatter: format_amount,
             },
             {
@@ -1845,7 +1845,7 @@
               title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 95,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') == '1' }},
+              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
               formatter: format_amount
             },
             {
@@ -2599,7 +2599,7 @@
       data.subtotal = parseFloat((harga * data.jmlpo).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
 
       var nilaikurs = parseFloat(row.nilaikurs);
-      @if (session('MULTICURRENCY') == '1')
+      @if (session('MULTICURRENCY') != '1')
         nilaikurs = 1;
       @endif
       data.hargakurs = parseFloat(row.harga) * nilaikurs;
