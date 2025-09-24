@@ -593,6 +593,13 @@ var link_api = {
     hapusUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/hapus`,
     loadDataHeaderUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-data-header`,
     simpanUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/simpan`,
+    // Sinkronisasi Bukti Pengeluaran
+    tampilDataSBP: `${base_url_api}atena/penjualan/sinkronisasi-bukti-pengeluaran/tampil-data-sinkronisasi-bukti-pengeluaran`,
+    kalkulasiRekapSBP: `${base_url_api}atena/penjualan/sinkronisasi-bukti-pengeluaran/kalkulasi-rekap-sinkronisasi-bukti-pengeluaran`,
+    simpanDataSBP: `${base_url_api}atena/penjualan/sinkronisasi-bukti-pengeluaran/simpan-sinkronisasi-bukti-pengeluaran`,
+    // Sinkronisasi Penjualan
+    tampilDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/tampil-data-sinkronisasi-penjualan`,
+    simpanDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/simpan-sinkronisasi-penjualan`,
 };
 
 var modul_kode = {

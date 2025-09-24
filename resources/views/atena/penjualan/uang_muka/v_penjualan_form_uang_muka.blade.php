@@ -191,6 +191,7 @@
       }
     }
 
+    // TODO: cek jika endpoint sudah diperbaiki di mode ubah
     async function simpan() {
       var mode = $("#mode").val();
       var datanya = $("#form_input :input").serialize();
