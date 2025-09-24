@@ -22,98 +22,91 @@
     </div>
 
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="Grid" id="Grid">
-          <div class="easyui-layout" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
-              style="width:150px;" align="center">
-              <table border="0">
-                <tr>
-                  <td id="label_form"></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Tgl. Transaksi</td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">s/d</td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Lokasi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Opname Stok</td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                      class="label_input" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Status</td>
-                </tr>
-                <tr>
-                  <td align="left">
-                    <table>
-                      <tr valign = "top">
-                        <td><input type="checkbox" value="I" name="cb_status_filter[]"></td>
-                        <td><label id="label_form"> Input (I)</label></td>
-                      </tr>
-                      <tr valign = "top">
-                        <td><input type="checkbox" value="S" name="cb_status_filter[]"></td>
-                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_S') }}"> Cetak
-                            (S)</label>
-                        </td>
-                      </tr>
-                      <tr valign = "top">
-                        <td><input type="checkbox" value="P" name="cb_status_filter[]"></td>
-                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_P') }}"> Sudah
-                            Berlanjut Ke
-                            Penyesuaian Stok (P)</label></td>
-                      </tr>
-                      <tr valign = "top">
-                        <td><input type="checkbox" value="D" name="cb_status_filter[]"></td>
-                        <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_D') }}"> Batal
-                            (D)</label>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                      data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
-                </tr>
-              </table>
-            </div>
-            <div data-options="region:'center',">
-              <table id="table_data"></table>
-            </div>
-          </div>
+      <div class="easyui-layout" fit="true">
+        <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
+          style="width:150px;" align="center">
+          <table border="0">
+            <tr>
+              <td id="label_form"></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Tgl. Transaksi</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">s/d</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Lokasi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Opname Stok</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Status</td>
+            </tr>
+            <tr>
+              <td align="left">
+                <table>
+                  <tr valign = "top">
+                    <td><input type="checkbox" value="I" name="cb_status_filter[]"></td>
+                    <td><label id="label_form"> Input (I)</label></td>
+                  </tr>
+                  <tr valign = "top">
+                    <td><input type="checkbox" value="S" name="cb_status_filter[]"></td>
+                    <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_S') }}"> Cetak
+                        (S)</label>
+                    </td>
+                  </tr>
+                  <tr valign = "top">
+                    <td><input type="checkbox" value="P" name="cb_status_filter[]"></td>
+                    <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_P') }}"> Sudah
+                        Berlanjut Ke
+                        Penyesuaian Stok (P)</label></td>
+                  </tr>
+                  <tr valign = "top">
+                    <td><input type="checkbox" value="D" name="cb_status_filter[]"></td>
+                    <td><label id="label_form" style="background-color:{{ session('WARNA_STATUS_D') }}"> Batal
+                        (D)</label>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+            </tr>
+          </table>
         </div>
+        @include('template.trans_header')
       </div>
     </div>
   </div>
@@ -227,31 +220,32 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'I' || data.status == 'S') {
-              var kode = row.kodeopnamestok;
-              var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabOpen) {
-                $.messager.alert(
-                  'Warning',
-                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
-                  'warning'
-                );
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok,
+            function(data) {
+              data = data.data;
+              if (data.status == 'I' || data.status == 'S') {
+                var kode = row.kodeopnamestok;
+                var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                if (isTabOpen) {
+                  $.messager.alert(
+                    'Warning',
+                    'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
+                    'warning'
+                  );
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.hapus == 1) {
+                      $("#alasan_pembatalan").dialog('open');
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
@@ -263,27 +257,28 @@
 
       if (row) {
         if (!isTokenExpired()) {
-          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'S') {
-              var kode = row.kodeopnamestok;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatal Cetak ', 'warning');
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok,
+            function(data) {
+              data = data.data;
+              if (data.status == 'S') {
+                var kode = row.kodeopnamestok;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                    ', Sebelum Dibatal Cetak ', 'warning');
+                } else {
+                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                    data = data.data;
+                    if (data.batalcetak == 1) {
+                      batal_cetak();
+                    } else {
+                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                    }
+                  });
+                }
               } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.batalcetak == 1) {
-                    batal_cetak();
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
+                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
               }
-            } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
-            }
-          });
+            });
         } else {
           $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
@@ -300,28 +295,30 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          get_status_trans('{{ session('TOKEN') }}',"atena/inventori/opname-stok", 'uuidopnamestok', row.uuidopnamestok, function(data) {
-            data = data.data;
-            if (data.status == 'S' || data.status == 'P') {
-              get_akses_cetak_ulang('inventori', function(data) {
-                if (data.hakakses == 1) {
-                  $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
-                    .uuidopnamestok);
-                  $("#form_cetak").window('open');
+          get_status_trans('{{ session('TOKEN') }}', "atena/inventori/opname-stok", 'uuidopnamestok', row
+            .uuidopnamestok,
+            function(data) {
+              data = data.data;
+              if (data.status == 'S' || data.status == 'P') {
+                get_akses_cetak_ulang('inventori', function(data) {
+                  if (data.hakakses == 1) {
+                    $("#area_cetak").load(base_url + "atena/Inventori/Transaksi/OpnameStok/cetak/" + row
+                      .uuidopnamestok);
+                    $("#form_cetak").window('open');
+                  }
+                });
+              } else if (data.status == 'I') {
+                var kode = row.kodeopnamestok;
+                if ($('#tab_transaksi').tabs('exists', kode)) {
+                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                    'warning');
+                } else {
+                  cetak();
                 }
-              });
-            } else if (data.status == 'I') {
-              var kode = row.kodeopnamestok;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning');
               } else {
-                cetak();
+                $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
               }
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
-            }
-          });
+            });
         });
       }
     }
