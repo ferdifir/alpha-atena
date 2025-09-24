@@ -133,18 +133,28 @@
         $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
           if (r) {
             try {
-              const res = await fetchData(
-                '{{ session('TOKEN') }}',
+              const res = await fetch(
                 link_api.hapusServis, {
-                  uuidservis: row.uuidservis,
-                  kodeservis: row.kodeservis
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer {{ session('TOKEN') }}'
+                  },
+                  body: JSON.stringify({
+                    uuidservis: row.uuidservis,
+                    kodeservis: row.kodeservis
+                  })
                 }
               );
 
-              if (res.success) {
+              if (!res.ok) throw 'Gagal Menghapus Data';
+
+              const response = await res.json();
+
+              if (response.success) {
                 refresh_data();
               } else {
-                $.messager.alert('Error', res.message, 'error');
+                $.messager.alert('Error', response.message, 'error');
               }
             } catch (e) {
               const error = (typeof e === 'string') ? e : e.message;

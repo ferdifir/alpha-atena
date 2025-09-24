@@ -587,6 +587,12 @@ var link_api = {
     cekTransaksiSudahAdaReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cek-transaksi-sudah-ada-retur`,
     simpanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/simpan`,
     loadDataHeaderPenjualanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-header`,
+    //Uang Muka SO
+    loadDataGridUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-data-grid`,
+    loadDaftarUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-daftar-uang-muka`,
+    hapusUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/hapus`,
+    loadDataHeaderUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-data-header`,
+    simpanUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/simpan`,
 };
 
 var modul_kode = {
@@ -817,7 +823,7 @@ const getStatusTrans = async (url, token, param) => {
 async function downloadXML(apiUrl, uuid, token = null) {
     try {
         const url = apiUrl + uuid;
-        
+
         const authToken = token;
 
         const response = await fetch(url, {
@@ -833,21 +839,21 @@ async function downloadXML(apiUrl, uuid, token = null) {
         }
 
         const xmlText = await response.text();
-        
+
         // Ambil filename dari Content-Disposition header
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'download.xml'; // fallback filename
-        
+
         if (contentDisposition) {
             const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
             if (filenameMatch && filenameMatch[1]) {
                 filename = filenameMatch[1].replace(/['"]/g, '');
             }
         }
-        
+
         const blob = new Blob([xmlText], { type: 'application/xml' });
         const downloadUrl = window.URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = downloadUrl;
         a.download = filename;
@@ -855,9 +861,9 @@ async function downloadXML(apiUrl, uuid, token = null) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
         return true;
-        
+
     } catch (error) {
         console.error('Error download XML:', error);
         alert('Gagal mengunduh file XML: ' + error.message);
@@ -868,7 +874,7 @@ async function downloadXML(apiUrl, uuid, token = null) {
 async function downloadCSV(apiUrl, uuid, token = null) {
     try {
         const url = apiUrl + uuid;
-        
+
         // Gunakan token yang diberikan atau ambil dari session
         const authToken = token;
 
@@ -885,21 +891,21 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         }
 
         const csvText = await response.text();
-        
+
         // Ambil filename dari Content-Disposition header
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'download.csv'; // fallback filename
-        
+
         if (contentDisposition) {
             const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
             if (filenameMatch && filenameMatch[1]) {
                 filename = filenameMatch[1].replace(/['"]/g, '');
             }
         }
-        
+
         const blob = new Blob([csvText], { type: 'text/csv' });
         const downloadUrl = window.URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = downloadUrl;
         a.download = filename;
@@ -907,9 +913,9 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         a.click();
         document.body.removeChild(a);
         window.URL.revokeObjectURL(downloadUrl);
-        
+
         return true;
-        
+
     } catch (error) {
         console.error('Error download CSV:', error);
         alert('Gagal mengunduh file CSV: ' + error.message);

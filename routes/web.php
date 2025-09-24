@@ -703,6 +703,21 @@ Route::get('atena/penjualan/returpenjualan/form', function() {
     ]);
 })->name('atena.penjualan.returpenjualan.form');
 
+// Uang Muka SO
+Route::get('atena/penjualan/uangmukaso/transaksi', function() {
+    return view('atena.penjualan.uang_muka.v_penjualan_list_uang_muka', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.penjualan.uangmuka.transaksi');
+
+Route::get('atena/penjualan/uangmukaso/form', function() {
+    return view('atena.penjualan.uang_muka.v_penjualan_form_uang_muka', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.penjualan.uangmuka.form');
+
 // Pembelian Permintaan Barang
 Route::get('atena/pembelian/permintaanbarang/transaksi', function() {
     return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [
