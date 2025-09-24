@@ -34,129 +34,124 @@
     </div>
 
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="List Transaksi Penjualan" id="Grid">
-          <div class="easyui-layout" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
-              style="width:150px;" align="center">
-              <table border="0">
-                <tr>
-                  <td id="label_form"></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Tgl. Transaksi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
-                      style="width:100px" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">s/d</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
-                      style="width:100px" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Lokasi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Penjualan</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                      class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Pengeluaran</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kodebbk_filter" name="txt_kodebbk_filter" style="width:100px"
-                      class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Pajak</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_nofakturpajak_filter" name="txt_nofakturpajak_filter"
-                      style="width:100px" class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Pelanggan</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_nama_customer_filter" name="txt_nama_customer_filter"
-                      style="width:100px" class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Kota</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kota_customer_filter" name="txt_kota_customer_filter"
-                      style="width:100px" class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Marketing</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_marketing_filter" name="txt_marketing_filter" style="width:100px"
-                      class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Status</td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                    <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                    <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                    <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                      data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
-                </tr>
-              </table>
-            </div>
-            <div data-options="region:'center'">
-              <div class="easyui-layout" fit="true" id="main_wrapper">
-                <div data-options="region: 'center'">
-                  <table id="table_data"></table>
-                </div>
-                <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
-                  title="Daftar Antrian Pengeluaran Barang" style="width: 25%;">
-                  <div id="table_pending"></div>
-                </div>
-              </div>
+
+      <div class="easyui-layout" fit="true">
+        <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
+          style="width:150px;" align="center">
+          <table border="0">
+            <tr>
+              <td id="label_form"></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Tgl. Transaksi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                  style="width:100px" /></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">s/d</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                  style="width:100px" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Lokasi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Penjualan</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Pengeluaran</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodebbk_filter" name="txt_kodebbk_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Pajak</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_nofakturpajak_filter" name="txt_nofakturpajak_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Pelanggan</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_nama_customer_filter" name="txt_nama_customer_filter"
+                  style="width:100px" class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Kota</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kota_customer_filter" name="txt_kota_customer_filter"
+                  style="width:100px" class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Marketing</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_marketing_filter" name="txt_marketing_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Status</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
+                <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
+                <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
+                <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+              </td>
+            </tr>
+            <tr>
+              <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+            </tr>
+          </table>
+        </div>
+        <div data-options="region:'center'">
+          <div class="easyui-layout" fit="true" id="main_wrapper">
+            @include('template.trans_header')
+            <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
+              title="Daftar Antrian Pengeluaran Barang" style="width: 25%;">
+              <div id="table_pending"></div>
             </div>
           </div>
         </div>

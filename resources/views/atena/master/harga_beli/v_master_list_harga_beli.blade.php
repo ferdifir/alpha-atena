@@ -8,33 +8,29 @@
             </a>
         </div>
         <div data-options="region: 'center'">
-            <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
-                <div title="Grid" id="Grid">
-                    <table style="padding:0px;" border="0">
-                        <tr>
-                            <td>
-                                <div class="easyui-layout" style="width:750px;height:150px; display: inline-block;">
-                                    <table id="table_supplier" name="table_supplier"></table>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="easyui-layout" style="width:750px;height:150px; display: inline-block;">
-                                    <table id="table_supbarang" name="table_supbarang"></table>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="easyui-layout" style="width:750px;height:195px; display: inline-block;">
-                                    <table id="table_hargabeli" name="table_hargabeli"></table>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+            <table style="padding:0px;" border="0">
+                <tr>
+                    <td>
+                        <div class="easyui-layout" style="width:750px;height:150px; display: inline-block;">
+                            <table id="table_supplier" name="table_supplier"></table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="easyui-layout" style="width:750px;height:150px; display: inline-block;">
+                            <table id="table_supbarang" name="table_supbarang"></table>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="easyui-layout" style="width:750px;height:195px; display: inline-block;">
+                            <table id="table_hargabeli" name="table_hargabeli"></table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
         </div>
     </div>
 @endsection

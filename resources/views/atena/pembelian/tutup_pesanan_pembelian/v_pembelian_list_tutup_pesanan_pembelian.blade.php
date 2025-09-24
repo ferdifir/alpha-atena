@@ -30,98 +30,95 @@
     </div>
 
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="Grid" id="Grid">
-          <div class="easyui-layout" style="width:100%;height:100%" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
-              style="width:200px;" align="center">
-              <table border="0">
-                <tr>
-                  <td id="label_form"></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Lokasi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_lokasi_filter" name="txt_lokasi_filter" style="width:150px"
-                      class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Pesanan Pembelian</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kodetrans_aw_filter" name="txt_kodetrans_aw_filter"
-                      style="width:150px" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">s/d</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kodetrans_ak_filter" name="txt_kodetrans_ak_filter"
-                      style="width:150px" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Tgl. Trans</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter"style="width:150px"
-                      class="date" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">s/d</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter"style="width:150px"
-                      class="date" /></td>
-                </tr>
-                <tr>
-                  <td align="center">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup" value="tidak"
-                      checked>Tidak Close</td>
-                </tr>
-                <tr>
-                  <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup"
-                      value="sudah">Sudah Close</td>
-                </tr>
-                <tr>
-                  <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup" value="semua"
-                      id="rd_tutup_semua">Semua</td>
-                </tr>
-                <tr>
-                  <td id="label_form"></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center"></td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <label id="label_form"><input type="checkbox" id="cb_filter_semua"> Tampilkan semua</label>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                      data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
-                </tr>
-                <tr>
-                  <td align="left" style="background-color:yellow;color:red;font-size:10pt;">
-                    Jika Transaksi Pesanan Pembelian Tercentang Berarti Sudah Closed<br>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div data-options="region:'center',">
-              <div style="height:70%;">
-                <table id="table_data"></table>
-              </div>
-              <div style="height:30%;">
-                <table id="table_data_detail"></table>
-              </div>
-            </div>
+      <div class="easyui-layout" style="width:100%;height:100%" fit="true">
+        <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
+          style="width:200px;" align="center">
+          <table border="0">
+            <tr>
+              <td id="label_form"></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Lokasi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_lokasi_filter" name="txt_lokasi_filter" style="width:150px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Pesanan Pembelian</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodetrans_aw_filter" name="txt_kodetrans_aw_filter" style="width:150px" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">s/d</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodetrans_ak_filter" name="txt_kodetrans_ak_filter" style="width:150px" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Tgl. Trans</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter"style="width:150px"
+                  class="date" /></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">s/d</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter"style="width:150px"
+                  class="date" /></td>
+            </tr>
+            <tr>
+              <td align="center">&nbsp;</td>
+            </tr>
+            <tr>
+              <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup" value="tidak"
+                  checked>Tidak Close</td>
+            </tr>
+            <tr>
+              <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup" value="sudah">Sudah
+                Close</td>
+            </tr>
+            <tr>
+              <td align="left">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="rd_tutup" value="semua"
+                  id="rd_tutup_semua">Semua</td>
+            </tr>
+            <tr>
+              <td id="label_form"></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center"></td>
+            </tr>
+            <tr>
+              <td align="center">
+                <label id="label_form"><input type="checkbox" id="cb_filter_semua"> Tampilkan semua</label>
+              </td>
+            </tr>
+            <tr>
+              <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+            </tr>
+            <tr>
+              <td align="left" style="background-color:yellow;color:red;font-size:10pt;">
+                Jika Transaksi Pesanan Pembelian Tercentang Berarti Sudah Closed<br>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div data-options="region:'center',">
+          <div style="height:70%;">
+            <div class="title-grid"> Riwayat Transaksi </div>
+            <table id="table_data"></table>
+          </div>
+          <div style="height:30%;">
+            <table id="table_data_detail"></table>
           </div>
         </div>
       </div>

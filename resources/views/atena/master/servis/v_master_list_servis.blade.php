@@ -14,13 +14,9 @@
       </a>
     </div>
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
-        <div title="List Servis" id="Grid">
-          <div class="easyui-layout" style="width:100%;height:100%" fit="true">
-            <div data-options="region:'center',">
-              <table id="table_data"></table>
-            </div>
-          </div>
+      <div class="easyui-layout" style="width:100%;height:100%" fit="true">
+        <div data-options="region:'center',">
+          <table id="table_data"></table>
         </div>
       </div>
     </div>
