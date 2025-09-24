@@ -284,3 +284,9 @@ table.p-0 tr td {
 .icon-xls{
 	background:url('../images/xls.png') no-repeat center center;
 }
+
+.title-grid{
+    font-size: 14px;
+    font-weight: bold;
+    padding: 5px;
+}

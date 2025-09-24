@@ -22,83 +22,81 @@
     </div>
 
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" fit="true">
-        <div title="Grid" id="Grid">
-          <div class="easyui-layout" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
-              style="width:150px;" align="center">
-              <table border="0">
-                <tr>
-                  <td id="label_form"></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Tgl. Transaksi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px"
-                      class="date" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">s/d</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px"
-                      class="date" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Lokasi</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">No. Pesanan Pembelian</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                      class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Supplier</td>
-                </tr>
-                <tr>
-                  <td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter"
-                      style="width:100px" class="label_input" /></td>
-                </tr>
-                <tr>
-                  <td id="label_form"><br></td>
-                </tr>
-                <tr>
-                  <td id="label_form" align="center">Status</td>
-                </tr>
-                <tr>
-                  <td align="center">
-                    <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                    <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                    <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                    <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
-                  </td>
-                </tr>
-                <tr>
-                  <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                      data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
-                </tr>
-              </table>
-            </div>
-            <div data-options="region:'center',">
-              <table id="table_data"></table>
-            </div>
-          </div>
+      <div class="easyui-layout" fit="true">
+        <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
+          style="width:150px;" align="center">
+          <div class="title-grid"> List Transaksi Retur Pembelian </div>
+          <table border="0">
+            <tr>
+              <td id="label_form"></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Tgl. Transaksi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px"
+                  class="date" /></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">s/d</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px"
+                  class="date" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Lokasi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
+              </td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Retur Beli</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Referensi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Status</td>
+            </tr>
+            <tr>
+              <td align="center">
+                <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
+                <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
+                <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
+                <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+              </td>
+            </tr>
+            <tr>
+              <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+            </tr>
+          </table>
+        </div>
+        <div data-options="region:'center',">
+          <div class="title-grid"> Riwayat Transaksi </div>
+          <table id="table_data"></table>
         </div>
       </div>
     </div>
@@ -123,7 +121,7 @@
     <table cellpadding="0" cellspacing="0" style="width:100%">
       <tr>
         <td style="text-align:right">
-          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_ubah_perusahaan'
+          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
             onclick="javascript:batal_trans()">Batal</a>
         </td>
       </tr>
@@ -135,10 +133,11 @@
   <script>
     var edit_row = false;
     var idtrans = "";
+    var urlbbk = "";
     var counter = 0;
     var lihatHarga = false;
-    $(document).ready(async function() {
 
+    $(document).ready(async function() {
       await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         lihatHarga = data.data.lihatharga == 1;
       }, false);
@@ -155,7 +154,6 @@
       buat_table();
 
       $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
-
 
       $("#form_cetak").window({
         collapsible: false,
@@ -176,11 +174,12 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Pesanan Pembelian', $("#area_cetak").html());
+            export_excel('Faktur Pesanan Pengiriman', $("#area_cetak").html());
             return false;
           }
         }]
       }).window('close');
+
 
       $("#alasan_pembatalan").dialog({
         onOpen: function() {
@@ -190,33 +189,20 @@
       }).dialog('close');
 
       tutupLoader();
-
     });
 
     shortcut.add('F2', function() {
       before_add();
     });
 
-    function before_delete() {
-      $('#mode').val('hapus');
-      var row = $('#table_data').datagrid('getSelected');
-      if (row) {
-        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-          if (data.data.hapus == 1) {
-            // batal();
-            $("#alasan_pembatalan").dialog('open');
-          } else {
-            $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-          }
-        });
-      }
-    }
+    shortcut.add('F8', function() {
+      simpan();
+    });
 
     function enable_button() {
       $('#btn_refresh').linkbutton('enable');
       $('#btn_batal').linkbutton('enable')
       $('#btn_cetak').linkbutton('enable')
-      $('#btn_cetak_harga').linkbutton('enable')
       $('#btn_batal_cetak').linkbutton('enable')
     }
 
@@ -246,6 +232,21 @@
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
       });
+    }
+
+    function before_delete() {
+      $('#mode').val('hapus');
+      var row = $('#table_data').datagrid('getSelected');
+      if (row) {
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          if (data.data.hapus == 1) {
+            // batal();
+            $("#alasan_pembatalan").dialog('open');
+          } else {
+            $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+          }
+        });
+      }
     }
 
     function before_delete_print() {
@@ -448,14 +449,11 @@
         tutupLoader();
       }
     }
-    async function cetak(uuidtrans, harga = '') {
+    async function cetak(uuidtrans) {
       bukaLoader();
       if (row) {
         try {
-          let url = link_api.cetakPesananPembelian + uuidtrans;
-          if (harga == 'ya') {
-            url = link_api.cetakHargaPesananPembelian + uuidtrans;
-          }
+          let url = link_api.cetakReturPembelian + uuidtrans;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -485,24 +483,6 @@
       tutupLoader();
     }
 
-    function ubah_status() {
-      $('#mode').val('ubah_status');
-
-      if (row) {
-        get_status_trans(row.kodepo, 'tbeli', 'kodebeli', function(data) {
-          if (data.status == 'S')
-            $('#form_login').dialog('open');
-          else if (data.status == 'P')
-            $.messager.alert('Error',
-              'Transaksi Telah Berlanjut Ke Transaksi Pesanan Pembelian, Status Transaksi Tidak Dapat Diubah',
-              'error');
-          else if (data.status == 'I')
-            $.messager.alert('Error', 'Transaksi Dalam Mode Input, Status Transaksi Tidak Dapat Diubah',
-              'error');
-        });
-      }
-    }
-
     function refresh_data() {
       //JIKA DI TAB GRID
       $('#table_data').datagrid('reload');
@@ -512,23 +492,19 @@
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
-
       for (var i = 0; i < dataLokasi.length; i++) {
         lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
       }
-
       lokasi = lokasi.substring(0, lokasi.length - 1);
 
       var status = [];
-
       $("[name='cb_status_filter[]']:checked").each(function() {
         status.push($(this).val());
       });
-
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
-        nama: $('#txt_nama_referensi_filter').val(),
+        nama: $('#txt_nama_supplier_filter').val(),
         perusahaan: $('#txt_perusahaan_filter').val(),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
@@ -545,7 +521,7 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
-        url: link_api.loadDataGridPesananPembelian,
+        url: link_api.loadDataGridReturPembelian,
         pagination: true,
         clientPaging: false,
         onLoadSuccess: function() {
@@ -569,13 +545,13 @@
               align: 'center'
             },
             {
-              field: 'uuidpo',
+              field: 'uuidreturbeli',
               hidden: true
             },
             {
-              field: 'kodepo',
-              title: 'No. Pesanan Pembelian',
-              width: 120,
+              field: 'kodereturbeli',
+              title: 'No. Retur Beli',
+              width: 145,
               sortable: true,
               align: 'center'
             },
@@ -590,39 +566,11 @@
               width: 60,
               sortable: true,
               align: 'center'
-            },
-            {
-              field: 'namalokasi',
-              title: 'Nama Lokasi',
-              width: 120,
-              sortable: true,
-              align: 'center'
-            },
+            }
           ]
         ],
         columns: [
           [{
-              field: 'nopomanual',
-              title: 'No. Pesanan Pembelian Manual',
-              width: 120,
-              sortable: true,
-              align: 'center',
-              hidden: true
-            },
-            {
-              field: 'kodekas',
-              title: 'No. Kas',
-              width: 120,
-              sortable: true,
-              align: 'center',
-              hidden: true
-            },
-            {
-              field: 'kodepr',
-              title: 'No. PR',
-              width: 200
-            },
-            {
               field: 'uuidsupplier',
               hidden: true
             },
@@ -638,51 +586,14 @@
               width: 200,
               sortable: true
             },
-            {
-              field: 'total',
-              title: 'Total',
-              width: 100,
-              hidden: !lihatHarga,
-              sortable: true,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
-              field: 'ppnrp',
-              title: 'PPN',
-              width: 100,
-              sortable: true,
-              hidden: !lihatHarga,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
-              field: 'pph22rp',
-              title: 'PPH 22',
-              width: 100,
-              sortable: true,
-              hidden: !lihatHarga,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
-              field: 'pembulatan',
-              title: 'Pembulatan',
-              width: 100,
-              sortable: true,
-              hidden: !lihatHarga,
-              formatter: format_amount,
-              align: 'right'
-            },
-            {
+            ...lihatHarga ? [{
               field: 'grandtotal',
               title: 'Grand Total',
               width: 100,
               sortable: true,
-              hidden: !lihatHarga,
               formatter: format_amount,
-              align: 'right'
-            },
+              align: 'right',
+            }, ] : [],
             {
               field: 'catatan',
               title: 'Catatan',
@@ -783,31 +694,6 @@
       });
     }
 
-    function changeTitleTab(mode) {
-      //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-      var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-      if (mode == 'tambah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Tambah'
-          }
-        });
-      } else if (mode == 'ubah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Ubah'
-          }
-        });
-      }
-    }
-
     function tutupTab() {
       //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
       var tab = $('#tab_transaksi').tabs('getSelected');
@@ -818,6 +704,7 @@
     function reload() {
 
       $('#table_data').datagrid('reload');
+
     }
   </script>
 @endpush
