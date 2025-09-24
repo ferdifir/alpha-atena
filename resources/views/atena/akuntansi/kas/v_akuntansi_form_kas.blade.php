@@ -509,9 +509,6 @@ function tutup(){
 }
 
 async function cetak(uuid) {
-    $("#window_button_cetak").window('close');
-    $("#area_cetak").load(link_api.cetak + uuid);
-    $("#form_cetak").window('open');
 	const doc = await getCetakDocument(
 		'{{ session('TOKEN') }}',
 		link_api.cetakTransaksiKas + uuid

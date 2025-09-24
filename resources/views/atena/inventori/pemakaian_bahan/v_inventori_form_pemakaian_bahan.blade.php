@@ -319,11 +319,11 @@
                 if (response.success) {
                     var dataLokasi = response.data ?? {};
                     if (!Array.isArray(dataLokasi)) {
-                       
+
                     if ((dataLokasi.uuidlokasi ?? "") != "" && (dataLokasi.lokasidefault ?? 1) == 1) {
                         $('#IDLOKASI').combogrid('setValue', dataLokasi.uuidlokasi);
                         $("#KODELOKASI").val(dataLokasi.kodelokasi);
-                    } 
+                    }
                     }
                 } else {
                     $.messager.alert('Error', response.message, 'error');
@@ -383,7 +383,7 @@
                         });
                     $(".form_status").html(status_transaksi(statusTrans));
                     if (UT == 1 && statusTrans == 'I') {
-                        //document.getElementById('btn_simpan_all').onclick = simpan; 
+                        //document.getElementById('btn_simpan_all').onclick = simpan;
                         $('#btn_simpan_modal').css('filter', '');
                         $('#mode').val('ubah');
                     } else {

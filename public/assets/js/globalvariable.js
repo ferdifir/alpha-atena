@@ -56,6 +56,11 @@ var link_api = {
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
     simpanMerk: `${base_url_api}atena/master/merk/simpan`,
     getHeaderMerk: `${base_url_api}atena/master/merk/load-data-header`,
+    //Servis
+    loadDataGridServis: `${base_url_api}atena/master/servis/load-data-grid`,
+    hapusServis: `${base_url_api}atena/master/servis/hapus`,
+    loadDataHeaderServis: `${base_url_api}atena/master/servis/load-data-header`,
+    simpanServis: `${base_url_api}atena/master/servis/simpan`,
     //supplier
     loadDataGridMasterSupplier: `${base_url_api}atena/master/supplier/load-data-grid`,
     hapusSupplier: `${base_url_api}atena/master/supplier/hapus`,
@@ -213,6 +218,7 @@ var link_api = {
     hargaBeliTerakhir: `${base_url_api}atena/master/barang/harga-beli-terakhir`,
     getHargaBarang: `${base_url_api}atena/master/barang/get-harga-barang`,
     browseBarangJualAll: `${base_url_api}atena/master/barang/browse-jual-all`,
+    browseBarangJual: `${base_url_api}atena/master/barang/browse-jual`,
     hargaJualTerakhir: `${base_url_api}atena/master/barang/harga-jual-terakhir`,
     cekCollie: `${base_url_api}atena/master/barang/cek-collie`,
     getDaftarBarangDiskon: `${base_url_api}atena/master/barang/load-daftar-diskon`,
@@ -583,6 +589,20 @@ var link_api = {
     browseBarangPembelian: `${base_url_api}atena/pembelian/pembelian/browse-barang`,
     loadDataDetailBuktiPengeluaranBarang: `${base_url_api}atena/pembelian/bukti-pengeluaran-barang/load-data-detail`,
     browseReturBuktiPengeluaranBarang: `${base_url_api}atena/pembelian/bukti-pengeluaran-barang/browse-retur`,
+    browsePenjualan: `${base_url_api}atena/penjualan/penjualan/browse`,
+    browseBarangPenjualan: `${base_url_api}atena/penjualan/penjualan/browse-barang`,
+    // Retur Penjualan
+    loadDataGridReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-grid`,
+    batalTransaksiReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/batal-trans`,
+    ubahStatusJadiInputReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-slip`,
+    cetakReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cetak/`,
+    loadConfigReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-config`,
+    loadDataTagihanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-tagihan`,
+    loadDataReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data`,
+    cekTransaksiSudahAdaReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cek-transaksi-sudah-ada-retur`,
+    simpanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/simpan`,
+    loadDataHeaderPenjualanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-header`,
 };
 
 var modul_kode = {

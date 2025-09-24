@@ -1750,6 +1750,22 @@
 
       $('#window_sinkronisasi').window('minimize');
 
+      // data dummy untuk coba simpan data ke server
+      //   detail = [{
+      //     "kodetrans": "MKP-2025-000124",
+      //     "tgltrans": "2025-09-10",
+      //     "alamatpenerima": "TES ALAMAT",
+      //     "namacustomer": "Budi",
+      //     "namapenerima": "Budi",
+      //     "detail": [{
+      //       "kodebarang": "PRS0001",
+      //       "sku": "TEST",
+      //       "jml": 1,
+      //       "harga": 10000,
+      //       "subtotal": 10000
+      //     }]
+      //   }];
+
       try {
         bukaLoader();
         const res = await fetchData(

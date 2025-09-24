@@ -236,6 +236,10 @@
     var configKode = "";
     var idTrans = "";
     var urlIdBeli = "";
+    var urlBarang = "";
+    var inputharga = false;
+    var lihatharga = false;
+
     $(document).ready(async function() {
       var check = false;
       var check2 = false;
@@ -1238,6 +1242,16 @@
                     if ('undefined' === typeof param.q || param.q.length == 0) {
                       return false;
                     }
+                    if (urlBarang == link_api.browseBarangBySupplier) {
+                      var supplier = $("#IDSUPPLIER").val();
+                      param.uuidsupplier = supplier;
+                      var lokasi = $("#IDLOKASI").val();
+                      param.uuidlokasi = lokasi;
+                      param.jenis = "pembelian";
+                    } else if (urlBarang == link_api.browseBarangPembelian) {
+                      var beli = $("#IDBELI").combogrid('getValue');
+                      param.uuidbeli = beli;
+                    }
                   },
                   columns: [
                     [{
@@ -1385,6 +1399,21 @@
                 required: true,
                 idField: 'satuan',
                 textField: 'satuan',
+                onBeforeLoad: function(param) {
+                  if ('undefined' === typeof param.q || param.q.length == 0) {
+                    return false;
+                  }
+                  var barang = $('#table_data_detail').datagrid('getRows')[indexCellEdit].uuidbarang;
+                  if (barang == '' || barang == null) {
+                    $.messager.show({
+                      title: 'Warning',
+                      msg: 'Barang belum dipilih',
+                      timeout: {{ session('TIMEOUT') }},
+                    });
+                    return false;
+                  }
+                  param.uuidbarang = barang;
+                },
                 columns: [
                   [{
                     field: 'satuan',
@@ -1581,6 +1610,7 @@
         },
         onCellEdit: function(index, field, val) {
           var row = $(this).datagrid('getRows')[index];
+          indexCellEdit = index;
           var ed = get_editor('#table_data_detail', index, field);
           if (field == 'kodebeli') {
             var lokasi = $("#IDLOKASI").combogrid('getValue');
@@ -1593,20 +1623,20 @@
             });
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
-            var idbeli = '';
+            var uuidbeli = '';
             //jika transaksi prlain detail
-            if (row.idbeli) idbeli = row.idbeli;
+            if (row.uuidbeli) idbeli = row.uuidbeli;
 
             //jika transaksi prlain header
-            <?php if ($TRANSAKSIBELI == 'HEADER') { ?>
-            idbeli = $("#IDBELI").combogrid('getValue');
-            <?php } ?>
+            if (configtransbeli == "HEADER") {
+              uuidbeli = $("#IDBELI").combogrid('getValue');
+            }
 
-            if (idbeli == '') {
-              var idsupplier = $('#KODESUPPLIER').combogrid('getValue');
-              var idlokasi = $('#IDLOKASI').combogrid('getValue');
+            var uuidsupplier = $('#KODESUPPLIER').combogrid('getValue');
+            var uuidlokasi = $('#IDLOKASI').combogrid('getValue');
 
-              if (idsupplier == '') {
+            if (uuidbeli == '') {
+              if (uuidsupplier == '') {
                 $.messager.alert('Peringatan', 'Supplier belum diisi', 'warning');
 
                 $(this).datagrid('deleteRow', index);
@@ -1622,23 +1652,26 @@
                 return false;
               }
 
-              ed.combogrid('grid').datagrid('options').url = base_url +
-                'atena/Master/Data/Barang/comboGridBySupplier/' + idsupplier + '/' + idlokasi + '/pembelian';
+              ed.combogrid('grid').datagrid('options').url = link_api.browseBarangBySupplier;
             } else {
-              ed.combogrid('grid').datagrid('options').url = base_url +
-                'atena/Pembelian/Transaksi/Pembelian/comboGridBarang/' + idbeli;
+              ed.combogrid('grid').datagrid('options').url = link_api.browseBarangPembelian;
             }
 
             ed.combogrid('grid').datagrid('load', {
-              q: ''
+              q: '',
+              ...uuidbeli == "" ? {
+                uuidsupplier: uuidsupplier,
+                uuidlokasi: uuidlokasi
+              } : {
+                uuidbeli: uuidbeli
+              },
             });
             ed.combogrid('showPanel');
           } else if (field == 'satuan') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/satuanBarang/' + row
-              .idbarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             });
             ed.combogrid('showPanel');
           } else if (field == 'pakaippn') {
@@ -1656,14 +1689,14 @@
 
               var id = data ? data.idbeli : '';
               var tgltrans = data ? data.tgltrans : '';
-              var lokasi = data ? data.idlokasi : '';
+              var lokasi = data ? data.uuidlokasi : '';
 
               if (lokasi != $("#IDLOKASI").combogrid('getValue') ||
                 tgltrans > $('#TGLTRANS').datebox('getValue')) {
                 $.messager.show({
                   title: 'Warning',
                   msg: 'Transaksi harus pada lokasi yang sama dan sebelum tanggal transaksi',
-                  timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+                  timeout: {{ session('TIMEOUT') }},
                 });
                 $(this).datagrid('deleteRow', index);
                 break;
@@ -1681,13 +1714,13 @@
                 subtotal: 0,
                 pakaippn: "TIDAK",
                 ppnpersen: ppnpersenaktif,
-                pph22persen: <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>
+                pph22persen: {{ session('PPH22') }}
               };
               break;
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidbarang : '';
               var nama = data ? data.nama : '';
               var ppn = data ? data.ppn : '';
               var satuan = data ? data.satuan : '';
