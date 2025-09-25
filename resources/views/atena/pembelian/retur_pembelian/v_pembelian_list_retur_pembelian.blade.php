@@ -275,11 +275,11 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          var statusTrans = await getStatusTrans(link_api.getStatusTransPesananPembelian,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidpo: row.uuidpo
+              uuidreturbeli: row.uuidreturbeli
             });
-          var checkTabAvailable = parent.check_tab_exist(row.kodepo, 'fa fa-pencil');
+          var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
           if (statusTrans == 'I') {
             var kode = row.kodepo;
             if (checkTabAvailable) {
@@ -287,7 +287,7 @@
                 kode + ', Sebelum Dicetak ', 'warning');
             } else {
               try {
-                let url = link_api.ubahStatusJadiSlipPesananPembelian;
+                let url = link_api.ubahStatusJadiSlipReturPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -295,8 +295,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidpo: row.uuidpo,
-                    kodepo: row.kodepo,
+                    uuidreturbeli: row.uuidreturbeli,
+                    kodereturbeli: row.kodereturbeli,
                   }),
                 }).then(response => {
                   if (!response.ok) {
@@ -308,7 +308,7 @@
                 })
 
                 if (response.success) {
-                  cetak(row.uuidpo, harga);
+                  cetak(row.uuidreturbeli, harga);
                   refresh_data();
                 } else {
                   $.messager.alert('Error', response.message, 'error');
@@ -335,23 +335,23 @@
       if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodepo, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
         if (checkTabAvailable) {
-          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepo +
+          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodereturbeli +
             ', Sebelum Dibatalkan ', 'warning');
           tutupLoader();
           return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransPesananPembelian,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
           'bearer {{ session('TOKEN') }}', {
-            uuidpo: row.uuidpo
+            uuidreturbeli: row.uuidreturbeli
           });
         if (statusTrans == "I" || statusTrans == "S") {
           $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
             if (r) {
               bukaLoader();
               try {
-                let url = link_api.batalTransPesananPembelian;
+                let url = link_api.batalTransaksiReturPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -359,8 +359,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidpo: row.uuidpo,
-                    kodepo: row.kodepo,
+                    uuidreturbeli: row.uuidreturbeli,
+                    kodereturbeli: row.kodereturbeli,
                     alasan: alasan,
                   }),
                 }).then(response => {
@@ -404,16 +404,16 @@
           tutupLoader();
           return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransPesananPembelian,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
           'bearer {{ session('TOKEN') }}', {
-            uuidpo: row.uuidpo
+            uuidreturbeli: row.uuidreturbeli
           });
         if (statusTrans == "S") {
           $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
             if (r) {
               bukaLoader();
               try {
-                let url = link_api.ubahStatusJadiInputPesananPembelian;
+                let url = link_api.ubahStatusJadiInputReturPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -421,8 +421,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidpo: row.uuidpo,
-                    kodepo: row.kodepo,
+                    uuidreturbeli: row.uuidreturbeli,
+                    kodereturbeli: row.kodereturbeli,
                   }),
                 }).then(response => {
                   if (!response.ok) {
