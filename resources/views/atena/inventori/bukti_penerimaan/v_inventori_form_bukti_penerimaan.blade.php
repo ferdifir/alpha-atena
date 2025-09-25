@@ -2153,7 +2153,7 @@
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidbarang : '';
               var ppn = data ? data.ppn : '';
               var nama = data ? data.nama : '';
               var satuan = data ? data.satuan : '';
@@ -2186,18 +2186,27 @@
               var hargabeli;
 
               //DAPATKAN HARGA BELI BARANG
-              $.ajax({
-                async: false,
-                url: base_url + 'atena/Inventori/Transaksi/BarangMasuk/passingHargaBeliTerakhir/' + data.id +
-                  '/' + satuan,
-                beforeSend: function() {
-                  $.messager.progress();
-                },
-                success: function(harga) {
-                  $.messager.progress('close');
-                  hargabeli = harga ? harga : 0;
+              try {
+                bukaLoader();
+                const res = await fetchData(
+                  '{{ session('TOKEN') }}',
+                  link_api.passingHargaBeliTerakhir, {
+                    uuidbarang: data.uuidbarang,
+                    satuan: satuan
+                  }
+                );
+                if (res.success) {
+                  hargabeli = res.data.harga_beli_terakhir;
+                } else {
+                  $.messager.alert('Error', res.message, 'error');
                 }
-              });
+              } catch (e) {
+                const error = typeof e === 'string' ? e : e.message;
+                const textError = getTextError(error);
+                $.messager.alert('Error', textError, 'error');
+              } finally {
+                tutupLoader();
+              }
 
               var idcurrency;
               var currency;
@@ -2211,7 +2220,7 @@
                 sisa = 1;
                 harga = get_harga_barang(id);
               } else {
-                idcurrency = data.idcurrency;
+                idcurrency = data.uuidcurrency;
                 currency = data.simbol;
                 nilaikurs = data.nilaikurs;
               }
@@ -2848,7 +2857,7 @@
       return true;
     }
 
-    function get_harga_barang(idbarang) {
+    async function get_harga_barang(idbarang) {
       var idsupp = $("#IDREFERENSI").combogrid('getValue');
       var tgltrans = $("#TGLTRANS").datebox('getValue');
       var harga = 0;
@@ -2856,50 +2865,27 @@
       if (idsupp == '') {
         return harga;
       } else {
-        $.ajax({
-          dataType: "json",
-          type: 'POST',
-          async: false,
-          url: base_url + "atena/Master/Data/Barang/hargaBarang",
-          data: {
-            idbarang: idbarang,
-            idsupp: idsupp,
-            tgltrans: tgltrans
-          },
-          cache: false,
-          success: function(msg) {
-            harga = msg;
+        try {
+          const res = await fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.getHargaBarang, {
+              uuidbarang: idbarang,
+              uuidsupplier: idsupp,
+              tgltrans: tgltrans
+            }
+          );
+          if (res.success) {
+            harga = res.data.harga;
+          } else {
+            $.messager.alert('Error', res.message, 'error');
           }
-        });
+        } catch (e) {
+          const error = typeof e === 'string' ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        }
       }
       return harga;
-    }
-
-    function cekValidUangMuka(index, row) {
-      var daftar_idtransreferensi = [];
-
-      $('#table_data_detail').datagrid('getRows').map(function(item) {
-        daftar_idtransreferensi.push(item.idtransreferensi);
-      });
-
-      $.ajax({
-        url: base_url + 'atena/Inventori/Transaksi/BuktiPenerimaan/cekValidUangMuka',
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          daftar_idtransreferensi: daftar_idtransreferensi
-        },
-        success: function(response) {
-          if (response.success) {
-            hitung_subtotal_detail(index, row);
-            hitung_grandtotal();
-          } else {
-            $.messager.alert('Peringatan', response.errorMsg, 'warning');
-
-            $('#table_data_detail').datagrid('deleteRow', index);
-          }
-        }
-      });
     }
 
     async function getBBMConfig() {

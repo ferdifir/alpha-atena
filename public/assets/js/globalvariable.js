@@ -565,6 +565,7 @@ var link_api = {
     ubahStatusJadiInputBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/ubah-status-jadi-input`,
     batalTransaksiBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/batal-trans`,
     simpanBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/simpan`,
+    passingHargaBeliTerakhir: `${base_url_api}atena/inventori/bukti-penerimaan-barang/passing-harga-beli-terakhir`,
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,

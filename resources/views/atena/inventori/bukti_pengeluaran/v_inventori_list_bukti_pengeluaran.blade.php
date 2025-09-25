@@ -851,6 +851,7 @@
           }
         },
       });
+      //   console.log($("#table_data").datagrid('options'));
     }
 
     function buat_table_pending() {
