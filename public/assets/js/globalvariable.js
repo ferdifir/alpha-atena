@@ -548,8 +548,14 @@ var link_api = {
     tampilTransaksiFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/tampil-transaksi`,
     cekNoFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/cek-no-faktur`,
     //Inventori Bukti Penerimaan Barang
+    loadDataGridBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-grid`,
+    loadDataGridPendingBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-grid-pending`,
     loadDataHeaderBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-header`,
     loadDataUangMukaPOBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-uang-muka-pesanan-pembelian`,
+    ubahStatusJadiSlipBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/ubah-status-jadi-slip`,
+    cetakBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/cetak/`,
+    ubahStatusJadiInputBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/ubah-status-jadi-input`,
+    batalTransaksiBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/batal-trans`,
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,
