@@ -25,7 +25,6 @@
       <div class="easyui-layout" fit="true">
         <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
           style="width:150px;" align="center">
-          <div class="title-grid"> List Transaksi Retur Pembelian </div>
           <table border="0">
             <tr>
               <td id="label_form"></td>
@@ -211,9 +210,9 @@
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
           var row = $('#table_data').datagrid('getSelected');
-          parent.buka_submenu(null, row.kodepo,
-            '{{ route('atena.pembelian.pesanan_pembelian.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-            row.uuidpo,
+          parent.buka_submenu(null, row.kodereturbeli,
+            '{{ route('atena.pembelian.retur_pembelian.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            row.uuidreturbeli,
             'fa fa-pencil');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -225,8 +224,8 @@
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Pesanan Pembelian',
-            '{{ route('atena.pembelian.pesanan_pembelian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Retur Pembelian',
+            '{{ route('atena.pembelian.retur_pembelian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus')
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
