@@ -525,7 +525,7 @@
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
       try {
-        let url = link_api.loadDataHeaderPesananPembelian;
+        let url = link_api.loadDataHeaderReturPembelian;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -533,7 +533,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            uuidpo: '{{ $data }}',
+            uuidreturbeli: '{{ $data }}',
             mode: "ubah",
           }),
         }).then(response => {
@@ -561,11 +561,11 @@
 
         await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
           var UT = data.data.ubah;
-          var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidbeli: row.uuidbeli
+              uuidreturbeli: '{{ $data }}'
             });
-          if (UT == 1 && data.status == 'I') {
+          if (UT == 1 && statusTrans == 'I') {
             $('#btn_simpan_modal').css('filter', '');
           } else {
             document.getElementById('btn_simpan_modal').onclick = '';
@@ -612,7 +612,7 @@
 
 
           idtrans = row.uuidbbk;
-          load_data(row.uuidreturbeli);
+          load_data('{{ $data }}');
           $("#form_input").form('load', row);
         });
       }
@@ -780,7 +780,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            uuidpo: idtrans,
+            uuidreturbeli: idtrans,
             mode: "ubah",
           }),
         }).then(response => {
