@@ -104,7 +104,6 @@
 
           <table id="table_data"></table>
         </div>
-        @include('template.trans_header')
       </div>
     </div>
   </div>
