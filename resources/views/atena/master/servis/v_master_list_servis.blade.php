@@ -14,13 +14,9 @@
       </a>
     </div>
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
-        <div title="Grid" id="Grid">
-          <div class="easyui-layout" style="width:100%;height:100%" fit="true">
-            <div data-options="region:'center',">
-              <table id="table_data"></table>
-            </div>
-          </div>
+      <div class="easyui-layout" style="width:100%;height:100%" fit="true">
+        <div data-options="region:'center',">
+          <table id="table_data"></table>
         </div>
       </div>
     </div>
@@ -133,18 +129,28 @@
         $.messager.confirm('Confirm', 'Anda Yakin Menghapus Data Ini ?', async function(r) {
           if (r) {
             try {
-              const res = await fetchData(
-                '{{ session('TOKEN') }}',
+              const res = await fetch(
                 link_api.hapusServis, {
-                  uuidservis: row.uuidservis,
-                  kodeservis: row.kodeservis
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer {{ session('TOKEN') }}'
+                  },
+                  body: JSON.stringify({
+                    uuidservis: row.uuidservis,
+                    kodeservis: row.kodeservis
+                  })
                 }
               );
 
-              if (res.success) {
+              if (!res.ok) throw 'Gagal Menghapus Data';
+
+              const response = await res.json();
+
+              if (response.success) {
                 refresh_data();
               } else {
-                $.messager.alert('Error', res.message, 'error');
+                $.messager.alert('Error', response.message, 'error');
               }
             } catch (e) {
               const error = (typeof e === 'string') ? e : e.message;

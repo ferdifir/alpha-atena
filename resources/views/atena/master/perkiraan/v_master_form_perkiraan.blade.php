@@ -100,7 +100,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="right" id="label_form">Currency</td>
+                                    <td align="right" id="label_form">Mata Uang</td>
                                     <td><input id="uuidcurrency" name="uuidcurrency" style="width:400px"></td>
                                 </tr>
                                 <tr>

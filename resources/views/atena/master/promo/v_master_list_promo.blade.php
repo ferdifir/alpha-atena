@@ -14,14 +14,10 @@
       </a>
     </div>
     <div data-options="region: 'center'">
-      <div id="tab_transaksi" class="easyui-tabs" style="width:100%;height:100%;">
-        <div title="Grid" id="Grid">
-          <div class="easyui-layout" style="width:100%;height:100%" fit="true">
-            <div data-options="region:'center',">
-              <table id="table_data" idField="idpromo"></table>
-            </div>
-          </div>
-        </diV>
+      <div class="easyui-layout" style="width:100%;height:100%" fit="true">
+        <div data-options="region:'center',">
+          <table id="table_data" idField="idpromo"></table>
+        </div>
       </div>
     </div>
   </div>

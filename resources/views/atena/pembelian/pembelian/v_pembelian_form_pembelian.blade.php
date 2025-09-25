@@ -1172,7 +1172,7 @@
           if (row) {
           	var supp = $("#IDSUPPLIER").combogrid('getValue');
           	    url  = base_url + 'atena/Inventori/Transaksi/BarangMasuk/comboGrid'+ '/' +  row.ID + '/' + supp;
-          	
+
           	ubah_url_combogrid($("#IDBBM"), url, true);
           }
           if ($('#mode').val()!='') {
@@ -1800,7 +1800,7 @@
             {
               hidden: !lihatHarga,
               field: 'uuidcurrency',
-              title: 'Kode Currency',
+              title: 'Kode Mata Uang',
               hidden: true
             },
             {
