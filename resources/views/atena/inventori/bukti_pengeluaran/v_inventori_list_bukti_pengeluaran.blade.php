@@ -155,9 +155,13 @@
         </div>
         <div data-options="region:'center'">
           <div class="easyui-layout" fit="true" id="main_wrapper">
-            <div data-options="region:'center',">
-              <div class="title-grid"> Riwayat Transaksi </div>
-              <table id="table_data"></table>
+            <div data-options="region:'center'">
+              <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+                <div data-options="region:'center'">
+                  <table id="table_data"></table>
+                </div>
+              </div>
             </div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
               title="Daftar Antrian SO/DO/Retur Beli" style="width: 25%;">
