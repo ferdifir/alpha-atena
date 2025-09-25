@@ -328,7 +328,7 @@
 
     $(document).ready(async function() {
       var check = false;
-      var check2 =false;
+      var check2 = false;
       var promises = [
         getConfig('KODEBELI', 'TBELI', 'bearer {{ session('TOKEN') }}',
           function(response) {
@@ -350,7 +350,7 @@
           var UT = data.data.cetak;
           lihatHarga = data.data.lihatharga == 1;
           inputHarga = data.data.inputharga == 1;
-          check2=true;
+          check2 = true;
           if (UT == 1) {
             $('#simpan_cetak').css('filter', '');
           } else {
@@ -361,7 +361,7 @@
         }, false),
       ];
       await Promise.all(promises);
-      if (!check||!check2) return;
+      if (!check || !check2) return;
 
       if (transaksiBBM == "HEADER") {
         $("#KOLOMBBM").show();
@@ -562,7 +562,7 @@
       }
     }
 
-    
+
 
     async function get_header_ref() {
       try {
@@ -855,8 +855,8 @@
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-            $('#jenistransaksi_beli').attr('disabled', true);
-            $('#jenistransaksi_beli_langsung').attr('disabled', true);
+          $('#jenistransaksi_beli').attr('disabled', true);
+          $('#jenistransaksi_beli_langsung').attr('disabled', true);
           UT = data.data.ubah;
           var statusTrans = await getStatusTrans(link_api.getStatusTransPembelian,
             'bearer {{ session('TOKEN') }}', {
@@ -907,8 +907,8 @@
           ubahJenis();
 
           $('#KODESUPPLIER').combogrid('setValue', row.kodesupplier);
-          $('#KODESUPPLIER').combogrid('readonly',true);
-          $('#IDLOKASI').combogrid('readonly',true);
+          $('#KODESUPPLIER').combogrid('readonly', true);
+          $('#IDLOKASI').combogrid('readonly', true);
           $('#NAMASUPPLIER').textbox('setValue', row.namasupplier);
           $('#ALAMAT').textbox('setValue', row.alamatsupplier);
           $('#TELP').textbox('setValue', row.telpsupplier);
@@ -997,7 +997,7 @@
             }
           });
           body['jenis_simpan'] = jenis_simpan;
-          body['jenistransaksi']=$('[name=jenistransaksi]:checked').val();
+          body['jenistransaksi'] = $('[name=jenistransaksi]:checked').val();
           // Cek apakah body adalah instance dari FormData
           if (body instanceof FormData) {
             // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
