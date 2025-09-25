@@ -805,10 +805,10 @@
             var key = '';
 
             if (data.jenis == 'PEMBELIAN') {
-              url_cek = 'atena/Pembelian/Transaksi/PesananPembelian/cekBisaBerlanjut';
+              url_cek = link_api.cekBisaBerlanjutPesananPembelian;
               key = 'uuidpo';
             } else if (data.jenis == 'RETUR') {
-              url_cek = 'atena/Penjualan/Transaksi/ReturPenjualan/cekBisaBerlanjut';
+              url_cek = link_api.cekBisaBerlanjutReturPenjualan;
               key = 'uuidreturjual';
             }
 
