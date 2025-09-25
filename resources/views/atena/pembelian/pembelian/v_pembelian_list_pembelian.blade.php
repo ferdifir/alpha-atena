@@ -126,7 +126,10 @@
         </div>
         <div data-options="region:'center'">
           <div class="easyui-layout" fit="true" id="main_wrapper">
-            @include('template.trans_header')
+            <div data-options="region:'center',">
+  <div class="title-grid"> Riwayat Transaksi </div>
+  <table id="table_data"></table>
+</div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
               title="Daftar Antrian Penerimaan" style="width: 25%;">
               <div id="table_pending"></div>

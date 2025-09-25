@@ -2767,7 +2767,8 @@
             ed.combogrid('grid').datagrid('load', {
               q: '',
               uuidreferensi: ref,
-              uuidlokasi: lokasi
+              uuidlokasi: lokasi,
+              uuidreturbeli: ref
             });
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
@@ -2793,13 +2794,12 @@
                 urlbarang = link_api.browseBarangDO;
                 keybarang = 'uuiddo';
               } else if (jenis == "RETUR") {
-                urlbarang = link_api.browseBBKReturPembelian;
+                urlbarang = link_api.browseBarangBBKReturPembelian;
                 keybarang = 'uuidreturbeli';
               }
             } else {
               urlbarang = link_api.browseBarang;
             }
-
 
             ed.combogrid('grid').datagrid('options').url = urlbarang;
             ed.combogrid('grid').datagrid('load', {
@@ -2906,7 +2906,7 @@
               var jenistrans = $('#JENISTRANSAKSI').combobox('getValue');
 
               var reqJmlSO = jenistrans == 'PENJUALANDO' ? data.jmlso : jml;
-              row_harga = await get_harga_barang(data.uuidbarang, reqJmlSO);
+              row_harga = await get_harga_barang(id, reqJmlSO);
 
               oldharga = harga;
               olddiskonpersen = '0';
