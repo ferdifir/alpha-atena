@@ -658,6 +658,23 @@ Route::get('atena/inventori/barangkeluar/form', function () {
     ]);
 })->name('atena.inventori.buktipengeluaran.form');
 
+// Inventory Bukti Penerimaan
+Route::get('atena/inventori/barangmasuk/transaksi', function () {
+    return view('atena.inventori.bukti_penerimaan.v_inventori_list_bukti_penerimaan', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.inventory.buktipenerimaan.transaksi');
+
+Route::get('atena/inventori/barangmasuk/form', function () {
+    return view('atena.inventori.bukti_penerimaan.v_inventori_form_bukti_penerimaan', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+        'dataref' => request()->dataref,
+        'jenistransref' => request()->jenistransref,
+    ]);
+})->name('atena.inventori.buktipenerimaan.form');
+
 // Penjualan Sales Order
 Route::get('atena/penjualan/salesorder/transaksi', function () {
     return view('atena.penjualan.sales_order.v_penjualan_list_sales_order', [

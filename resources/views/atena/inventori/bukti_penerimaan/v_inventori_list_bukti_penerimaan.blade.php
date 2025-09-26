@@ -20,9 +20,9 @@
         <img src="{{ asset('assets/images/cancel-print.png') }}">
       </a>
     </div>
-
     <div data-options="region: 'center'">
-      <div class="easyui-layout" fit="true" id="main_layout">
+
+      <div class="easyui-layout" fit="true">
         <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
           style="width:150px;" align="center">
           <table border="0">
@@ -33,17 +33,15 @@
               <td id="label_form" align="center">Tgl. Transaksi</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                  style="width:120px" /></td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                  style="width:120px" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -52,32 +50,54 @@
               <td id="label_form" align="center">Lokasi</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" />
+              <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:120px" class="label_input" />
               </td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">No. Pesanan Pengiriman</td>
+              <td id="label_form" align="center">Jenis Transaksi</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" />
+              <td id="label_form" align="center">
+                <select class="easyui-combobox" id="txt_jenistransaksi_filter" data-options="panelHeight:'auto'"
+                  name="txt_jenistransaksi_filter" style="width:120px;">
+                  <option value="pembelian">PEMBELIAN</option>
+                  <!--<option value="transfer">TERIMA TRANSFER</option>-->
+                  <option value="retur">RETUR PENJUALAN</option>
+                </select>
               </td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">Customer</td>
+              <td id="label_form" align="center">No. BBM</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter" style="width:100px"
-                  class="label_input" />
-              </td>
+              <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:120px"
+                  class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">No. Trans. Ref.</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_kodetransreferensi_filter" name="txt_kodetransreferensi_filter"
+                  style="width:120px" class="label_input" /></td>
+            </tr>
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Nama Referensi</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter"
+                  style="width:120px" class="label_input" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -87,24 +107,15 @@
             </tr>
             <tr>
               <td align="center">
-                <label id="label_form">
-                  <input type="checkbox" value="I" name="cb_status_filter[]">
-                  I</label>
-                <label id="label_form">
-                  <input type="checkbox" value="S" name="cb_status_filter[]">
-                  S</label>
-                <label id="label_form">
-                  <input type="checkbox" value="P" name="cb_status_filter[]">
-                  P</label>
-                <label id="label_form">
-                  <input type="checkbox" value="D" name="cb_status_filter[]">
-                  D</label>
+                <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
+                <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
+                <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
+                <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
               </td>
             </tr>
             <tr>
               <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a>
-              </td>
+                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
             </tr>
           </table>
         </div>
@@ -115,7 +126,7 @@
   <table id="table_data"></table>
 </div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
-              title="Daftar Antrian SO" style="width: 25%;">
+              title="Daftar Antrian PO/Retur Jual" style="width: 25%;">
               <div id="table_pending"></div>
             </div>
           </div>
@@ -138,11 +149,12 @@
       </tr>
     </table>
   </div>
+
   <div id="alasan_pembatalan-buttons">
     <table cellpadding="0" cellspacing="0" style="width:100%">
       <tr>
         <td style="text-align:right">
-          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_ubah_perusahaan'
+          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
             onclick="javascript:batal_trans()">Batal</a>
         </td>
       </tr>
@@ -154,11 +166,16 @@
   <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
   <script src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
+    const jwt = "{{ session('TOKEN') }}";
     var edit_row = false;
     var idtrans = "";
+    var urltransreferensi = "";
     var counter = 0;
+    let LIHATHARGA;
+    let TRANSREFERENSI;
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
+      await getBBMConfig();
       browse_data_lokasi('#txt_lokasi');
       //WAKTU BATAL DI GRID, tidak bisa close
       //PRINT GRID
@@ -168,13 +185,10 @@
         }
       });
 
-      getKonfigurasi().then(res => {
-        const transaksiso = res.transo.value;
-        const lihatharga = res.akses.lihatharga;
-        buat_table(transaksiso, lihatharga);
-      });
+      buat_table();
       buat_table_pending();
 
+      $('#txt_jenistransaksi_filter').combobox('setValue', '');
       $("#txt_tgl_aw_filter").datebox('setValue', getTglFilterAwal());
 
       $("#form_cetak").window({
@@ -196,7 +210,7 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Pesanan Pengiriman', $("#area_cetak").html());
+            export_excel('Faktur Bukti Penerimaan', $("#area_cetak").html());
             return false;
           }
         }]
@@ -212,42 +226,58 @@
       tutupLoader();
     });
 
-    $("#btn_browse").click(function() {
-      browse_alamat_kirim();
-    });
+    async function getBBMConfig() {
+      try {
+        const [transReferensiData, aksesData] = await Promise.all([
+          fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.getConfig, {
+              modul: 'TBBM',
+              config: 'TRANSREFERENSI'
+            }
+          ),
+          fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.getDataAkses, {
+              kodemenu: '{{ $kodemenu }}'
+            }
+          )
+        ]);
+
+        if (!transReferensiData.success || !aksesData.success) {
+          const errorMessage = !transReferensiData.success ? transReferensiData.message : aksesData.message;
+          throw new Error(errorMessage);
+        }
+
+        TRANSREFERENSI = transReferensiData.data.value;
+        LIHATHARGA = aksesData.data.lihatharga;
+
+      } catch (e) {
+        const error = e.message || 'An unknown error occurred.';
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+      }
+    }
 
     shortcut.add('F2', function() {
       before_add();
     });
 
-    function disable_button() {
-      $('#btn_refresh').linkbutton('disable');
-      $('#btn_batal').linkbutton('disable')
-      $('#btn_cetak').linkbutton('disable')
-      $('#btn_batal_cetak').linkbutton('disable')
-    }
-
-    function enable_button() {
-      $('#btn_refresh').linkbutton('enable');
-      $('#btn_batal').linkbutton('enable')
-      $('#btn_cetak').linkbutton('enable')
-      $('#btn_batal_cetak').linkbutton('enable')
-    }
-
-    function before_add(uuidso) {
+    function before_add(idtransref, jenistransref) {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Pesanan Pengiriman',
-            '{{ route('atena.penjualan.deliveryorder.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}&dataref=' +
-            uuidso,
+          parent.buka_submenu(null, 'Tambah Bukti Penerimaan',
+            '{{ route('atena.inventori.buktipenerimaan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}&dataref=' +
+            idtransref + '&jenistransref=' + jenistransref,
             'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
 
         $('#idtransreferensi').val(null);
+        $('#jenistransreferensi').val(null);
       });
     }
 
@@ -255,28 +285,28 @@
       $('#mode').val('hapus');
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo,
-            function(data) {
-              data = data.data;
-              if (data.status == 'I') {
-                var kode = row.kodedo;
-                if ($('#tab_transaksi').tabs('exists', kode)) {
-                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                    ', Sebelum Dibatalkan ', 'warning');
-                } else {
-                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                    data = data.data;
-                    if (data.hapus == 1) {
-                      $("#alasan_pembatalan").dialog('open');
-                    } else {
-                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                    }
-                  });
-                }
+          get_status_trans(jwt, "atena/inventori/bukti-penerimaan-barang", "uuidbbm", row.uuidbbm, function(data) {
+            data = data.data;
+            if (data.status == 'I') {
+              var kode = row.kodebbm;
+              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
+                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                  ', Sebelum Dibatalkan ', 'warning');
               } else {
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.hapus == 1) {
+                    $("#alasan_pembatalan").dialog('open');
+                  } else {
+                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                  }
+                });
               }
-            });
+            } else {
+              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+            }
+          });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -288,29 +318,28 @@
 
       if (row) {
         if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo,
-            function(data) {
-              data = data.data;
-              if (data.status == 'S') {
-                var kode = row.kodedo;
-                var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-                if (isTabOpen) {
-                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                    ', Sebelum Dibatal Cetak ', 'warning');
-                } else {
-                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                    data = data.data;
-                    if (data.batalcetak == 1) {
-                      batal_cetak();
-                    } else {
-                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                    }
-                  });
-                }
+          get_status_trans(jwt, "atena/inventori/bukti-penerimaan-barang", "uuidbbm", row.uuidbbm, function(data) {
+            data = data.data;
+            if (data.status == 'S') {
+              var kode = row.kodebbm;
+              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
+                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                  ', Sebelum Dibatal Cetak ', 'warning');
               } else {
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.batalcetak == 1) {
+                    batal_cetak();
+                  } else {
+                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                  }
+                });
               }
-            });
+            } else {
+              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+            }
+          });
         } else {
           $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
         }
@@ -319,7 +348,6 @@
 
     function before_print() {
       $('#mode').val('cetak');
-
       if (row) {
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
@@ -327,41 +355,47 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-
-          get_status_trans('{{ session('TOKEN') }}', "atena/penjualan/pesanan-pengiriman", 'uuiddo', row.uuiddo,
-            function(data) {
-              data = data.data;
-              if (data.status == 'S' || data.status == 'P') {
-                const kodemenu = modul_kode['penjualan'];
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-                  data = data.data;
-                  if (data.hakakses == 1) {
-                    const doc = await getCetakDocument(
-                      '{{ session('TOKEN') }}',
-                      link_api.cetakPenjualanDeliveryOrder + row.uuiddo
-                    );
-                    if (doc == null) {
-                      $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
-                        'warning');
-                      return false;
-                    }
+          get_status_trans(jwt, "atena/inventori/bukti-penerimaan-barang", "uuidbbm", row.uuidbbm, function(data) {
+            data = data.data;
+            if (data.status == 'S' || data.status == 'P') {
+              const kodemenu = modul_kode['inventori'];
+              get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
+                data = data.data;
+                if (data.hakakses == 1) {
+                  const doc = await getCetakDocument(
+                    jwt,
+                    link_api.cetakBuktiPenerimaanBarang + row.uuidbbm
+                  );
+                  if (doc) {
                     $("#area_cetak").html(doc);
                     $("#form_cetak").window('open');
+                  } else {
+                    $.messager.alert(
+                      'Warning',
+                      'Terjadi kesalahan dalam mengambil data untuk cetak transaksi',
+                      'warning'
+                    );
                   }
-                });
-              } else if (data.status == 'I') {
-                var kode = row.kodedo;
-                var isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-                if (isTabOpen) {
-                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                    'warning');
                 } else {
-                  cetak();
+                  $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 }
+              });
+            } else if (data.status == 'I') {
+              var kode = row.kodebbm;
+              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
+                $.messager.alert(
+                  'Warning',
+                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                  'warning'
+                );
               } else {
-                $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+                cetak();
               }
-            });
+            } else {
+              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+            }
+          });
         });
       }
     }
@@ -370,27 +404,31 @@
       $("#alasan_pembatalan").dialog('close');
       alasan = $('#ALASANPEMBATALAN').val();
       if (row && alasan != "") {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodedo + ' ?', function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodebbm + ' ?', async function(r) {
           if (r) {
-            fetchData(
-              '{{ session('TOKEN') }}',
-              link_api.batalTransaksiPenjualanDeliveryOrder, {
-                uuiddo: row.uuiddo,
-                kodedo: row.kodedo,
-                alasan: alasan
-              }
-            ).then(res => {
+            try {
+              bukaLoader();
+              const res = await fetchData(
+                jwt,
+                link_api.batalTransaksiBuktiPenerimaanBarang, {
+                  uuidbbm: row.uuidbbm,
+                  kodebbm: row.kodebbm,
+                  alasan: alasan
+                }
+              );
               if (res.success) {
                 $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
                 reload();
               } else {
                 $.messager.alert('Error', res.message, 'error');
               }
-            }).catch(err => {
-              const error = (typeof err === 'string') ? err : err.message;
+            } catch (e) {
+              const error = typeof e === 'string' ? e : e.message;
               const textError = getTextError(error);
               $.messager.alert('Error', textError, 'error');
-            });
+            } finally {
+              tutupLoader();
+            }
           }
         });
       } else {
@@ -400,30 +438,29 @@
 
     function batal_cetak() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodedo + ' ?', async function(r) {
+        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodebbm + ' ?', async function(r) {
           if (r) {
             try {
-              const response = await fetchData(
-                '{{ session('TOKEN') }}',
-                link_api.ubahStatusjadiInputPenjualanDeliveryOrder, {
-                  uuiddo: row.uuiddo,
-                  kodedo: row.kodedo
+              bukaLoader();
+              const res = await fetchData(
+                jwt,
+                link_api.ubahStatusJadiInputBuktiPenerimaanBarang, {
+                  uuidbbm: row.uuidbbm,
+                  kodebbm: row.kodebbm
                 }
               );
-              if (response.success) {
-                $.messager.show({
-                  title: 'Info',
-                  msg: 'Transaksi Sukses Dibatal Cetak',
-                  showType: 'show'
-                });
+              if (res.success) {
+                $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
                 reload();
               } else {
-                $.messager.alert('Error', response.message, 'error');
+                $.messager.alert('Error', res.message, 'error');
               }
             } catch (e) {
               const error = (typeof e === 'string') ? e : e.message;
               const textError = getTextError(error);
               $.messager.alert('Error', textError, 'error');
+            } finally {
+              tutupLoader();
             }
           }
         });
@@ -433,32 +470,29 @@
     async function cetak() {
       try {
         bukaLoader();
-        const response = await fetchData(
-          '{{ session('TOKEN') }}',
-          link_api.ubahStatusjadiSlipPenjualanDeliveryOrder, {
-            uuiddo: row.uuiddo,
-            kodedo: row.kodedo
+        const res = await fetchData(
+          jwt,
+          link_api.ubahStatusJadiSlipBuktiPenerimaanBarang, {
+            uuidbbm: row.uuidbbm,
+            kodebbm: row.kodebbm,
           }
         );
-        if (response.success) {
+        if (res.success) {
           $.messager.show({
             title: 'Info',
             msg: 'Transaksi Sukses Dicetak',
             showType: 'show'
           });
-          const doc = await getCetakDocument(
-            '{{ session('TOKEN') }}',
-            link_api.cetakPenjualanDeliveryOrder + row.uuiddo
-          );
-          if (doc == null) {
+          const doc = await getCetakDocument(jwt, link_api.cetakBuktiPenerimaanBarang + row.uuidbbm);
+          if (doc) {
+            $("#area_cetak").html(doc);
+            $("#form_cetak").window('open');
+          } else {
             $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
-            return false;
           }
-          $("#area_cetak").html(doc);
-          $("#form_cetak").window('open');
           reload();
         } else {
-          $.messager.alert('Error', response.message, 'error');
+          $.messager.alert('Error', res.message, 'error');
         }
       } catch (e) {
         const error = (typeof e === 'string') ? e : e.message;
@@ -467,20 +501,6 @@
       } finally {
         tutupLoader();
       }
-    }
-
-    function tampil_antrian() {
-      $('#main_wrapper').layout('expand', 'east');
-
-      $('#btn_tampil_antrian').hide();
-      $('#btn_tutup_antrian').show();
-    }
-
-    function tutup_antrian() {
-      $('#main_wrapper').layout('collapse', 'east');
-
-      $('#btn_tampil_antrian').show();
-      $('#btn_tutup_antrian').hide();
     }
 
     function refresh_data() {
@@ -503,17 +523,18 @@
       status = status.length > 0 ? JSON.stringify(status) : '';
 
       $('#table_data').datagrid('load', {
-        kodetrans: $('#txt_kodetrans_filter').val(),
+        jenistransaksi: $('#txt_jenistransaksi_filter').combobox('getValue'),
         lokasi: lokasi,
-        nama: $('#txt_nama_referensi_filter').val(),
-        perusahaan: $('#txt_perusahaan_filter').val(),
+        kodetrans: $('#txt_kodetrans_filter').textbox('getValue'),
+        kodetransreferensi: $('#txt_kodetransreferensi_filter').textbox('getValue'),
+        nama: $('#txt_nama_referensi_filter').textbox('getValue'),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
-        status: status
+        status: status,
       });
     }
 
-    function buat_table(transaksiso, lihatharga) {
+    function buat_table() {
       $("#table_data").datagrid({
         fit: true,
         singleSelect: true,
@@ -521,10 +542,13 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
+        pageSize: 20,
         pagination: true,
         clientPaging: false,
-        pageSize: 20,
-        url: link_api.loadDataGridPenjualanDeliveryOrder,
+        url: link_api.loadDataGridBuktiPenerimaanBarang,
+        onLoadSuccess: function(data) {
+          $('#table_data').datagrid('unselectAll');
+        },
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
@@ -540,39 +564,41 @@
               align: 'center'
             },
             {
-              field: 'uuiddo',
+              field: 'uuidbbm',
               hidden: true
             },
             {
-              field: 'kodedo',
-              title: 'No. Pesanan Pengiriman',
-              width: 120,
+              field: 'kodebbm',
+              title: 'No. BBM',
+              width: 140,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'kodepo',
-              title: 'No. Pesanan Pembelian',
-              width: 120,
+              field: 'jenistransaksi',
+              title: 'Jenis',
+              width: 90,
               sortable: true,
-              align: 'center',
-              hidden: true
+              align: 'center'
             },
-            // start condition transaksiso
-            ...(transaksiso == 'HEADER' ? [{
-                field: 'uuidso',
+            ...(TRANSREFERENSI == 'HEADER' ? [{
+                field: 'uuidtransreferensi',
                 hidden: true
               },
               {
-                field: 'kodeso',
-                title: 'No. Pesanan Penjualan',
+                field: 'kodetransreferensi',
+                title: 'No. Trans. Ref.',
                 width: 120,
                 sortable: true,
                 align: 'center'
               },
-            ] : []),
-            // end condition transaksiso
-            {
+            ] : [{
+              field: 'kodetransreferensi',
+              title: 'No. Trans. Ref.',
+              width: 120,
+              sortable: true,
+              align: 'center'
+            }, ]), {
               field: 'uuidlokasi',
               hidden: true
             },
@@ -586,7 +612,6 @@
             },
             {
               field: 'namalokasi',
-              hidden: true,
               title: 'Nama Lokasi',
               width: 120,
               sortable: true,
@@ -596,29 +621,22 @@
         ],
         columns: [
           [{
-              field: 'uuidcustomer',
+              field: 'uuidreferensi',
               hidden: true
             },
             {
-              field: 'kodecustomer',
-              title: 'Kd. Customer',
-              width: 120,
+              field: 'kodereferensi',
+              title: 'Kd. Ref',
+              width: 130,
               sortable: true
             },
             {
-              field: 'namacustomer',
-              title: 'Nama Customer',
+              field: 'namareferensi',
+              title: 'Nama Ref',
               width: 200,
               sortable: true
             },
-            {
-              field: 'namasubcustomer',
-              title: 'Nama Sub Customer',
-              width: 180,
-              sortable: true
-            },
-            // start condition lihatharga
-            ...(lihatharga == 1 ? [{
+            ...(LIHATHARGA == 1 ? [{
                 field: 'total',
                 title: 'Total',
                 width: 100,
@@ -629,6 +647,14 @@
               {
                 field: 'ppnrp',
                 title: 'PPN',
+                width: 100,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+              },
+              {
+                field: 'pph22rp',
+                title: 'PPH 22',
                 width: 100,
                 sortable: true,
                 formatter: format_amount,
@@ -650,20 +676,28 @@
                 formatter: format_amount,
                 align: 'right'
               },
-            ] : []),
-            // end condition lihatharga
-            {
-              field: 'tglkirim',
-              title: 'Tgl. Kirim',
-              width: 80,
-              sortable: true,
-              formatter: ubah_tgl_indo,
-              align: 'center'
-            },
-            {
+            ] : []), {
               field: 'catatan',
               title: 'Catatan',
               width: 450,
+              sortable: true
+            },
+            {
+              field: 'nosuratjalan',
+              title: 'No. Surat Jalan',
+              width: 150,
+              sortable: true
+            },
+            {
+              field: 'nopol',
+              title: 'No. Kendaraan',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'namasopir',
+              title: 'Nama Sopir',
+              width: 200,
               sortable: true
             },
             {
@@ -718,13 +752,13 @@
         ],
         onDblClickRow: function(index, data) {
           if (!isTokenExpired('{{ session('TOKEN') }}')) {
-            var tab_title = row.kodedo;
-            parent.buka_submenu(null, tab_title,
-              '{{ route('atena.penjualan.deliveryorder.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              row.uuiddo,
-              'fa fa-pencil');
+            const kode = data.kodebbm;
+            const url =
+              "{{ route('atena.inventori.buktipenerimaan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=" +
+              data.uuidbbm;
+            parent.buka_submenu(null, kode, url, 'fa fa-pencil');
           } else {
-            $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
+            $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
           }
         },
       });
@@ -738,7 +772,7 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
-        url: link_api.loadDataGridPendingPenjualanDeliveryOrder,
+        url: link_api.loadDataGridPendingBuktiPenerimaanBarang,
         columns: [
           [{
               field: 'tgltrans',
@@ -748,14 +782,15 @@
             },
             {
               field: 'kodetrans',
-              title: 'No. SO',
+              title: 'No. Trans',
               width: 100,
               sortable: true
             },
             {
-              field: 'namacustomer',
-              title: 'Customer',
-              width: 150
+              field: 'referensi',
+              title: 'Referensi',
+              width: 150,
+              align: 'left'
             },
             {
               field: 'catatan',
@@ -766,19 +801,29 @@
         ],
         onDblClickRow: async function(index, data) {
           if (!isTokenExpired('{{ session('TOKEN') }}')) {
+            var url_cek = '';
+            var key = '';
+
+            if (data.jenis == 'PEMBELIAN') {
+              url_cek = link_api.cekBisaBerlanjutPesananPembelian;
+              key = 'uuidpo';
+            } else if (data.jenis == 'RETUR') {
+              url_cek = link_api.cekBisaBerlanjutReturPenjualan;
+              key = 'uuidreturjual';
+            }
+
             try {
               bukaLoader();
-              const response = await fetchData(
-                '{{ session('TOKEN') }}',
-                link_api.cekBisaBerlanjutSO, {
-                  uuidso: data.uuidso
+              const res = await fetchData(
+                jwt,
+                url_cek, {
+                  [key]: data.uuidtrans
                 }
               );
-
-              if (response.success) {
-                before_add(data.uuidso);
+              if (res.success) {
+                before_add(data.uuidtrans, data.jenis);
               } else {
-                $.messager.alert('Peringatan', response.message, 'warning');
+                $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
                 reload();
               }
             } catch (e) {
@@ -789,7 +834,7 @@
               tutupLoader();
             }
           } else {
-            $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
+            $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
           }
         }
       });
@@ -833,67 +878,9 @@
       });
     }
 
-    function changeTitleTab(mode) {
-      //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-      var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-      if (mode == 'tambah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Tambah'
-          }
-        });
-      } else if (mode == 'ubah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Ubah'
-          }
-        });
-      }
-    }
-
     function reload() {
       $('#table_data').datagrid('reload');
       $('#table_pending').datagrid('reload');
-    }
-
-    async function getKonfigurasi() {
-      try {
-        const token = '{{ session('TOKEN') }}';
-        const [res1, res2] = await Promise.all([
-          fetchData(token, link_api.getConfig, {
-            modul: 'TDO',
-            config: 'TRANSAKSISO'
-          }),
-          fetchData(token, link_api.getDataAkses, {
-            kodemenu: '{{ $kodemenu }}'
-          }),
-        ]);
-
-        if (!res1.success) {
-          throw new Error(res1.message);
-        }
-
-        if (!res2.success) {
-          throw new Error(res2.message);
-        }
-
-        return {
-          transo: res1.data,
-          akses: res2.data
-        }
-      } catch (e) {
-        const error = (typeof e === 'string') ? e : e.message;
-        const textError = getTextError(error);
-        $.messager.alert('Error', textError, 'error');
-        return null;
-      }
     }
   </script>
 @endpush

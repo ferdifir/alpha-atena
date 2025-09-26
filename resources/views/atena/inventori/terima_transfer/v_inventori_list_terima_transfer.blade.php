@@ -22,7 +22,6 @@
     </div>
 
     <div data-options="region: 'center'">
-
       <div class="easyui-layout" fit="true">
         <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
           style="width:150px;" align="center">
@@ -84,7 +83,10 @@
             </tr>
           </table>
         </div>
-        @include('template.trans_header')
+        <div data-options="region:'center',">
+          <div class="title-grid"> Riwayat Transaksi </div>
+          <table id="table_data"></table>
+        </div>
       </div>
     </div>
   </div>

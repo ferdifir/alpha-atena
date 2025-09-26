@@ -549,7 +549,14 @@
     }
 
     function refresh_data() {
-      $('#table_data').datagrid('reload');
+      let pager = $('#table_data').datagrid('getPager');
+      console.log(pager);
+      let pageOptions = pager.pagination('options');
+      console.log(pageOptions);
+      let currentPage = pageOptions.pageNumber;
+      $('#table_data').datagrid('reload', {
+        page: currentPage
+      });
     }
 
     function reload() {

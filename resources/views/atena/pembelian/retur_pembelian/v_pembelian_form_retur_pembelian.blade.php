@@ -92,7 +92,7 @@
                           </td>
                         </tr>
                         <tr>
-                        <tr <?= $TRANSAKSIBELI == 'HEADER' ? '' : 'hidden' ?>>
+                        <tr id="kolom_beli">
                           <td id="label_form">No. Beli</td>
                           <td id="label_form" colspan="3"><input name="uuidbeli" id="IDBELI"
                               style="width:313px"></td>
@@ -132,9 +132,7 @@
                 <td align="left" id="label_form"><label style="font-weight:normal" id="label_form">User Input
                     :</label> <label id="lbl_kasir"></label> <label style="font-weight:normal" id="label_form">| Tgl.
                     Input :</label> <label id="lbl_tanggal"></label></td>
-                <td align='right' <?php if ($LIHATHARGA == 0) {
-                    echo 'hidden';
-                } ?>>
+                <td align='right' id='kolomharga'>
                   <table>
                     <tr hidden>
                       <td id="label_form" align="right">
@@ -145,12 +143,8 @@
                     <tr hidden>
                       <td align="right" id="label_form">Discount
                         <input name="diskon" id="DISKON" class="number" style="width:60px;" max=100
-                          suffix="%" <?php if ($INPUTHARGA == 0) {
-                              echo 'readonly';
-                          } ?>>
-                        <input name="diskonrp" id="DISKONRP" class="number" style="width:110px;"<?php if ($INPUTHARGA == 0) {
-                            echo 'readonly';
-                        } ?>>
+                          suffix="%">
+                        <input name="diskonrp" id="DISKONRP" class="number" style="width:110px;">
                       </td>
                     </tr>
                     <tr>
@@ -172,10 +166,7 @@
                         PPH 22 <input name="pph22rp" id="PPH22RP" class="number" style="width:110px;" readonly>
                       </td>
                       <td id="label_form" align="right">
-                        Pembulatan <input name="pembulatan" id="PEMBULATAN" class="number " style="width:110px;"
-                          <?php if ($INPUTHARGA == 0) {
-                              echo 'readonly';
-                          } ?>>
+                        Pembulatan <input name="pembulatan" id="PEMBULATAN" class="number " style="width:110px;">
                       </td>
                       <td id="label_form" align="right">
                         Grand Total <input name="grandtotal" id="GRANDTOTAL" class="number " style="width:110px;"
@@ -197,8 +188,6 @@
 
     <a title="Simpan" class="easyui-tooltip " iconCls="" data-options="plain:false" id='btn_simpan_modal'
       onclick="$('#window_button_simpan').window('open')"><img src="{{ asset('assets/images/simpan.png') }}"></a>
-
-
     <br><br>
     <a title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false"
       onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
@@ -252,50 +241,25 @@
             $('#simpan_cetak').css('filter', 'grayscale(100%)');
             $('#simpan_cetak').removeAttr('onclick');
           }
-        }, false);
-        async function() {
-          try {
-            let url = link_api.loadConfigReturPembelian;
-            const response = await fetch(url, {
-              method: 'POST',
-              headers: {
-                'Authorization': 'bearer {{ session('TOKEN') }}',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                kodemenu: '{{ $kodemenu }}',
-              }),
-            }).then(response => {
-              if (!response.ok) {
-                throw new Error(
-                  `HTTP error! status: ${response.status} from ${url}`
-                );
-              }
-              return response.json();
-            })
-
-            if (response.success) {
-              var data = response.data;
-              configKode = data.KODE;
-              configtransbeli = data.TRANSAKSIBELI;
-              transaksiBBK = data.TRANSAKSIBBK;
-              check = true;
-              inputharga = data.INPUTHARGA == 1 ? true : false;
-              lihatharga = data.LIHATHARGA == 1 ? true : false;
-            } else {
-              $.messager.alert('Error', response.message, 'error');
-            }
-          } catch (error) {
-            var textError = getTextError(error);
-            $.messager.alert('Error', getTextError(error), 'error');
-          }
-        }
+        }, false),
+        await loadConfigReturPembelian().then(() => {
+          check = true;
+        })
       ];
-
       await Promise.all(promises);
+      console.log("check " + check + " check2 " + check2);
 
       if (!check || !check2) return;
-
+      if (configtransbeli == 'HEADER') {
+        $("#kolom_beli").show();
+      } else {
+        $("#kolom_beli").hide();
+      }
+      if (lihatharga) {
+        $("#kolomharga").show();
+      } else {
+        $("#kolomharga").hide();
+      }
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
@@ -322,6 +286,8 @@
       }).window('close');
 
       var lebar = $('.panel').width();
+      var panel = $('.panel');
+      var lebar = panel.length > 0 ? panel.width() : 0;
       var tabsimpan = 50;
       var modalsimpan = 174;
       var spasi = 10;
@@ -348,7 +314,7 @@
 
       $("#TGLTRANS").datebox({
         onChange: function(newVal, oldVal) {
-          set_ppn_aktif(newVal, function(response) {
+          set_ppn_aktif(newVal, 'bearer {{ session('TOKEN') }}', function(response) {
             ppnpersenaktif = response.ppnpersen;
 
             var rows = $('#table_data_detail').datagrid('getRows');
@@ -377,17 +343,19 @@
       });
 
       $("[name=pakaipph]").change(function() {
-        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>);
+        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22') }});
         hitung_grandtotal();
       });
 
       $('#PEMBULATAN').numberbox({
+        readonly: !inputharga,
         onChange: function() {
           hitung_grandtotal();
         }
       });
 
       $('#DISKON').numberbox({
+        readonly: !inputharga,
         onChange: function() {
           total = $('#TOTAL').numberbox('getValue');
           diskon = $('#DISKON').numberbox('getValue');
@@ -400,6 +368,7 @@
       });
 
       $('#DISKONRP').numberbox({
+        readonly: !inputharga,
         onChange: function() {
           hitung_grandtotal();
         }
@@ -421,7 +390,6 @@
       @endif
 
       tutupLoader();
-
     })
 
     shortcut.add('F8', function() {
@@ -464,7 +432,42 @@
       }
 
     }
+    async function loadConfigReturPembelian() {
+      try {
+        let url = link_api.loadConfigReturPembelian;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            kodemenu: '{{ $kodemenu }}',
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.json();
+        })
 
+        if (response.success) {
+          var data = response.data;
+          configKode = data.KODE;
+          configtransbeli = data.TRANSAKSIBELI;
+          transaksiBBK = data.TRANSAKSIBBK;
+          inputharga = data.INPUTHARGA == 1 ? true : false;
+          lihatharga = data.LIHATHARGA == 1 ? true : false;
+        } else {
+          $.messager.alert('Error', response.message, 'error');
+        }
+      } catch (error) {
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+    }
     async function tambah() {
 
       $('#mode').val('tambah');
@@ -522,7 +525,7 @@
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
       try {
-        let url = link_api.loadDataHeaderPesananPembelian;
+        let url = link_api.loadDataHeaderReturPembelian;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -530,7 +533,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            uuidpo: '{{ $data }}',
+            uuidreturbeli: '{{ $data }}',
             mode: "ubah",
           }),
         }).then(response => {
@@ -558,11 +561,11 @@
 
         await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
           var UT = data.data.ubah;
-          var statusTrans = await getStatusTrans(link_api.getStatusTransPermintaanBarang,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidbeli: row.uuidbeli
+              uuidreturbeli: '{{ $data }}'
             });
-          if (UT == 1 && data.status == 'I') {
+          if (UT == 1 && statusTrans == 'I') {
             $('#btn_simpan_modal').css('filter', '');
           } else {
             document.getElementById('btn_simpan_modal').onclick = '';
@@ -578,9 +581,9 @@
           $('#TGLKIRIM').datebox('readonly');
           $('#IDBELI').combogrid('readonly');
 
-          url = base_url + 'atena/Pembelian/Transaksi/Pembelian/comboGrid' + '/' + row.idlokasi + '/' + row
-            .idsupplier;
           url = link_api.browsePembelian;
+          urlIdBeli = url;
+          $("#IDBELI").combogrid("grid").datagrid("options").url = url;
           $("#IDBELI").combogrid("clear");
           $("#IDBELI").combogrid("grid").datagrid("load", {
             q: "",
@@ -609,7 +612,7 @@
 
 
           idtrans = row.uuidbbk;
-          load_data(row.uuidreturbeli);
+          load_data('{{ $data }}');
           $("#form_input").form('load', row);
         });
       }
@@ -670,7 +673,7 @@
       tutupLoader();
     }
 
-    function simpanRetur(jenis_simpan) {
+    async function simpanRetur(jenis_simpan) {
       $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
 
@@ -767,7 +770,7 @@
       $('#table_data_detail').datagrid('loadData', []);
     }
 
-    function load_data(idtrans) {
+    async function load_data(idtrans) {
       try {
         let url = link_api.loadDataReturPembelian;
         const response = await fetch(url, {
@@ -777,7 +780,7 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            uuidpo: idtrans,
+            uuidreturbeli: idtrans,
             mode: "ubah",
           }),
         }).then(response => {
@@ -804,7 +807,7 @@
 
     }
 
-    function load_detail(idtrans) {
+    async function load_detail(idtrans) {
       try {
         bukaLoader();
         let url = link_api.loadDataDetailBuktiPengeluaranBarang;
@@ -904,7 +907,7 @@
     function browse_data_syaratbayar(id) {
       $(id).combogrid({
         panelWidth: 300,
-        url: link_api.browseSyaratBayar
+        url: link_api.browseSyaratBayar,
         idField: 'uuidsyaratbayar',
         textField: 'nama',
         mode: 'local',
@@ -938,6 +941,7 @@
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if ($('#mode').val() != '' && row) {
             get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), row.selisih)
+            $('#IDSYARATBAYAR').val(row.uuidsyaratbayar);
           }
         },
       });
@@ -1031,14 +1035,13 @@
             $('#CONTACTPERSON').textbox('setValue', row.contactperson);
             $('#TELPCP').textbox('setValue', row.telpcp);
             $('#NPWP').textbox('setValue', row.npwp);
-            $('#IDSYARATBAYAR').combogrid('setValue', {
-              id: row.uuidsyaratbayar,
-              nama: row.namasyaratbayar
-            });
+            $('#IDSYARATBAYAR').combogrid('setValue', row.uuidsyaratbayar, );
 
             var lokasi = $("#IDLOKASI").combogrid('getValue');
             url = link_api.browsePembelian;
             urlIdBeli = url;
+            $("#IDBELI").combogrid("grid").datagrid("options").url = url;
+
             $("#IDBELI").combogrid("clear");
             $("#IDBELI").combogrid("grid").datagrid("load", {
               q: "",
@@ -1075,7 +1078,7 @@
         },
         columns: [
           [{
-              field: 'idbeli',
+              field: 'uuidbeli',
               hidden: true
             },
             {
@@ -1113,7 +1116,7 @@
                 $.messager.show({
                   title: 'Warning',
                   msg: 'Transaksi harus pada lokasi yang sama dan sebelum tanggal transaksi',
-                  timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+                  timeout: {{ session('TIMEOUT') }},
                 });
                 $(this).combogrid('clear');
               }
@@ -1158,7 +1161,6 @@
                 field: 'kodebarang'
               });
 
-              getRowIndex(target);
             }
           }, {
             text: 'Hapus',
@@ -1181,14 +1183,21 @@
         ],
         frozenColumns: [
           [{
-              field: 'idbeli',
+              field: 'uuidbeli',
               hidden: true
             },
             {
-              field: 'kodebeli'
+              field: 'kodebeli',
               hidden: configtransbeli == "HEADER",
               title: 'Kode Ref',
               width: 140,
+              onBeforeLoad: function(param) {
+                var lokasi = $("#IDLOKASI").combogrid('getValue');
+                var supplier = $("#IDSUPPLIER").val();
+
+                param.uuidlokasi = lokasi;
+                param.uuidsupplier = supplier;
+              },
               editor: {
                 type: 'combogrid',
                 options: {
@@ -1236,12 +1245,9 @@
                   panelWidth: 710,
                   mode: 'remote',
                   required: true,
-                  idField: 'kode',
-                  textField: 'kode',
+                  idField: 'kodebarang',
+                  textField: 'kodebarang',
                   onBeforeLoad: function(param) {
-                    if ('undefined' === typeof param.q || param.q.length == 0) {
-                      return false;
-                    }
                     if (urlBarang == link_api.browseBarangBySupplier) {
                       var supplier = $("#IDSUPPLIER").val();
                       param.uuidsupplier = supplier;
@@ -1249,7 +1255,9 @@
                       param.uuidlokasi = lokasi;
                       param.jenis = "pembelian";
                     } else if (urlBarang == link_api.browseBarangPembelian) {
-                      var beli = $("#IDBELI").combogrid('getValue');
+                      var beli = $('#table_data_detail').datagrid('getRows')[indexCellEdit].uuidbeli;
+                      if (configtransbeli == "HEADER")
+                        beli = $("#IDBELI").combogrid('getValue');
                       param.uuidbeli = beli;
                     }
                   },
@@ -1259,12 +1267,12 @@
                         hidden: true
                       },
                       {
-                        field: 'kode',
+                        field: 'kodebarang',
                         title: 'Kode',
                         width: 100
                       },
                       {
-                        field: 'nama',
+                        field: 'namabarang',
                         title: 'Nama',
                         width: 250
                       },
@@ -1345,264 +1353,269 @@
           ]
         ],
         columns: [
-
-          ...lihatharga ? [{
-            field: 'adanpwp',
-            title: 'Ada NPWP',
-            formatter: format_checked,
-            align: 'center'
-          }] : [],
-          {
-            field: 'jmlreturbeli',
-            title: 'Jumlah',
-            align: 'right',
-            width: 80,
-            formatter: format_qty,
-            editor: {
-              type: 'numberbox',
-              options: {
-                required: true
-              }
-            }
-          },
-          {
-            field: 'jmlbonus',
-            title: 'Bonus',
-            align: 'right',
-            width: 80,
-            formatter: format_qty,
-            editor: {
-              type: 'numberbox',
-              options: {
-                required: true
-              }
-            }
-          },
-          {
-            field: 'satuan_lama',
-            title: 'Satuan',
-            width: 45,
-            align: 'center',
-            hidden: true
-          },
-          {
-            field: 'satuan',
-            title: 'Satuan',
-            width: 50,
-            align: 'center',
-            editor: {
-              type: 'combogrid',
-              options: {
-                panelWidth: 100,
-                panelHeight: 130,
-                mode: 'remote',
-                required: true,
-                idField: 'satuan',
-                textField: 'satuan',
-                onBeforeLoad: function(param) {
-                  if ('undefined' === typeof param.q || param.q.length == 0) {
-                    return false;
-                  }
-                  var barang = $('#table_data_detail').datagrid('getRows')[indexCellEdit].uuidbarang;
-                  if (barang == '' || barang == null) {
-                    $.messager.show({
-                      title: 'Warning',
-                      msg: 'Barang belum dipilih',
-                      timeout: {{ session('TIMEOUT') }},
-                    });
-                    return false;
-                  }
-                  param.uuidbarang = barang;
-                },
-                columns: [
-                  [{
-                    field: 'satuan',
-                    title: 'Satuan',
-                    width: 80
-                  }]
-                ],
-              }
-            }
-          },
-          {
-            field: 'satuanutama',
-            title: 'Satuan Utama',
-            width: 50,
-            align: 'center',
-            hidden: true
-          },
-          {
-            field: 'konversi',
-            title: 'Konversi',
-            width: 50,
-            align: 'center',
-            hidden: true
-          },
-          ...lihatharga ? [{
-              field: 'idcurrency',
-              title: 'Kode Currency',
-              hidden: true
-            },
+          [
+            ...(
+              lihatharga ? [{
+                field: 'adanpwp',
+                title: 'Ada NPWP',
+                formatter: format_checked,
+                align: 'center'
+              }, ] : []
+            ),
             {
-              field: 'currency',
-              title: 'Mata Uang',
-              width: 50
-            },
-            {
-              field: 'harga',
-              title: 'Harga',
+              field: 'jmlreturbeli',
+              title: 'Jumlah',
               align: 'right',
-              width: 85,
-              formatter: format_amount,
-              editor: !inputharga ? null : {
+              width: 80,
+              formatter: format_qty,
+              editor: {
                 type: 'numberbox',
                 options: {
                   required: true
                 }
-              },
-            } {
-              field: 'discpersen',
-              title: 'Disc(%)',
-              align: 'center',
-              width: 100,
-              editor: !inputharga ? null : {
-                type: 'textbox'
-              },
-              hidden: false
-            },
-            {
-              field: 'disc',
-              title: 'Disc',
-              align: 'right',
-              width: 65,
-              formatter: format_amount,
-              editor: !inputharga ? null : {
-                type: 'numberbox'
               }
             },
             {
-              field: 'subtotal',
-              title: 'Subtotal',
+              field: 'jmlbonus',
+              title: 'Bonus',
               align: 'right',
-              width: 95,
-              formatter: format_amount,
-            },
-            {
-              field: 'nilaikurs',
-              title: 'Kurs ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 60,
-              formatter: format_amount,
+              width: 80,
+              formatter: format_qty,
               editor: {
                 type: 'numberbox',
                 options: {
-                  required: true,
+                  required: true
                 }
               }
-              hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
             },
             {
-              field: 'hargakurs',
-              title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 85,
-              formatter: format_amount
-              {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
-            },
-            {
-              field: 'disckurs',
-              title: 'Disc (<?= $_SESSION[NAMAPROGRAM]['SIMBOLCURRENCY'] ?>)',
-              align: 'right',
-              width: 65,
-              formatter: format_amount
-              {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
-            },
-            {
-              field: 'subtotalkurs',
-              title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 95,
-              formatter: format_amount
-              {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
-            },
-            {
-              field: 'pakaippn',
-              title: 'Pakai PPN',
+              field: 'satuan_lama',
+              title: 'Satuan',
+              width: 45,
               align: 'center',
-              width: 65,
-              editor: !inputharga ? null : {
-                type: 'combobox',
-                options: {
-                  required: true,
-                  data: [{
-                    value: 'INCL',
-                    text: 'INCL'
-                  }, {
-                    value: 'EXCL',
-                    text: 'EXCL'
-                  }, {
-                    value: 'TIDAK',
-                    text: 'TIDAK'
-                  }],
-                  panelHeight: 'auto',
-                }
-              }
-            },
-            {
-              field: 'dpp',
-              title: 'DPP ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 95,
-              formatter: format_amount
-            },
-            {
-              field: 'ppnpersen',
-              title: 'PPN (%)',
-              align: 'right',
-              width: 70,
-              formatter: format_amount_2,
-              editor: !inputharga ? null : {
-                type: 'numberbox',
-                options: {
-                  min: 0,
-                  precision: 2,
-                  max: 100
-                }
-              }
-            },
-            {
-              field: 'ppnrp',
-              title: 'PPN ({{ session('SIMBOLCURRENCY') }})',
-              align: 'right',
-              width: 65,
-              formatter: format_amount
-            },
-            {
-              field: 'pph22persen',
-              title: 'PPH 22 (%)',
-              align: 'right',
-              width: 70,
-              formatter: format_amount_2,
-              editor: !inputharga ? null : {
-                type: 'numberbox',
-                options: {
-                  min: 0,
-                  precision: 2,
-                  max: 100
-                }
-              }
-            },
-            {
-              field: 'pph22rp',
-              title: 'PPH 22 (Rp)',
-              align: 'right',
-              width: 75,
-              formatter: format_amount
-            }, {
-              field: 'ppn',
               hidden: true
-            }
-          ] : [],
+            },
+            {
+              field: 'satuan',
+              title: 'Satuan',
+              width: 50,
+              align: 'center',
+              editor: {
+                type: 'combogrid',
+                options: {
+                  panelWidth: 100,
+                  panelHeight: 130,
+                  mode: 'remote',
+                  required: true,
+                  idField: 'satuan',
+                  textField: 'satuan',
+                  onBeforeLoad: function(param) {
+                    if ('undefined' === typeof param.q || param.q.length == 0) {
+                      return false;
+                    }
+                    var barang = $('#table_data_detail').datagrid('getRows')[indexCellEdit].uuidbarang;
+                    if (barang == '' || barang == null) {
+                      $.messager.show({
+                        title: 'Warning',
+                        msg: 'Barang belum dipilih',
+                        timeout: {{ session('TIMEOUT') }},
+                      });
+                      return false;
+                    }
+                    param.uuidbarang = barang;
+                  },
+                  columns: [
+                    [{
+                      field: 'satuan',
+                      title: 'Satuan',
+                      width: 80
+                    }]
+                  ],
+                }
+              }
+            },
+            {
+              field: 'satuanutama',
+              title: 'Satuan Utama',
+              width: 50,
+              align: 'center',
+              hidden: true
+            },
+            {
+              field: 'konversi',
+              title: 'Konversi',
+              width: 50,
+              align: 'center',
+              hidden: true
+            },
+            ...lihatharga ? [{
+                field: 'uuidcurrency',
+                title: 'Kode Mata Uang',
+                hidden: true
+              },
+              {
+                field: 'currency',
+                title: 'Mata Uang',
+                width: 50
+              },
+              {
+                field: 'harga',
+                title: 'Harga',
+                align: 'right',
+                width: 85,
+                formatter: format_amount,
+                editor: !inputharga ? null : {
+                  type: 'numberbox',
+                  options: {
+                    required: true
+                  }
+                },
+              },
+              {
+                field: 'discpersen',
+                title: 'Disc(%)',
+                align: 'center',
+                width: 100,
+                editor: !inputharga ? null : {
+                  type: 'textbox'
+                },
+                hidden: false
+              },
+              {
+                field: 'disc',
+                title: 'Disc',
+                align: 'right',
+                width: 65,
+                formatter: format_amount,
+                editor: !inputharga ? null : {
+                  type: 'numberbox'
+                }
+              },
+              {
+                field: 'subtotal',
+                title: 'Subtotal',
+                align: 'right',
+                width: 95,
+                formatter: format_amount,
+              },
+              {
+                field: 'nilaikurs',
+                title: 'Kurs ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 60,
+                formatter: format_amount,
+                editor: {
+                  type: 'numberbox',
+                  options: {
+                    required: true,
+                  }
+                },
+                hidden: {{ session('MULTICURRENCY') == '0' ? 'true' : 'false' }},
+              },
+              {
+                field: 'hargakurs',
+                title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 85,
+                formatter: format_amount
+                {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
+              },
+              {
+                field: 'disckurs',
+                title: 'Disc ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 65,
+                formatter: format_amount
+                {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
+              },
+              {
+                field: 'subtotalkurs',
+                title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 95,
+                formatter: format_amount
+                {{ session('MULTICURRENCY') == '0' ? ',hidden:true' : '' }}
+              },
+              {
+                field: 'pakaippn',
+                title: 'Pakai PPN',
+                align: 'center',
+                width: 65,
+                editor: !inputharga ? null : {
+                  type: 'combobox',
+                  options: {
+                    required: true,
+                    data: [{
+                      value: 'INCL',
+                      text: 'INCL'
+                    }, {
+                      value: 'EXCL',
+                      text: 'EXCL'
+                    }, {
+                      value: 'TIDAK',
+                      text: 'TIDAK'
+                    }],
+                    panelHeight: 'auto',
+                  }
+                }
+              },
+              {
+                field: 'dpp',
+                title: 'DPP ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 95,
+                formatter: format_amount
+              },
+              {
+                field: 'ppnpersen',
+                title: 'PPN (%)',
+                align: 'right',
+                width: 70,
+                formatter: format_amount_2,
+                editor: !inputharga ? null : {
+                  type: 'numberbox',
+                  options: {
+                    min: 0,
+                    precision: 2,
+                    max: 100
+                  }
+                }
+              },
+              {
+                field: 'ppnrp',
+                title: 'PPN ({{ session('SIMBOLCURRENCY') }})',
+                align: 'right',
+                width: 65,
+                formatter: format_amount
+              },
+              {
+                field: 'pph22persen',
+                title: 'PPH 22 (%)',
+                align: 'right',
+                width: 70,
+                formatter: format_amount_2,
+                editor: !inputharga ? null : {
+                  type: 'numberbox',
+                  options: {
+                    min: 0,
+                    precision: 2,
+                    max: 100
+                  }
+                }
+              },
+              {
+                field: 'pph22rp',
+                title: 'PPH 22 (Rp)',
+                align: 'right',
+                width: 75,
+                formatter: format_amount
+              },
+              {
+                field: 'ppn',
+                hidden: true
+              },
+            ] : [],
+          ],
         ],
         //UNTUK TOMBOL EDIT
         onClickRow: function(index, row) {
@@ -1612,20 +1625,27 @@
           var row = $(this).datagrid('getRows')[index];
           indexCellEdit = index;
           var ed = get_editor('#table_data_detail', index, field);
+
+          if (!ed) {
+            console.log('Editor tidak ditemukan untuk field:', field);
+            return;
+          }
+
           if (field == 'kodebeli') {
             var lokasi = $("#IDLOKASI").combogrid('getValue');
             var supplier = $("#IDSUPPLIER").val();
 
-            ed.combogrid('grid').datagrid('options').url = base_url +
-              'atena/Pembelian/Transaksi/Pembelian/comboGrid/' + lokasi + '/' + supplier;
+            ed.combogrid('grid').datagrid('options').url = link_api.browsePembelian;
             ed.combogrid('grid').datagrid('load', {
-              q: ''
+              q: '',
+              uuidlokasi: lokasi,
+              uuidsupplier: supplier,
             });
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
             var uuidbeli = '';
             //jika transaksi prlain detail
-            if (row.uuidbeli) idbeli = row.uuidbeli;
+            if (row.uuidbeli) uuidbeli = row.uuidbeli;
 
             //jika transaksi prlain header
             if (configtransbeli == "HEADER") {
@@ -1644,7 +1664,7 @@
                 return false;
               }
 
-              if (idlokasi == '') {
+              if (uuidlokasi == '') {
                 $.messager.alert('Peringatan', 'Lokasi belum diisi', 'warning');
 
                 $(this).datagrid('deleteRow', index);
@@ -1653,20 +1673,20 @@
               }
 
               ed.combogrid('grid').datagrid('options').url = link_api.browseBarangBySupplier;
+              urlBarang = link_api.browseBarangBySupplier;
             } else {
               ed.combogrid('grid').datagrid('options').url = link_api.browseBarangPembelian;
+              urlBarang = link_api.browseBarangPembelian;
             }
 
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              ...uuidbeli == "" ? {
-                uuidsupplier: uuidsupplier,
-                uuidlokasi: uuidlokasi
-              } : {
-                uuidbeli: uuidbeli
-              },
+              uuidsupplier: uuidsupplier,
+              uuidlokasi: uuidlokasi,
+              uuidbeli: uuidbeli,
             });
             ed.combogrid('showPanel');
+
           } else if (field == 'satuan') {
             ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
@@ -1678,16 +1698,20 @@
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
+          if (!ed) {
+            // Editor tidak ditemukan, mungkin karena sel tidak dapat diedit.
+            return;
+          }
           var row_update = {};
 
           switch (cell.field) {
             case 'kodebeli':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.idbeli : '';
+              var id = data ? data.uuidbeli : '';
               var tgltrans = data ? data.tgltrans : '';
               var lokasi = data ? data.uuidlokasi : '';
 
@@ -1702,7 +1726,7 @@
                 break;
               }
               row_update = {
-                idbeli: id,
+                uuidbeli: id,
                 kodebarang: '',
                 namabarang: '',
                 tutup: 0,
@@ -1721,15 +1745,15 @@
               var data = ed.combogrid('grid').datagrid('getSelected');
 
               var id = data ? data.uuidbarang : '';
-              var nama = data ? data.nama : '';
+              var nama = data ? data.namabarang : '';
               var ppn = data ? data.ppn : '';
               var satuan = data ? data.satuan : '';
               var satuanutama = data ? data.satuanutama : '';
               var konversi = data ? data.konversi : '';
               var barcodesatuan1 = data.barcodesatuan1 ? data.barcodesatuan1 : '';
               var partnumber = data.partnumber ? data.partnumber : '';
-              var harga = get_harga_barang(id);
-              var idcurrency;
+              var harga = await get_harga_barang(id);
+              var uuidcurrency;
               var currency;
               var nilaikurs;
               var harga;
@@ -1740,62 +1764,62 @@
               var ppnpersen;
               var pph22persen;
 
-              <?php if ($TRANSAKSIBELI == 'HEADER') { ?>
-              if ($("#IDBELI").combogrid('getValue') == '' || $("#IDBELI").combogrid('getValue') == '0') {
-                harga = harga;
-                discpersen = 0;
-                disc = 0;
-                disckurs = 0;
-                pakaippn = 0;
-                ppnpersen = ppnpersenaktif;
-                pph22persen = <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>;
-                idcurrency = '<?= $_SESSION[NAMAPROGRAM]['IDCURRENCY'] ?>';
-                currency = '<?= $_SESSION[NAMAPROGRAM]['SIMBOLCURRENCY'] ?>';
-                nilaikurs = 1;
-              } else {
-                harga = data ? data.harga : 0;
-                discpersen = data ? data.discpersen : '';
-                disc = data ? data.disc : '';
-                disckurs = data ? data.disckurs : '';
-                pakaippn = data ? data.pakaippn : 0;
-                ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
-                pph22persen = data ? data.pph22persen : <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>;
-                idcurrency = data.idcurrency;
-                currency = data.simbol;
-                nilaikurs = data.nilaikurs;
+              if (configtransbeli == "HEADER") {
+                if ($("#IDBELI").combogrid('getValue') == '' || $("#IDBELI").combogrid('getValue') == '0') {
+                  harga = harga;
+                  discpersen = 0;
+                  disc = 0;
+                  disckurs = 0;
+                  pakaippn = 0;
+                  ppnpersen = ppnpersenaktif;
+                  pph22persen = {{ session('PPH22') }}
+                  uuidcurrency = '{{ session('UUIDCURRENCY') }}';
+                  currency = '{{ session('SIMBOLCURRENCY') }}';
+                  nilaikurs = 1;
+                } else {
+                  harga = data ? data.harga : 0;
+                  discpersen = data ? data.discpersen : '';
+                  disc = data ? data.disc : '';
+                  disckurs = data ? data.disckurs : '';
+                  pakaippn = data ? data.pakaippn : 0;
+                  ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
+                  pph22persen = data ? data.pph22persen : {{ session('PPH22') }};
+                  uuidcurrency = data.uuidcurrency;
+                  currency = data.simbol;
+                  nilaikurs = data.nilaikurs;
+                }
+              } else if (configtransbeli == "DETAIL") {
+                if (row.kodebeli == '') {
+                  harga = harga;
+                  discpersen = 0;
+                  disc = 0;
+                  disckurs = 0;
+                  pakaippn = 0;
+                  ppnpersen = ppnpersenaktif;
+                  pph22persen = {{ session('PPH22') }};
+                  uuidcurrency = '{{ session('UUIDCURRENCY') }}';
+                  currency = '{{ session('SIMBOLCURRENCY') }}';
+                  nilaikurs = 1;
+                } else {
+                  harga = data ? data.harga : 0;
+                  discpersen = data ? data.discpersen : '';
+                  disc = data ? data.disc : '';
+                  disckurs = data ? data.disckurs : '';
+                  pakaippn = data ? data.pakaippn : 0;
+                  ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
+                  pph22persen = data ? data.pph22persen : {{ session('PPH22') }};
+                  uuidcurrency = data.uuidcurrency;
+                  currency = data.simbol;
+                  nilaikurs = data.nilaikurs;
+                }
               }
-              <?php }else if ($TRANSAKSIBELI == 'DETAIL') {?>
-              if (row.kodebeli == '') {
-                harga = harga;
-                discpersen = 0;
-                disc = 0;
-                disckurs = 0;
-                pakaippn = 0;
-                ppnpersen = ppnpersenaktif;
-                pph22persen = <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>;
-                idcurrency = '<?= $_SESSION[NAMAPROGRAM]['IDCURRENCY'] ?>';
-                currency = '<?= $_SESSION[NAMAPROGRAM]['SIMBOLCURRENCY'] ?>';
-                nilaikurs = 1;
-              } else {
-                harga = data ? data.harga : 0;
-                discpersen = data ? data.discpersen : '';
-                disc = data ? data.disc : '';
-                disckurs = data ? data.disckurs : '';
-                pakaippn = data ? data.pakaippn : 0;
-                ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
-                pph22persen = data ? data.pph22persen : <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>;
-                idcurrency = data.idcurrency;
-                currency = data.simbol;
-                nilaikurs = data.nilaikurs;
-              }
-              <?php }?>
 
               if (pakaippn == 0) pakaippn = "TIDAK";
               else if (pakaippn == 1) pakaippn = "EXCL";
               else if (pakaippn == 2) pakaippn = "INCL";
 
               row_update = {
-                idbarang: id,
+                uuidbarang: id,
                 ppn: ppn,
                 namabarang: nama,
                 barcodesatuan1: barcodesatuan1,
@@ -1806,7 +1830,7 @@
                 satuanutama: satuanutama,
                 konversi: konversi,
                 harga: harga,
-                idcurrency: idcurrency,
+                uuidcurrency: uuidcurrency,
                 currency: currency,
                 nilaikurs: nilaikurs,
                 discpersen: discpersen,
@@ -1817,14 +1841,10 @@
                 ppnpersen: ppnpersen,
                 pph22persen: pph22persen
               };
-              <?php
-					if ($TRANSAKSIBELI == 'HEADER') {
-					?>
-              row_update["kodebeli"] = $("#KODEBELI").val();
-              row_update["idbeli"] = $("#IDBELI").combogrid('getValue');
-              <?php
-					}
-					?>
+              if (configtransbeli == "HEADER") {
+                row_update["kodebeli"] = $("#KODEBELI").val();
+                row_update["uuidbeli"] = $("#IDBELI").combogrid('getValue');
+              }
               break;
             case 'satuan':
               // get_konversi (ed.combogrid('grid').datagrid('getRows'), changes.satuan, row.satuan_lama);
@@ -1840,10 +1860,10 @@
             case 'currency':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var idcurrency = data ? data.id : '';
+              var uuidcurrency = data ? data.uuidcurrency : '';
               var nilai = get_kurs($('#TGLTRANS').datebox('getValue'), idcurrency);
               row_update = {
-                idcurrency: idcurrency,
+                uuidcurrency: uuidcurrency,
                 nilaikurs: nilai ? nilai : 1
               };
               break;
@@ -1861,6 +1881,9 @@
               row: row_update
             });
           }
+
+          hitung_subtotal_detail(index, row);
+          hitung_grandtotal();
         },
         onLoadSuccess: function(data) {
           hitung_grandtotal();
@@ -1868,10 +1891,7 @@
         onAfterDeleteRow: function(index, row) {
           hitung_grandtotal();
         },
-        onAfterEdit: function(index, row, changes) {
-          hitung_subtotal_detail(index, row);
-          hitung_grandtotal();
-        }
+        onAfterEdit: function(index, row, changes) {}
       }).datagrid('enableCellEditing');
     }
 
@@ -1887,7 +1907,7 @@
           $.messager.show({
             title: 'Warning',
             msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-            timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+            timeout: {{ session('TIMEOUT') }},
           });
           row.discpersen = 0;
           data.discpersen = 0;
@@ -1897,7 +1917,7 @@
         for (var i = 0; i < discpersen.length; i++) {
           if (discpersen[i] != "" && discpersen[i] <= 100 && discpersen[i] > 0) {
             discpersen[i] = parseFloat(discpersen[i]);
-            disc = +((discpersen[i] * harga / 100).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+            disc = +((discpersen[i] * harga / 100).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
             totaldisc += disc;
             harga -= disc;
             discDescription += discpersen[i] + "+";
@@ -1908,18 +1928,17 @@
       } else {
         harga -= row.disc;
       }
-      row.jmlreturbeli = parseFloat(row.jmlreturbeli).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITQTY'] ?>);
+      row.jmlreturbeli = parseFloat(row.jmlreturbeli).toFixed({{ session('DECIMALDIGITQTY') }});
       data.discpersen = discDescription == "" ? "0" : discDescription;
-      data.subtotal = parseFloat((harga * row.jmlreturbeli).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+      data.subtotal = parseFloat((harga * row.jmlreturbeli).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
 
       var nilaikurs = parseFloat(row.nilaikurs);
-      <?php if (!$_SESSION[NAMAPROGRAM]['MULTICURRENCY']) {
-          echo 'nilaikurs = 1;';
-      } ?>
+      @if (session('MULTICURRENCY') == '0')
+        nilaikurs = 1;
+      @endif
       data.hargakurs = parseFloat(row.harga) * nilaikurs;
       data.disckurs = totaldisc <= 0 ? row.disc : totaldisc * nilaikurs;
-      data.subtotalkurs = parseFloat((data.subtotal * nilaikurs).toFixed(
-        <?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+      data.subtotalkurs = parseFloat((data.subtotal * nilaikurs).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
 
       var dpp = data.subtotalkurs;
 
@@ -1949,7 +1968,7 @@
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Non PPN',
-            timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+            timeout: {{ session('TIMEOUT') }},
           });
         }
         data.pakaippn = 'TIDAK';
@@ -1958,8 +1977,8 @@
       }
 
       data.pph22rp = Math.floor(row.pph22persen * data.dpp / 100);
-      data.pph22rp = +(data.pph22rp.toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
-      data.dpp = +(data.dpp.toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+      data.pph22rp = +(data.pph22rp.toFixed({{ session('DECIMALDIGITAMOUNT') }}));
+      data.dpp = +(data.dpp.toFixed({{ session('DECIMALDIGITAMOUNT') }}));
 
       dg.datagrid('updateRow', {
         index: index,
@@ -1974,7 +1993,7 @@
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Yang Diinput Tidak Boleh Sama Dalam Satu Detail Transaksi',
-            timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+            timeout: {{ session('TIMEOUT') }},
           });
           dg.datagrid('deleteRow', index);
           break;
@@ -2035,7 +2054,7 @@
         footer.pph22rp += parseFloat(data[i].pph22rp);
       }
 
-      total2 = +((total2).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+      total2 = +((total2).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
       grandtotal = parseFloat(total2 + footer.pph22rp + biaya + pembulatan);
 
       $("#TOTAL").numberbox('setValue', total);
@@ -2067,14 +2086,14 @@
       $('.number').numberbox('setValue', 0);
 
       $("#PPNPERSEN").numberbox('setValue', ppnpersenaktif);
-      $("#PPHPERSEN").numberbox('setValue', <?= $_SESSION[NAMAPROGRAM]['PPH22'] ?>);
+      $("#PPHPERSEN").numberbox('setValue', {{ session('PPH22') }});
       hitung_grandtotal();
 
       $("#TGLTRANS, #TGLKIRIM, #TGLJATUHTEMPO").datebox('setValue', date_format());
       $("#TGLJATUHTEMPO").datebox('readonly');
     }
 
-    function get_harga_barang(idbarang) {
+    async function get_harga_barang(idbarang) {
       var idsupp = $("#IDSUPPLIER").val();
       var tgltrans = $("#TGLTRANS").datebox('getValue');
       var harga = 0;
@@ -2082,22 +2101,37 @@
       if (idsupp == '') {
         return harga;
       } else {
-        $.ajax({
-          dataType: "json",
-          type: 'POST',
-          async: false,
-          url: base_url + "atena/Master/Data/Barang/hargaBarang",
-          data: {
-            idbarang: idbarang,
-            idsupp: idsupp,
-            tgltrans: tgltrans
-          },
-          cache: false,
-          success: function(msg) {
-            harga = msg;
+        bukaLoader();
+        try {
+          let url = link_api.getHargaBarang;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'bearer {{ session('TOKEN') }}',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              uuidbarang: idbarang,
+              uuidsupplier: idsupp,
+              tgltrans: tgltrans,
+            }),
+          }).then(response => {
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+            }
+            return response.json();
+          })
+          if (response.success) {
+            harga = response.data.harga;
+          } else {
+            $.messager.alert('Error', response.message, 'error');
           }
-        });
+        } catch (error) {
+          var textError = getTextError(error);
+          $.messager.alert('Error', getTextError(error), 'error');
+        }
       }
+      tutupLoader();
       return harga;
     }
   </script>
