@@ -177,6 +177,8 @@
         },
         buttons: '#alasan_pembatalan-buttons',
       }).dialog('close');
+
+      tutupLoader();
     });
 
     /*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
@@ -191,12 +193,27 @@
       $('#btn_batal_cetak').linkbutton('enable');
     }
 
+    function before_edit() {
+      $('#mode').val('ubah');
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        if (data.data.ubah == 1 || data.data.hakakses == 1) {
+          var row = $('#table_data').datagrid('getSelected');
+          parent.buka_submenu(null, row.kodeanalisispo,
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            row.uuidanalisispo,
+            'fa fa-pencil');
+        } else {
+          $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+        }
+      });
+    }
+
     function before_add() {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
           parent.buka_submenu(null, 'Tambah Analisa Pesanan Pembelian',
-            '{{ route('atena.pembelian.analisa_pesanan_pembelian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus')
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');

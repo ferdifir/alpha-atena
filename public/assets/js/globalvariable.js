@@ -1,5 +1,6 @@
 // var base_url_api = "http://192.168.1.45:8000/api/";
 var base_url_api = "https://api.atena.id/api/";
+var tokenTidakValid="invalid_token";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -739,8 +740,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
-                if (errorBody.toLowerCase() == "token tidak valid.") {
-                    $.messager.alert('Error', errorBody + " Silahkan logout dan login kembali", 'error');
+                if (errorBody.toLowerCase() == tokenTidakValid) {
+                    $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
                 }
                 console.error("Error fetching data:", error);
             }
@@ -758,8 +759,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
-                    texterror += " Silahkan login ulang";
+                if ((data.message ?? "").toLowerCase() == tokenTidakValid) {
+                    texterror = "Sesi login telah habis. Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
                 // tutupLoader();
@@ -825,8 +826,8 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
-                    texterror += " Silahkan login ulang";
+                if ((data.message ?? "").toLowerCase() == tokenTidakValid) {
+                    texterror = "Sesi login telah habis. Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
                 // tutupLoader();
@@ -867,7 +868,11 @@ const getStatusTrans = async (url, token, param) => {
         if (response.success) {
             status = response.data.status;
         } else {
-            $.messager.alert('Error', response.message, 'error');
+            if(response.message.toLowerCase() == tokenTidakValid){
+                $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
+            }else{
+                $.messager.alert('Error', response.message, 'error');
+            }
         }
     } catch (error) {
         var textError = getTextError(error);
