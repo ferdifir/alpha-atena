@@ -259,9 +259,9 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidreturbeli: row.uuidreturbeli
+              uuidanalisispo: row.uuidanalisispo
             });
           var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
           if (statusTrans == 'I') {
@@ -271,7 +271,7 @@
                 kode + ', Sebelum Dicetak ', 'warning');
             } else {
               try {
-                let url = link_api.ubahStatusJadiSlipReturPembelian;
+                let url = link_api.ubahStatusJadiSlipAnalisiPesananPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -279,8 +279,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidreturbeli: row.uuidreturbeli,
-                    kodereturbeli: row.kodereturbeli,
+                    uuidanalisispo: row.uuidanalisispo,
+                    kodeanalisispo: row.kodeanalisispo,
                   }),
                 }).then(response => {
                   if (!response.ok) {
@@ -292,7 +292,7 @@
                 })
 
                 if (response.success) {
-                  cetak(row.uuidreturbeli, harga);
+                  cetak(row.uuidanalisispo);
                   refresh_data();
                 } else {
                   $.messager.alert('Error', response.message, 'error');
@@ -303,7 +303,7 @@
               }
             }
           } else if (statusTrans == 'S' || statusTrans == 'P') {
-            cetak(row.uuidpo, harga);
+            cetak(row.uuidanalisispo);
           } else {
             $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
           }

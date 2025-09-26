@@ -98,8 +98,8 @@
                   <table>
                     <tr>
                       <!-- <td id="label_form" align="right">
-                                                                              Grand Total <input name="grandtotal" id="GRANDTOTAL" class="number " style="width:110px;" readonly>
-                                                                          </td> -->
+                                                                                                                    Grand Total <input name="grandtotal" id="GRANDTOTAL" class="number " style="width:110px;" readonly>
+                                                                                                                </td> -->
                     </tr>
                   </table>
                 </td>
@@ -114,13 +114,13 @@
       <br>
 
       <a title="Simpan" class="easyui-tooltip" data-options="plain:false" id='btn_simpan_modal'
-        onclick="$('#window_button_simpan').window('open')"><img src="<?= base_url() ?>/assets/images/simpan.png"></a>
+        onclick="$('#window_button_simpan').window('open')"><img src="{{ asset('assets/images/simpan.png') }}"></a>
 
       <br>
       <br>
 
-      <a title="Tutup" class="easyui-tooltip" data-options="plain:false" onclick="javascript:tutup()"><img
-          src="<?= base_url() ?>/assets/images/cancel.png"></a>
+      <a title="Tutup" class="easyui-tooltip" data-options="plain:false" onclick="javascript:tutup()">
+        <img src="{{ asset('assets/images/cancel.png') }}"></a>
     </div>
   </div>
 
@@ -170,12 +170,12 @@
     var inputharga = false;
     var lihatharga = false;
     var idtrans = "";
-    $(document).ready(function() {
+    $(document).ready(async function() {
       var check = false;
       var promises = [
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           var UT = data.data.cetak;
-          check2 = true;
+          check = true;
           if (UT == 1) {
             $('#simpan_cetak').css('filter', '');
           } else {
@@ -294,9 +294,9 @@
         if (response.success) {
           check = true;
           var data = response.data;
-          configKode = data.KODE;
-          inputharga = data.INPUTHARGA == 1 ? true : false;
-          lihatharga = data.LIHATHARGA == 1 ? true : false;
+          configKode = data.kode;
+          inputharga = data.inputharga == 1 ? true : false;
+          lihatharga = data.lihatharga == 1 ? true : false;
         } else {
           $.messager.alert('Error', response.message, 'error');
         }
@@ -362,6 +362,8 @@
 
       $('#tglawal').datebox('readonly', false);
       $('#tglakhir').datebox('readonly', false);
+      $('#tglawal').datebox('setValue', date_format(new Date));
+      $('#tglakhir').datebox('setValue', date_format(new Date));
 
       $('#tgltrans').datebox('readonly', false);
 
@@ -371,7 +373,7 @@
       reset_detail();
     }
 
-    function ubah() {
+    async function ubah() {
       $('#mode').val('ubah');
       try {
         let url = link_api.loadDataHeaderAnalisisPesananPembelian;
@@ -572,7 +574,7 @@
 
     async function load_data_detail(idtrans) {
       try {
-        let url = link_api.loadDataReturPembelian;
+        let url = link_api.loadDataAnalisisPesananPembelian;
         const response = await fetch(url, {
           method: 'POST',
           headers: {
@@ -620,7 +622,7 @@
         selectFirstRow: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidlokasi',
               hidden: true
             },
             {
@@ -680,9 +682,13 @@
                   required: true,
                   idField: 'kode',
                   textField: 'kode',
+                  onBeforeLoad: function(param) {
+                    var row = $('#table_data_detail').datagrid('getRows')[indexDetail];
+                    param.uuidbarang = row.uuidbarang;
+                  },
                   columns: [
                     [{
-                        field: 'uuid',
+                        field: 'uuidbarang',
                         hidden: true
                       },
                       {
@@ -736,7 +742,7 @@
               width: 200,
             },
             {
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
           ]
@@ -791,6 +797,9 @@
                   required: true,
                   idField: 'satuan',
                   textField: 'satuan',
+                  onBeforeLoad: function(param) {
+                    param.jenisbarang = 'po';
+                  },
                   columns: [
                     [{
                       field: 'satuan',
@@ -855,15 +864,9 @@
               title: 'Disc(%)',
               align: 'center',
               width: 100,
-              <?php
-                        if ($INPUTHARGA == 1) {
-                        ?>
-              editor: {
+              editor: !inputharga ? null : {
                 type: 'textbox'
-              }
-              <?php
-                        }
-                        ?>
+              },
             },
             {
               field: 'disc',
@@ -901,24 +904,24 @@
           var ed = get_editor('#table_data_detail', index, field);
 
           if (field == 'satuanorder') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/satuanBarang/' + row
-              .idbarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             });
 
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/comboGridAll/po';
+            ed.combogrid('grid').datagrid('options').url = link_api.browseBarangAll;
             ed.combogrid('grid').datagrid('load', {
-              q: ''
+              q: '',
+              jenis: 'po',
             });
 
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
           var row_update = {};
@@ -926,29 +929,43 @@
           switch (cell.field) {
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              var idsupplier = $('#idsupplier').combogrid('getValue');
-              var idlokasi = $('#idlokasi').combogrid('getValue');
+              var uuidsupplier = $('#idsupplier').combogrid('getValue');
+              var uuidlokasi = $('#idlokasi').combogrid('getValue');
+              bukaLoader();
+              try {
+                let url = link_api.loadBarangAnalisisPesananPembelian;
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    uuidlokasi: uuidlokasi,
+                    tglawal: $('#tglawal').datebox('getValue'),
+                    tglakhir: $('#tglakhir').datebox('getValue'),
+                    uuidbarang: data.uuidbarang,
+                  }),
+                }).then(response => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `HTTP error! status: ${response.status} from ${url}`
+                    );
+                  }
+                  return response.json();
+                })
 
-              $.ajax({
-                url: base_url + 'atena/Pembelian/Transaksi/AnalisisPO/tampilBarang',
-                type: 'POST',
-                data: {
-                  idlokasi: idlokasi,
-                  tglawal: $('#tglawal').datebox('getValue'),
-                  tglakhir: $('#tglakhir').datebox('getValue'),
-                  idbarang: data.id
-                },
-                async: false,
-                dataType: 'JSON',
-                beforeSend: function() {
-                  $.messager.progress();
-                },
-                success: function(response) {
-                  $.messager.progress('close');
-
-                  row_update = response.data;
+                if (response.success) {
+                  row_update = response.data.data;
+                } else {
+                  $.messager.alert('Error', response.message, 'error');
                 }
-              })
+              } catch (error) {
+                console.log(error);
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+              }
+              tutupLoader();
               break;
             case 'satuanorder':
               var data = ed.combogrid('grid').datagrid('getSelected');
@@ -976,7 +993,7 @@
                 $.messager.show({
                   title: 'Warning',
                   msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-                  timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+                  timeout: {{ session('TIMEOUT') }},
                 });
 
                 return
@@ -990,7 +1007,8 @@
                 if (splitdiscpersen[i] != "" && splitdiscpersen[i] <= 100 && splitdiscpersen[i] > 0) {
                   splitdiscpersen[i] = parseFloat(splitdiscpersen[i]);
                   disc = +((splitdiscpersen[i] * harga / 100).toFixed(
-                    <?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+                    {{ session('DECIMALDIGITAMOUNT') }}
+                  ));
                   totaldisc += disc;
                   harga -= disc;
                 }
@@ -1022,7 +1040,6 @@
         idbarang: 0
       });
 
-      getRowIndex(target);
     }
 
     function hapus_detail() {
@@ -1050,7 +1067,7 @@
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Yang Diinput Tidak Boleh Sama Dalam Satu Detail Transaksi',
-            timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+            timeout: {{ session('TIMEOUT') }},
           });
           dg.datagrid('deleteRow', index);
           break;
@@ -1119,8 +1136,8 @@
     function browse_data_supplier(id) {
       $(id).combogrid({
         panelWidth: 600,
-        url: base_url + 'atena/Master/Data/Supplier/comboGrid',
-        idField: 'id',
+        url: link_api.browseSupplier,
+        idField: 'uuidsupplier',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
@@ -1128,7 +1145,7 @@
         required: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidsupplier',
               hidden: true
             },
             {
@@ -1160,37 +1177,53 @@
       });
     }
 
-    function tampil_barang(event) {
+    async function tampil_barang(event) {
       event.preventDefault();
 
-      var idsupplier = $('#idsupplier').combogrid('getValue');
-      var idlokasi = $('#idlokasi').combogrid('getValue');
+      var uuidsupplier = $('#idsupplier').combogrid('getValue');
+      var uuidlokasi = $('#idlokasi').combogrid('getValue');
 
-      if (idsupplier == '') {
+      if (uuidsupplier == '') {
         $.messager.alert('Peringatan', 'Data supplier belum dipilih', 'warning');
 
         return false;
       }
 
-      $.ajax({
-        url: base_url + 'atena/Pembelian/Transaksi/AnalisisPO/tampilBarangBySupplier',
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: idlokasi,
-          idsupplier: idsupplier,
-          tglawal: $('#tglawal').datebox('getValue'),
-          tglakhir: $('#tglakhir').datebox('getValue')
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+      bukaLoader();
+      try {
+        let url = link_api.loadBarangAnalisisPesananPembelianBySupplier;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidlokasi: uuidlokasi,
+            tglawal: $('#tglawal').datebox('getValue'),
+            tglakhir: $('#tglakhir').datebox('getValue'),
+            uuidsupplier: uuidsupplier,
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.json();
+        })
 
+        if (response.success) {
           $('#table_data_detail').datagrid('loadData', response.data);
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+      tutupLoader();
     }
 
     function tambah_diskon(event) {
@@ -1204,7 +1237,7 @@
         $.messager.show({
           title: 'Warning',
           msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-          timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+          timeout: {{ session('TIMEOUT') }},
         });
 
         return
@@ -1219,7 +1252,7 @@
         for (var i = 0; i < splitdiscpersen.length; i++) {
           if (splitdiscpersen[i] != "" && splitdiscpersen[i] <= 100 && splitdiscpersen[i] > 0) {
             splitdiscpersen[i] = parseFloat(splitdiscpersen[i]);
-            disc = +((splitdiscpersen[i] * harga / 100).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+            disc = +((splitdiscpersen[i] * harga / 100).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
             totaldisc += disc;
             harga -= disc;
           }

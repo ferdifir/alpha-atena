@@ -1714,7 +1714,9 @@
               field: 'currency',
               title: 'Mata Uang',
               width: 50,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
+              @if (session('MULTICURRENCY'))
+                hidden: !lihatharga,
+              @endif
               editor: {
                 type: 'combogrid',
                 options: {
@@ -1816,7 +1818,9 @@
               align: 'right',
               width: 60,
               formatter: format_amount,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
+              @if (session('MULTICURRENCY'))
+                hidden: !lihatharga,
+              @endif
               editor: {
                 type: 'numberbox',
                 options: {
@@ -1829,7 +1833,9 @@
               title: 'Harga ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 85,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
+              @if (session('MULTICURRENCY'))
+                hidden: !lihatharga,
+              @endif
               formatter: format_amount
             },
             {
@@ -1837,7 +1843,9 @@
               title: 'Disc ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 65,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
+              @if (session('MULTICURRENCY'))
+                hidden: !lihatharga,
+              @endif
               formatter: format_amount,
             },
             {
@@ -1845,7 +1853,9 @@
               title: 'Subtotal ({{ session('SIMBOLCURRENCY') }})',
               align: 'right',
               width: 95,
-              hidden: !lihatharga || {{ session('MULTICURRENCY') != '1' }},
+              @if (session('MULTICURRENCY'))
+                hidden: !lihatharga,
+              @endif
               formatter: format_amount
             },
             {
