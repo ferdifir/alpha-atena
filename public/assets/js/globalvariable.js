@@ -634,6 +634,19 @@ var link_api = {
     // Sinkronisasi Penjualan
     tampilDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/tampil-data-sinkronisasi-penjualan`,
     simpanDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/simpan-sinkronisasi-penjualan`,
+    // Analisis Pesanan Pembelian
+    loadDataHeaderAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data-header`,
+    loadConfigAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-config`,
+    loadDataGridAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data-grid`,
+    batalTransAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/batal-trans`,
+    ubahStatusJadiInputAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/ubah-status-jadi-input`,
+    ubahStatusJadiSlipAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/ubah-status-jadi-slip`,
+    cetakAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/cetak/`,
+    getStatusTransAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/get-status-trans`,
+    simpanAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/simpan`,
+    loadDataAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data`,
+    loadBarangAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang`,
+    loadBarangAnalisisPesananPembelianBySupplier: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang-by-supplier`,
 };
 
 var modul_kode = {
