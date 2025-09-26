@@ -808,7 +808,8 @@ Route::get('atena/pembelian/returpembelian/form', function () {
         'mode' => request()->mode,
     ]);
 })->name('atena.pembelian.retur_pembelian.form');
-// Pembelian
+
+// Analisa Pesanan Pembelian
 Route::get('atena/pembelian/analisispo/transaksi', function () {
     return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_list_analisa_pesanan_pembelian', [
         'kodemenu' => request()->kode,
@@ -822,6 +823,22 @@ Route::get('atena/pembelian/analisispo/form', function () {
         'mode' => request()->mode,
     ]);
 })->name('atena.pembelian.analisispo.form');
+
+// Uang Muka PO
+Route::get('atena/pembelian/uangmukapo/transaksi', function () {
+    return view('atena.pembelian.uang_muka_po.v_pembelian_list_uang_muka_po', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.uang_muka_po.transaksi');
+
+Route::get('atena/pembelian/uangmukapo/form', function () {
+    return view('atena.pembelian.uang_muka_po.v_pembelian_form_uang_muka_po', [
+        'kodemenu' => request()->kode,
+        'datapo' => request()->datapo,
+        'datauangmukapo' => request()->datauangmukapo,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.pembelian.uang_muka_po.form');
 
 // Tutup Permintaan Barang
 Route::get('atena/pembelian/tutuppermintaanbarang/transaksi', function () {

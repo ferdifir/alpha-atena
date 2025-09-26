@@ -650,6 +650,12 @@ var link_api = {
     loadDataAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data`,
     loadBarangAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang`,
     loadBarangAnalisisPesananPembelianBySupplier: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang-by-supplier`,
+    // uang muka PO
+    loadDataHeaderUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/load-data-header`,
+    loadDataGridUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/load-data-grid`,
+    loadDaftarUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/load-daftar-uang-muka`,
+    hapusUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/hapus`,
+    simpanUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/simpan`,
 };
 
 var modul_kode = {
