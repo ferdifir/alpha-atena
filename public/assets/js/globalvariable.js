@@ -622,6 +622,7 @@ var link_api = {
     browseBBMReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/browse-bukti-penerimaan-barang`,
     cekBisaBerlanjutReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cek-bisa-berlanjut`,
     browseBarangReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/browse-barang-bukti-penerimaan-barang`,
+    loadDataBBMReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-bukti-penerimaan-barang`,
     //Uang Muka SO
     loadDataGridUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-data-grid`,
     loadDaftarUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-daftar-uang-muka`,

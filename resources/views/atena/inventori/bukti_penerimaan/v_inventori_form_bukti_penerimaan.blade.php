@@ -1112,7 +1112,7 @@
           url = link_api.loadDataBBMPesananPembelian;
           key = "uuidpo";
         } else if (jenis == "RETUR") {
-          url = 'atena/Penjualan/Transaksi/ReturPenjualan/loadDataBBM';
+          url = link_api.loadDataBBMReturPenjualan;
           key = "uuidreturjual";
         }
 
@@ -1473,7 +1473,7 @@
             }
 
             if (jenis == 'RETUR') {
-              load_data_detail(row.idtransreferensi);
+              load_data_detail(row.uuidtransreferensi);
             }
 
             if (jenis == 'PEMBELIAN') {
