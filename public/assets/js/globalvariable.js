@@ -616,6 +616,17 @@ var link_api = {
     // Sinkronisasi Penjualan
     tampilDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/tampil-data-sinkronisasi-penjualan`,
     simpanDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/simpan-sinkronisasi-penjualan`,
+    //Keuangan
+    //Saldo Awal Hutang
+    loadDataGridSaldoAwalHutang  : `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
+    loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
+    simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
+    batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    //Saldo Awal Piutang
+    loadDataGridSaldoAwalPiutang  : `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
+    loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
+    simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
+    batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
 };
 
 var modul_kode = {

@@ -36,6 +36,7 @@ Route::get('/hompage-perusahaan', function () {
 })->name('homepage.perusahaan');
 
 require __DIR__ . '/akuntansi.php';
+require __DIR__ . '/keuangan.php';
 
 //Master Perkiraan
 Route::get('atena/master/perkiraan/data', function () {

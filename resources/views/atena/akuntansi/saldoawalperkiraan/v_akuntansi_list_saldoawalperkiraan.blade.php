@@ -23,34 +23,31 @@
 
 
     <div data-options="region: 'center'">
-        <div id="tab_transaksi" class="easyui-tabs" fit="true">
-            <div title="Grid" id="Grid">
-                <div class="easyui-layout" fit="true">
-                    <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false"
-                        title="Filter" style="width:150px;" align="center">
-                        <table border="0">
-                            <tr>
-                                <td id="label_form"><br></td>
-                            </tr>
-                            <tr>
-                                <td id="label_form" align="center">No. Transaksi</td>
-                            </tr>
-                            <tr>
-                                <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter"
-                                        style="width:100px" class="label_input" /></td>
-                            </tr>
-                            <tr>
-                                <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                                        data-options="iconCls:'icon-search', plain:false"
-                                        onclick="filter_data()">Tampilkan
-                                        Data</a></td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div data-options="region:'center',">
-                        <table id="table_data"></table>
-                    </div>
-                </div>
+        <div class="easyui-layout" fit="true">
+            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false"
+                title="Filter" style="width:150px;" align="center">
+                <table border="0">
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">No. Transaksi</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter"
+                                style="width:100px" class="label_input" /></td>
+                    </tr>
+                    <tr>
+                        <td align="center"><a id="btn_search" class="easyui-linkbutton"
+                            data-options="iconCls:'icon-search', plain:false"
+                            onclick="filter_data()">Tampilkan Data</a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div data-options="region:'center',">
+                <div class="title-grid"> Riwayat Transaksi </div>
+                <table id="table_data"></table>
             </div>
         </div>
     </div>

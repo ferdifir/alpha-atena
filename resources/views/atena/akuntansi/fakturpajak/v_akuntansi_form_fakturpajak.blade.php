@@ -389,7 +389,6 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;
-		  console.log('ubah' + UT)
           get_status_trans('{{ session("TOKEN") }}', "atena/akuntansi/faktur-pajak", "uuidfakturpajak", row.uuidfakturpajak, function(data) {
             if (UT == 1 && data.data.status == 'I') {
 				$('#btn_simpan_modal').css('filter', '');
