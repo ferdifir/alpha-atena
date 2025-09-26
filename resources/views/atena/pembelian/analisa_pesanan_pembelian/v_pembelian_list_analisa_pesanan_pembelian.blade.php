@@ -12,7 +12,7 @@
       <a id="btn_batal" title="Batalkan Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_delete()">
         <img src="{{ asset('assets/images/cancel.png') }}">
       </a>
-      <a id="btn_cetak" title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print('')">
+      <a id="btn_cetak" title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print()">
         <img src="{{ asset('assets/images/view.png') }}">
       </a>
       <a id="btn_batal_cetak" title="Batal Cetak" class="easyui-linkbutton easyui-tooltip"
@@ -33,15 +33,15 @@
               <td id="label_form" align="center">Tgl. Transaksi</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px"
-                  class="date" /></td>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px"
-                  class="date" /></td>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -57,20 +57,10 @@
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">No. Retur Beli</td>
+              <td id="label_form" align="center">No. Analisis PO</td>
             </tr>
             <tr>
               <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                  class="label_input" /></td>
-            </tr>
-            <tr>
-              <td id="label_form"><br></td>
-            </tr>
-            <tr>
-              <td id="label_form" align="center">Referensi</td>
-            </tr>
-            <tr>
-              <td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px"
                   class="label_input" /></td>
             </tr>
             <tr>
@@ -88,12 +78,14 @@
               </td>
             </tr>
             <tr>
-              <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+              <td align="center">
+                <a id="btn_search" class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false"
+                  onclick="filter_data()">Tampilkan Data</a>
+              </td>
             </tr>
           </table>
         </div>
-        <div data-options="region:'center'">
+        <div data-options="region:'center',">
           <div class="easyui-layout" data-options="fit:true">
             <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
             <div data-options="region:'center'">
@@ -124,7 +116,7 @@
     <table cellpadding="0" cellspacing="0" style="width:100%">
       <tr>
         <td style="text-align:right">
-          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
+          <a class="easyui-linkbutton" iconCls="icon-save" id='btn_ubah_perusahaan'
             onclick="javascript:batal_trans()">Batal</a>
         </td>
       </tr>
@@ -136,14 +128,10 @@
   <script>
     var edit_row = false;
     var idtrans = "";
-    var urlbbk = "";
     var counter = 0;
-    var lihatHarga = false;
+    var row = {};
 
-    $(document).ready(async function() {
-      await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-        lihatHarga = data.data.lihatharga == 1;
-      }, false);
+    $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
       //WAKTU BATAL DI GRID, tidak bisa close
       //PRINT GRID
@@ -177,12 +165,11 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Pesanan Pengiriman', $("#area_cetak").html());
+            export_excel('Faktur Analisis PO', $("#area_cetak").html());
             return false;
           }
         }]
       }).window('close');
-
 
       $("#alasan_pembatalan").dialog({
         onOpen: function() {
@@ -194,19 +181,16 @@
       tutupLoader();
     });
 
+    /*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
     shortcut.add('F2', function() {
       before_add();
     });
 
-    shortcut.add('F8', function() {
-      simpan();
-    });
-
     function enable_button() {
       $('#btn_refresh').linkbutton('enable');
-      $('#btn_batal').linkbutton('enable')
-      $('#btn_cetak').linkbutton('enable')
-      $('#btn_batal_cetak').linkbutton('enable')
+      $('#btn_batal').linkbutton('enable');
+      $('#btn_cetak').linkbutton('enable');
+      $('#btn_batal_cetak').linkbutton('enable');
     }
 
     function before_edit() {
@@ -214,9 +198,9 @@
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
           var row = $('#table_data').datagrid('getSelected');
-          parent.buka_submenu(null, row.kodereturbeli,
-            '{{ route('atena.pembelian.retur_pembelian.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-            row.uuidreturbeli,
+          parent.buka_submenu(null, row.kodeanalisispo,
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            row.uuidanalisispo,
             'fa fa-pencil');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -228,8 +212,8 @@
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Retur Pembelian',
-            '{{ route('atena.pembelian.retur_pembelian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Analisa Pesanan Pembelian',
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus')
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -266,7 +250,7 @@
       }
     }
 
-    function before_print(harga) {
+    function before_print() {
       $('#mode').val('cetak');
       var row = $('#table_data').datagrid('getSelected');
       if (row) {
@@ -275,19 +259,19 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidreturbeli: row.uuidreturbeli
+              uuidanalisispo: row.uuidanalisispo
             });
           var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
           if (statusTrans == 'I') {
-            var kode = row.kodereturbeli;
+            var kode = row.kodepo;
             if (checkTabAvailable) {
               $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                 kode + ', Sebelum Dicetak ', 'warning');
             } else {
               try {
-                let url = link_api.ubahStatusJadiSlipReturPembelian;
+                let url = link_api.ubahStatusJadiSlipAnalisiPesananPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -295,8 +279,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidreturbeli: row.uuidreturbeli,
-                    kodereturbeli: row.kodereturbeli,
+                    uuidanalisispo: row.uuidanalisispo,
+                    kodeanalisispo: row.kodeanalisispo,
                   }),
                 }).then(response => {
                   if (!response.ok) {
@@ -308,7 +292,7 @@
                 })
 
                 if (response.success) {
-                  cetak(row.uuidreturbeli, harga);
+                  cetak(row.uuidanalisispo);
                   refresh_data();
                 } else {
                   $.messager.alert('Error', response.message, 'error');
@@ -319,7 +303,7 @@
               }
             }
           } else if (statusTrans == 'S' || statusTrans == 'P') {
-            cetak(row.uuidreturbeli, harga);
+            cetak(row.uuidanalisispo);
           } else {
             $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
           }
@@ -335,23 +319,23 @@
       if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodeanalisispo, 'fa fa-pencil');
         if (checkTabAvailable) {
-          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodereturbeli +
+          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodeanalisispo +
             ', Sebelum Dibatalkan ', 'warning');
           tutupLoader();
           return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
           'bearer {{ session('TOKEN') }}', {
-            uuidreturbeli: row.uuidreturbeli
+            uuidanalisispo: row.uuidanalisispo
           });
         if (statusTrans == "I" || statusTrans == "S") {
           $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
             if (r) {
               bukaLoader();
               try {
-                let url = link_api.batalTransaksiReturPembelian;
+                let url = link_api.batalTransAnalisiPesananPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -359,8 +343,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidreturbeli: row.uuidreturbeli,
-                    kodereturbeli: row.kodereturbeli,
+                    uuidanalisispo: row.uuidanalisispo,
+                    kodeanalisispo: row.kodeanalisispo,
                     alasan: alasan,
                   }),
                 }).then(response => {
@@ -397,23 +381,23 @@
       if (row) {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodeanalisispo, 'fa fa-pencil');
         if (checkTabAvailable) {
-          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodereturbeli +
+          $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodeanalisispo +
             ', Sebelum Dibatal cetak ', 'warning');
           tutupLoader();
           return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
+        var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
           'bearer {{ session('TOKEN') }}', {
-            uuidreturbeli: row.uuidreturbeli
+            uuidanalisispo: row.uuidanalisispo
           });
         if (statusTrans == "S") {
           $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
             if (r) {
               bukaLoader();
               try {
-                let url = link_api.ubahStatusJadiInputReturPembelian;
+                let url = link_api.ubahStatusJadiInputAnalisiPesananPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -421,8 +405,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidreturbeli: row.uuidreturbeli,
-                    kodereturbeli: row.kodereturbeli,
+                    uuidanalisispo: row.uuidanalisispo,
+                    kodeanalisispo: row.kodeanalisispo,
                   }),
                 }).then(response => {
                   if (!response.ok) {
@@ -452,11 +436,12 @@
         tutupLoader();
       }
     }
+
     async function cetak(uuidtrans) {
       bukaLoader();
       if (row) {
         try {
-          let url = link_api.cetakReturPembelian + uuidtrans;
+          let url = link_api.cetakAnalisiPesananPembelian + uuidtrans;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -464,7 +449,7 @@
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              uuidreturbeli: uuidtrans,
+              uuidanalisispo: uuidtrans,
             }),
           }).then(response => {
             if (!response.ok) {
@@ -507,11 +492,10 @@
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
-        nama: $('#txt_nama_supplier_filter').val(),
         perusahaan: $('#txt_perusahaan_filter').val(),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
-        status: status,
+        status: status
       });
     }
 
@@ -524,7 +508,7 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
-        url: link_api.loadDataGridReturPembelian,
+        url: link_api.loadDataGridAnalisisPesananPembelian,
         pagination: true,
         clientPaging: false,
         onLoadSuccess: function() {
@@ -548,55 +532,54 @@
               align: 'center'
             },
             {
-              field: 'uuidreturbeli',
+              field: 'uuidanalisispo',
               hidden: true
             },
             {
-              field: 'kodereturbeli',
-              title: 'No. Retur Beli',
-              width: 145,
+              field: 'kodeanalisispo',
+              title: 'No. Analisis PO',
+              width: 120,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'uuidlokasi',
-              hidden: true
-            },
-            {
               field: 'kodelokasi',
-              hidden: true,
               title: 'Lokasi',
               width: 60,
               sortable: true,
               align: 'center'
-            }
+            },
+            {
+              field: 'namalokasi',
+              title: 'Nama Lokasi',
+              width: 120,
+              sortable: true,
+              align: 'center'
+            },
           ]
         ],
         columns: [
           [{
-              field: 'uuidsupplier',
-              hidden: true
-            },
-            {
               field: 'kodesupplier',
-              title: 'Kd. Supplier',
-              width: 130,
-              sortable: true
+              title: 'Supplier',
+              width: 80,
+              sortable: true,
+              align: 'center'
             },
             {
               field: 'namasupplier',
               title: 'Nama Supplier',
-              width: 200,
-              sortable: true
-            },
-            ...lihatHarga ? [{
-              field: 'grandtotal',
-              title: 'Grand Total',
-              width: 100,
+              width: 150,
               sortable: true,
-              formatter: format_amount,
-              align: 'right',
-            }, ] : [],
+              align: 'center'
+            },
+            {
+              field: 'kodepo',
+              title: 'No. PO',
+              width: 120,
+              sortable: true,
+              align: 'center'
+            },
             {
               field: 'catatan',
               title: 'Catatan',
@@ -625,7 +608,7 @@
             },
             {
               field: 'tglbatal',
-              title: 'Tgl. Batal',
+              title: 'Tgl Batal',
               width: 120,
               sortable: true,
               formatter: ubah_tgl_indo,
@@ -640,13 +623,6 @@
             {
               field: 'status',
               title: 'Status',
-              width: 50,
-              sortable: true,
-              align: 'center'
-            },
-            {
-              field: 'closing',
-              title: 'Closing',
               width: 50,
               sortable: true,
               align: 'center'
@@ -697,17 +673,33 @@
       });
     }
 
-    function tutupTab() {
-      //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
+    function changeTitleTab(mode) {
+      //DAPATKAN INDEXNYA untuk DIGANTI TITLE
       var tab = $('#tab_transaksi').tabs('getSelected');
-      var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-      $('#tab_transaksi').tabs('close', index);
+      var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
+      var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
+
+      if (mode == 'tambah') {
+        $('#tab_transaksi').tabs('update', {
+          tab: tabForm,
+          type: 'header',
+          options: {
+            title: 'Tambah'
+          }
+        });
+      } else if (mode == 'ubah') {
+        $('#tab_transaksi').tabs('update', {
+          tab: tabForm,
+          type: 'header',
+          options: {
+            title: 'Ubah'
+          }
+        });
+      }
     }
 
     function reload() {
-
       $('#table_data').datagrid('reload');
-
     }
   </script>
 @endpush

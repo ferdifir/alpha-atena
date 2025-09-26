@@ -1,5 +1,6 @@
 // var base_url_api = "http://192.168.1.45:8000/api/";
 var base_url_api = "https://api.atena.id/api/";
+var tokenTidakValid="invalid_token";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -636,6 +637,50 @@ var link_api = {
     // Sinkronisasi Penjualan
     tampilDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/tampil-data-sinkronisasi-penjualan`,
     simpanDataSPJ: `${base_url_api}atena/penjualan/sinkronisasi-penjualan/simpan-sinkronisasi-penjualan`,
+    // Analisis Pesanan Pembelian
+    loadDataHeaderAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data-header`,
+    loadConfigAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-config`,
+    loadDataGridAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data-grid`,
+    batalTransAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/batal-trans`,
+    ubahStatusJadiInputAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/ubah-status-jadi-input`,
+    ubahStatusJadiSlipAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/ubah-status-jadi-slip`,
+    cetakAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/cetak/`,
+    getStatusTransAnalisiPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/get-status-trans`,
+    simpanAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/simpan`,
+    loadDataAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-data`,
+    loadBarangAnalisisPesananPembelian: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang`,
+    loadBarangAnalisisPesananPembelianBySupplier: `${base_url_api}atena/pembelian/analisis-pesanan-pembelian/load-barang-by-supplier`,
+    //Keuangan
+    //Saldo Awal Hutang
+    loadDataGridSaldoAwalHutang  : `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
+    loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
+    simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
+    batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    //Saldo Awal Piutang
+    loadDataGridSaldoAwalPiutang  : `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
+    loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
+    simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
+    batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    //Debet Note
+    loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
+    loadDataHeaderDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-header`,
+    simpanDebetNote: `${base_url_api}atena/keuangan/nota-debit/simpan`,
+    loadDataDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data`,
+    cetakDebetNote: `${base_url_api}atena/keuangan/nota-debit/cetak/`,
+    batalDebetNote: `${base_url_api}atena/keuangan/nota-debit/batal-trans`,
+    ubahStatusjadiInputDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-input`,
+    ubahStatusjadiSlipDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-slip`,
+    getStatusDebetNote: `${base_url_api}atena/keuangan/nota-debit/get-status-trans`,
+    //Pelunasan Hutang
+    loadDataGridPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-grid`,
+    loadDataHeaderPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-header`,
+    simpanPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/simpan`,
+    loadDataPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data`,
+    cetakPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/cetak/`,
+    batalPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/batal-trans`,
+    ubahStatusjadiInputPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-input`,
+    ubahStatusjadiSlipPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-slip`,
+    getStatusPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/get-status-trans`,
 };
 
 var modul_kode = {
@@ -726,8 +771,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
-                if (errorBody.toLowerCase() == "token tidak valid.") {
-                    $.messager.alert('Error', errorBody + " Silahkan logout dan login kembali", 'error');
+                if (errorBody.toLowerCase() == tokenTidakValid) {
+                    $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
                 }
                 console.error("Error fetching data:", error);
             }
@@ -745,8 +790,8 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
-                    texterror += " Silahkan login ulang";
+                if ((data.message ?? "").toLowerCase() == tokenTidakValid) {
+                    texterror = "Sesi login telah habis. Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
                 // tutupLoader();
@@ -812,8 +857,8 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         if (onSuccess && typeof onSuccess === "function") {
             if (!data.success) {
                 var texterror = data.message ?? "";
-                if ((data.message ?? "").toLowerCase() == "token tidak valid.") {
-                    texterror += " Silahkan login ulang";
+                if ((data.message ?? "").toLowerCase() == tokenTidakValid) {
+                    texterror = "Sesi login telah habis. Silahkan login ulang";
                 }
                 $.messager.alert("error", texterror, "error");
                 // tutupLoader();
@@ -854,7 +899,11 @@ const getStatusTrans = async (url, token, param) => {
         if (response.success) {
             status = response.data.status;
         } else {
-            $.messager.alert('Error', response.message, 'error');
+            if(response.message.toLowerCase() == tokenTidakValid){
+                $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
+            }else{
+                $.messager.alert('Error', response.message, 'error');
+            }
         }
     } catch (error) {
         var textError = getTextError(error);

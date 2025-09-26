@@ -56,22 +56,6 @@
 														<option value="11">NOVEMBER</option>
 														<option value="12">DESEMBER</option>
 													</select>
-													<!-- &nbsp; s/d &nbsp;
-													<select name="bulanakhir" id="BULANAKHIR" class="easyui-combobox" style="width:95px;" required>
-														<option value="01">JANUARI</option>
-														<option value="02">FEBRUARI</option>
-														<option value="03">MARET</option>
-														<option value="04">APRIL</option>
-														<option value="05">MEI</option>
-														<option value="06">JUNI</option>
-														<option value="07">JULI</option>
-														<option value="08">AGUSTUS</option>
-														<option value="09">SEPTEMBER</option>
-														<option value="10">OKTOBER</option>
-														<option value="11">NOVEMBER</option>
-														<option value="12">DESEMBER</option>
-													</select> -->
-												</td>
 											</tr>
 											<tr>
 												<td>
