@@ -247,8 +247,6 @@
         })
       ];
       await Promise.all(promises);
-      console.log("check " + check + " check2 " + check2);
-
       if (!check || !check2) return;
       if (configtransbeli == 'HEADER') {
         $("#kolom_beli").show();

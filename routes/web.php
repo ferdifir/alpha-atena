@@ -293,17 +293,17 @@ Route::get('atena/master/alatbayar/form', function () {
 })->name('atena.master.alat_bayar.form');
 
 // Master servis
-Route::get('atena/master/servis/data', function() {
+Route::get('atena/master/servis/data', function () {
     return view('atena.master.servis.v_master_list_servis', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.master.servis.data');
 
-Route::get('atena/master/servis/form', function() {
+Route::get('atena/master/servis/form', function () {
     return view('atena.master.servis.v_master_form_servis', [
         'kodemenu' => request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
+        'data' => request()->data,
+        'mode' => request()->mode,
     ]);
 })->name('atena.master.servis.form');
 
@@ -707,44 +707,44 @@ Route::get('atena/penjualan/penjualan/form', function () {
 })->name('atena.penjualan.penjualan.form');
 
 // Retur Penjualan
-Route::get('atena/penjualan/returpenjualan/transaksi', function() {
+Route::get('atena/penjualan/returpenjualan/transaksi', function () {
     return view('atena.penjualan.retur_penjualan.v_penjualan_list_retur_penjualan', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.penjualan.returpenjualan.transaksi');
 
-Route::get('atena/penjualan/returpenjualan/form', function() {
+Route::get('atena/penjualan/returpenjualan/form', function () {
     return view('atena.penjualan.retur_penjualan.v_penjualan_form_retur_penjualan', [
         'kodemenu' => request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
+        'data' => request()->data,
+        'mode' => request()->mode,
     ]);
 })->name('atena.penjualan.returpenjualan.form');
 
 // Uang Muka SO
-Route::get('atena/penjualan/uangmukaso/transaksi', function() {
+Route::get('atena/penjualan/uangmukaso/transaksi', function () {
     return view('atena.penjualan.uang_muka.v_penjualan_list_uang_muka', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.penjualan.uangmuka.transaksi');
 
-Route::get('atena/penjualan/uangmukaso/form', function() {
+Route::get('atena/penjualan/uangmukaso/form', function () {
     return view('atena.penjualan.uang_muka.v_penjualan_form_uang_muka', [
         'kodemenu' => request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
+        'data' => request()->data,
+        'mode' => request()->mode,
     ]);
 })->name('atena.penjualan.uangmuka.form');
 
 // Sinkronisasi Bukti Pengeluaran
-Route::get('atena/penjualan/sinkronisasibuktipengeluaran/transaksi', function() {
+Route::get('atena/penjualan/sinkronisasibuktipengeluaran/transaksi', function () {
     return view('atena.penjualan.sinkronisasi_bukti_pengeluaran.v_penjualan_list_sinkronisasi_bukti_pengeluaran', [
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.penjualan.sinkronisasibuktipengeluaran.transaksi');
 
 // Sinkronisasi Penjualan
-Route::get('atena/penjualan/sinkronisasipenjualan/transaksi', function() {
+Route::get('atena/penjualan/sinkronisasipenjualan/transaksi', function () {
     return view('atena.penjualan.sinkronisasi_penjualan.v_penjualan_list_sinkronisasi_penjualan', [
         'kodemenu' => request()->kode,
     ]);
@@ -809,6 +809,20 @@ Route::get('atena/pembelian/returpembelian/form', function () {
         'mode' => request()->mode,
     ]);
 })->name('atena.pembelian.retur_pembelian.form');
+// Pembelian
+Route::get('atena/pembelian/analisispo/transaksi', function () {
+    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_list_analisa_pesanan_pembelian', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.pembelian.analisispo.transaksi');
+
+Route::get('atena/pembelian/analisispo/form', function () {
+    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_form_analisa_pemesanan_pembelian', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.pembelian.analisispo.form');
 
 // Tutup Permintaan Barang
 Route::get('atena/pembelian/tutuppermintaanbarang/transaksi', function () {

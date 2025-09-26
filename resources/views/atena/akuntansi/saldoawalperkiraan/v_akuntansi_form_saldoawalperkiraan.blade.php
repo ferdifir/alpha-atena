@@ -121,8 +121,8 @@
                 config = response.data;
                 check1 = true;
               } else {
-                if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
-                  window.alert("Login session sudah habis. Silahkan Login Kembali");
+                if ((response.message ?? "").toLowerCase() == tokenTidakValid) {
+                  $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
                 } else {
                   $.messager.alert('Error', error, 'error');
                 }

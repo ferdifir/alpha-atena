@@ -5,6 +5,7 @@
     <input type="hidden" id="mode" name="mode">
     <input type="hidden" id="IDPR" name="uuidanalisispo">
     <input type="hidden" id="data_detail" name="data_detail">
+    <input type="hidden" id="TGLENTRY" name="tglentry">
     <input type="hidden" id="kodelokasi" name="kodelokasi">
 
     <div data-options="region:'center',border:false">
@@ -27,14 +28,13 @@
                         <tr>
                           <td id="label_form">No. Analisis PO</td>
                           <td id="label_form">
-                            <input name="kodeanalisispo" id="kodeanalisispo" class="label_input" style="width:190px"
-                              <?php if ($KODE == 'AUTO') { ?> prompt="Auto Generate" readonly <?php } ?>>
+                            <input name="kodeanalisispo" id="kodeanalisispo" class="label_input" style="width:190px">
                           </td>
                         </tr>
                         <tr>
                           <td id="label_form">Lokasi</td>
                           <td id="label_form">
-                            <input name="idlokasi" id="idlokasi" style="width:190px">
+                            <input name="uuidlokasi" id="idlokasi" style="width:190px">
                           </td>
                         </tr>
                         <tr>
@@ -61,7 +61,7 @@
                         <tr>
                           <td id="label_form">Supplier</td>
                           <td>
-                            <input type="text" name="idsupplier" id="idsupplier" style="width: 224px" required>
+                            <input type="text" name="uuidsupplier" id="idsupplier" style="width: 224px" required>
                           </td>
                         </tr>
                         <tr>
@@ -94,14 +94,12 @@
                   <label id="lbl_kasir"></label> <label style="font-weight:normal" id="label_form">| Tgl. Input :</label>
                   <label id="lbl_tanggal"></label>
                 </td>
-                <td align='right' <?php if ($LIHATHARGA == 0) {
-                    echo 'hidden';
-                } ?>>
+                <td align='right' id="tableharga">
                   <table>
                     <tr>
                       <!-- <td id="label_form" align="right">
-                                                  Grand Total <input name="grandtotal" id="GRANDTOTAL" class="number " style="width:110px;" readonly>
-                                              </td> -->
+                                                                                                                    Grand Total <input name="grandtotal" id="GRANDTOTAL" class="number " style="width:110px;" readonly>
+                                                                                                                </td> -->
                     </tr>
                   </table>
                 </td>
@@ -116,13 +114,13 @@
       <br>
 
       <a title="Simpan" class="easyui-tooltip" data-options="plain:false" id='btn_simpan_modal'
-        onclick="$('#window_button_simpan').window('open')"><img src="<?= base_url() ?>/assets/images/simpan.png"></a>
+        onclick="$('#window_button_simpan').window('open')"><img src="{{ asset('assets/images/simpan.png') }}"></a>
 
       <br>
       <br>
 
-      <a title="Tutup" class="easyui-tooltip" data-options="plain:false" onclick="javascript:tutup()"><img
-          src="<?= base_url() ?>/assets/images/cancel.png"></a>
+      <a title="Tutup" class="easyui-tooltip" data-options="plain:false" onclick="javascript:tutup()">
+        <img src="{{ asset('assets/images/cancel.png') }}"></a>
     </div>
   </div>
 
@@ -131,7 +129,7 @@
     <center>
       <div id="button_simpan">
 
-        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan_saja' onclick="simpan(this.id)"
+        <a title="Simpan" class="easyui-linkbutton button_add" id='simpan_saja' onclick="simpan('simpan')"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a><br><br>
         <a title="Simpan & Cetak" class="easyui-linkbutton button_add_print" id='simpan_cetak'
           onclick="simpan(this.id)"
@@ -168,19 +166,46 @@
     var row = {};
     var indexRow = 0;
     var cekbtnsimpan = true;
-    $(document).ready(function() {
-
-      //TAMBAH CHECK AKSES CETAK
-      get_akses_user('<?= $kodemenu ?>', function(data) {
-        var UT = data.cetak;
-        if (UT == 1) {
-          $('#simpan_cetak').css('filter', '');
-        } else {
-          $('#simpan_cetak').css('filter', 'grayscale(100%)');
-          $('#simpan_cetak').removeAttr('onclick');
-        }
-      });
-
+    var configKode = "";
+    var inputharga = false;
+    var lihatharga = false;
+    var idtrans = "";
+    $(document).ready(async function() {
+      var check = false;
+      var promises = [
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+          var UT = data.data.cetak;
+          check = true;
+          if (UT == 1) {
+            $('#simpan_cetak').css('filter', '');
+          } else {
+            $('#simpan_cetak').css('filter', 'grayscale(100%)');
+            $('#simpan_cetak').removeAttr('onclick');
+          }
+        }, false),
+        loadConfigAnalisispo(),
+      ];
+      const [x, check2] = await Promise.all(promises);
+      if (!check || !check2) return;
+      if (configKode == "AUTO") {
+        $('#kodeanalisispo').textbox({
+          prompt: "Auto Generate",
+          readonly: true,
+          required: false
+        });
+      } else {
+        $('#kodeanalisispo').textbox({
+          prompt: "",
+          readonly: false,
+          required: true
+        });
+        $('#kodeanalisispo').textbox('clear').textbox('textbox').focus();
+      }
+      if (lihatharga) {
+        $('#tableharga').show();
+      } else {
+        $('#tableharga').hide();
+      }
       $("#form_cetak").window({
         collapsible: false,
         minimizable: false,
@@ -226,28 +251,61 @@
         left: left
       });
 
-      get_status_trans("atena/Pembelian/Transaksi/AnalisisPO", row.idanalisispo, function(data) {
-        $(".form_status").html(status_transaksi(data.status));
-      });
+      // get_status_trans("atena/Pembelian/Transaksi/AnalisisPO", row.idanalisispo, function(data) {
+      //   $(".form_status").html(status_transaksi(data.status));
+      // });
 
       browse_data_lokasi('#idlokasi');
       browse_data_supplier('#idsupplier');
 
       buat_table_detail();
 
-      if ("<?= $mode ?>" == "tambah") {
-        tambah();
-      } else if ("<?= $mode ?>" == "ubah") {
-        ubah();
-      }
+      @if ($mode == 'tambah')
+        await tambah();
+      @elseif ($mode == 'ubah')
+        await ubah();
+      @endif
 
-      // Menghapus loading ketika halaman sudah dimuat
-      setTimeout(function() {
-        $('#mask-loader').fadeOut(500, function() {
-          $(this).hide()
-        })
-      }, 250)
+      tutupLoader();
     })
+
+    async function loadConfigAnalisispo() {
+      let check = false;
+      try {
+        let url = link_api.loadConfigAnalisisPesananPembelian;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            kodemenu: '{{ $kodemenu }}',
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.json();
+        })
+
+        if (response.success) {
+          check = true;
+          var data = response.data;
+          configKode = data.kode;
+          inputharga = data.inputharga == 1 ? true : false;
+          lihatharga = data.lihatharga == 1 ? true : false;
+        } else {
+          $.messager.alert('Error', response.message, 'error');
+        }
+      } catch (error) {
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+      return check;
+    }
 
     shortcut.add('F8', function() {
       simpan();
@@ -257,16 +315,41 @@
       parent.tutupTab();
     }
 
-    function cetak(id) {
-      $("#window_button_cetak").window('close');
-      $("#area_cetak").load(base_url + "atena/Pembelian/Transaksi/AnalisisPO/cetak/" + id);
-      $("#form_cetak").window('open');
+    async function cetak(uuidtrans) {
+      try {
+        $("#window_button_cetak").window('close');
+        let url = link_api.cetakAnalisiPesananPembelian + uuidtrans;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidanalisispo: uuidtrans,
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.text();
+        })
+
+
+        $("#area_cetak").html(response);
+        $("#form_cetak").window('open');
+      } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+
     }
 
     function tambah() {
       $('#mode').val('tambah');
-
-      parent.changeTitleTab($('#mode').val());
 
       $('#lbl_kasir, #lbl_tanggal').html('');
 
@@ -279,6 +362,8 @@
 
       $('#tglawal').datebox('readonly', false);
       $('#tglakhir').datebox('readonly', false);
+      $('#tglawal').datebox('setValue', date_format(new Date));
+      $('#tglakhir').datebox('setValue', date_format(new Date));
 
       $('#tgltrans').datebox('readonly', false);
 
@@ -288,48 +373,76 @@
       reset_detail();
     }
 
-    function ubah() {
+    async function ubah() {
       $('#mode').val('ubah');
-
+      try {
+        let url = link_api.loadDataHeaderAnalisisPesananPembelian;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidanalisispo: '{{ $data }}',
+            mode: "ubah",
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+          }
+          return response.json();
+        })
+        if (response.success) {
+          row = response.data;
+        } else {
+          $.messager.alert('Error', response.message, 'error');
+        }
+      } catch (error) {
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
       if (row) {
         $('#lbl_kasir').html(row.userbuat);
         $('#lbl_tanggal').html(row.tglentry);
 
-        get_akses_user('<?= $kodemenu ?>', function(data) {
-          var UT = data.ubah;
-          get_status_trans("atena/Pembelian/Transaksi/AnalisisPO", row.idanalisispo, function(data) {
-            if (UT == 1 && data.status == 'I') {
-              $('#btn_simpan_modal').css('filter', '');
+        await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
+          var UT = data.data.ubah;
+          var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
+            'bearer {{ session('TOKEN') }}', {
+              uuidanalisispo: '{{ $data }}'
+            });
+          if (UT == 1 && statusTrans == 'I') {
+            $('#btn_simpan_modal').css('filter', '');
 
-              $('#mode').val('ubah');
-            } else {
-              document.getElementById('btn_simpan_modal').onclick = null;
+            $('#mode').val('ubah');
+          } else {
+            document.getElementById('btn_simpan_modal').onclick = null;
 
-              $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-              $('#btn_simpan_modal').removeAttr('onclick');
-            }
+            $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+            $('#btn_simpan_modal').removeAttr('onclick');
+          }
 
-            $("#form_input").form('load', row);
+          $("#form_input").form('load', row);
 
-            $('#idlokasi').combogrid('readonly', true);
-            $('#idsupplier').combogrid('readonly', true);
+          $('#idlokasi').combogrid('readonly', true);
+          $('#idsupplier').combogrid('readonly', true);
 
-            $('#btn_tampil_barang').linkbutton('disable');
+          $('#btn_tampil_barang').linkbutton('disable');
 
-            $('#tglawal').datebox('readonly', true);
-            $('#tglakhir').datebox('readonly', true);
+          $('#tglawal').datebox('readonly', true);
+          $('#tglakhir').datebox('readonly', true);
 
-            $('#tgltrans').datebox('readonly', true);
+          $('#tgltrans').datebox('readonly', true);
 
-            idtrans = row.idanalisispo;
+          idtrans = row.uuidanalisispo;
 
-            load_data_detail(row.idanalisispo);
-          });
+          await load_data_detail(row.uuidanalisispo);
         });
       }
     }
 
-    function simpan(use) {
+    async function simpan(jenis_simpan) {
       $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
       var data = [];
@@ -346,127 +459,161 @@
       }
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
+        tampilLoaderSimpan();
         cekbtnsimpan = false;
-        validasi_session(function() {
-          var adaTrans = false;
+        try {
+          let headers = {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+          };
+          let requestBody = null;
+          var unindexed_array = $('#form_input :input').serializeArray();
 
-          if (mode == 'ubah') {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + 'Home/cekTanggalJamInput',
-              data: {
-                id: row.idanalisispo,
-                table: "tanalisispo",
-                whereid: "idanalisispo",
-                tgl: row.tglentry,
-                status: row.status
-              },
-              async: false,
-              success: function(msg) {
-                cekbtnsimpan = true;
-                if (!msg.success) {
-                  var errorMsg =
-                    'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal ' + msg.tgl +
-                    ' / ' + msg.jam + '.<br>Transaksi Tidak Dapat Disimpan.';
-                  $.messager.alert('Warning', errorMsg, 'warning');
-                  adaTrans = true;
-                }
+          var body = {};
+          $.map(unindexed_array, function(n, i) {
+            if (n['name'] == "data_detail") {
+              var datadetail = $('#table_data_detail').datagrid('getRows');
+              var sendDetail = [];
+              for (var i = 0; i < datadetail.length; i++) {
+                sendDetail.push(datadetail[i]);
               }
-            });
-          }
-
-          cek_tanggal_tutup_periode($('#tgltrans').datebox('getValue'), 0, function(data) {
-            cekbtnsimpan = true;
-            if (!data.success) {
-              var kode = row.kodeanalisispo ? row.kodeanalisispo : 'ini';
-
-              $.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' + kode +
-                '. Prosedur tidak dapat dilanjutkan', 'error');
-
-              adaTrans = true;
+              body[n['name']] = sendDetail;
+            } else {
+              body[n['name']] = n['value'];
             }
           });
-
-          if (!adaTrans) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Pembelian/Transaksi/AnalisisPO/simpan/" + use,
-              data: datanya,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
-                cekbtnsimpan = true;
-
-                if (msg.success) {
-                  $('#form_input').form('clear');
-
-                  $.messager.show({
-                    title: 'Info',
-                    msg: 'Transaksi Sukses',
-                    showType: 'show'
-                  });
-
-                  tambah();
-
-                  parent.reload();
-
-                  if (use == 'simpan_cetak') {
-                    cetak(msg.id);
-                  }
-                } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
-                }
-              }
-            });
+          body['jenis_simpan'] = jenis_simpan;
+          // Cek apakah body adalah instance dari FormData
+          if (body instanceof FormData) {
+            // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+            requestBody = body;
+          } else {
+            // Default: Jika bukan FormData, asumsikan itu JSON.
+            headers['Content-Type'] = 'application/json';
+            requestBody = body ? JSON.stringify(body) : null;
           }
-        });
+          let url = link_api.simpanAnalisisPesananPembelian;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: headers,
+            body: requestBody,
+          }).then(response => {
+            if (!response.ok) {
+              throw new Error(
+                `HTTP error! status: ${response.status} from ${url}`);
+            }
+            return response.json();
+          })
+          if (response.success) {
+
+            $('#form_input').form('clear');
+
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+            if (mode == "tambah") {
+              await tambah();
+              $('#table_data_detail').datagrid('loadData', []);
+            } else {
+              await ubah();
+            }
+            if (jenis_simpan == 'simpan_cetak') {
+              await cetak(response.data.uuidanalisispo);
+            }
+          } else {
+            $.messager.alert('Error', response.message, 'error');
+          }
+        } catch (error) {
+          console.log(error);
+          var textError = getTextError(error);
+          $.messager.alert('Error', getTextError(error), 'error');
+        }
+
+        cekbtnsimpan = true;
+        tutupLoaderSimpan();
       }
     }
 
-    function cetak(idanalisispo) {
-      $("#window_button_cetak").window('close');
-      $("#area_cetak").load(base_url + "atena/Pembelian/Transaksi/AnalisisPO/cetak/" + idanalisispo);
-      $("#form_cetak").window('open');
+    async function cetak(uuidtrans) {
+      try {
+        $("#window_button_cetak").window('close');
+        let url = link_api.cetakAnalisiPesananPembelian + uuidtrans;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidanalisispo: uuidtrans,
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.text();
+        })
+
+
+        $("#area_cetak").html(response);
+        $("#form_cetak").window('open');
+      } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+
     }
 
     function reset_detail() {
       $('#table_data_detail').datagrid('loadData', []);
     }
 
-    function load_data_detail(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + "atena/Pembelian/Transaksi/AnalisisPO/loadData",
-        data: {
-          idtrans: idtrans
-        },
-        cache: false,
-        success: function(msg) {
-          if (msg.success) {
-            $('#table_data_detail').datagrid('loadData', msg.detail);
-
-            for (var i = 0; i < msg.detail.length; i++) {
-              hitung_subtotal_detail(i, msg.detail[i])
-            }
-
-            hitung_grandtotal();
+    async function load_data_detail(idtrans) {
+      try {
+        let url = link_api.loadDataAnalisisPesananPembelian;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidanalisispo: idtrans,
+            mode: "ubah",
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status} from ${url}`);
           }
+          return response.json();
+        })
+        if (response.success) {
+          $('#table_data_detail').datagrid('loadData', response.data);
+          var rows = response.data;
+          for (var i = 0; i < rows.length; i++) {
+            hitung_subtotal_detail(i, rows[i])
+          }
+          hitung_grandtotal();
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      });
+      } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
     }
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: base_url + 'atena/Master/Data/Lokasi/comboGrid',
-        idField: 'id',
+        url: link_api.browseLokasi,
+        idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
         sortName: 'nama',
@@ -475,7 +622,7 @@
         selectFirstRow: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidlokasi',
               hidden: true
             },
             {
@@ -535,9 +682,13 @@
                   required: true,
                   idField: 'kode',
                   textField: 'kode',
+                  onBeforeLoad: function(param) {
+                    var row = $('#table_data_detail').datagrid('getRows')[indexDetail];
+                    param.uuidbarang = row.uuidbarang;
+                  },
                   columns: [
                     [{
-                        field: 'id',
+                        field: 'uuidbarang',
                         hidden: true
                       },
                       {
@@ -591,7 +742,7 @@
               width: 200,
             },
             {
-              field: 'idbarang',
+              field: 'uuidbarang',
               hidden: true
             },
           ]
@@ -646,6 +797,9 @@
                   required: true,
                   idField: 'satuan',
                   textField: 'satuan',
+                  onBeforeLoad: function(param) {
+                    param.jenisbarang = 'po';
+                  },
                   columns: [
                     [{
                       field: 'satuan',
@@ -710,15 +864,9 @@
               title: 'Disc(%)',
               align: 'center',
               width: 100,
-              <?php
-                        if ($INPUTHARGA == 1) {
-                        ?>
-              editor: {
+              editor: !inputharga ? null : {
                 type: 'textbox'
-              }
-              <?php
-                        }
-                        ?>
+              },
             },
             {
               field: 'disc',
@@ -756,24 +904,24 @@
           var ed = get_editor('#table_data_detail', index, field);
 
           if (field == 'satuanorder') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/satuanBarang/' + row
-              .idbarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             });
 
             ed.combogrid('showPanel');
           } else if (field == 'kodebarang') {
-            ed.combogrid('grid').datagrid('options').url = base_url + 'atena/Master/Data/Barang/comboGridAll/po';
+            ed.combogrid('grid').datagrid('options').url = link_api.browseBarangAll;
             ed.combogrid('grid').datagrid('load', {
-              q: ''
+              q: '',
+              jenis: 'po',
             });
 
             ed.combogrid('showPanel');
           }
         },
-        onEndEdit: function(index, row, changes) {
+        onEndEdit: async function(index, row, changes) {
           var cell = $(this).datagrid('cell');
           var ed = get_editor('#table_data_detail', index, cell.field);
           var row_update = {};
@@ -781,29 +929,43 @@
           switch (cell.field) {
             case 'kodebarang':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              var idsupplier = $('#idsupplier').combogrid('getValue');
-              var idlokasi = $('#idlokasi').combogrid('getValue');
+              var uuidsupplier = $('#idsupplier').combogrid('getValue');
+              var uuidlokasi = $('#idlokasi').combogrid('getValue');
+              bukaLoader();
+              try {
+                let url = link_api.loadBarangAnalisisPesananPembelian;
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    uuidlokasi: uuidlokasi,
+                    tglawal: $('#tglawal').datebox('getValue'),
+                    tglakhir: $('#tglakhir').datebox('getValue'),
+                    uuidbarang: data.uuidbarang,
+                  }),
+                }).then(response => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `HTTP error! status: ${response.status} from ${url}`
+                    );
+                  }
+                  return response.json();
+                })
 
-              $.ajax({
-                url: base_url + 'atena/Pembelian/Transaksi/AnalisisPO/tampilBarang',
-                type: 'POST',
-                data: {
-                  idlokasi: idlokasi,
-                  tglawal: $('#tglawal').datebox('getValue'),
-                  tglakhir: $('#tglakhir').datebox('getValue'),
-                  idbarang: data.id
-                },
-                async: false,
-                dataType: 'JSON',
-                beforeSend: function() {
-                  $.messager.progress();
-                },
-                success: function(response) {
-                  $.messager.progress('close');
-
-                  row_update = response.data;
+                if (response.success) {
+                  row_update = response.data.data;
+                } else {
+                  $.messager.alert('Error', response.message, 'error');
                 }
-              })
+              } catch (error) {
+                console.log(error);
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
+              }
+              tutupLoader();
               break;
             case 'satuanorder':
               var data = ed.combogrid('grid').datagrid('getSelected');
@@ -831,7 +993,7 @@
                 $.messager.show({
                   title: 'Warning',
                   msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-                  timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+                  timeout: {{ session('TIMEOUT') }},
                 });
 
                 return
@@ -845,7 +1007,8 @@
                 if (splitdiscpersen[i] != "" && splitdiscpersen[i] <= 100 && splitdiscpersen[i] > 0) {
                   splitdiscpersen[i] = parseFloat(splitdiscpersen[i]);
                   disc = +((splitdiscpersen[i] * harga / 100).toFixed(
-                    <?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+                    {{ session('DECIMALDIGITAMOUNT') }}
+                  ));
                   totaldisc += disc;
                   harga -= disc;
                 }
@@ -877,7 +1040,6 @@
         idbarang: 0
       });
 
-      getRowIndex(target);
     }
 
     function hapus_detail() {
@@ -905,7 +1067,7 @@
           $.messager.show({
             title: 'Warning',
             msg: 'Barang Yang Diinput Tidak Boleh Sama Dalam Satu Detail Transaksi',
-            timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+            timeout: {{ session('TIMEOUT') }},
           });
           dg.datagrid('deleteRow', index);
           break;
@@ -974,8 +1136,8 @@
     function browse_data_supplier(id) {
       $(id).combogrid({
         panelWidth: 600,
-        url: base_url + 'atena/Master/Data/Supplier/comboGrid',
-        idField: 'id',
+        url: link_api.browseSupplier,
+        idField: 'uuidsupplier',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
@@ -983,7 +1145,7 @@
         required: true,
         columns: [
           [{
-              field: 'id',
+              field: 'uuidsupplier',
               hidden: true
             },
             {
@@ -1015,37 +1177,53 @@
       });
     }
 
-    function tampil_barang(event) {
+    async function tampil_barang(event) {
       event.preventDefault();
 
-      var idsupplier = $('#idsupplier').combogrid('getValue');
-      var idlokasi = $('#idlokasi').combogrid('getValue');
+      var uuidsupplier = $('#idsupplier').combogrid('getValue');
+      var uuidlokasi = $('#idlokasi').combogrid('getValue');
 
-      if (idsupplier == '') {
+      if (uuidsupplier == '') {
         $.messager.alert('Peringatan', 'Data supplier belum dipilih', 'warning');
 
         return false;
       }
 
-      $.ajax({
-        url: base_url + 'atena/Pembelian/Transaksi/AnalisisPO/tampilBarangBySupplier',
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
-          idlokasi: idlokasi,
-          idsupplier: idsupplier,
-          tglawal: $('#tglawal').datebox('getValue'),
-          tglakhir: $('#tglakhir').datebox('getValue')
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+      bukaLoader();
+      try {
+        let url = link_api.loadBarangAnalisisPesananPembelianBySupplier;
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'bearer {{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            uuidlokasi: uuidlokasi,
+            tglawal: $('#tglawal').datebox('getValue'),
+            tglakhir: $('#tglakhir').datebox('getValue'),
+            uuidsupplier: uuidsupplier,
+          }),
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(
+              `HTTP error! status: ${response.status} from ${url}`
+            );
+          }
+          return response.json();
+        })
 
+        if (response.success) {
           $('#table_data_detail').datagrid('loadData', response.data);
+        } else {
+          $.messager.alert('Error', response.message, 'error');
         }
-      })
+      } catch (error) {
+        console.log(error);
+        var textError = getTextError(error);
+        $.messager.alert('Error', getTextError(error), 'error');
+      }
+      tutupLoader();
     }
 
     function tambah_diskon(event) {
@@ -1059,7 +1237,7 @@
         $.messager.show({
           title: 'Warning',
           msg: 'Discount Hanya Boleh Berisi + . Dan Angka Saja',
-          timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+          timeout: {{ session('TIMEOUT') }},
         });
 
         return
@@ -1074,7 +1252,7 @@
         for (var i = 0; i < splitdiscpersen.length; i++) {
           if (splitdiscpersen[i] != "" && splitdiscpersen[i] <= 100 && splitdiscpersen[i] > 0) {
             splitdiscpersen[i] = parseFloat(splitdiscpersen[i]);
-            disc = +((splitdiscpersen[i] * harga / 100).toFixed(<?= $_SESSION[NAMAPROGRAM]['DECIMALDIGITAMOUNT'] ?>));
+            disc = +((splitdiscpersen[i] * harga / 100).toFixed({{ session('DECIMALDIGITAMOUNT') }}));
             totaldisc += disc;
             harga -= disc;
           }

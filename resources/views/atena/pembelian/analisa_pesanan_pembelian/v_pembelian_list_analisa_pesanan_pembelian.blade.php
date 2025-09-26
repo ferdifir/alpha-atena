@@ -177,6 +177,8 @@
         },
         buttons: '#alasan_pembatalan-buttons',
       }).dialog('close');
+
+      tutupLoader();
     });
 
     /*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
@@ -191,12 +193,27 @@
       $('#btn_batal_cetak').linkbutton('enable');
     }
 
+    function before_edit() {
+      $('#mode').val('ubah');
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        if (data.data.ubah == 1 || data.data.hakakses == 1) {
+          var row = $('#table_data').datagrid('getSelected');
+          parent.buka_submenu(null, row.kodeanalisispo,
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            row.uuidanalisispo,
+            'fa fa-pencil');
+        } else {
+          $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+        }
+      });
+    }
+
     function before_add() {
       $('#mode').val('tambah');
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
           parent.buka_submenu(null, 'Tambah Analisa Pesanan Pembelian',
-            '{{ route('atena.pembelian.analisa_pesanan_pembelian.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            '{{ route('atena.pembelian.analisispo.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus')
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -242,9 +259,9 @@
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          var statusTrans = await getStatusTrans(link_api.getStatusTransaksiReturPembelian,
+          var statusTrans = await getStatusTrans(link_api.getStatusTransAnalisiPesananPembelian,
             'bearer {{ session('TOKEN') }}', {
-              uuidreturbeli: row.uuidreturbeli
+              uuidanalisispo: row.uuidanalisispo
             });
           var checkTabAvailable = parent.check_tab_exist(row.kodereturbeli, 'fa fa-pencil');
           if (statusTrans == 'I') {
@@ -254,7 +271,7 @@
                 kode + ', Sebelum Dicetak ', 'warning');
             } else {
               try {
-                let url = link_api.ubahStatusJadiSlipReturPembelian;
+                let url = link_api.ubahStatusJadiSlipAnalisiPesananPembelian;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -262,8 +279,8 @@
                     'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({
-                    uuidreturbeli: row.uuidreturbeli,
-                    kodereturbeli: row.kodereturbeli,
+                    uuidanalisispo: row.uuidanalisispo,
+                    kodeanalisispo: row.kodeanalisispo,
                   }),
                 }).then(response => {
                   if (!response.ok) {
@@ -275,7 +292,7 @@
                 })
 
                 if (response.success) {
-                  cetak(row.uuidreturbeli, harga);
+                  cetak(row.uuidanalisispo);
                   refresh_data();
                 } else {
                   $.messager.alert('Error', response.message, 'error');
@@ -286,7 +303,7 @@
               }
             }
           } else if (statusTrans == 'S' || statusTrans == 'P') {
-            cetak(row.uuidpo, harga);
+            cetak(row.uuidanalisispo);
           } else {
             $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
           }
