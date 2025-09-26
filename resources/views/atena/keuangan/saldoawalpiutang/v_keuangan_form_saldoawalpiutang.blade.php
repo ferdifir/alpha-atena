@@ -36,14 +36,14 @@
 													<tr>
 														<td id="label_form">Lokasi</td>
 														<td>
-															<input name="idlokasi" class="label_input" id="IDLOKASI" style="width:250px">
+															<input name="uuidlokasi" class="label_input" id="UUIDLOKASI" style="width:250px">
 															<input type="hidden" id="KODELOKASI" name="kodelokasi">
 														</td>
 													</tr>
 													<tr>
 														<td id="label_form">Customer</td>
 														<td>
-															<input name="idcustomer" class="label_input" id="IDCUSTOMER" style="width:250px">
+															<input name="uuidcustomer" class="label_input" id="UUIDCUSTOMER" style="width:250px">
 															<input type="hidden" id="KODECUSTOMER" name="kodecustomer">
 														</td>
 													</tr>
@@ -51,7 +51,7 @@
 													<tr hidden>
 														<td id="label_form">Sub Customer</td>
 														<td>
-															<input name="idsubcustomer" class="label_input" id="IDSUBCUSTOMER" style="width:250px">
+															<input name="idsubcustomer" class="label_input" id="UUIDSUBCUSTOMER" style="width:250px">
 															<input type="hidden" id="KODESUBCUSTOMER" name="kodesubcustomer">
 														</td>
 													</tr>
@@ -76,16 +76,21 @@
 											</td>
 										</tr>
 									</table>
+									<div style="position: fixed;bottom:0;background-color: white;width:100%;">
+										<table cellpadding="0" cellspacing="0" style="width:100%">
+											<tr>
+												<td align="left" id="label_form">
+													<label style="font-weight:normal" id="label_form">User Input :</label>
+													<label id="lbl_kasir"></label>
+													<label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+													<label id="lbl_tanggal"></label>
+												</td>
+											</tr>
+										</table>
+									</div>
 								</td>
 							</tr>
 						</table>	
-					</div>
-					<div data-options="region:'south',border:false" style="width:100%;">
-						<table cellpadding="0" cellspacing="0">
-							<tr>
-								<td align="left" id="label_form"><label style="font-weight:normal" id="label_form">User Input :</label> <label id="lbl_kasir"></label> <label style="font-weight:normal" id="label_form">| Tgl. Input :</label> <label id="lbl_tanggal"></label></td>
-							</tr>
-						</table>
 					</div>
 				 </div>
 			</div>
@@ -101,20 +106,17 @@
 @endsection
 
 @push('js')
-<script>
-	if(screen.height <= 1080) $("#trans_layout").css('height',"240px");
-</script>
 <script src="{{ asset('assets/js/utils.js') }}"></script>
 <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
 <script>
 var cekbtnsimpan = true; //CEK APAKAH TOMBOL SIMPAN BISA DITEKAN ATAU BELUM (SUPAYA TIDAK TERKLIK 2x)
 var idtrans = "";
 var row = {};
-$(document).ready(function(){
+$(document).ready(async function(){
 	
-	browse_data_lokasi('#IDLOKASI');
-	browse_data_customer('#IDCUSTOMER');
-	browse_data_subcustomer('#IDSUBCUSTOMER');
+	browse_data_lokasi('#UUIDLOKASI');
+	browse_data_customer('#UUIDCUSTOMER');
+	browse_data_subcustomer('#UUIDSUBCUSTOMER');
 	
 	@if ($mode == 'tambah')
 		await tambah();
@@ -136,6 +138,7 @@ function tutup(){
 
 function tambah() {
 	$('#form_input').form('clear');
+	$('#mode').val('tambah');
 	
     document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
 	$('#lbl_kasir, #lbl_tanggal').html('');
@@ -149,7 +152,7 @@ async function ubah() {
 	 
 	const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.loadDataHeaderSaldoAwalHutang, {
+			link_api.loadDataHeaderSaldoAwalPiutang, {
 			kodetrans: '{{ $data }}'
 		}
 	);
@@ -178,13 +181,13 @@ async function ubah() {
 				$('#lbl_tanggal').html(row.tglentry);
 
 				$('#GRANDTOTAL').numberbox('setValue', parseFloat(row.grandtotal) < 0 ? -(row.grandtotal) : row.grandtotal)
-				$('#IDCUSTOMER').combogrid('setValue', {id:row.idcustomer, nama:row.namacustomer})
+				$('#UUIDCUSTOMER').combogrid('setValue', {uuidcustomer:row.uuidcustomer, nama:row.namacustomer})
 			// });
 		});
 	}
 }
 
-function simpan() {
+async function simpan() {
 	var mode    = $("#mode").val();
 	var datanya = $("#form_input :input").serialize();
 	var isValid = $('#form_input').form('validate');
@@ -301,13 +304,6 @@ function browse_data_customer(id, table) {
 		]],
 		onSelect: function(index, row) {			
 			$("#KODECUSTOMER").val(row.kode);
-		},
-		onChange: function(newVal, oldVal) {
-			var row = $(id).combogrid('grid').datagrid('getSelected');
-			if (row) {
-				var url = base_url+ 'atena/Master/Data/Customer/comboGrid/CHILD/' + row.id;
-				ubah_url_combogrid($("#IDSUBCUSTOMER"),url,true);
-			}
 		}
 	});
 }

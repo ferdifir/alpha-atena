@@ -17,16 +17,18 @@
 
     <div data-options="region: 'center'">
         <div class="easyui-layout" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
+            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;"  align="center">
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Lokasi</td></tr>
-                    <tr><td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td></tr>
-                    <tr><td id="label_form"></td></tr>
+                    <tr><td id="label_form" align="center">Tgl. Transaksi</td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px"/></td></tr>
+                    <tr><td id="label_form" align="center">s/d</td></tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px"/></td></tr>
+                    <tr><td id="label_form"><br></td></tr>
                     <tr><td id="label_form" align="center">No. Transaksi</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Supplier</td></tr>
+                    <tr><td id="label_form" align="center">Nama Supplier</td></tr>
                     <tr><td align="center"><input id="txt_supplier_filter" name="txt_supplier_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
@@ -79,10 +81,8 @@ var idtrans = "";
 var counter = 0;
 var row = {};
 
-$(document).ready( function() {
-	browse_data_lokasi('#txt_lokasi');
-
-	//WAKTU BATAL DI GRID, tidak bisa close
+$(document).ready(function() {
+//WAKTU BATAL DI GRID, tidak bisa close
 	//PRINT GRID
 	$("#table_data").datagrid({
 		onSelect: function() {
@@ -136,8 +136,8 @@ shortcut.add('F2', function() {
 function before_add() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Saldo Awal Hutang',
-                '{{ route('atena.keuangan.saldoawalhutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Potongan Pembelian',
+                '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -151,7 +151,7 @@ function before_edit() {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
             parent.buka_submenu(null, row.kodetrans,
-                '{{ route('atena.keuangan.saldoawalhutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                 row.kodetrans,
                 'fa fa-pencil');
         } else {
@@ -245,23 +245,17 @@ function refresh_data() {
 }
 
 function filter_data() {
-	var getLokasi  = $('#txt_lokasi').combogrid('grid');
-	var dataLokasi = getLokasi.datagrid('getChecked');
-	var lokasi     = "";
-	for (var i = 0; i < dataLokasi.length; i++) {
-		lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
-	}
-	lokasi = lokasi.substring(0, lokasi.length - 1);
-	
-	$('#table_data').datagrid('load', {
-		kodetrans	: $('#txt_kodetrans_filter').val(),
+	$('#table_data').datagrid('load',{
+		kodetrans   : $('#txt_kodetrans_filter').val(),
 		namasupplier: $('#txt_supplier_filter').val(),
-		lokasi      : lokasi
+		tglawal     : $('#txt_tgl_aw_filter').datebox('getValue'),
+		tglakhir    : $('#txt_tgl_ak_filter').datebox('getValue'),
 	});
 }
 
 function buat_table() {
 	$("#table_data").datagrid({
+        remoteFilter: true,
 		fit         : true,
 		singleSelect: true,
 		remoteSort  : false,
@@ -269,69 +263,36 @@ function buat_table() {
 		striped     : true,
 		rownumbers  : true,
 		pageSize    : 20,
-		url         : link_api.loadDataGridSaldoAwalHutang,
+		url         : link_api.loadDataGridDebetNote,
 		pagination  : true,
 		clientPaging: false,
+        rowStyler   : function(index, row) {
+            if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
+            else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
+            else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
+        },
 		frozenColumns:[[
 			{field:'jenistransaksi',title:'Jenis Transaksi',width:120, sortable:true,},
 			{field:'kodetrans',title:'No. Transaksi',width:120, sortable:true,},
 		]],
 		columns:[[
-			{field:'noinvoicesupplier',title:'No. Inv. Supplier',width:120, sortable:true,},
 			{field:'namalokasi',title:'Lokasi',width:140, sortable:true,},
-			{field:'kodesupplier',title:'Kd. Supplier',width:140, sortable:true,},
-			{field:'namasupplier',title:'Supplier',width:250, sortable:true,},
+			{field:'kodecustomer',title:'Kd. Customer',width:140, sortable:true,},
+			{field:'namacustomer',title:'Customer',width:250, sortable:true,},
 			{field:'tgltrans', title:'Tgl. Trans', align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,},
 			{field:'tgljatuhtempo', title:'Tgl. Jth Tempo',align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,},
-			{field:'grandtotal', title:'Nominal Hutang',width:120, sortable:true, align:'right', formatter:format_amount,},
-			{field:'catatan',title:'Catatan',width:250, sortable:true,},
+			{field:'grandtotal', title:'Nominal Piutang',width:120, sortable:true, align:'right', formatter:format_amount,},
+			{field:'catatan',title:'Catatan',width:400, sortable:true,},
 		]],
-		onDblClickRow: function(index, data) {
+		onDblClickRow: function (index, data) {
 			before_edit();
 		},
 	});
 }
 
-function reload() {
-    $('#table_data').datagrid('reload');
-}
-
-function browse_data_lokasi(id) {
-	$(id).combogrid({
-        panelWidth: 380,
-        url: link_api.browseLokasi,
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-            if (row.status == 0) {
-                return 'background-color:#A8AEA6';
-            }
-        },
-        columns: [
-            [{
-                    field: 'ck',
-                    checkbox: true
-                },
-                {
-                    field: 'kode',
-                    title: 'Kode',
-                    width: 80,
-                    sortable: true
-                },
-                {
-                    field: 'nama',
-                    title: 'Nama',
-                    width: 240,
-                    sortable: true
-                },
-            ]
-        ]
-    });
+function reload()
+{
+	$('#table_data').datagrid('reload');
 }
 </script>
 @endpush

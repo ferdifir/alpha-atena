@@ -660,6 +660,26 @@ var link_api = {
     loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
     simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
     batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    //Debet Note
+    loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
+    loadDataHeaderDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-header`,
+    simpanDebetNote: `${base_url_api}atena/keuangan/nota-debit/simpan`,
+    loadDataDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data`,
+    cetakDebetNote: `${base_url_api}atena/keuangan/nota-debit/cetak/`,
+    batalDebetNote: `${base_url_api}atena/keuangan/nota-debit/batal-trans`,
+    ubahStatusjadiInputDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-input`,
+    ubahStatusjadiSlipDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-slip`,
+    getStatusDebetNote: `${base_url_api}atena/keuangan/nota-debit/get-status-trans`,
+    //Pelunasan Hutang
+    loadDataGridPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-grid`,
+    loadDataHeaderPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-header`,
+    simpanPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/simpan`,
+    loadDataPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data`,
+    cetakPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/cetak/`,
+    batalPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/batal-trans`,
+    ubahStatusjadiInputPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-input`,
+    ubahStatusjadiSlipPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-slip`,
+    getStatusPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/get-status-trans`,
 };
 
 var modul_kode = {

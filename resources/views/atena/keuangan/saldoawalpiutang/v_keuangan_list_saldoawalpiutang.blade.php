@@ -31,9 +31,13 @@
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
             </div>
-            <div data-options="region:'center',">
-                <div class="title-grid"> Riwayat Transaksi </div>
-                <table id="table_data"></table>
+            <div data-options="region:'center'">
+                <div class="easyui-layout" data-options="fit:true">
+                    <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+                    <div data-options="region:'center'">
+                    <table id="table_data"></table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -75,7 +79,7 @@ var idtrans = "";
 var counter = 0;
 var row = {};
 
-$(document).ready( function() {
+$(document).ready(function() {
 	browse_data_lokasi('#txt_lokasi');
 
 	//WAKTU BATAL DI GRID, tidak bisa close
@@ -113,6 +117,13 @@ $(document).ready( function() {
 		}]
 	}).window('close');
 
+    $("#alasan_pembatalan").dialog({
+		onOpen: function() {
+			$('#alasan_pembatalan').form('clear');
+		},
+		buttons: '#alasan_pembatalan-buttons',
+	}).dialog('close');
+
     tutupLoader()
 });
 
@@ -125,8 +136,8 @@ shortcut.add('F2', function() {
 function before_add() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Saldo Awal Hutang',
-                '{{ route('atena.keuangan.saldoawalhutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Saldo Awal Piutang',
+                '{{ route('atena.keuangan.saldoawalpiutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -140,7 +151,7 @@ function before_edit() {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
             parent.buka_submenu(null, row.kodetrans,
-                '{{ route('atena.keuangan.saldoawalhutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                '{{ route('atena.keuangan.saldoawalpiutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                 row.kodetrans,
                 'fa fa-pencil');
         } else {

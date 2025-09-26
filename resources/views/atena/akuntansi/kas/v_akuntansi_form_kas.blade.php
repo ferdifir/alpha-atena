@@ -195,7 +195,6 @@ var inputharga;
 var lihatharga;
 var row = {};
 $(document).ready(async function(){
-console.log('{{ $jenis }}')
   let check1 = false;
   let check2 = false;
   const promises = [];

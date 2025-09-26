@@ -1,78 +1,51 @@
 @extends('template.app')
 
 @section('content')
-<?php
-if (strtoupper($jenis)=='KAS_BANK')
-    $aJenis = ['Kas Masuk', 'Kas Keluar', 'Bank Masuk', 'Bank Keluar'];
-else if (strtoupper($jenis)=='GIRO')
-    $aJenis = ['Giro Masuk', 'Giro Keluar', 'Giro Tolak'];
-else if (strtoupper($jenis)=='MEMORIAL')
-    $aJenis = ['Memorial'];
-?>
-<div class="easyui-layout" fit="true">	
-	<div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
-		<a id="btn_tambah"  title="Tambah Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
-			<img src="{{ asset('assets/images/add.png') }}">
-		</a>
-		<a id="btn_refresh"  title="Refresh Data" class="easyui-linkbutton easyui-tooltip" onclick="refresh_data()">
-			<img src="{{ asset('assets/images/refresh.png') }}">
-		</a>
-		<a id="btn_batal"  title="Batalkan Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_delete()">
-			<img src="{{ asset('assets/images/cancel.png') }}">
-		</a>
-		<a id="btn_cetak"  title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print()">
+<div class="easyui-layout" fit="true">
+    <div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
+        <a id="btn_tambah" title="Tambah Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
+            <img src="{{ asset('assets/images/add.png') }}">
+        </a>
+        <a id="btn_refresh" title="Refresh Data" class="easyui-linkbutton easyui-tooltip" onclick="refresh_data()">
+            <img src="{{ asset('assets/images/refresh.png') }}">
+        </a>
+        <a id="btn_batal" title="Batalkan Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_delete()">
+            <img src="{{ asset('assets/images/cancel.png') }}">
+        </a>
+        <a id="btn_cetak"  title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print()">
 			<img src="{{ asset('assets/images/view.png') }}">
 		</a>
-		<a id="btn_batal_cetak"  title="Batal Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_delete_print()">
+        <a id="btn_batal_cetak"  title="Batal Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_delete_print()">
 			<img src="{{ asset('assets/images/cancel-print.png') }}">
 		</a>
-	</div>
-	
-	<div data-options="region: 'center'">
-		<div class="easyui-layout" fit="true">
+    </div>
+
+
+    <div data-options="region: 'center'">
+        <div class="easyui-layout" fit="true">
             <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Tgl. Transaksi</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px" class="date"/></td></tr>
+                    <tr><td id="label_form" align="center">Tgl. Pelunasan</td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td></tr>
                     <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px" class="date"/></td></tr>
-                    <tr>
-                        <td id="label_form"><br></td>
-                    </tr>
-                    <tr>
-                        <td id="label_form" align="center">Lokasi</td>
-                    </tr>
-                    <tr>
-                        <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td>
-                    </tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Jenis Trans</td></tr>
-                    <tr><td align="center">
-                        <select name="txt_jenis_trans" id="txt_jenis_trans" style="width:100px" class="easyui-combobox" panelHeight="auto">
-                            <option value="">Tampil Semua</option>
-                            <?php
-                            foreach ($aJenis as $item) {
-                                echo '<option value="'.strtoupper($item).'">'.$item.'</option>';
-                            }
-                            ?>
-                        </select>
-                    </td></tr>
+                    <tr><td id="label_form" align="center">Lokasi</td></tr>
+                    <tr><td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">No. Trans</td></tr>
+                    <tr><td id="label_form" align="center">No. Pelunasan</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Referensi</td></tr>
-                    <tr><td align="center"><input id="txt_referensi_filter" name="txt_referensi_filter" style="width:100px" class="label_input" /></td></tr>
+                    <tr><td id="label_form" align="center">Supplier</td></tr>
+                    <tr><td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Status</td></tr>
                     <tr><td align="center">
                         <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
                         <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
                         <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
                         <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
                     </td></tr>
-                    <tr><td id="label_form"><br></td></tr>
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
             </div>
@@ -85,114 +58,104 @@ else if (strtoupper($jenis)=='MEMORIAL')
                 </div>
             </div>
         </div>
-	</div>	
+    </div>
 </div>
 
-    <div id="form_cetak" title="Cetak Kas" style="width:660px; height:500px">
-        <div id="area_cetak"></div>
-    </div>
+<div id="form_cetak" title="Cetak Kas" style="width:660px; height:500px">
+    <div id="area_cetak"></div>
+</div>
 
-    <div id="alasan_pembatalan" title="Alasan Pembatalan">
-        <table style="padding:5px">
-            <tr>
-                <td>
-                    <textarea prompt="Alasan Pembatalan" name="alasanpembatalan" class="label_input" id="ALASANPEMBATALAN"
-                        multiline="true" style="width:300px; height:55px" data-options="validType:'length[0, 500]'"></textarea>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div id="alasan_pembatalan" title="Alasan Pembatalan">
+    <table style="padding:5px">
+        <tr>
+            <td>
+                <textarea prompt="Alasan Pembatalan" name="alasanpembatalan" class="label_input" id="ALASANPEMBATALAN" multiline="true"
+                    style="width:300px; height:55px" data-options="validType:'length[0, 500]'"></textarea>
+            </td>
+        </tr>
+    </table>
+</div>
 
-    <div id="alasan_pembatalan-buttons">
-        <table cellpadding="0" cellspacing="0" style="width:100%">
-            <tr>
-                <td style="text-align:right">
-                    <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
-                        onclick="javascript:batal_trans()">Batal</a>
-                </td>
-            </tr>
-        </table>
-    </div>
+<div id="alasan_pembatalan-buttons">
+    <table cellpadding="0" cellspacing="0" style="width:100%">
+        <tr>
+            <td style="text-align:right">
+                <a class="easyui-linkbutton" iconCls="icon-save" id='btn_alasan_pembatalan'
+                    onclick="javascript:batal_trans()">Batal</a>
+            </td>
+        </tr>
+    </table>
+</div>
 @endsection
 
 @push('js')
-<script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
-</script>
+<script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
 <script type="text/javascript" src="{{ asset('assets/js/utils.js') }}"></script>
 <script>
 var edit_row = false;
+var idtrans = "";
 var counter = 0;
+var row = {};
 
-$(document).ready(function() {
-    console.log("{{ $jenis }}");
-    browse_data_lokasi('#txt_lokasi');
-
-    //WAKTU BATAL DI GRID, tidak bisa close
-    //PRINT GRID
-    $("#table_data").datagrid({
-        onSelect: function() {
-            row = $('#table_data').datagrid('getSelected');
-        }
-    });
-
-    create_form_login();
-    buat_table();
+$(document).ready( function() {
+	browse_data_lokasi('#txt_lokasi');
+	
+	$("#table_data").datagrid({
+		onSelect: function() {
+			row = $('#table_data').datagrid('getSelected');
+		}
+	});
+	
+	create_form_login();
+	buat_table();
 
     $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
 
-    $("#form_input").dialog({
-        onOpen: function() {
-            $('#form_input').form('clear');
-        },
-        buttons: '#dlg-buttons'
-    }).dialog('close');
+	$("#alasan_pembatalan").dialog({
+		onOpen: function() {
+			$('#alasan_pembatalan').form('clear');
+		},
+		buttons: '#alasan_pembatalan-buttons',
+	}).dialog('close');
 
-    $("#form_cetak").window({
-        collapsible: false,
-        minimizable: false,
-        tools: [{
-            text: '',
-            iconCls: 'icon-print',
-            handler: function() {
-                $("#area_cetak").printArea({
-                    mode: 'iframe'
-                });
+	$("#form_cetak").window({
+		collapsible: false,
+		minimizable: false,
+		tools      : [{
+			text   : '',
+			iconCls: 'icon-print',
+			handler: function() {
+				$("#area_cetak").printArea({ mode: 'iframe'});
 
-                $("#form_cetak").window({
-                    closed: true
-                });
-            }
-        }, {
-            text: '',
-            iconCls: 'icon-excel',
-            handler: function() {
-                export_excel('Faktur Kas/Bank/Giro/Memorial', $("#area_cetak").html());
-                return false;
-            }
-        }]
-    }).window('close');
+				$("#form_cetak").window({
+					closed: true
+				});
+			}
+		},{
+			text   : '',
+			iconCls: 'icon-excel',
+			handler: function() {
+				export_excel('Faktur Pelunasan Hutang', $("#area_cetak").html());
+				return false;
+			}
+		}]
+	}).window('close');
 
-    $("#alasan_pembatalan").dialog({
-        onOpen: function() {
-            $('#alasan_pembatalan').form('clear');
-        },
-        buttons: '#alasan_pembatalan-buttons',
-    }).dialog('close');
     tutupLoader();
 });
 
-/* FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER */
+/*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
 
-shortcut.add('F2', function() {
-    before_add();
+shortcut.add('F2',function() {
+	before_add();
 });
 
 function before_add() {
     $('#mode').val('tambah');
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah {{ ucfirst(strtolower($jenis)) }}',
-                '{{ route('atena.akuntansi.kas.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '', 'jenis' => $jenis]) }}',
+            parent.buka_submenu(null, 'Tambah Pelunasan Hutang }}',
+                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -205,8 +168,8 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.kodekas,
-                '{{ route('atena.akuntansi.kas.form', ['kode' => $kodemenu, 'mode' => 'ubah', 'jenis' => $jenis]) }}&data=' +
+            parent.buka_submenu(null, row.kodepelunasan_hutang,
+                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                 row.uuidkas,
                 'fa fa-pencil');
         } else {
@@ -466,48 +429,41 @@ async function cetak(uuidtrans) {
 }
 
 function refresh_data() {
-    $('#table_data').datagrid('reload');
+	$('#table_data').datagrid('reload');
 }
 
 function filter_data() {
-    var getLokasi = $('#txt_lokasi').combogrid('grid');
-    var dataLokasi = getLokasi.datagrid('getChecked');
-    var lokasi = "";
-    for (var i = 0; i < dataLokasi.length; i++) {
-        lokasi += (dataLokasi[i]["id"] + ",");
-    }
-    lokasi = lokasi.substring(0, lokasi.length - 1);
-    var status = [];
-
-    $("[name='cb_status_filter[]']:checked").each(function() {
-        status.push($(this).val());
-    });
-
-    $('#table_data').datagrid('load', {
-        jenistransaksi: $('#txt_jenis_trans').combobox('getValue'),
-        tglawal       : $('#txt_tgl_aw_filter').datebox('getValue'),
-        tglakhir      : $('#txt_tgl_ak_filter').datebox('getValue'),
-        kodetrans     : $('#txt_kodetrans_filter').val(),
-        referensi     : $('#txt_referensi_filter').val(),
-        jenis         : '{{ $jenis }}',
-        status        : status,
-        lokasi        : lokasi,
-    });
+	var getLokasi  = $('#txt_lokasi').combogrid('grid');
+	var dataLokasi = getLokasi.datagrid('getChecked');
+	var lokasi     = "";
+	for (var i = 0; i < dataLokasi.length; i++) {
+		lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
+	}
+	lokasi = lokasi.substring(0, lokasi.length - 1);
+	var status = [];
+	$("[name='cb_status_filter[]']:checked").each( function() {
+		status.push($(this).val());
+	});
+	$('#table_data').datagrid('load',{
+		kodetrans: $('#txt_kodetrans_filter').val(),
+		referensi: $('#txt_nama_supplier_filter').val(),
+		tglawal  : $('#txt_tgl_aw_filter').datebox('getValue'),
+		tglakhir : $('#txt_tgl_ak_filter').datebox('getValue'),
+		status   : status,
+		lokasi   : lokasi,
+	});
 }
 
 function buat_table() {
-    $("#table_data").datagrid({
-        fit         : true,
+	$("#table_data").datagrid({
+		fit         : true,
         singleSelect: true,
         remoteSort  : false,
         multiSort   : true,
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadTransaksiDataGridKas,
-        queryParams     : {
-            jenis: '{{ $jenis }}',
-        },
+        url         : link_api.loadDataGridPelunasanHutang,
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {
@@ -515,55 +471,40 @@ function buat_table() {
             else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
-        frozenColumns:[[
-			{field:'tgltrans',title:'Tgl. Trans',width:70,sortable:true,formatter:ubah_tgl_indo, align:'center',},
-			{field:'jeniskas',title:'Jenis',width:100,sortable:true},
-			{field:'kodekas',title:'No. Trans',width:140,sortable:true},
-		]],
 		columns: [[
+			{field:'tgltrans',title:'Tgl. Pelunasan',width:100,sortable:true,formatter:ubah_tgl_indo,align:'center'},
+			{field:'kodepelunasan',title:'No. Pelunasan',width:150,sortable:true},
 			{field:'kodelokasi',title:'Lokasi',width:60,sortable:true,align:'center'},
 			{field:'namalokasi',title:'Nama Lokasi',width:120,sortable:true,align:'center'},
-                        <?php
-		if (strtoupper($jenis)=='KAS_BANK') {
-		?>
-			{field:'namaperkiraankas',title:'Akun Kas/Bank',width:150,sortable:true},
-			{field:'amountkurs',title:'Nominal ({{ session("SIMBOLCURRENCY") }})',width:110,sortable:true,formatter:format_amount, align:'right'},
-			{field:'keterangan',title:'Keterangan',width:400,sortable:true},
-		<?php
-		}
-		?>
-            {field:'referensi',title:'Referensi',width:150,sortable:true},
-			{field:'totaldebet',title:'Total D/K',width:110,sortable:true,formatter:format_amount, align:'right'},
+			{field:'namasupplier',title:'Nama Supplier',width:150,sortable:true},
+			{field:'kodetandaterima',title:'No. TT',width:150,sortable:true},
+			{field:'kodekasbank',title:'No. Perkiraan',width:100,sortable:true},
+			//{field:'KODEKAS',title:'Kd. Kas/Bank',width:120,sortable:true},
+			//{field:'KODEMEMO',title:'Giro Trans ID',width:120,sortable:true},
+			//{field:'NOGIRO',title:'Giro Number',width:100,sortable:true},
+			{field:'total',title:'Nominal',width:110,sortable:true,formatter:format_amount, align:'right'},
+			{field:'catatan',title:'Keterangan',width:250,sortable:true},
 			{field:'userbuat',title:'User Entry',width:100,sortable:true},
 			{field:'tglentry',title:'Tgl. Input',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
 			{field:'userhapus',title:'User Batal',width:100,sortable:true},
 			{field:'tglbatal',title:'Tgl. Batal',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
 			{field:'alasanbatal',title:'Alasan Pembatalan',width:250,sortable:true},
-			{field:'status',title:'Status',width:50,sortable:true,align:'center'},
-            ]
-        ],
-        onDblClickRow: function(index, data) {
-            before_edit();
-        },
-    });
+			{field:'status',title:'Status',width:60,sortable:true,align:'center'},
+		]],
+		onDblClickRow: function(index, data) {
+			before_edit();
+		},
+	});
 }
 
-function tutupTab() {
-    //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-    var tab = $('#tab_transaksi').tabs('getSelected');
-    var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-    if ($('#tab_transaksi').tabs('getSelected').panel('options').title != "Grid") {
-        $('#tab_transaksi').tabs('close', index);
-    }
-}
-
-function reload() {
-    $('#table_data').datagrid('reload');
+function reload()
+{
+	$('#table_data').datagrid('reload');	
 }
 
 function browse_data_lokasi(id) {
-    $(id).combogrid({
-        panelWidth: 380,
+	$(id).combogrid({
+		panelWidth: 380,
         url: link_api.browseLokasi,
         idField: 'kode',
         textField: 'nama',
@@ -577,26 +518,26 @@ function browse_data_lokasi(id) {
                 return 'background-color:#A8AEA6';
             }
         },
-        columns: [
-            [{
-                    field: 'ck',
-                    checkbox: true
-                },
-                {
-                    field: 'kode',
-                    title: 'Kode',
-                    width: 80,
-                    sortable: true
-                },
-                {
-                    field: 'nama',
-                    title: 'Nama',
-                    width: 240,
-                    sortable: true
-                },
-            ]
-        ]
-    });
+		columns: [
+			[{
+					field: 'ck',
+					checkbox: true
+				},
+				{
+					field: 'kode',
+					title: 'Kode',
+					width: 80,
+					sortable: true
+				},
+				{
+					field: 'nama',
+					title: 'Nama',
+					width: 240,
+					sortable: true
+				},
+			]
+		]
+	});
 }
 </script>
 @endpush

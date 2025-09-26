@@ -51,9 +51,13 @@
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
             </div>
-            <div data-options="region:'center',">
-                <div class="title-grid"> Riwayat Transaksi </div>
-                <table id="table_data"></table>
+            <div data-options="region:'center'">
+                <div class="easyui-layout" data-options="fit:true">
+                    <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+                    <div data-options="region:'center'">
+                    <table id="table_data"></table>
+                    </div>
+                </div>
             </div>
         </div>
 	</div>	
@@ -469,12 +473,9 @@ function buat_table() {
 		pagination  : true,
 		clientPaging: false,
 		rowStyler   : function(index, row) {
-            if (row.status == 'S')
-                return 'background-color:{{ session('WARNA_STATUS_S') }}';
-            else if (row.status == 'P')
-                return 'background-color:{{ session('WARNA_STATUS_P') }}';
-            else if (row.status == 'D')
-                return 'background-color:{{ session('WARNA_STATUS_D') }}';
+            if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
+            else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
+            else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
 		frozenColumns:[[
 			{field:'tgltrans',title:'Tgl. Trans',width:80,sortable:true,formatter:ubah_tgl_indo,align:'center'},
