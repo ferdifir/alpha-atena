@@ -717,7 +717,7 @@
         browse_data_referensi('#IDREFERENSI', 'customer');
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDREFERENSI"), "uuidcustomer", row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#NAMAREFERENSI").textbox('clear');
         $("#ALAMAT").textbox('clear');
@@ -792,7 +792,7 @@
         browse_data_referensi('#IDREFERENSI', 'customer');
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDREFERENSI"), "uuidcustomer", row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#NAMAREFERENSI").textbox('clear');
         $("#ALAMAT").textbox('clear');
@@ -866,7 +866,7 @@
 
         //SUPPLIER
         var url = link_api.browseSupplier;
-        get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDREFERENSI"), "uuidsupplier", row.uuidreferensi, url, '{{ session('TOKEN') }}');
 
         $("#IDREFERENSI").combogrid({
           prompt: 'Kode Supplier',

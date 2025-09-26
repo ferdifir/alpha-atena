@@ -429,7 +429,7 @@ var link_api = {
     informasiTransRefBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/informasi-trans-referensi`,
     browseBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-bukti-penerimaan-barang`,
     cekBisaBerlanjutPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/cek-bisa-berlanjut`,
-    loadDataBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-bbm`,
+    loadDataBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-bukti-penerimaan-barang`,
     browseBarangPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-barang`,
     //pembelian
     loadDataHeaderPembelian: `${base_url_api}atena/pembelian/pembelian/load-data-header`,
@@ -656,6 +656,37 @@ var link_api = {
     loadDaftarUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/load-daftar-uang-muka`,
     hapusUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/hapus`,
     simpanUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/simpan`,
+    //Keuangan
+    //Saldo Awal Hutang
+    loadDataGridSaldoAwalHutang  : `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
+    loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
+    simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
+    batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    //Saldo Awal Piutang
+    loadDataGridSaldoAwalPiutang  : `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
+    loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
+    simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
+    batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    //Debet Note
+    loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
+    loadDataHeaderDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-header`,
+    simpanDebetNote: `${base_url_api}atena/keuangan/nota-debit/simpan`,
+    loadDataDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data`,
+    cetakDebetNote: `${base_url_api}atena/keuangan/nota-debit/cetak/`,
+    batalDebetNote: `${base_url_api}atena/keuangan/nota-debit/batal-trans`,
+    ubahStatusjadiInputDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-input`,
+    ubahStatusjadiSlipDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-slip`,
+    getStatusDebetNote: `${base_url_api}atena/keuangan/nota-debit/get-status-trans`,
+    //Pelunasan Hutang
+    loadDataGridPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-grid`,
+    loadDataHeaderPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-header`,
+    simpanPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/simpan`,
+    loadDataPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data`,
+    cetakPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/cetak/`,
+    batalPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/batal-trans`,
+    ubahStatusjadiInputPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-input`,
+    ubahStatusjadiSlipPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-slip`,
+    getStatusPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/get-status-trans`,
 };
 
 var modul_kode = {

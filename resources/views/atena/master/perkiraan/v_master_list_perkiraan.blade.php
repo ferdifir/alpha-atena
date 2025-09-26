@@ -516,7 +516,12 @@
 
     function refresh_data() {
       buat_tree();
-      $('#table_data').datagrid('reload');
+            let pager = $('#table_data').datagrid('getPager');
+            let pageOptions = pager.pagination('options');
+            let currentPage = pageOptions.pageNumber;
+      $('#table_data').datagrid('reload', {
+                page: currentPage
+            });
     }
 
     function reload() {

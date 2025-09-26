@@ -121,10 +121,14 @@
         </div>
         <div data-options="region:'center'">
           <div class="easyui-layout" fit="true" id="main_wrapper">
-            <div data-options="region:'center',">
-  <div class="title-grid"> Riwayat Transaksi </div>
-  <table id="table_data"></table>
-</div>
+            <div data-options="region:'center'">
+              <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+                <div data-options="region:'center'">
+                  <table id="table_data"></table>
+                </div>
+              </div>
+            </div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
               title="Daftar Antrian PO/Retur Jual" style="width: 25%;">
               <div id="table_pending"></div>
@@ -268,6 +272,15 @@
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
+          const isTabOpen = parent.check_tab_exist('Tambah Bukti Penerimaan', 'fa fa-plus');
+          if (isTabOpen) {
+            $.messager.alert(
+              'Warning',
+              'Anda sedang membuka tab Tambah Bukti Penerimaan, harap tutup terlebih dahulu jika ingin membuka tab baru',
+              'warning'
+            );
+            return;
+          }
           parent.buka_submenu(null, 'Tambah Bukti Penerimaan',
             '{{ route('atena.inventori.buktipenerimaan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}&dataref=' +
             idtransref + '&jenistransref=' + jenistransref,
@@ -504,7 +517,12 @@
     }
 
     function refresh_data() {
-      $('#table_data').datagrid('reload');
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      $('#table_data').datagrid('reload', {
+        page: currentPage
+      });
     }
 
     function filter_data() {
