@@ -6,8 +6,8 @@ function get_status_trans(token, v_link, v_idtranskey, v_idtrans, callback) {
         body: form,
         cache: "no-cache",
         headers: {
-            Authorization: 'Bearer ' + token,
-        }
+            Authorization: "Bearer " + token,
+        },
     })
         .then((response) => response.json())
         .then((data) => callback(data))
@@ -26,7 +26,6 @@ function getCurrentDateTime() {
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
-
 
 async function getCetakDocument(token, url, body) {
     try {
@@ -103,4 +102,10 @@ async function fetchData(token, url, body, isJson = true) {
         const textError = getTextError(error);
         $.messager.alert("Error", textError, "error");
     }
+}
+
+function showErrorAlert(e) {
+    const error = typeof e === "string" ? e : e.message;
+    const textError = getTextError(error);
+    $.messager.alert("Error", textError, "error");
 }

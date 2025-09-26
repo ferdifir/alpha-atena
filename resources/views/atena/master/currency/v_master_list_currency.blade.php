@@ -279,7 +279,12 @@
 
     function refresh_data() {
       var row = $('#table_data').datagrid('clearSelection');
-      $('#table_data').datagrid('reload');
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      $('#table_data').datagrid('reload', {
+        page: currentPage
+      });
     }
 
     function changeTitleTab(mode) {

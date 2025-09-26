@@ -13,6 +13,7 @@
               <div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
 
               <input type="hidden" id="mode" name="mode">
+              <input type="hidden" name="tglentry">
               <table>
                 <tr>
                   <td valign="top">
@@ -91,10 +92,9 @@
                         <tr id="header">
                           <td id="label_form" align="left" name="nopo">No. Pesanan Pembelian</td>
                           <td id="label_form" align="left" hidden name="noretur">No. Retur</td>
-                          <td id="label_form" align="left" hidden name="nolokasi">No. Surat Jalan
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                          <td id="label_form" align="left"><input name="uuidtransreferensi" id="IDTRANSREFERENSI"
-                              style="width:243px"></td>
+                          <td id="label_form" align="left">
+                            <input name="uuidtransreferensi" id="IDTRANSREFERENSI" style="width:243px">
+                          </td>
                           <input type="hidden" id="KODETRANSREFERENSI" name="kodetransreferensi">
                         </tr>
                       </table>
@@ -231,13 +231,11 @@
     style="height:164cm;padding:15px 10px 10px 10px;top:20px">
     <center>
       <div id="button_simpan">
-
         <a title="Simpan" class="easyui-linkbutton button_add" id='simpan' onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan</a><br><br>
         <a title="Simpan & Cetak" class="easyui-linkbutton button_add_print" id='simpan_cetak'
           onclick="simpan(this.id)"
           style="height:40px;width:165px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Simpan & Cetak</a>
-
         <div>
     </center>
   </div>
@@ -389,11 +387,8 @@
         }
       });
 
-
-
       $('#JENISTRANSAKSI').combobox({
         onChange: function(newVal, oldVal) {
-
           $("#IDLOKASIASAL").combogrid('readonly', true);
 
           if (newVal == "PEMBELIAN") {
@@ -532,8 +527,6 @@
           var lokasi = $("#IDLOKASI").combogrid('getValue');
           var ref = $("#IDREFERENSI").combogrid('getValue');
 
-          //   var url = base_url + urltransreferensi + '/' + lokasi + '/' + ref;
-
           //   ubah_url_combogrid($("#IDTRANSREFERENSI"), url, true);
           $('#IDTRANSREFERENSI').combogrid('grid').datagrid('options').url = urltransreferensi;
           $('#IDTRANSREFERENSI').combogrid('clear');
@@ -545,7 +538,7 @@
 
           //jika transaksinya header
           // legacy codenya pakai logic TRANSREFERENSI == 'HEADER' ? 0 : 1
-          if (TRANSREFERENSI != 'HEADER') {
+          if (TRANSREFERENSI !== 'HEADER') {
             $("#header").hide();
             $('#table_data_detail').datagrid('showColumn', 'kodetransreferensi');
           } else {
@@ -567,7 +560,6 @@
       buat_table_detail_barcode();
 
       {{ $mode }}();
-      tutupLoader();
     })
 
     shortcut.add('F8', function() {
@@ -627,7 +619,7 @@
       });
 
       //jika transaksinya header
-      if (TRANSREFERENSI = 'HEADER') {
+      if (TRANSREFERENSI !== 'HEADER') {
         $("#header").hide();
         $('#table_data_detail').datagrid('showColumn', 'kodetransreferensi');
       } else {
@@ -644,6 +636,8 @@
       reset_detail();
 
       fill_form_transreferensi();
+
+      tutupLoader();
     }
 
     async function fill_form_transreferensi() {
@@ -708,13 +702,13 @@
               userentry: transreferensi.userbuat
             }]);
 
-            $('#IDTRANSREFERENSI').combogrid('setValue', transreferensi.uuidpo, );
+            $('#IDTRANSREFERENSI').combogrid('setValue', transreferensi.uuidpo);
 
             $('#KODETRANSREFERENSI').val(transreferensi.kodepo);
           }
 
           // memuat data detail dari SO
-          load_data_detail(transreferensi.uuidpo);
+          load_data_detail(transreferensi.uuidpo, false);
         } else if (jenistransreferensi == 'RETUR') {
           setTimeout(function() {
             $('#IDREFERENSI').combogrid('setValue', {
@@ -722,13 +716,12 @@
               kode: transreferensi.kodecustomer
             });
 
-            load_data_detail(transreferensi.uuidreturjual);
+            load_data_detail(transreferensi.uuidreturjual, false);
           }, 250)
 
           $('#KODEREFERENSI').val(transreferensi.kodecustomer);
 
           $('#NAMAREFERENSI').textbox('setValue', transreferensi.namacustomer);
-
 
           if (TRANSREFERENSI == 'HEADER') {
             $('#IDTRANSREFERENSI').combogrid('grid').datagrid('loadData', [{
@@ -748,9 +741,27 @@
       }
     }
 
-    function ubah() {
+    async function ubah() {
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
+
+      try {
+        const res = await fetchData(
+          '{{ session('TOKEN') }}',
+          link_api.loadDataHeaderBuktiPenerimaanBarang, {
+            uuidbbm: '{{ $data }}'
+          }
+        );
+        if (res.success) {
+          row = res.data;
+        } else {
+          row = null;
+          $.messager.alert('Error', res.message, 'error');
+        }
+      } catch (e) {
+        row = null;
+        showErrorAlert(e);
+      }
 
       if (row) {
         get_status_trans('{{ session('TOKEN') }}', "atena/inventori/bukti-penerimaan-barang", 'uuidbbm', row.uuidbbm,
@@ -783,8 +794,10 @@
                 $('#btn_simpan_modal').removeAttr('onclick');
               }
 
+              let idFieldRef;
               var jenistrans = $('#JENISTRANSAKSI').combogrid('getValue');
               if (jenistrans == "PEMBELIAN") {
+                idFieldRef = "uuidsupplier";
                 $("#tabel_pembelian_retur").show();
                 $("#tabel_transfer").hide();
                 $("[name=keteranganlokasi]").html("Lokasi");
@@ -795,7 +808,8 @@
                 browse_data_referensi('#IDREFERENSI', 'supplier');
                 //SUPPLIER
                 var url = link_api.browseSupplier;
-                get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url);
+                get_combogrid_data($("#IDREFERENSI"), "uuidsupplier", row.uuidreferensi, url,
+                  '{{ session('TOKEN') }}');
 
                 $("#IDREFERENSI").combogrid({
                   prompt: 'Kode Supplier',
@@ -854,6 +868,7 @@
 
                 urltransreferensi = link_api.browseBBMPesananPembelian;
               } else if (jenistrans == "RETUR") {
+                idFieldRef = "uuidcustomer";
                 $("#tabel_pembelian_retur").show();
                 $("#tabel_transfer").hide();
                 $("[name=keteranganlokasi]").html("Lokasi");
@@ -864,7 +879,8 @@
                 browse_data_referensi('#IDREFERENSI', 'customer');
                 //CUSTOMER
                 var url = link_api.browseCustomer;
-                get_combogrid_data($("#IDREFERENSI"), row.uuidreferensi, url);
+                get_combogrid_data($("#IDREFERENSI"), "uuidcustomer", row.uuidreferensi, url,
+                  '{{ session('TOKEN') }}');
 
                 $("#IDREFERENSI").combogrid({
                   prompt: 'Kode Customer',
@@ -930,9 +946,6 @@
               var lokasi = $("#IDLOKASI").combogrid('getValue');
               var ref = $("#IDREFERENSI").combogrid('getValue');
 
-              //   var url = base_url + urltransreferensi + '/' + lokasi + '/' + ref;
-
-              //   ubah_url_combogrid($("#IDTRANSREFERENSI"), url, true);
               $('#IDTRANSREFERENSI').combogrid('grid').datagrid('options').url = urltransreferensi;
               $('#IDTRANSREFERENSI').combogrid('clear');
               $('#IDTRANSREFERENSI').combogrid('grid').datagrid('load', {
@@ -942,9 +955,12 @@
               });
 
               $("#IDREFERENSI").combogrid('setValue', {
-                id: row.uuidreferensi,
+                [idFieldRef]: row.uuidreferensi,
                 kode: row.kodereferensi
               });
+              $('#NAMAREFERENSI').textbox('setValue', row.namareferensi);
+              $('#ALAMAT').textbox('setValue', row.alamatreferensi);
+              $('#TELP').textbox('setValue', row.telpreferensi);
               $('#IDREFERENSI').combogrid('readonly');
               $('#IDTRANSREFERENSI').combogrid('readonly');
 
@@ -996,7 +1012,6 @@
       if (isValid) {
         isValid = cek_datagrid($('#table_data_detail'));
       }
-
 
       // jika terdapat barcode yang di scan, maka
       if (SCANBARCODERETURJUAL == 'YA') {
@@ -1101,7 +1116,7 @@
       }
     }
 
-    async function load_data_detail(idtrans) {
+    async function load_data_detail(idtrans, showloader = true) {
       var jenis = $('#JENISTRANSAKSI').combobox('getValue');
 
       if ($("#mode").val() == "tambah") {
@@ -1117,7 +1132,7 @@
         }
 
         try {
-          bukaLoader();
+          if (showloader) bukaLoader();
           const res = await fetchData(
             '{{ session('TOKEN') }}',
             url, {
@@ -1126,8 +1141,8 @@
             }
           );
           if (res.success) {
-            $('#table_data_detail').datagrid('loadData', res.detail);
-            var rows = res.detail;
+            $('#table_data_detail').datagrid('loadData', res.data);
+            const rows = res.data;
 
             for (var i = 0; i < rows.length; i++) {
               hitung_subtotal_detail(i, rows[i])
@@ -1462,7 +1477,7 @@
 
             var jenis = $('#JENISTRANSAKSI').combobox('getValue');
 
-            if (row.idlokasi != $("#IDLOKASI").combogrid('getValue') ||
+            if (row.uuidlokasi != $("#IDLOKASI").combogrid('getValue') ||
               row.tgltrans > $('#TGLTRANS').datebox('getValue')) {
               $.messager.show({
                 title: 'Warning',
@@ -1510,37 +1525,26 @@
         rownumbers: true,
         data: [],
         toolbar: [{
-            text: 'Tambah',
-            iconCls: 'icon-add',
-            handler: function() {
-              var index = $(dg).datagrid('getRows').length;
-              $(dg).datagrid('appendRow', {
-                kodetransreferensi: '',
-                jmltoleransi: 0,
-              }).datagrid('gotoCell', {
-                index: index,
-                field: 'kodetransreferensi'
-              });
-            }
-          }, {
-            text: 'Hapus',
-            iconCls: 'icon-remove',
-            handler: function() {
-              $(dg).datagrid('deleteRow', indexDetail);
-              hitung_grandtotal();
-            }
+          text: 'Tambah',
+          iconCls: 'icon-add',
+          handler: function() {
+            var index = $(dg).datagrid('getRows').length;
+            $(dg).datagrid('appendRow', {
+              kodetransreferensi: '',
+              jmltoleransi: 0,
+            }).datagrid('gotoCell', {
+              index: index,
+              field: 'kodetransreferensi'
+            });
           }
-          // ,{
-          // text:'Ubah',
-          // iconCls:'icon-edit',
-          // handler:function(){
-          // $(dg).datagrid('editCell', {
-          // index: indexDetail,
-          // field: 'kodebarang'
-          // });
-          // }
-          // }
-        ],
+        }, {
+          text: 'Hapus',
+          iconCls: 'icon-remove',
+          handler: function() {
+            $(dg).datagrid('deleteRow', indexDetail);
+            hitung_grandtotal();
+          }
+        }],
         frozenColumns: [
           [{
               field: 'uuidtransreferensi',
@@ -1843,7 +1847,7 @@
               },
               {
                 field: 'uuidcurrency',
-                title: 'Kode Currency',
+                title: 'Kode Mata Uang',
                 hidden: true
               },
               {
@@ -2042,7 +2046,7 @@
         },
         onBeforeCellEdit: function(index, field) {
           var row = $(this).datagrid('getRows')[index];
-          if (row.idtransreferensi != 0 && row.idtransreferensi != '' && field == 'satuan') {
+          if (row.uuidtransreferensi != 0 && row.uuidtransreferensi != '' && field == 'satuan') {
             // jika terdapat transreferensi, satuan tidak boleh dirubah
             $.messager.show({
               title: 'Warning',
@@ -2094,7 +2098,7 @@
           } else if (field == 'kodebarang') {
             var idtransreferensi = '';
             //jika transaksi pr detail
-            if (row.idtransreferensi) idtransreferensi = row.idtransreferensi;
+            if (row.uuidtransreferensi) idtransreferensi = row.uuidtransreferensi;
 
 
             if (TRANSREFERENSI == 'HEADER') {
@@ -2123,7 +2127,6 @@
               }
 
               ed.combogrid('grid').datagrid('options').url = link_api.browseBarangBySupplier;
-              //    + idreferensi + '/' + idlokasi + '/penerimaan';
               ed.combogrid('grid').datagrid('load', {
                 q: '',
                 uuidsupplier: idreferensi,
@@ -2148,10 +2151,10 @@
             }
           } else if (field == 'satuan') {
             ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang + row
-              .idbarang;
+              .uuidbarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
-              idbarang: row.idbarang
+              uuidbarang: row.uuidbarang
             });
             ed.combogrid('showPanel');
           } else if (field == 'currency') {
@@ -2169,12 +2172,12 @@
             case 'kodetransreferensi':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.idtransreferensi : '';
+              var id = data ? data.uuidtransreferensi : '';
               var adanpwp = data ? data.adanpwp : '';
               var tgltrans = data ? data.tgltrans : '';
-              var lokasi = data ? data.idlokasi : '';
+              var lokasi = data ? data.uuidlokasi : '';
               var namasyaratbayar = data ? data.namasyaratbayar : '';
-              var idsyaratbayar = data ? data.idsyaratbayar : '';
+              var idsyaratbayar = data ? data.uuidsyaratbayar : '';
               var selisih = data ? data.selisih : '';
 
               if (lokasi != $("#IDLOKASI").combogrid('getValue') ||
@@ -2191,7 +2194,7 @@
                 uuidtransreferensi: id,
                 adanpwp: adanpwp,
                 namasyaratbayar: namasyaratbayar,
-                idsyaratbayar: idsyaratbayar,
+                uuidsyaratbayar: idsyaratbayar,
                 selisih: selisih,
                 kodebarang: '',
                 namabarang: '',
@@ -2259,7 +2262,7 @@
                   }
                 );
                 if (res.success) {
-                  hargabeli = res.data.harga_beli_terakhir;
+                  hargabeli = res.data.hargabeli;
                 } else {
                   $.messager.alert('Error', res.message, 'error');
                 }
@@ -2275,7 +2278,7 @@
               var currency;
               var nilaikurs;
 
-              if ((row.idtransreferensi === undefined || row.idtransreferensi == "") && TRANSREFERENSI ==
+              if ((row.uuidtransreferensi === undefined || row.uuidtransreferensi == "") && TRANSREFERENSI ==
                 'DETAIL') {
                 idcurrency = '{{ session('UUIDCURRENCY') }}';
                 currency = '{{ session('SIMBOLCURRENCY') }}';
@@ -2289,7 +2292,7 @@
               }
 
               row_update = {
-                idbarang: id,
+                uuidbarang: id,
                 ppn: ppn,
                 namabarang: nama,
                 barcodesatuan1: barcodesatuan1,
@@ -2307,7 +2310,7 @@
                 sisabbm: 0,
                 hargabeli: hargabeli,
                 harga: harga,
-                idcurrency: idcurrency,
+                uuidcurrency: idcurrency,
                 currency: currency,
                 nilaikurs: nilaikurs,
                 discpersen: discpersen,
@@ -2799,7 +2802,7 @@
             for (var i = 0; i < detail_rows.length; i++) {
               index = i;
 
-              if (detail_rows[i].idbarang == response.data.idbarang) {
+              if (detail_rows[i].uuidbarang == response.data.uuidbarang) {
                 break;
               } else {
                 index = -1;
@@ -2832,7 +2835,7 @@
 
         // mendapatkan jumlah barcode yang menagcu ke idbarang tertentu
         var jumlah_barcode = barcode_detail_rows.filter(function(item) {
-          return item.idbarang == row.idbarang;
+          return item.uuidbarang == row.uuidbarang;
         }).length;
 
         // jika jumlah barcode tidak sesuai dengan jumlah barang yang akan dikeluarkan

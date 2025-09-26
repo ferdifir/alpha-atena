@@ -756,16 +756,16 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         });
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDCUSTOMER"), "uuidcustomer", row.uuidcustomer, url, '{{ session('TOKEN') }}');
 
         //SUBCUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDSUBCUSTOMER"), "uuidcustomer", row.uuidsubcustomer, url, '{{ session('TOKEN') }}');
 
         if (row.uuidekspedisi != "" && row.uuidekspedisi != null) {
           //EKSPEDISI
           var url = link_api.browseEkspedisi;
-          get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url, '{{ session('TOKEN') }}');
+          get_combogrid_data($("#IDEKSPEDISI"), "uuidekspedisi", row.uuidekspedisi, url, '{{ session('TOKEN') }}');
         }
 
       }

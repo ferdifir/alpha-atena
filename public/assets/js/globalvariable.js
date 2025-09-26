@@ -428,7 +428,7 @@ var link_api = {
     informasiTransRefBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/informasi-trans-referensi`,
     browseBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-bukti-penerimaan-barang`,
     cekBisaBerlanjutPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/cek-bisa-berlanjut`,
-    loadDataBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-bbm`,
+    loadDataBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-bukti-penerimaan-barang`,
     browseBarangPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-barang`,
     //pembelian
     loadDataHeaderPembelian: `${base_url_api}atena/pembelian/pembelian/load-data-header`,
