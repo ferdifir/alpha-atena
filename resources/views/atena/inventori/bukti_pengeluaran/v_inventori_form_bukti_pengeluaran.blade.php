@@ -1425,63 +1425,60 @@
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          const data = $("#form_input :input").serializeArray();
-          const payload = {};
-          for (let i = 0; i < data.length; i++) {
-            if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
-              data[i].value = JSON.parse(data[i].value);
-            }
-            payload[data[i].name] = data[i].value;
+        const data = $("#form_input :input").serializeArray();
+        const payload = {};
+        for (let i = 0; i < data.length; i++) {
+          if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
+            data[i].value = JSON.parse(data[i].value);
           }
-          payload['jenis_simpan'] = use;
-          if (TRANSREFERENSI != 'HEADER') {
-            payload['uuidtransreferensi'] = payload['data_detail'][0].uuidtransreferensi;
-            payload['kodetransreferensi'] = payload['data_detail'][0].kodetransreferensi;
-          }
-
-          try {
-            tampilLoaderSimpan();
-            const res = await fetchData(
-              '{{ session('TOKEN') }}',
-              link_api.simpanInventoryBarangKeluar,
-              payload
-            );
-            cekbtnsimpan = true;
-            if (res.success) {
-              $.messager.show({
-                title: 'Info',
-                msg: 'Transaksi Sukses',
-                showType: 'show'
-              });
-
-              if (mode == 'ubah') {
-                ubah();
-              } else {
-                $('#form_input').form('clear');
-                if ('{{ $dataref }}' == 'undefined') {
-                  jenistransreferensi = '';
-                  transreferensi = null;
-                }
-                tambah();
-              }
-
-              if (use == 'simpan_cetak') {
-                cetak(res.data.uuidbbk);
-              }
-            } else {
-              $.messager.alert('Error', res.message, 'error');
-            }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
-          }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          payload[data[i].name] = data[i].value;
         }
+        payload['jenis_simpan'] = use;
+        if (TRANSREFERENSI != 'HEADER') {
+          payload['uuidtransreferensi'] = payload['data_detail'][0].uuidtransreferensi;
+          payload['kodetransreferensi'] = payload['data_detail'][0].kodetransreferensi;
+        }
+
+        try {
+          tampilLoaderSimpan();
+          const res = await fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.simpanInventoryBarangKeluar,
+            payload
+          );
+          cekbtnsimpan = true;
+          if (res.success) {
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+
+            if (mode == 'ubah') {
+              ubah();
+            } else {
+              $('#form_input').form('clear');
+              if ('{{ $dataref }}' == 'undefined') {
+                jenistransreferensi = '';
+                transreferensi = null;
+              }
+              tambah();
+            }
+
+            if (use == 'simpan_cetak') {
+              cetak(res.data.uuidbbk);
+            }
+          } else {
+            $.messager.alert('Error', res.message, 'error');
+          }
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
+        }
+
       }
     }
 

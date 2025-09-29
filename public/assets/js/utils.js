@@ -14,18 +14,18 @@ function get_status_trans(token, v_link, v_idtranskey, v_idtrans, callback) {
         .catch((error) => console.error("Error:", error));
 }
 
-function getCurrentDateTime() {
-    const now = new Date();
+// function getCurrentDateTime() {
+//     const now = new Date();
 
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
-    const hours = String(now.getHours()).padStart(2, "0");
-    const minutes = String(now.getMinutes()).padStart(2, "0");
-    const seconds = String(now.getSeconds()).padStart(2, "0");
+//     const year = now.getFullYear();
+//     const month = String(now.getMonth() + 1).padStart(2, "0");
+//     const day = String(now.getDate()).padStart(2, "0");
+//     const hours = String(now.getHours()).padStart(2, "0");
+//     const minutes = String(now.getMinutes()).padStart(2, "0");
+//     const seconds = String(now.getSeconds()).padStart(2, "0");
 
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-}
+//     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+// }
 
 async function getCetakDocument(token, url, body) {
     try {
@@ -104,8 +104,19 @@ async function fetchData(token, url, body, isJson = true) {
     }
 }
 
-function showErrorAlert(e) {
-    const error = typeof e === "string" ? e : e.message;
-    const textError = getTextError(error);
-    $.messager.alert("Error", textError, "error");
-}
+// function showErrorAlert(e) {
+//     let error;
+
+//     if (typeof e === "string") {
+//         error = e;
+//     } else if (e && e.message) {
+//         error = e.message;
+//     } else if (e) {
+//         error = String(e);
+//     } else {
+//         error = "Terdapat kesalahan dalam memproses data.";
+//     }
+
+//     const textError = getTextError(error);
+//     $.messager.alert("Error", textError, "error");
+// }

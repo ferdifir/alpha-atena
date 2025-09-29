@@ -105,7 +105,11 @@
         }
       }, false);
 
-      {{ $mode }}();
+      @if ($mode == 'tambah')
+        tambah();
+      @elseif ($mode == 'ubah')
+        ubah();
+      @endif
     })
     shortcut.add('F8', function() {
       simpan();
@@ -198,43 +202,44 @@
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          try {
-            tampilLoaderSimpan();
-            const data = $("#form_input :input").serializeArray();
-            const payload = {};
-            for (var i = 0; i < data.length; i++) {
-              payload[data[i].name] = data[i].value;
-            }
-            const res = await fetchData(
-              '{{ session('TOKEN') }}',
-              link_api.simpanUangMukaSO,
-              payload
-            );
-            if (res.success) {
-              if (mode == 'tambah') {
-                $.messager.show({
-                  title: 'Info',
-                  msg: 'Transaksi Sukses',
-                  showType: 'show'
-                });
-              } else {
-                $.messager.alert('Info', 'Transaksi Sukses', 'info');
-              }
-              {{ $mode }}();
-            } else {
-              $.messager.alert('Error', res.message, 'error');
-            }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
+        try {
+          tampilLoaderSimpan();
+          const data = $("#form_input :input").serializeArray();
+          const payload = {};
+          for (var i = 0; i < data.length; i++) {
+            payload[data[i].name] = data[i].value;
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          const res = await fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.simpanUangMukaSO,
+            payload
+          );
+          if (res.success) {
+            if (mode == 'tambah') {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Transaksi Sukses',
+                showType: 'show'
+              });
+            } else {
+              $.messager.alert('Info', 'Transaksi Sukses', 'info');
+            }
+            @if ($mode == 'tambah')
+              tambah();
+            @elseif ($mode == 'ubah')
+              ubah();
+            @endif
+          } else {
+            $.messager.alert('Error', res.message, 'error');
+          }
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
         }
+
       }
     }
 

@@ -465,6 +465,19 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
       }
     }
 
+    function getCurrentDateTime() {
+      const now = new Date();
+
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      const hours = String(now.getHours()).padStart(2, "0");
+      const minutes = String(now.getMinutes()).padStart(2, "0");
+      const seconds = String(now.getSeconds()).padStart(2, "0");
+
+      return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
     async function simpan(jenis_simpan) {
 
       var mode = $("#mode").val();
@@ -485,47 +498,45 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired()) {
-          const data = $("#form_input :input").serializeArray();
-          const payload = {};
-          for (const item of data) {
-            payload[item.name] = item.value;
-            if (item.name == 'data_detail') {
-              payload[item.name] = JSON.parse(item.value);
-            }
-          }
-          payload['jenis_simpan'] = jenis_simpan;
 
-          try {
-            tampilLoaderSimpan();
-            const response = await fetchData(
-              link_api.simpanInventoryKirimEkspedisi,
-              payload,
-            );
-            cekbtnsimpan = true;
-            if (!response.success) {
-              throw new Error(response.message || 'Gagal menyimpan data');
-            }
-            $('#form_input').form('clear');
-            $.messager.alert('Info', 'Transaksi Sukses', 'info');
-            if (mode == 'ubah') {
-              ubah();
-            } else {
-              tambah();
-            }
-            if (jenis_simpan == 'simpan_cetak') {
-              cetak(response.data.uuidkirim);
-            }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
+        const data = $("#form_input :input").serializeArray();
+        const payload = {};
+        for (const item of data) {
+          payload[item.name] = item.value;
+          if (item.name == 'data_detail') {
+            payload[item.name] = JSON.parse(item.value);
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
         }
+        payload['jenis_simpan'] = jenis_simpan;
+
+        try {
+          tampilLoaderSimpan();
+          const response = await fetchData(
+            link_api.simpanInventoryKirimEkspedisi,
+            payload,
+          );
+          cekbtnsimpan = true;
+          if (!response.success) {
+            throw new Error(response.message || 'Gagal menyimpan data');
+          }
+          $('#form_input').form('clear');
+          $.messager.alert('Info', 'Transaksi Sukses', 'info');
+          if (mode == 'ubah') {
+            ubah();
+          } else {
+            tambah();
+          }
+          if (jenis_simpan == 'simpan_cetak') {
+            cetak(response.data.uuidkirim);
+          }
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
+        }
+
       }
     }
 
@@ -1237,27 +1248,6 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       $("#TGLTRANS, #TGLKIRIM, #TGLJATUHTEMPO").datebox('setValue', date_format());
       $("#TGLJATUHTEMPO").datebox('readonly');
-    }
-
-    function isTokenExpired() {
-      const token = '{{ session('TOKEN') }}';
-      if (!token) {
-        return true;
-      }
-
-      try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
-
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        return expirationTime < currentTime;
-      } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
-        return true;
-      }
     }
 
     async function fetchData(url, body, isJson = true) {

@@ -801,11 +801,8 @@
     }
 
     function prev() {
-      if (!parent.isTokenExpired()) {
         window.location = "{{ route('atena.master.pengaturan.frame-master-master') }}";
-      } else {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-      }
+
     }
 
     async function simpan() {

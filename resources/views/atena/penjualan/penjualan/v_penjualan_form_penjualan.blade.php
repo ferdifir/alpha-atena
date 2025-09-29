@@ -630,7 +630,11 @@
       buat_table_detail_rekap();
       buat_table_detail_repacking();
 
-      {{ $mode }}();
+      @if ($mode == 'tambah')
+        tambah();
+      @elseif ($mode == 'ubah')
+          ubah();
+      @endif
     });
 
     shortcut.add('F8', function() {
@@ -1075,64 +1079,65 @@
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired(jwt)) {
-          prosessimpan = true;
-          try {
-            tampilLoaderSimpan();
-            const data = $("#form_input :input").serializeArray();
-            const payload = {};
-            for (var i = 0; i < data.length; i++) {
-              payload[data[i].name] = data[i].value;
-              if (data[i].name == 'data_detail') {
-                payload[data[i].name] = JSON.parse(data[i].value);
-              }
+        prosessimpan = true;
+        try {
+          tampilLoaderSimpan();
+          const data = $("#form_input :input").serializeArray();
+          const payload = {};
+          for (var i = 0; i < data.length; i++) {
+            payload[data[i].name] = data[i].value;
+            if (data[i].name == 'data_detail') {
+              payload[data[i].name] = JSON.parse(data[i].value);
             }
-            payload['jenis_simpan'] = jenis_simpan;
-            const res = await fetchData(
-              jwt, link_api.simpanPenjualanPenjualan, payload
-            );
-            cekbtnsimpan = true;
-            if (res.success) {
-              $('#form_input').form('clear');
-              uangmuka = 0;
-              transreferensi = null;
-              $.messager.show({
+          }
+          payload['jenis_simpan'] = jenis_simpan;
+          const res = await fetchData(
+            jwt, link_api.simpanPenjualanPenjualan, payload
+          );
+          cekbtnsimpan = true;
+          if (res.success) {
+            $('#form_input').form('clear');
+            uangmuka = 0;
+            transreferensi = null;
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+
+            //JIKA CUSTOMER BELI BARANG SAMA PADA HARI YANG SAMA
+            if (res.data.warningcustomer) {
+              $.messager.alert({
                 title: 'Info',
-                msg: 'Transaksi Sukses',
+                msg: 'Customer telah membeli barang yang sama di tanggal transaksi yang sama <br><br> Berikut kode barangnya :' +
+                  res.data.warningcustomer,
                 showType: 'show'
               });
-
-              //JIKA CUSTOMER BELI BARANG SAMA PADA HARI YANG SAMA
-              if (res.data.warningcustomer) {
-                $.messager.alert({
-                  title: 'Info',
-                  msg: 'Customer telah membeli barang yang sama di tanggal transaksi yang sama <br><br> Berikut kode barangnya :' +
-                    res.data.warningcustomer,
-                  showType: 'show'
-                });
-              }
-
-              {{ $mode }}();
-
-              if (jenis_simpan == 'simpan_cetak') {
-                cetak(res.data.uuidjual, 'ya');
-              }
-            } else {
-              $.messager.alert('Error', res.message, 'error');
             }
-          } catch (e) {
-            const error = typeof e === 'string' ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
-            setTimeout(() => {
-              prosessimpan = false;
-            }, 1000);
+
+            @if ($mode == 'tambah')
+              tambah();
+            @elseif ($mode == 'ubah')
+                ubah();
+            @endif
+
+            if (jenis_simpan == 'simpan_cetak') {
+              cetak(res.data.uuidjual, 'ya');
+            }
+          } else {
+            $.messager.alert('Error', res.message, 'error');
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+        } catch (e) {
+          const error = typeof e === 'string' ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
+          setTimeout(() => {
+            prosessimpan = false;
+          }, 1000);
         }
+
       }
     }
 

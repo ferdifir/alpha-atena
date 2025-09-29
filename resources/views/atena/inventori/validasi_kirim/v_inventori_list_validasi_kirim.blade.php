@@ -363,13 +363,11 @@
       let pager = $('#table_data').datagrid('getPager');
       let pageOptions = pager.pagination('options');
       let currentPage = pageOptions.pageNumber;
-      $('#table_data').datagrid('reload', {
-        page: currentPage
-      });
+      filter_data(currentPage);
       clear_plugin();
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
@@ -384,7 +382,7 @@
       });
 
       if ($('#txt_tgl_validasi_filter').datebox('options').disabled) {
-        $('#table_data').datagrid('load', {
+        $('#table_data').datagrid('reload', {
           kodetrans: $('#txt_kodetrans_filter').val(),
           lokasi: lokasi,
           ref_aw: $('#txt_ref_aw_filter').textbox('getValue'),
@@ -393,9 +391,10 @@
           rdApprove: $('[name=rd_approve]:checked').val(),
           filter_semua: $('#cb_filter_semua:checked').val(),
           validasikirim: validasikirim,
+          page: pagenumber
         });
       } else {
-        $('#table_data').datagrid('load', {
+        $('#table_data').datagrid('reload', {
           kodetrans: $('#txt_kodetrans_filter').val(),
           lokasi: lokasi,
           ref_aw: $('#txt_ref_aw_filter').textbox('getValue'),
@@ -403,6 +402,7 @@
           rdApprove: $('[name=rd_approve]:checked').val(),
           filter_semua: $('#cb_filter_semua:checked').val(),
           validasikirim: validasikirim,
+          page: pagenumber
         });
       }
     }

@@ -790,7 +790,6 @@
         }
       }
 
-      if (!isTokenExpired('{{ session('TOKEN') }}')) {
         if (stok_minus) {
           $.messager.confirm(
             'Confirm',
@@ -811,9 +810,7 @@
             simpanTransaksi(jenis_simpan);
           }
         }
-      } else {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-      }
+      
     }
 
     async function simpanTransaksi(jenis_simpan) {

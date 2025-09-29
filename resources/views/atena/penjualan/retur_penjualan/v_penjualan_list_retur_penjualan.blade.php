@@ -93,10 +93,14 @@
             </tr>
           </table>
         </div>
-        <div data-options="region:'center',">
-  <div class="title-grid"> Riwayat Transaksi </div>
-  <table id="table_data"></table>
-</div>
+        <div data-options="region:'center'">
+          <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+            <div data-options="region:'center'">
+              <table id="table_data"></table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -174,7 +178,7 @@
 
       buat_table();
 
-      $("#txt_tgl_aw_filter").datebox('setValue', getTglFilterAwal());
+      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
       $("#TGLTRANS").datebox();
 
       $("#form_cetak").window({
@@ -246,41 +250,38 @@
       $('#mode').val('hapus');
 
       if (row) {
-        if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          get_status_trans(
-            '{{ session('TOKEN') }}',
-            "atena/penjualan/retur-penjualan",
-            "uuidreturjual",
-            row.uuidreturjual,
-            function(
-              data) {
-              data = data.data;
-              if (data.status == 'I') {
-                var kode = row.kodereturjual;
-                const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-                if (isTabOpen) {
-                  $.messager.alert(
-                    'Warning',
-                    'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
-                    'warning'
-                  );
-                } else {
-                  get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                    data = data.data;
-                    if (data.hapus == 1) {
-                      $("#alasan_pembatalan").dialog('open');
-                    } else {
-                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                    }
-                  });
-                }
+        get_status_trans(
+          '{{ session('TOKEN') }}',
+          "atena/penjualan/retur-penjualan",
+          "uuidreturjual",
+          row.uuidreturjual,
+          function(
+            data) {
+            data = data.data;
+            if (data.status == 'I') {
+              var kode = row.kodereturjual;
+              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+              if (isTabOpen) {
+                $.messager.alert(
+                  'Warning',
+                  'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
+                  'warning'
+                );
               } else {
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                  data = data.data;
+                  if (data.hapus == 1) {
+                    $("#alasan_pembatalan").dialog('open');
+                  } else {
+                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                  }
+                });
               }
-            });
-        } else {
-          $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
-        }
+            } else {
+              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+            }
+          });
+
       }
     }
 
@@ -509,12 +510,10 @@
       let pager = $('#table_data').datagrid('getPager');
       let pageOptions = pager.pagination('options');
       let currentPage = pageOptions.pageNumber;
-      $('#table_data').datagrid('reload', {
-        page: currentPage
-      });
+      filter_data(currentPage);
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
@@ -529,7 +528,7 @@
       });
       status = status.length > 0 ? JSON.stringify(status) : '';
 
-      $('#table_data').datagrid('load', {
+      $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
         nama: $('#txt_nama_customer_filter').val(),
@@ -537,6 +536,7 @@
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
         status: status,
+        page: pagenumber
       });
     }
 
@@ -549,6 +549,8 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
+        pagination: true,
+        clientPaging: false,
         url: link_api.loadDataGridReturPenjualan,
         onLoadSuccess: function(data) {
           $('#table_data').datagrid('unselectAll');
@@ -694,15 +696,11 @@
           ]
         ],
         onDblClickRow: function(index, data) {
-          if (!isTokenExpired('{{ session('TOKEN') }}')) {
-            var tab_title = row.kodereturjual;
-            parent.buka_submenu(null, tab_title,
-              '{{ route('atena.penjualan.returpenjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              row.uuidreturjual,
-              'fa fa-pencil');
-          } else {
-            $.messager.alert('Warning', 'Token tidak valid, harap login kembali', 'warning');
-          }
+          var tab_title = row.kodereturjual;
+          parent.buka_submenu(null, tab_title,
+            '{{ route('atena.penjualan.returpenjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            row.uuidreturjual,
+            'fa fa-pencil');
         },
       });
     }

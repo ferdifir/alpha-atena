@@ -93,7 +93,7 @@
                           <td id="label_form" align="left" name="nopo">No. Pesanan Pembelian</td>
                           <td id="label_form" align="left" hidden name="noretur">No. Retur</td>
                           <td id="label_form" align="left">
-                            <input name="uuidtransreferensi" id="IDTRANSREFERENSI" style="width:243px">
+                            <input name="uuidtransreferensi" id="IDTRANSREFERENSI" style="width:230px">
                           </td>
                           <input type="hidden" id="KODETRANSREFERENSI" name="kodetransreferensi">
                         </tr>
@@ -421,6 +421,7 @@
             });
 
             $("#IDTRANSREFERENSI").combogrid({
+              width: '230',
               columns: [
                 [{
                     field: 'uuidtransreferensi',
@@ -487,6 +488,7 @@
             });
 
             $("#IDTRANSREFERENSI").combogrid({
+              width: '301',
               columns: [
                 [{
                     field: 'uuidtransreferensi',
@@ -559,7 +561,11 @@
       buat_table_detail_rekap();
       buat_table_detail_barcode();
 
-      {{ $mode }}();
+      @if ($mode == 'tambah')
+        tambah();
+      @elseif ($mode == 'ubah')
+        ubah();
+      @endif
     })
 
     shortcut.add('F8', function() {
@@ -993,8 +999,6 @@
       $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
       $('#data_detail_barcode').val(JSON.stringify($('#table_data_detail_barcode').datagrid('getChecked')));
 
-      //   var row_detail = $('#table_data_detail').datagrid('getRows')[0];
-      // add check at table_data_detail is there any data or not
       let rows_detail = $('#table_data_detail').datagrid('getRows');
       if (rows_detail.length == 0) {
         $.messager.alert('Warning', 'Data Detail Masih Kosong', 'warning');
@@ -1026,44 +1030,50 @@
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          try {
-            const data = $('#form_input :input').serializeArray();
-            const payload = {};
-            for (let i = 0; i < data.length; i++) {
-              if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
-                data[i].value = JSON.parse(data[i].value);
-              }
-              payload[data[i].name] = data[i].value;
-            }
-            payload['jenis_simpan'] = jenis_simpan;
-            const res = await fetchData(
-              '{{ session('TOKEN') }}',
-              link_api.simpanBuktiPenerimaanBarang,
-              payload
-            );
-            if (res.success) {
-              $('#form_input').form('clear');
-              $.messager.show({
-                title: 'Info',
-                msg: 'Transaksi Sukses',
-                showType: 'show'
-              });
-              {{ $mode }}();
 
-              if (jenis_simpan == 'simpan_cetak') {
-                cetak(res.data.uuidbbm, 'ya');
-              }
-            } else {
-              $.messager.alert('Error', res.message, 'error');
+        try {
+          tampilLoaderSimpan();
+          const data = $('#form_input :input').serializeArray();
+          const payload = {};
+          for (let i = 0; i < data.length; i++) {
+            if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
+              data[i].value = JSON.parse(data[i].value);
             }
-          } catch (e) {
-            const error = typeof e === 'string' ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
+            payload[data[i].name] = data[i].value;
           }
-        } else {
-          $.messager.alert('Error', 'Token Expired, Silahkan Login Kembali', 'error');
+          payload['jenis_simpan'] = jenis_simpan;
+          const res = await fetchData(
+            '{{ session('TOKEN') }}',
+            link_api.simpanBuktiPenerimaanBarang,
+            payload
+          );
+          if (res.success) {
+            $('#form_input').form('clear');
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+
+            @if ($mode == 'tambah')
+              tambah();
+            @else
+              ubah();
+            @endif
+
+            if (jenis_simpan == 'simpan_cetak') {
+              cetak(res.data.uuidbbm, 'ya');
+            }
+          } else {
+            $.messager.alert('Error', res.message, 'warning');
+          }
+        } catch (e) {
+          const error = typeof e === 'string' ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          cekbtnsimpan = true;
+          tutupLoaderSimpan();
         }
       }
     }
@@ -1853,7 +1863,7 @@
               {
                 field: 'currency',
                 title: 'Mata Uang',
-                width: 50,
+                width: 70,
                 editor: {
                   type: 'combogrid',
                   options: {
@@ -2360,6 +2370,8 @@
               row: row_update
             });
           }
+          hitung_subtotal_detail(index, row);
+          hitung_grandtotal();
         },
         onLoadSuccess: function(data) {
           hitung_grandtotal();
@@ -2368,8 +2380,8 @@
           hitung_grandtotal();
         },
         onAfterEdit: function(index, row, changes) {
-          hitung_subtotal_detail(index, row);
-          hitung_grandtotal();
+          //   hitung_subtotal_detail(index, row);
+          //   hitung_grandtotal();
         },
         onSelectCell: function(index, field) {
           // load row LO
@@ -2779,51 +2791,52 @@
         }
       }
 
-      $.ajax({
-        // url: '< ?= base_url('asiaelectrindo/Produksi/Transaksi/PembuatanBarcode/cekBarcodeReturPenjualanBBM') ?>',
-        type: 'POST',
-        data: {
-          barcode: barcode,
-          tgltrans: tgltrans,
-          idlokasi: $('#IDLOKASI').combogrid('getValue')
-        },
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(response) {
-          $.messager.progress('close');
+      $.messager.alert('Perhatian', 'Fitur ini masih dalam tahap pengembangan', 'info');
+      //   $.ajax({
+      //     url: '< ?= base_url('asiaelectrindo/Produksi/Transaksi/PembuatanBarcode/cekBarcodeReturPenjualanBBM') ?>',
+      //     type: 'POST',
+      //     data: {
+      //       barcode: barcode,
+      //       tgltrans: tgltrans,
+      //       idlokasi: $('#IDLOKASI').combogrid('getValue')
+      //     },
+      //     beforeSend: function() {
+      //       $.messager.progress();
+      //     },
+      //     success: function(response) {
+      //       $.messager.progress('close');
 
-          if (response.success) {
-            // mengecek pada table detail yang idbarangnya sama dengan idbarang pada barcode
-            var detail_rows = $('#table_data_detail').datagrid('getRows');
+      //       if (response.success) {
+      //         // mengecek pada table detail yang idbarangnya sama dengan idbarang pada barcode
+      //         var detail_rows = $('#table_data_detail').datagrid('getRows');
 
-            var index = 0;
+      //         var index = 0;
 
-            for (var i = 0; i < detail_rows.length; i++) {
-              index = i;
+      //         for (var i = 0; i < detail_rows.length; i++) {
+      //           index = i;
 
-              if (detail_rows[i].uuidbarang == response.data.uuidbarang) {
-                break;
-              } else {
-                index = -1;
-              }
-            }
+      //           if (detail_rows[i].uuidbarang == response.data.uuidbarang) {
+      //             break;
+      //           } else {
+      //             index = -1;
+      //           }
+      //         }
 
-            if (index == -1) {
-              $.messager.alert('Warning', 'Tidak ada barang yang merujuk ke barcode ' + barcode, 'error');
-            } else {
-              $('#table_data_detail_barcode').datagrid('appendRow', response.data);
+      //         if (index == -1) {
+      //           $.messager.alert('Warning', 'Tidak ada barang yang merujuk ke barcode ' + barcode, 'error');
+      //         } else {
+      //           $('#table_data_detail_barcode').datagrid('appendRow', response.data);
 
-              $('#table_data_detail_barcode').datagrid('checkRow', $('#table_data_detail_barcode').datagrid(
-                'getRows').length - 1);
+      //           $('#table_data_detail_barcode').datagrid('checkRow', $('#table_data_detail_barcode').datagrid(
+      //             'getRows').length - 1);
 
-              $('#scanbarcode').textbox('clear');
-            }
-          } else {
-            $.messager.alert('Perhatian', response.errorMsg, 'error');
-          }
-        }
-      });
+      //           $('#scanbarcode').textbox('clear');
+      //         }
+      //       } else {
+      //         $.messager.alert('Perhatian', response.errorMsg, 'error');
+      //       }
+      //     }
+      //   });
     }
 
     function cek_jumlah_dan_barcode() {

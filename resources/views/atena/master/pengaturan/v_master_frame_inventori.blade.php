@@ -1577,11 +1577,7 @@
     }
 
     function prev() {
-      if (!parent.isTokenExpired()) {
-        window.location = "{{ route('atena.master.pengaturan.frame-master-penjualan') }}";
-      } else {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-      }
+      window.location = "{{ route('atena.master.pengaturan.frame-master-penjualan') }}";
     }
 
     async function simpan() {

@@ -105,10 +105,14 @@
             </tr>
           </table>
         </div>
-        <div data-options="region:'center',">
-  <div class="title-grid"> Riwayat Transaksi </div>
-  <table id="table_data"></table>
-</div>
+        <div data-options="region:'center'">
+          <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+            <div data-options="region:'center'">
+              <table id="table_data"></table>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -182,60 +186,60 @@
         buat_table();
       });
 
-      $("#txt_tgl_aw_filter").datebox('setValue', getTglFilterAwal());
+      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2)));
 
-      $("#form_cetak").window({
-        collapsible: false,
-        minimizable: false,
-        tools: [{
-          text: '',
-          iconCls: 'icon-print',
-          handler: function() {
-            $("#area_cetak").printArea({
-              mode: 'iframe'
-            });
+    $("#form_cetak").window({
+      collapsible: false,
+      minimizable: false,
+      tools: [{
+        text: '',
+        iconCls: 'icon-print',
+        handler: function() {
+          $("#area_cetak").printArea({
+            mode: 'iframe'
+          });
 
-            $("#form_cetak").window({
-              closed: true
-            });
-          }
-        }, {
-          text: '',
-          iconCls: 'icon-excel',
-          handler: function() {
-            export_excel('Faktur Pesanan Penjualan', $("#area_cetak").html());
-            return false;
-          }
-        }]
-      }).window('close');
+          $("#form_cetak").window({
+            closed: true
+          });
+        }
+      }, {
+        text: '',
+        iconCls: 'icon-excel',
+        handler: function() {
+          export_excel('Faktur Pesanan Penjualan', $("#area_cetak").html());
+          return false;
+        }
+      }]
+    }).window('close');
 
-      $("#form_cetak_landscape").window({
-        tools: [{
-          text: '',
-          iconCls: 'icon-print',
-          handler: function() {
-            $("#area_cetak_landscape").printArea({
-              mode: 'iframe'
-            });
-          }
-        }, {
-          text: '',
-          iconCls: 'icon-excel',
-          handler: function() {
-            export_excel('Faktur Pesanan Penjualan', $("#area_cetak_landscape").html());
-            return false;
-          }
-        }]
-      }).window('close');
+    $("#form_cetak_landscape").window({
+      tools: [{
+        text: '',
+        iconCls: 'icon-print',
+        handler: function() {
+          $("#area_cetak_landscape").printArea({
+            mode: 'iframe'
+          });
+        }
+      }, {
+        text: '',
+        iconCls: 'icon-excel',
+        handler: function() {
+          export_excel('Faktur Pesanan Penjualan', $("#area_cetak_landscape").html());
+          return false;
+        }
+      }]
+    }).window('close');
 
-      $("#alasan_pembatalan").dialog({
-        onOpen: function() {
-          $('#alasan_pembatalan').form('clear');
-        },
-        buttons: '#alasan_pembatalan-buttons',
-      }).dialog('close');
+    $("#alasan_pembatalan").dialog({
+      onOpen: function() {
+        $('#alasan_pembatalan').form('clear');
+      },
+      buttons: '#alasan_pembatalan-buttons',
+    }).dialog('close');
 
-      tutupLoader();
+    tutupLoader();
     });
 
     shortcut.add('F2', function() {
@@ -278,12 +282,10 @@
       let pager = $('#table_data').datagrid('getPager');
       let pageOptions = pager.pagination('options');
       let currentPage = pageOptions.pageNumber;
-      $('#table_data').datagrid('reload', {
-        page: currentPage
-      });
+      filter_data(currentPage);
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
@@ -301,7 +303,7 @@
       })
       status = status.length > 0 ? JSON.stringify(status) : '';
 
-      $('#table_data').datagrid('load', {
+      $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
         nama: $('#txt_nama_referensi_filter').val(),
@@ -310,7 +312,8 @@
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
         kota: $('#txt_kota_customer_filter').val(),
         status: status,
-        marketing: marketing
+        marketing: marketing,
+        page: pagenumber
       });
     }
 
@@ -323,6 +326,8 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
+        pagination: true,
+        clientPaging: false,
         url: link_api.loadDataGridUangMukaSO,
         view: detailview,
         onLoadSuccess: function(data) {
@@ -605,16 +610,13 @@
               }
             },
             onDblClickRow: function(index, row) {
-              if (!isTokenExpired('{{ session('TOKEN') }}')) {
-                var tab_title = row.kodeso + '  (' + row.tglpembayaran + ')';
-                console.log(tab_title);
-                parent.buka_submenu(null, tab_title,
-                  '{{ route('atena.penjualan.uangmuka.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                  row.uuiduangmukaso,
-                  'fa fa-pencil');
-              } else {
-                $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-              }
+              var tab_title = row.kodeso + '  (' + row.tglpembayaran + ')';
+              console.log(tab_title);
+              parent.buka_submenu(null, tab_title,
+                '{{ route('atena.penjualan.uangmuka.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                row.uuiduangmukaso,
+                'fa fa-pencil');
+
             },
           });
 

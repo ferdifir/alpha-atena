@@ -890,9 +890,9 @@
           var row = $(id).combogrid('grid').datagrid('getSelected');
           if (row) {
             /*
-            var supp = $("#IDSUPPLIER").combogrid('getValue');				
+            var supp = $("#IDSUPPLIER").combogrid('getValue');
             url = base_url + 'atena/Inventori/Transaksi/BarangKeluar/comboGridRetur'+ '/' + '/' + row.ID + '/' + supp;
-            
+
             ubah_url_combogrid($("#IDBBK"), url, true);*/
           }
           if ($('#mode').val() != '') {

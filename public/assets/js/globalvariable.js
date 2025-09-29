@@ -1020,3 +1020,20 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         return false;
     }
 }
+
+function showErrorAlert(e) {
+    let error;
+
+    if (typeof e === "string") {
+        error = e;
+    } else if (e && e.message) {
+        error = e.message;
+    } else if (e) {
+        error = String(e);
+    } else {
+        error = "Terdapat kesalahan dalam memproses data.";
+    }
+
+    const textError = getTextError(error);
+    $.messager.alert("Error", textError, "error");
+}

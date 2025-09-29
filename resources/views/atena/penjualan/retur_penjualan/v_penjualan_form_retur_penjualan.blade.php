@@ -419,7 +419,11 @@
       });
 
       buat_table_detail();
-      {{ $mode }}();
+      @if ($mode == 'tambah')
+        tambah();
+      @elseif ($mode == 'ubah')
+        ubah();
+      @endif
     })
 
     shortcut.add('F8', function() {
@@ -631,48 +635,49 @@
       }
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
-        if (!isTokenExpired('{{ session('TOKEN') }}')) {
-          cekbtnsimpan = false;
+        cekbtnsimpan = false;
 
-          try {
-            const data = $('#form_input :input').serializeArray();
-            const payload = {};
-            for (var i = 0; i < data.length; i++) {
-              payload[data[i].name] = data[i].value;
-            }
-            payload['data_detail'] = $('#table_data_detail').datagrid('getRows');
-            payload['jenis_simpan'] = jenis_simpan;
-
-            tampilLoaderSimpan();
-            const res = await fetchData('{{ session('TOKEN') }}', link_api.simpanReturPenjualan, payload);
-            cekbtnsimpan = true;
-            if (res.success) {
-              @if ($mode == 'tambah')
-                $('#form_input').form('clear');
-              @endif
-              $.messager.show({
-                title: 'Info',
-                msg: 'Transaksi Sukses',
-                showType: 'show'
-              });
-              {{ $mode }}();
-
-              if (jenis_simpan == 'simpan_cetak') {
-                cetak(res.data.uuidreturjual);
-              }
-            } else {
-              $.messager.alert('Error', res.message, 'error');
-            }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
+        try {
+          const data = $('#form_input :input').serializeArray();
+          const payload = {};
+          for (var i = 0; i < data.length; i++) {
+            payload[data[i].name] = data[i].value;
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          payload['data_detail'] = $('#table_data_detail').datagrid('getRows');
+          payload['jenis_simpan'] = jenis_simpan;
+
+          tampilLoaderSimpan();
+          const res = await fetchData('{{ session('TOKEN') }}', link_api.simpanReturPenjualan, payload);
+          cekbtnsimpan = true;
+          if (res.success) {
+            @if ($mode == 'tambah')
+              $('#form_input').form('clear');
+            @endif
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+            @if ($mode == 'tambah')
+              tambah();
+            @elseif ($mode == 'ubah')
+              ubah();
+            @endif
+
+            if (jenis_simpan == 'simpan_cetak') {
+              cetak(res.data.uuidreturjual);
+            }
+          } else {
+            $.messager.alert('Error', res.message, 'error');
+          }
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
         }
+
       }
     }
 

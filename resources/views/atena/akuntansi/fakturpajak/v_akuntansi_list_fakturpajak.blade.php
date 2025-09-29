@@ -1,7 +1,7 @@
 @extends('template.app')
 
 @section('content')
-<div class="easyui-layout" fit="true">	
+<div class="easyui-layout" fit="true">
 	<div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
 		<a id="btn_tambah"  title="Tambah Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
 			<img src="{{ asset('assets/images/add.png') }}">
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-	</div>	
+	</div>
 </div>
 
 <div id="form_cetak" title="Preview" style="width:660px; height:450px">
@@ -108,7 +108,7 @@ $(document).ready(async function(){
 			row = $('#table_data').datagrid('getSelected');
 		}
 	});
-	
+
 	create_form_login();
 	buat_table();
 
@@ -137,7 +137,7 @@ $(document).ready(async function(){
 			}
 		}]
 	}).window('close');
-	
+
 	$("#alasan_pembatalan").dialog({
 		onOpen: function() {
 			$('#alasan_pembatalan').form('clear');
@@ -146,7 +146,7 @@ $(document).ready(async function(){
 	}).dialog('close');
 
     tutupLoader();
-	
+
 });
 
 shortcut.add('F2', function() {
@@ -487,7 +487,7 @@ function buat_table() {
 			{field:'bulanawal',title:'Bulan Awal',width:80,sortable:true,align:'center'},
 			// {field:'BULANAKHIR',hidden:true},
 			// {field:'BULANAKHIR',title:'Bulan Akhir',width:80,sortable:true,align:'center'},
-			
+
 		]],
 		columns: [[
 			{field:'totaldpp',title:'Total DPP',width:100,sortable:true,formatter:format_amount, align:'right',hidden:!lihatHarga,},

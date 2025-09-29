@@ -95,9 +95,13 @@
             </tr>
           </table>
         </div>
-        <div data-options="region:'center',">
-          <div class="title-grid"> Riwayat Transaksi </div>
-          <table id="table_data"></table>
+        <div data-options="region:'center'">
+          <div class="easyui-layout" data-options="fit:true">
+            <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+            <div data-options="region:'center'">
+              <table id="table_data"></table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -496,7 +500,7 @@
       });
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
@@ -509,7 +513,7 @@
       $("[name='cb_status_filter[]']:checked").each(function() {
         status.push($(this).val());
       });
-      $('#table_data').datagrid('load', {
+      $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
         nama: $('#txt_nama_referensi_filter').val(),
@@ -517,6 +521,7 @@
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
         status: status,
+        page: pagenumber
       });
     }
 
