@@ -1,6 +1,6 @@
 // var base_url_api = "http://192.168.1.45:8000/api/";
 var base_url_api = "https://api.atena.id/api/";
-var tokenTidakValid="invalid_token";
+var tokenTidakValid = "invalid_token";
 var link_api = {
     //login
     login: `${base_url_api}auth/login`,
@@ -658,15 +658,15 @@ var link_api = {
     simpanUangMukaPO: `${base_url_api}atena/pembelian/uang-muka-pesanan-pembelian/simpan`,
     //Keuangan
     //Saldo Awal Hutang
-    loadDataGridSaldoAwalHutang  : `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
+    loadDataGridSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
     loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
-    simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
-    batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    simpanSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
+    batalSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
     //Saldo Awal Piutang
-    loadDataGridSaldoAwalPiutang  : `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
+    loadDataGridSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
     loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
-    simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
-    batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    simpanSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
+    batalSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
     //Debet Note
     loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
     loadDataHeaderDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-header`,
@@ -687,26 +687,44 @@ var link_api = {
     ubahStatusjadiInputPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-input`,
     ubahStatusjadiSlipPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-slip`,
     getStatusPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/get-status-trans`,
+    //Aset - Saldo Awal Aset
+    loadDataGridSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-data-grid`,
+    getStatusSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/get-status-trans`,
+    batalTransSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/batal-trans`,
+    ubahStatusJadiInputSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/ubah-status-jadi-slip`,
+    cetakSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/cetak/`,
+    loadConfigSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-config`,
+    loadDataSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-data`,
+    loadSatuanSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-satuan`,
+    loadDataHeaderSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-data-header`,
+    simpanSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/simpan`,
+    //Aset - Pembelian Aset
+    loadConfigPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-config`,
+    loadDataGridPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-grid`,
+    cetakPembelianAset: `${base_url_api}atena/aset/pembelian-aset/cetak/`,
+    batalTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/batal-trans`,
+    ubahStatusJadiInputPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-slip`,
 };
 
 var modul_kode = {
-    pembelian: 'B93JH',
-    penjualan: 'OI02K',
-    inventori: '92DXS',
-    produksi: '3K93J',
-    aset: '93JK4',
-    keuangan: 'L03KD',
-    akuntansi: 'P02MS'
+    pembelian: "B93JH",
+    penjualan: "OI02K",
+    inventori: "92DXS",
+    produksi: "3K93J",
+    aset: "93JK4",
+    keuangan: "L03KD",
+    akuntansi: "P02MS",
 };
-
 
 function getDateMinusDays(days) {
     const today = new Date();
     today.setDate(today.getDate() - days);
 
     const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // bulan dimulai dari 0
-    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, "0"); // bulan dimulai dari 0
+    const day = String(today.getDate()).padStart(2, "0");
 
     return `${year}-${month}-${day}`;
 }
@@ -717,41 +735,48 @@ function getTextError(error) {
 }
 
 async function set_ppn_aktif(tanggal, token, onSuccess) {
-    if (tanggal == '') {
+    if (tanggal == "") {
         return false;
     }
     try {
         let url = link_api.getPPNAktif;
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
 
             headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json',
+                Authorization: token,
+                "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 tglaktif: tanggal,
             }),
-        }).then(response => {
+        }).then((response) => {
             if (!response.ok) {
                 throw new Error(
-                    `HTTP error! status: ${response.status} from ${url}`);
+                    `HTTP error! status: ${response.status} from ${url}`
+                );
             }
             return response.json();
-        })
+        });
         if (response.success && onSuccess) {
             await onSuccess(response);
         } else {
-            $.messager.alert('Error', response.message, 'error');
+            $.messager.alert("Error", response.message, "error");
         }
     } catch (error) {
         console.log(error);
         var textError = getTextError(error);
-        $.messager.alert('Error', getTextError(error), 'error');
+        $.messager.alert("Error", getTextError(error), "error");
     }
 }
 
-async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onError = null) {
+async function get_akses_user(
+    kodeMenu,
+    token,
+    onSuccess,
+    useLoader = true,
+    onError = null
+) {
     if (useLoader) {
         bukaLoader();
     }
@@ -770,15 +795,20 @@ async function get_akses_user(kodeMenu, token, onSuccess, useLoader = true, onEr
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.success) {
             const errorBody = response.message; // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${
+                response.status
+            }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
                 onError(error); // Panggil onError jika disediakan
             } else {
                 if (errorBody.toLowerCase() == tokenTidakValid) {
-                    $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
+                    $.messager.alert(
+                        "Error",
+                        "Sesi login telah habis. Silahkan logout dan login kembali",
+                        "error"
+                    );
                 }
                 console.error("Error fetching data:", error);
             }
@@ -842,8 +872,9 @@ async function getConfig(config, modul, token, onSuccess, onError = null) {
         // Memeriksa apakah respons HTTP OK (status 200-299)
         if (!response.ok) {
             const errorBody = await response.text(); // Ambil teks error dari server jika ada
-            const errorMessage = `HTTP error! Status: ${response.status
-                }. Message: ${errorBody || "No specific error message."}`;
+            const errorMessage = `HTTP error! Status: ${
+                response.status
+            }. Message: ${errorBody || "No specific error message."}`;
             const error = new Error(errorMessage);
 
             if (onError && typeof onError === "function") {
@@ -888,35 +919,40 @@ const getStatusTrans = async (url, token, param) => {
     var status = "-";
     try {
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json',
+                Authorization: token,
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(param),
-        }).then(response => {
+        }).then((response) => {
             if (!response.ok) {
                 throw new Error(
-                    `HTTP error! status: ${response.status} from ${url}`);
+                    `HTTP error! status: ${response.status} from ${url}`
+                );
             }
             return response.json();
-        })
+        });
 
         if (response.success) {
             status = response.data.status;
         } else {
-            if(response.message.toLowerCase() == tokenTidakValid){
-                $.messager.alert('Error', "Sesi login telah habis. Silahkan logout dan login kembali", 'error');
-            }else{
-                $.messager.alert('Error', response.message, 'error');
+            if (response.message.toLowerCase() == tokenTidakValid) {
+                $.messager.alert(
+                    "Error",
+                    "Sesi login telah habis. Silahkan logout dan login kembali",
+                    "error"
+                );
+            } else {
+                $.messager.alert("Error", response.message, "error");
             }
         }
     } catch (error) {
         var textError = getTextError(error);
-        $.messager.alert('Error', getTextError(error), 'error');
+        $.messager.alert("Error", getTextError(error), "error");
     }
     return status;
-}
+};
 
 async function downloadXML(apiUrl, uuid, token = null) {
     try {
@@ -925,11 +961,11 @@ async function downloadXML(apiUrl, uuid, token = null) {
         const authToken = token;
 
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Authorization': `bearer ${authToken}`,
-                'Content-Type': 'application/json',
-            }
+                Authorization: `bearer ${authToken}`,
+                "Content-Type": "application/json",
+            },
         });
 
         if (!response.ok) {
@@ -939,20 +975,22 @@ async function downloadXML(apiUrl, uuid, token = null) {
         const xmlText = await response.text();
 
         // Ambil filename dari Content-Disposition header
-        const contentDisposition = response.headers.get('Content-Disposition');
-        let filename = 'download.xml'; // fallback filename
+        const contentDisposition = response.headers.get("Content-Disposition");
+        let filename = "download.xml"; // fallback filename
 
         if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            const filenameMatch = contentDisposition.match(
+                /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+            );
             if (filenameMatch && filenameMatch[1]) {
-                filename = filenameMatch[1].replace(/['"]/g, '');
+                filename = filenameMatch[1].replace(/['"]/g, "");
             }
         }
 
-        const blob = new Blob([xmlText], { type: 'application/xml' });
+        const blob = new Blob([xmlText], { type: "application/xml" });
         const downloadUrl = window.URL.createObjectURL(blob);
 
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = downloadUrl;
         a.download = filename;
         document.body.appendChild(a);
@@ -961,10 +999,9 @@ async function downloadXML(apiUrl, uuid, token = null) {
         window.URL.revokeObjectURL(downloadUrl);
 
         return true;
-
     } catch (error) {
-        console.error('Error download XML:', error);
-        alert('Gagal mengunduh file XML: ' + error.message);
+        console.error("Error download XML:", error);
+        alert("Gagal mengunduh file XML: " + error.message);
         return false;
     }
 }
@@ -977,11 +1014,11 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         const authToken = token;
 
         const response = await fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Authorization': `bearer ${authToken}`,
-                'Content-Type': 'application/json',
-            }
+                Authorization: `bearer ${authToken}`,
+                "Content-Type": "application/json",
+            },
         });
 
         if (!response.ok) {
@@ -991,20 +1028,22 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         const csvText = await response.text();
 
         // Ambil filename dari Content-Disposition header
-        const contentDisposition = response.headers.get('Content-Disposition');
-        let filename = 'download.csv'; // fallback filename
+        const contentDisposition = response.headers.get("Content-Disposition");
+        let filename = "download.csv"; // fallback filename
 
         if (contentDisposition) {
-            const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+            const filenameMatch = contentDisposition.match(
+                /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/
+            );
             if (filenameMatch && filenameMatch[1]) {
-                filename = filenameMatch[1].replace(/['"]/g, '');
+                filename = filenameMatch[1].replace(/['"]/g, "");
             }
         }
 
-        const blob = new Blob([csvText], { type: 'text/csv' });
+        const blob = new Blob([csvText], { type: "text/csv" });
         const downloadUrl = window.URL.createObjectURL(blob);
 
-        const a = document.createElement('a');
+        const a = document.createElement("a");
         a.href = downloadUrl;
         a.download = filename;
         document.body.appendChild(a);
@@ -1013,11 +1052,35 @@ async function downloadCSV(apiUrl, uuid, token = null) {
         window.URL.revokeObjectURL(downloadUrl);
 
         return true;
-
     } catch (error) {
-        console.error('Error download CSV:', error);
-        alert('Gagal mengunduh file CSV: ' + error.message);
+        console.error("Error download CSV:", error);
+        alert("Gagal mengunduh file CSV: " + error.message);
         return false;
+    }
+}
+
+async function getCetakDocument(url, token, body) {
+    try {
+        const response = await fetch(
+            url,
+            {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer " + token,
+                    "Content-Type": "application/json",
+                },
+                body: body ? JSON.stringify(body) : null,
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        return await response.text();
+    } catch (e) {
+        showErrorAlert(e);
+        return null;
     }
 }
 

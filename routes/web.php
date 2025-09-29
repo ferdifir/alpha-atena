@@ -877,3 +877,33 @@ Route::get('atena/penjualan/tutupsalesorder/transaksi', function () {
         'kodemenu' => request()->kode,
     ]);
 })->name('atena.penjualan.tutuppesananpenjualan.transaksi');
+
+// Aset - Saldo Awal Aset
+Route::get('atena/aset/saldoawalaset/transaksi', function () {
+    return view('atena.aset.saldo_awal_aset.v_aset_list_saldo_awal_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.aset.saldoawalaset.transaksi');
+
+Route::get('atena/aset/saldoawalaset/form', function () {
+    return view('atena.aset.saldo_awal_aset.v_aset_form_saldo_awal_aset', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.aset.saldoawalaset.form');
+
+// Aset - Pembelian Aset
+Route::get('atena/aset/pembelianaset/transaksi', function () {
+    return view('atena.aset.pembelian_aset.v_aset_list_pembelian_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.aset.pembelianaset.transaksi');
+
+Route::get('atena/aset/pembelianaset/form', function () {
+    return view('atena.aset.pembelian_aset.v_aset_form_pembelian_aset', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.aset.pembelianaset.form');
