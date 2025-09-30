@@ -144,11 +144,7 @@
     }
 
     function prev() {
-      if (!parent.isTokenExpired()) {
-        window.location = "{{ route('atena.master.pengaturan.frame-master-perusahaan') }}";
-      } else {
-        $.messager.alert('Error', "Token tidak valid, silahkan login kembali", 'error');
-      }
+      window.location = "{{ route('atena.master.pengaturan.frame-master-perusahaan') }}";
     }
 
     async function simpanData() {

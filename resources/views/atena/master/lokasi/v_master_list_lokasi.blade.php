@@ -404,10 +404,14 @@
       }, ]);
     }
 
-    function refresh_data() {
-      //JIKA DI TAB GRID
-      $('#table_data').datagrid('reload');
-    }
+        function refresh_data() {
+            let pager = $('#table_data').datagrid('getPager');
+            let pageOptions = pager.pagination('options');
+            let currentPage = pageOptions.pageNumber;
+            $('#table_data').datagrid('reload', {
+                page: currentPage
+            });
+        }
 
     function reload() {
       $('#table_data').datagrid('reload');

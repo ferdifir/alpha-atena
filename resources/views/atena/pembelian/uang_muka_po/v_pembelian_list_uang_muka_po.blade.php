@@ -12,7 +12,6 @@
     </div>
 
     <div data-options="region: 'center'">
-
       <div class="easyui-layout" fit="true">
         <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter"
           style="width:150px;" align="center">
@@ -21,20 +20,18 @@
               <td id="label_form"></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">Tgl. SO</td>
+              <td id="label_form" align="center">Tgl. Transaksi</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -50,7 +47,7 @@
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">No. Pesanan Penjualan</td>
+              <td id="label_form" align="center">No. Pesanan Pembelian</td>
             </tr>
             <tr>
               <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
@@ -60,31 +57,11 @@
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">Pelanggan</td>
+              <td id="label_form" align="center">Supplier</td>
             </tr>
             <tr>
               <td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter"
                   style="width:100px" class="label_input" /></td>
-            </tr>
-            <tr>
-              <td id="label_form"><br></td>
-            </tr>
-            <tr>
-              <td id="label_form" align="center">Kota</td>
-            </tr>
-            <tr>
-              <td align="center"><input id="txt_kota_customer_filter" name="txt_kota_customer_filter" style="width:100px"
-                  class="label_input" /></td>
-            </tr>
-            <tr>
-              <td id="label_form"><br></td>
-            </tr>
-            <tr>
-              <td id="label_form" align="center">Marketing</td>
-            </tr>
-            <tr>
-              <td align="center"><input id="txt_marketing_filter" name="txt_marketing_filter" style="width:100px"
-                  class="label_input" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -120,34 +97,20 @@
 
 @push('js')
   <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
-  <script src="{{ asset('assets/js/utils.js') }}"></script>
   <script>
     var edit_row = false;
     var idtrans = "";
     var counter = 0;
     var row = {};
-    let LIHATHARGA;
+    var lihatharga = false;
 
-    async function getUangMukaSOConfig() {
-      try {
-        const res = await fetchData(
-          '{{ session('TOKEN') }}',
-          link_api.getDataAkses, {
-            kodemenu: '{{ $kodemenu }}',
-          }
-        );
-        if (!res.success) {
-          throw new Error(res.message);
-        }
-        LIHATHARGA = res.data.lihatharga;
-      } catch (e) {
-        const error = (typeof e === 'string') ? e : e.message;
-        const textError = getTextError(error);
-        $.messager.alert('Error', textError, 'error');
-      }
-    }
-
-    $(document).ready(function() {
+    $(document).ready(async function() {
+      var check = false;
+      await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        lihatharga = data.data.lihatharga == 1;
+        check = true;
+      }, false);
+      if (!check) return;
       browse_data_lokasi('#txt_lokasi');
       browse_data_marketing('#txt_marketing_filter');
 
@@ -159,97 +122,80 @@
         }
       });
 
-      //PRINT TAB
-      $("#tab_transaksi").tabs({
-        onSelect: function() {
-          var tab_title = $('#tab_transaksi').tabs('getSelected').panel('options').title;
+      create_form_login();
+      buat_table();
 
-          if (tab_title == 'Grid') {
-            enable_button()
-          } else if (tab_title == 'Tambah') {
-            disable_button()
-          } else {
-            //AMBIL IDTRANS LEBIH DARI IDTAB
-            var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-            //Variabel ROW diisi array object
-            row = {
-              uuidso: trans[0],
-              kodeso: trans[1],
-            };
+      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
 
-            disable_button()
+      $("#form_cetak").window({
+        collapsible: false,
+        minimizable: false,
+        tools: [{
+          text: '',
+          iconCls: 'icon-print',
+          handler: function() {
+            $("#area_cetak").printArea({
+              mode: 'iframe'
+            });
           }
-        }
-      });
+        }, {
+          text: '',
+          iconCls: 'icon-excel',
+          handler: function() {
+            export_excel('Faktur Pesanan Penjualan', $("#area_cetak").html());
+            return false;
+          }
+        }]
+      }).window('close');
 
-      getUangMukaSOConfig().then(() => {
-        buat_table();
-      });
+      $("#form_cetak_landscape").window({
+        tools: [{
+          text: '',
+          iconCls: 'icon-print',
+          handler: function() {
+            $("#area_cetak_landscape").printArea({
+              mode: 'iframe'
+            });
+          }
+        }, {
+          text: '',
+          iconCls: 'icon-excel',
+          handler: function() {
+            export_excel('Faktur Pesanan Penjualan', $("#area_cetak_landscape").html());
+            return false;
+          }
+        }]
+      }).window('close');
 
-      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2)));
+      $("#alasan_pembatalan").dialog({
+        onOpen: function() {
+          $('#alasan_pembatalan').form('clear');
+        },
+        buttons: '#alasan_pembatalan-buttons',
+      }).dialog('close');
 
-    $("#form_cetak").window({
-      collapsible: false,
-      minimizable: false,
-      tools: [{
-        text: '',
-        iconCls: 'icon-print',
-        handler: function() {
-          $("#area_cetak").printArea({
-            mode: 'iframe'
-          });
+      tutupLoader();
 
-          $("#form_cetak").window({
-            closed: true
-          });
-        }
-      }, {
-        text: '',
-        iconCls: 'icon-excel',
-        handler: function() {
-          export_excel('Faktur Pesanan Penjualan', $("#area_cetak").html());
-          return false;
-        }
-      }]
-    }).window('close');
-
-    $("#form_cetak_landscape").window({
-      tools: [{
-        text: '',
-        iconCls: 'icon-print',
-        handler: function() {
-          $("#area_cetak_landscape").printArea({
-            mode: 'iframe'
-          });
-        }
-      }, {
-        text: '',
-        iconCls: 'icon-excel',
-        handler: function() {
-          export_excel('Faktur Pesanan Penjualan', $("#area_cetak_landscape").html());
-          return false;
-        }
-      }]
-    }).window('close');
-
-    $("#alasan_pembatalan").dialog({
-      onOpen: function() {
-        $('#alasan_pembatalan').form('clear');
-      },
-      buttons: '#alasan_pembatalan-buttons',
-    }).dialog('close');
-
-    tutupLoader();
     });
+
+    function before_edit(uuiduangmukapo) {
+      $('#mode').val('ubah');
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        if (data.data.ubah == 1 || data.data.hakakses == 1) {
+          var row = $('#table_data').datagrid('getSelected');
+          parent.buka_submenu(null, row.kodepo,
+            '{{ route('atena.pembelian.uang_muka_po.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&datapo=' +
+            row.uuidpo + "&datauangmukapo=" + uuiduangmukapo,
+            'fa fa-pencil');
+        } else {
+          $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+        }
+      });
+    }
 
     shortcut.add('F2', function() {
       before_add();
     });
-
-    function disable_button() {
-      $('#btn_refresh').linkbutton('disable');
-      $('#btn_batal').linkbutton('disable')
-    }
 
     function enable_button() {
       $('#btn_refresh').linkbutton('enable');
@@ -258,20 +204,18 @@
 
     function before_add() {
       $('#mode').val('tambah');
-
-      if (row.uuidso === undefined) {
-        $.messager.alert('Peringatan', 'Anda belum memilih data Pesanan Penjualan', 'warning');
+      var row = $('#table_data').datagrid('getSelected');
+      if (row == null || row.uuidpo === undefined) {
+        $.messager.alert('Peringatan', 'Anda belum memilih data Pesanan Pembelian', 'warning');
 
         return false;
       }
-
-      get_akses_user('{{ $kodemenu }}', 'Bearer {{ session('TOKEN') }}', function(data) {
-        data = data.data;
-        if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Uang Muka',
-            '{{ route('atena.penjualan.uangmuka.form', ['kode' => $kodemenu, 'mode' => 'tambah']) }}&data=' + row
-            .uuidso,
-            'fa fa-plus');
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        if (data.data.tambah == 1) {
+          parent.buka_submenu(null, 'Tambah Permintaan Barang',
+            '{{ route('atena.pembelian.uang_muka_po.form', ['kode' => $kodemenu, 'mode' => 'tambah']) }}&datapo=' +
+            row.uuidpo + "&datauangmukapo=",
+            'fa fa-plus')
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
@@ -279,17 +223,9 @@
     }
 
     function refresh_data() {
-      let pager = $('#table_data').datagrid('getPager');
-      let pageOptions = pager.pagination('options');
-      let currentPage = pageOptions.pageNumber;
-      filter_data(currentPage);
-    }
-
-    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
-      var marketing = $('#txt_marketing_filter').combogrid('getValues').toString();
 
       for (var i = 0; i < dataLokasi.length; i++) {
         lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
@@ -300,20 +236,43 @@
       var status = [];
       $("[name='cb_status_filter[]']:checked").each(function() {
         status.push($(this).val());
-      })
-      status = status.length > 0 ? JSON.stringify(status) : '';
-
+      });
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
       $('#table_data').datagrid('reload', {
+        page: currentPage,
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
         nama: $('#txt_nama_referensi_filter').val(),
-        perusahaan: $('#txt_perusahaan_filter').val(),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
-        kota: $('#txt_kota_customer_filter').val(),
         status: status,
-        marketing: marketing,
-        page: pagenumber
+      });
+    }
+
+    function filter_data() {
+      var getLokasi = $('#txt_lokasi').combogrid('grid');
+      var dataLokasi = getLokasi.datagrid('getChecked');
+      var lokasi = "";
+
+      for (var i = 0; i < dataLokasi.length; i++) {
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
+      }
+
+      lokasi = lokasi.substring(0, lokasi.length - 1);
+
+      var status = [];
+      $("[name='cb_status_filter[]']:checked").each(function() {
+        status.push($(this).val());
+      });
+      $('#table_data').datagrid('load', {
+        kodetrans: $('#txt_kodetrans_filter').val(),
+        lokasi: lokasi,
+        nama: $('#txt_nama_referensi_filter').val(),
+        tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
+        tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
+        status: status,
       });
     }
 
@@ -326,26 +285,25 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
-        pagination: true,
-        clientPaging: false,
-        url: link_api.loadDataGridUangMukaSO,
+        url: link_api.loadDataGridUangMukaPO,
         view: detailview,
-        onLoadSuccess: function(data) {
-          $('#table_data').datagrid('unselectAll');
-        },
         detailFormatter: function(index, row) {
           return `<div style="padding:2px;position:relative;">
-                    <table class="ddv"></table>
-                  </div>`;
+                            <table class="ddv"></table>
+                        </div>`;
+        },
+        pagination: true,
+        clientPaging: false,
+        onLoadSuccess: function() {
+          $('#table_data').datagrid('unselectAll');
         },
         rowStyler: function(index, row) {
-          if (row.status == 'S') {
+          if (row.status == 'S')
             return 'background-color:{{ session('WARNA_STATUS_S') }}';
-          } else if (row.status == 'P') {
+          else if (row.status == 'P')
             return 'background-color:{{ session('WARNA_STATUS_P') }}';
-          } else if (row.status == 'D') {
+          else if (row.status == 'D')
             return 'background-color:{{ session('WARNA_STATUS_D') }}';
-          }
         },
         frozenColumns: [
           [{
@@ -357,6 +315,20 @@
               align: 'center'
             },
             {
+              field: 'uuidpo',
+              hidden: true
+            },
+            {
+              field: 'kodepo',
+              title: 'No. Pesanan Pembelian',
+              width: 120,
+              sortable: true,
+              align: 'center'
+            },
+          ]
+        ],
+        columns: [
+          [{
               field: 'uuidlokasi',
               hidden: true
             },
@@ -370,65 +342,49 @@
             },
             {
               field: 'namalokasi',
-              hidden: true,
               title: 'Nama Lokasi',
               width: 120,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'uuidso',
+              field: 'nopomanual',
+              title: 'No. Pesanan Pembelian Manual',
+              width: 120,
+              sortable: true,
+              align: 'center',
               hidden: true
             },
             {
-              field: 'kodeso',
-              title: 'No. Pesanan Penjualan',
-              width: 145,
+              field: 'kodekas',
+              title: 'No. Kas',
+              width: 120,
               sortable: true,
-              align: 'center'
-            },
-          ]
-        ],
-        columns: [
-          [{
-              field: 'kodepo',
-              title: 'No. Pesanan Pelanggan',
-              width: 145,
-              sortable: true,
-              align: 'center'
-            },
-            {
-              field: 'namaekspedisi',
-              title: 'Nama Ekspedisi',
-              width: 200,
-              sortable: true
-            },
-            {
-              field: 'kodecustomer',
-              title: 'Kd. Pelanggan',
-              width: 100,
-              sortable: true
-            },
-            {
-              field: 'namacustomer',
-              title: 'Nama Pelanggan',
-              width: 200,
-              sortable: true
-            },
-            {
-              field: 'kota',
-              title: 'Kota Pelanggan',
-              width: 100,
               align: 'center',
+              hidden: true
+            },
+            {
+              field: 'kodepr',
+              title: 'No. PR',
+              width: 200
+            },
+            {
+              field: 'uuidsupplier',
+              hidden: true
+            },
+            {
+              field: 'kodesupplier',
+              title: 'Kd. Supplier',
+              width: 130,
               sortable: true
             },
             {
-              field: 'namasubcustomer',
-              title: 'Nama SubPelanggan',
-              width: 180,
+              field: 'namasupplier',
+              title: 'Nama Supplier',
+              width: 200,
               sortable: true
             },
-            ...(LIHATHARGA == 1 ? [{
+            ...lihatharga ? [{
                 field: 'total',
                 title: 'Total',
                 width: 100,
@@ -439,6 +395,14 @@
               {
                 field: 'ppnrp',
                 title: 'PPN',
+                width: 100,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+              },
+              {
+                field: 'pph22rp',
+                title: 'PPH 22',
                 width: 100,
                 sortable: true,
                 formatter: format_amount,
@@ -460,16 +424,7 @@
                 formatter: format_amount,
                 align: 'right'
               },
-            ] : []),
-            {
-              field: 'tglkirim',
-              title: 'Tgl. Kirim',
-              width: 80,
-              sortable: true,
-              formatter: ubah_tgl_indo,
-              align: 'center'
-            },
-            {
+            ] : [], {
               field: 'catatan',
               title: 'Catatan',
               width: 450,
@@ -529,10 +484,10 @@
           var ddv = $(this).datagrid('getRowDetail', index).find('table.ddv');
 
           ddv.datagrid({
-            url: link_api.loadDaftarUangMukaSO,
+            url: link_api.loadDaftarUangMukaPO,
             method: 'POST',
             queryParams: {
-              uuidso: row.uuidso
+              uuidpo: row.uuidpo
             },
             fitColumns: false,
             singleSelect: true,
@@ -587,7 +542,7 @@
                   field: '',
                   title: '',
                   formatter: function(index, row) {
-                    return `<button onclick="hapusUangMuka('${row.uuiduangmukaso}')">Hapus</button>`;
+                    return `<button onclick="hapusUangMuka('${row.uuiduangmukapo}')">Hapus</button>`;
                   }
                 }
               ]
@@ -610,13 +565,7 @@
               }
             },
             onDblClickRow: function(index, row) {
-              var tab_title = row.kodeso + '  (' + row.tglpembayaran + ')';
-              console.log(tab_title);
-              parent.buka_submenu(null, tab_title,
-                '{{ route('atena.penjualan.uangmuka.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.uuiduangmukaso,
-                'fa fa-pencil');
-
+              before_edit(row.uuiduangmukapo);
             },
           });
 
@@ -666,16 +615,13 @@
     function browse_data_marketing(id) {
       $(id).combogrid({
         panelWidth: 310,
-        idField: 'uuidkaryawan',
+        idField: 'id',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
         multiple: true,
         url: link_api.browseKaryawanMarketing,
-        onBeforeLoad: function(param) {
-          param.divisi = 'marketing';
-        },
         columns: [
           [{
               field: 'ck',
@@ -699,34 +645,43 @@
     }
 
     function reload() {
+
       $('#table_data').datagrid('reload');
     }
 
-    function hapusUangMuka(iduangmukaso) {
-      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-        data = data.data;
-        if (data.hapus == 1) {
+    function hapusUangMuka(uuiduangmukapo) {
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
+        if (data.data.hapus == 1) {
           $.messager.confirm('Konfirmasi', 'Apakah anda yakin menghapus uang muka?', async function(confirm) {
             if (confirm) {
               try {
-                bukaLoader();
-                const res = await fetchData(
-                  '{{ session('TOKEN') }}',
-                  link_api.hapusUangMukaSO, {
-                    uuiduangmukaso: iduangmukaso
+                let url = link_api.hapusUangMukaPO;
+                const response = await fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    uuiduangmukapo: uuiduangmukapo,
+                  }),
+                }).then(response => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `HTTP error! status: ${response.status} from ${url}`
+                    );
                   }
-                );
-                if (!res.success) {
-                  $.messager.alert('Error', res.message, 'error');
+                  return response.json();
+                })
+
+                if (response.success) {
+                  filter_data();
                 } else {
-                  $('#table_data').datagrid('reload');
+                  $.messager.alert('Error', response.message, 'error');
                 }
-              } catch (e) {
-                const error = (typeof e === 'string') ? e : e.message;
-                const textError = getTextError(error);
-                $.messager.alert('Error', textError, 'error');
-              } finally {
-                tutupLoader();
+              } catch (error) {
+                var textError = getTextError(error);
+                $.messager.alert('Error', getTextError(error), 'error');
               }
             }
           });

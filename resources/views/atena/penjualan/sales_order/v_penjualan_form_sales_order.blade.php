@@ -756,39 +756,18 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         });
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDCUSTOMER"), "uuidcustomer", row.uuidcustomer, url, '{{ session('TOKEN') }}');
 
         //SUBCUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDSUBCUSTOMER"), row.kodesubcustomer, url, '{{ session('TOKEN') }}');
+        get_combogrid_data($("#IDSUBCUSTOMER"), "uuidcustomer", row.uuidsubcustomer, url, '{{ session('TOKEN') }}');
 
         if (row.uuidekspedisi != "" && row.uuidekspedisi != null) {
           //EKSPEDISI
           var url = link_api.browseEkspedisi;
-          get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url, '{{ session('TOKEN') }}');
+          get_combogrid_data($("#IDEKSPEDISI"), "uuidekspedisi", row.uuidekspedisi, url, '{{ session('TOKEN') }}');
         }
 
-      }
-    }
-
-    function isTokenExpired() {
-      const token = '{{ session('TOKEN') }}';
-      if (!token) {
-        return true;
-      }
-
-      try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
-
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        return expirationTime < currentTime;
-      } catch (e) {
-        console.error('Gagal mendekode token JWT:', e);
-        return true;
       }
     }
 
@@ -825,50 +804,48 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        if (!isTokenExpired()) {
-          try {
-            const data = $("#form_input :input").serializeArray();
-            const payload = {};
 
-            for (let i = 0; i < data.length; i++) {
-              payload[data[i].name] = data[i].value;
-              if (data[i].name == 'data_detail' || data[i].name == 'data_detail_pembayaran' || data[i].name ==
-                'data_tutup') {
-                payload[data[i].name] = JSON.parse(payload[data[i].name]);
-              }
-              if (data[i].name == 'jamkirim') {
-                payload[data[i].name] = payload[data[i].name] + ':00';
-              }
-            }
-            payload['jenis_simpan'] = use;
+        try {
+          const data = $("#form_input :input").serializeArray();
+          const payload = {};
 
-            tampilLoaderSimpan();
-            const response = await fetchData('{{ session('TOKEN') }}', link_api.simpanPenjualanSalesOrder, payload);
-            cekbtnsimpan = true;
-            if (!response.success) {
-              $.messager.alert('Error', response.message, 'error');
-            } else {
-              $('#form_input').form('clear');
-              $.messager.alert('Info', 'Transaksi Sukses', 'info');
-              if (mode == 'ubah') {
-                ubah();
-              } else {
-                tambah();
-              }
-              if (use == 'simpan_cetak') {
-                cetak(response.data.uuidso);
-              }
+          for (let i = 0; i < data.length; i++) {
+            payload[data[i].name] = data[i].value;
+            if (data[i].name == 'data_detail' || data[i].name == 'data_detail_pembayaran' || data[i].name ==
+              'data_tutup') {
+              payload[data[i].name] = JSON.parse(payload[data[i].name]);
             }
-          } catch (e) {
-            const error = typeof e === "string" ? e : e.message;
-            const textError = getTextError(error);
-            $.messager.alert('Error', textError, 'error');
-          } finally {
-            tutupLoaderSimpan();
+            if (data[i].name == 'jamkirim') {
+              payload[data[i].name] = payload[data[i].name] + ':00';
+            }
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          payload['jenis_simpan'] = use;
+
+          tampilLoaderSimpan();
+          const response = await fetchData('{{ session('TOKEN') }}', link_api.simpanPenjualanSalesOrder, payload);
+          cekbtnsimpan = true;
+          if (!response.success) {
+            $.messager.alert('Error', response.message, 'error');
+          } else {
+            $('#form_input').form('clear');
+            $.messager.alert('Info', 'Transaksi Sukses', 'info');
+            if (mode == 'ubah') {
+              ubah();
+            } else {
+              tambah();
+            }
+            if (use == 'simpan_cetak') {
+              cetak(response.data.uuidso);
+            }
+          }
+        } catch (e) {
+          const error = typeof e === "string" ? e : e.message;
+          const textError = getTextError(error);
+          $.messager.alert('Error', textError, 'error');
+        } finally {
+          tutupLoaderSimpan();
         }
+
       }
     }
 

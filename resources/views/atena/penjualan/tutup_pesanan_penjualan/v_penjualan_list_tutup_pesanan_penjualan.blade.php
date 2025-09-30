@@ -352,20 +352,22 @@
       }
     }
 
-
     function refresh_data() {
-      $('#table_data').datagrid('reload');
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      filter_data(currentPage);
       $('#table_data_detail').datagrid('loadData', []);
       clear_plugin();
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       if (!$('#cb_filter_semua').prop('checked') &&
         $('#txt_lokasi_filter').combogrid('getValue') == 0) {
         $.messager.alert('Error', 'Filter Lokasi Harus Dipilih Terlebih Dahulu', 'error');
         $('#table_data').datagrid('loadData', []);
       } else {
-        $('#table_data').datagrid('load', {
+        $('#table_data').datagrid('reload', {
           lokasi: $('#txt_lokasi_filter').combogrid('getValue'),
           marketing: $('#txt_marketing_filter').combogrid('getValue'),
           customer: $('#txt_customer_filter').textbox('getValue'),
@@ -375,6 +377,7 @@
           tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
           rd_tutup: $('[name=rd_tutup]:checked').val(),
           filter_semua: $('#cb_filter_semua:checked').val(),
+          page: pagenumber
         });
       }
       $('#table_data_detail').datagrid('loadData', []);

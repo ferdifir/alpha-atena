@@ -1348,98 +1348,74 @@
         }
       }
 
-      if (!isTokenExpired()) {
 
-        $('#data_barangkategori').val(JSON.stringify($('#table_data_barangkategori').datagrid('getRows')));
+      $('#data_barangkategori').val(JSON.stringify($('#table_data_barangkategori').datagrid('getRows')));
 
-        var isValid = $('#form_input').form('validate');
+      var isValid = $('#form_input').form('validate');
 
-        if ($("#KONVERSI1").val() > 1 && $("#SATUAN2").val() == "") {
-          $.messager.alert('Warning', "Satuan 2 Belum Diisi", 'warning');
-          isValid = false;
-        }
-        if ($("#KONVERSI2").val() > 1 && $("#SATUAN3").val() == "") {
-          $.messager.alert('Warning', "Satuan 3 Belum Diisi", 'warning');
-          isValid = false;
-        }
-
-        if (isValid) {
-          mode = $('[name=mode]').val();
-
-          tampilLoaderSimpan();
-
-          const datasupplier = $('#table_data_supplier').datagrid('getRows');
-          const filteredData = datasupplier.filter(row => Object.values(row).some(val => val !== null && val !==
-            undefined));
-          $('#data_supplier').val(JSON.stringify(filteredData));
-
-          const formData = new FormData($('#form_input')[0]);
-          if (fileGambar) {
-            // backend hanya menerima satu file
-            formData.set('filegambar', fileGambar);
-          }
-          //   const data = $('#form_input').serializeArray();
-          //   const payload = {};
-          //   for (let i = 0; i < data.length; i++) {
-          //     if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
-          //       data[i].value = JSON.parse(data[i].value);
-          //     }
-          //     payload[data[i].name] = data[i].value;
-          //   }
-          if ('{{ $mode }}' == 'ubah') {
-            // const barangset = payload.data_barangset;
-            const barangset = JSON.parse(formData.get('data_barangset'));
-            for (let i = 0; i < barangset.length; i++) {
-              //   barangset[i].uuidbarangset = payload.uuidbarang;
-              barangset[i].uuidbarang = formData.get('uuidbarang');
-            }
-            // payload.data_barangset = barangset;
-            formData.set('data_barangset', JSON.stringify(barangset));
-          }
-
-          try {
-            const response = await fetchData(link_api.simpanBarang, formData);
-            if (response.success) {
-              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-              if (mode == 'tambah') {
-                tambah();
-              } else if (mode == 'ubah') {
-                ubah();
-              }
-            } else {
-              $.messager.alert('Error', response.message, 'error');
-            }
-          } catch (error) {
-            const e = (typeof error === 'string') ? error : error.message;
-            var textError = getTextError(e);
-            $.messager.alert('Error', textError, 'error');
-            return;
-          } finally {
-            tutupLoaderSimpan();
-          }
-        }
-      } else {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+      if ($("#KONVERSI1").val() > 1 && $("#SATUAN2").val() == "") {
+        $.messager.alert('Warning', "Satuan 2 Belum Diisi", 'warning');
+        isValid = false;
       }
-    }
-
-    function isTokenExpired() {
-      const token = '{{ session('TOKEN') }}';
-      if (!token) {
-        return true;
+      if ($("#KONVERSI2").val() > 1 && $("#SATUAN3").val() == "") {
+        $.messager.alert('Warning', "Satuan 3 Belum Diisi", 'warning');
+        isValid = false;
       }
 
-      try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
+      if (isValid) {
+        mode = $('[name=mode]').val();
 
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
+        tampilLoaderSimpan();
 
-        return expirationTime < currentTime;
-      } catch (e) {
-        return true;
+        const datasupplier = $('#table_data_supplier').datagrid('getRows');
+        const filteredData = datasupplier.filter(row => Object.values(row).some(val => val !== null && val !==
+          undefined));
+        $('#data_supplier').val(JSON.stringify(filteredData));
+
+        const formData = new FormData($('#form_input')[0]);
+        if (fileGambar) {
+          // backend hanya menerima satu file
+          formData.set('filegambar', fileGambar);
+        }
+        //   const data = $('#form_input').serializeArray();
+        //   const payload = {};
+        //   for (let i = 0; i < data.length; i++) {
+        //     if (typeof data[i].value === 'string' && data[i].name.startsWith('data_')) {
+        //       data[i].value = JSON.parse(data[i].value);
+        //     }
+        //     payload[data[i].name] = data[i].value;
+        //   }
+        if ('{{ $mode }}' == 'ubah') {
+          // const barangset = payload.data_barangset;
+          const barangset = JSON.parse(formData.get('data_barangset'));
+          for (let i = 0; i < barangset.length; i++) {
+            //   barangset[i].uuidbarangset = payload.uuidbarang;
+            barangset[i].uuidbarang = formData.get('uuidbarang');
+          }
+          // payload.data_barangset = barangset;
+          formData.set('data_barangset', JSON.stringify(barangset));
+        }
+
+        try {
+          const response = await fetchData(link_api.simpanBarang, formData);
+          if (response.success) {
+            $.messager.alert('Info', 'Simpan Data Sukses', 'info');
+            if (mode == 'tambah') {
+              tambah();
+            } else if (mode == 'ubah') {
+              ubah();
+            }
+          } else {
+            $.messager.alert('Error', response.message, 'error');
+          }
+        } catch (error) {
+          const e = (typeof error === 'string') ? error : error.message;
+          var textError = getTextError(e);
+          $.messager.alert('Error', textError, 'error');
+          return;
+        } finally {
+          tutupLoaderSimpan();
+        }
       }
     }
 

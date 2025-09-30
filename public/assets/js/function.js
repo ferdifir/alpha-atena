@@ -630,7 +630,7 @@ function ubah_status_trans(v_kodetrans, v_table, v_field, v_status, callback) {
     });
 }
 
-function get_combogrid_data(obj_combogrid, field, table, token) {
+function get_combogrid_data(obj_combogrid,id, field, table, token) {
     var data = obj_combogrid.combogrid("grid").datagrid("getData").firstRows;
     var data =
         typeof data != "undefined"
@@ -639,7 +639,7 @@ function get_combogrid_data(obj_combogrid, field, table, token) {
     var ketemu = false;
     var pjg = data.length;
     for (var i = 0; i < pjg; i++) {
-        if (data[i].ID == field) {
+        if (data[i][id] == field) {
             obj_combogrid.combogrid("grid").datagrid("loadData", [data[i]]);
             obj_combogrid.combogrid("setValue", field);
             ketemu = true;

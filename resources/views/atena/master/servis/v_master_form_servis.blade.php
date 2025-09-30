@@ -71,7 +71,11 @@
   <script>
     $(document).ready(function() {
       browse_data_perkiraan();
-      {{ $mode }}();
+      @if ($mode == 'tambah')
+        tambah();
+      @elseif ($mode == 'ubah')
+        ubah();
+      @endif
       tutupLoader();
     });
 
@@ -193,7 +197,11 @@
             const data = await res.json();
             if (data.success) {
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
-              {{ $mode }}();
+              @if ($mode == 'tambah')
+                tambah();
+              @elseif ($mode == 'ubah')
+                ubah();
+              @endif
             } else {
               throw new Error(data.errorMsg);
             }

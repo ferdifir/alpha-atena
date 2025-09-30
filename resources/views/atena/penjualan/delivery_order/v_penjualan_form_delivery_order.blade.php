@@ -755,12 +755,12 @@
 
         //CUSTOMER
         var url = link_api.browseCustomer;
-        get_combogrid_data($("#IDCUSTOMER"), row.kodecustomer, url);
+        get_combogrid_data($("#IDCUSTOMER"), "uuidcustomer" row.uuidcustomer, url, '{{ session('TOKEN') }}');
 
         if (row.uuidekspedisi != 0 && row.uuidekspedisi != null) {
           //EKSPEDISI
           var url = link_api.browseEkspedisi;
-          get_combogrid_data($("#IDEKSPEDISI"), row.kodeekspedisi, url);
+          get_combogrid_data($("#IDEKSPEDISI"), "uuidekspedisi", row.uuidekspedisi, url, '{{ session('TOKEN') }}');
         }
       }
     }
@@ -790,7 +790,6 @@
         }
       }
 
-      if (!isTokenExpired('{{ session('TOKEN') }}')) {
         if (stok_minus) {
           $.messager.confirm(
             'Confirm',
@@ -811,9 +810,7 @@
             simpanTransaksi(jenis_simpan);
           }
         }
-      } else {
-        $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-      }
+      
     }
 
     async function simpanTransaksi(jenis_simpan) {

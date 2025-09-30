@@ -908,7 +908,7 @@
 
       var isValid = $('#form_input').form('validate');
 
-      if (isValid && !isTokenExpired()) {
+      if (isValid) {
         mode = $('[name=mode]').val();
         try {
           tampilLoaderSimpan();
@@ -1325,26 +1325,6 @@
       } catch (error) {
         console.error("Terjadi kesalahan:", error);
         throw error; // Melemparkan kembali error agar bisa ditangkap oleh pemanggil
-      }
-    }
-
-    function isTokenExpired() {
-      const token = '{{ session('TOKEN') }}';
-      if (!token) {
-        return true;
-      }
-
-      try {
-        const payloadBase64 = token.split('.')[1];
-        const decodedPayload = atob(payloadBase64);
-        const payload = JSON.parse(decodedPayload);
-
-        const expirationTime = payload.exp;
-        const currentTime = Math.floor(Date.now() / 1000);
-
-        return expirationTime < currentTime;
-      } catch (e) {
-        return true;
       }
     }
   </script>

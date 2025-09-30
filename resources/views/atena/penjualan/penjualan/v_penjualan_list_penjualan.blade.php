@@ -148,10 +148,14 @@
         </div>
         <div data-options="region:'center'">
           <div class="easyui-layout" fit="true" id="main_wrapper">
-            <div data-options="region:'center',">
-  <div class="title-grid"> Riwayat Transaksi </div>
-  <table id="table_data"></table>
-</div>
+            <div data-options="region:'center'">
+              <div class="easyui-layout" data-options="fit:true">
+                <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+                <div data-options="region:'center'">
+                  <table id="table_data"></table>
+                </div>
+              </div>
+            </div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
               title="Daftar Antrian Pengeluaran Barang" style="width: 25%;">
               <div id="table_pending"></div>
@@ -548,34 +552,30 @@
       $('#mode').val('hapus');
 
       if (row) {
-        if (!isTokenExpired(jwt)) {
+        get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
+          data = data.data;
+          if (data.status == 'I') {
+            var kode = row.kodejual;
 
-          get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
-            data = data.data;
-            if (data.status == 'I') {
-              var kode = row.kodejual;
-
-              const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-              if (isTabOpen) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                  ', Sebelum Dibatalkan ', 'warning');
-              } else {
-                get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-                  data = data.data;
-                  if (data.hapus == 1) {
-                    $("#alasan_pembatalan").dialog('open');
-                  } else {
-                    $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                  }
-                });
-              }
+            const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+            if (isTabOpen) {
+              $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                ', Sebelum Dibatalkan ', 'warning');
             } else {
-              $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+              get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+                data = data.data;
+                if (data.hapus == 1) {
+                  $("#alasan_pembatalan").dialog('open');
+                } else {
+                  $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                }
+              });
             }
-          });
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-        }
+          } else {
+            $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+          }
+        });
+
       }
     }
 
@@ -583,61 +583,58 @@
       $('#mode').val('batal_cetak');
 
       if (row) {
-        if (!isTokenExpired(jwt)) {
-          //PENGECEKAN TERLEBIH DAHULU JIKA SUDAH ADA TRANSAKSI PENAGIHAN
-          try {
-            bukaLoader();
-            const res = await fetchData(
-              jwt,
-              link_api.loadDataTagihanPenjualanPenjualan, {
-                uuidjual: row.uuidjual
-              }
-            );
-            if (!res.success) {
-              $.messager.alert('Error', res.message, 'error');
-            } else {
-              if (res.data.notagihan != '') {
-                $.messager.alert(
-                  'Warning',
-                  'Sudah Terdapat Tagihan Pelanggan Dengan No Tagihan ' +
-                  res.data.notagihan + '<br> Transaksi Penjualan Tidak Dapat Dibatal Cetak',
-                  'warning'
-                );
-              } else {
-                get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
-                  data = data.data;
-                  if (data.status == 'S') {
-                    var kode = row.kodejual;
-                    const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
-                    if (isTabOpen) {
-                      $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                        ', Sebelum Dibatal Cetak ', 'warning');
-                    } else {
-                      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(
-                        data) {
-                        data = data.data;
-                        if (data.batalcetak == 1) {
-                          batal_cetak();
-                        } else {
-                          $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                        }
-                      });
-                    }
-                  } else {
-                    $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
-                  }
-                });
-              }
+        //PENGECEKAN TERLEBIH DAHULU JIKA SUDAH ADA TRANSAKSI PENAGIHAN
+        try {
+          bukaLoader();
+          const res = await fetchData(
+            jwt,
+            link_api.loadDataTagihanPenjualanPenjualan, {
+              uuidjual: row.uuidjual
             }
-          } catch (e) {
-            const error = (typeof e === 'string') ? e : e.message;
-            $.messager.alert('Error', getTextError(error), 'error');
-          } finally {
-            tutupLoader();
+          );
+          if (!res.success) {
+            $.messager.alert('Error', res.message, 'error');
+          } else {
+            if (res.data.notagihan != '') {
+              $.messager.alert(
+                'Warning',
+                'Sudah Terdapat Tagihan Pelanggan Dengan No Tagihan ' +
+                res.data.notagihan + '<br> Transaksi Penjualan Tidak Dapat Dibatal Cetak',
+                'warning'
+              );
+            } else {
+              get_status_trans(jwt, "atena/penjualan/penjualan", "uuidjual", row.uuidjual, function(data) {
+                data = data.data;
+                if (data.status == 'S') {
+                  var kode = row.kodejual;
+                  const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+                  if (isTabOpen) {
+                    $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
+                      ', Sebelum Dibatal Cetak ', 'warning');
+                  } else {
+                    get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(
+                      data) {
+                      data = data.data;
+                      if (data.batalcetak == 1) {
+                        batal_cetak();
+                      } else {
+                        $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                      }
+                    });
+                  }
+                } else {
+                  $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+                }
+              });
+            }
           }
-        } else {
-          $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+        } catch (e) {
+          const error = (typeof e === 'string') ? e : e.message;
+          $.messager.alert('Error', getTextError(error), 'error');
+        } finally {
+          tutupLoader();
         }
+
       }
     }
 
@@ -972,10 +969,13 @@
     }
 
     function refresh_data() {
-      $('#table_data').datagrid('reload');
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      filter_data(currentPage);
     }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
       var dataLokasi = getLokasi.datagrid('getChecked');
       var lokasi = "";
@@ -992,7 +992,7 @@
       });
       status = status.length > 0 ? JSON.stringify(status) : '';
 
-      $('#table_data').datagrid('load', {
+      $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         lokasi: lokasi,
         kodebbk: $('#txt_kodebbk_filter').val(),
@@ -1003,7 +1003,8 @@
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
         status: status,
-        marketing: marketing
+        marketing: marketing,
+        pagenumber: pagenumber
       });
     }
 
@@ -1016,6 +1017,8 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
+        pagination: true,
+        clientPaging: false,
         url: link_api.loadDataGridPenjualanPenjualan,
         onLoadSuccess: function() {
           $('#table_data').datagrid('unselectAll');
@@ -1247,14 +1250,11 @@
           ]
         ],
         onDblClickRow: function(index, data) {
-          if (!isTokenExpired(jwt)) {
-            const kode = data.kodejual;
-            parent.buka_submenu(null, kode,
-              '{{ route('atena.penjualan.penjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-              data.uuidjual, 'fa fa-plus');
-          } else {
-            $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
-          }
+          const kode = data.kodejual;
+          parent.buka_submenu(null, kode,
+            '{{ route('atena.penjualan.penjualan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            data.uuidjual, 'fa fa-plus');
+
         },
       });
     }
@@ -1350,29 +1350,25 @@
           ]
         ],
         onDblClickRow: async function(index, data) {
-          if (!isTokenExpired(jwt)) {
-            try {
-              bukaLoader();
-              const res = await fetchData(
-                jwt,
-                link_api.cekBisaBerlanjutInventoryBarangKeluar, {
-                  uuidbbk: data.uuidbbk
-                }
-              );
-              if (!res.success) {
-                $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
-                reload();
-              } else {
-                before_add(data.uuidbbk);
+          try {
+            bukaLoader();
+            const res = await fetchData(
+              jwt,
+              link_api.cekBisaBerlanjutInventoryBarangKeluar, {
+                uuidbbk: data.uuidbbk
               }
-            } catch (e) {
-              const error = (typeof e === 'string') ? e : e.message;
-              $.messager.alert('Error', getTextError(error), 'error');
-            } finally {
-              tutupLoader();
+            );
+            if (!res.success) {
+              $.messager.alert('Peringatan', 'Transaksi telah diproses', 'warning');
+              reload();
+            } else {
+              before_add(data.uuidbbk);
             }
-          } else {
-            $.messager.alert('Error', 'Token tidak valid, silahkan login kembali', 'error');
+          } catch (e) {
+            const error = (typeof e === 'string') ? e : e.message;
+            $.messager.alert('Error', getTextError(error), 'error');
+          } finally {
+            tutupLoader();
           }
         }
       });

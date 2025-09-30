@@ -405,7 +405,7 @@
                                 dataSession.push({
                                     keySession: "NAMADATABASE",
                                     valueSession: responseDetail.data.namadatabase ?? "",
-                                });                                
+                                });
                                 dataSession.push({
                                     keySession: "KODEPERUSAHAAN",
                                     valueSession: responseDetail.data.kodeperusahaan ?? "",
