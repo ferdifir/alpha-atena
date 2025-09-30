@@ -182,23 +182,23 @@ async function batal_trans() {
     if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodetrans, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodekas +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetrans +
                 ', Sebelum Dibatalkan ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
+        var statusTrans = await getStatusTrans(link_api.getStatusSaldoAwalHutang,
             'bearer {{ session('TOKEN') }}', {
-                uuidkas: row.uuidkas
+                kodetrans: row.kodetrans
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransaksiKas;
+                        let url = link_api.batalSaldoAwalHutang;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -206,9 +206,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidkas: row.uuidkas,
-                                kodekas: row.kodekas,
-                                alasan: alasan,
+                                kodetrans: row.kodetrans,
+                                alasan   : alasan,
                             }),
                         }).then(response => {
                             if (!response.ok) {

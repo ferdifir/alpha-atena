@@ -656,11 +656,13 @@ var link_api = {
     loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
     simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
     batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    getStatusSaldoAwalHutang     : `${base_url_api}atena/keuangan/saldo-awal-hutang/get-status-trans`,
     //Saldo Awal Piutang
     loadDataGridSaldoAwalPiutang  : `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
     loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
     simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
     batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    getStatusSaldoAwalPiutang     : `${base_url_api}atena/keuangan/saldo-awal-piutang/get-status-trans`,
     //Debet Note
     loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
     loadDataHeaderDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-header`,
@@ -671,7 +673,18 @@ var link_api = {
     ubahStatusjadiInputDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-input`,
     ubahStatusjadiSlipDebetNote: `${base_url_api}atena/keuangan/nota-debit/ubah-status-jadi-slip`,
     getStatusDebetNote: `${base_url_api}atena/keuangan/nota-debit/get-status-trans`,
+    //Kredit Note
+    loadDataGridCreditNote: `${base_url_api}atena/keuangan/nota-kredit/load-data-grid`,
+    loadDataHeaderCreditNote: `${base_url_api}atena/keuangan/nota-kredit/load-data-header`,
+    simpanCreditNote: `${base_url_api}atena/keuangan/nota-kredit/simpan`,
+    loadDataCreditNote: `${base_url_api}atena/keuangan/nota-kredit/load-data`,
+    cetakCreditNote: `${base_url_api}atena/keuangan/nota-kredit/cetak/`,
+    batalCreditNote: `${base_url_api}atena/keuangan/nota-kredit/batal-trans`,
+    ubahStatusjadiInputCreditNote: `${base_url_api}atena/keuangan/nota-kredit/ubah-status-jadi-input`,
+    ubahStatusjadiSlipCreditNote: `${base_url_api}atena/keuangan/nota-kredit/ubah-status-jadi-slip`,
+    getStatusCreditNote: `${base_url_api}atena/keuangan/nota-kredit/get-status-trans`,
     //Pelunasan Hutang
+    loadConfigPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-config`,
     loadDataGridPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-grid`,
     loadDataHeaderPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-data-header`,
     simpanPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/simpan`,
@@ -681,6 +694,8 @@ var link_api = {
     ubahStatusjadiInputPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-input`,
     ubahStatusjadiSlipPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/ubah-status-jadi-slip`,
     getStatusPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/get-status-trans`,
+    browseTandaTerimaPelunasan: `${base_url_api}atena/keuangan/tanda-terima/browse-for-pelunasan`,
+    loadHutangPelunasanHutang: `${base_url_api}atena/keuangan/pelunasan-hutang/load-hutang`,
 };
 
 var modul_kode = {

@@ -21,15 +21,15 @@
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
                     <tr><td id="label_form" align="center">Tgl. Transaksi</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px"/></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"/></td></tr>
                     <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px"/></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"/></td></tr>
                     <tr><td id="label_form"><br></td></tr>
                     <tr><td id="label_form" align="center">No. Transaksi</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Nama Supplier</td></tr>
-                    <tr><td align="center"><input id="txt_supplier_filter" name="txt_supplier_filter" style="width:100px" class="label_input" /></td></tr>
+                    <tr><td id="label_form" align="center">Nama Customer</td></tr>
+                    <tr><td align="center"><input id="txt_customer_filter" name="txt_customer_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
             </div>
@@ -136,8 +136,8 @@ shortcut.add('F2', function() {
 function before_add() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Potongan Pembelian',
-                '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Potongan Penjualan',
+                '{{ route('atena.keuangan.credit_note.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -150,9 +150,9 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.uuiddebetnote,
-                '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.uuiddebetnote,
+            parent.buka_submenu(null, row.kodecreditnote,
+                '{{ route('atena.keuangan.credit_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                row.kodecreditnote,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -182,23 +182,23 @@ async function batal_trans() {
     if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodecreditnote, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodekas +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodecreditnote +
                 ', Sebelum Dibatalkan ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusDebetNote,
+        var statusTrans = await getStatusTrans(link_api.getStatusCreditNote,
             'bearer {{ session('TOKEN') }}', {
-                uuiddebetnote: row.uuiddebetnote
+                uuidcreditnote: row.uuidcreditnote
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransaksiKas;
+                        let url = link_api.batalCreditNote;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -206,8 +206,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuiddebetnote: row.uuiddebetnote,
-                                kodekas: row.kodekas,
+                                uuidcreditnote: row.uuidcreditnote,
+                                kodecreditnote: row.kodecreditnote,
                                 alasan: alasan,
                             }),
                         }).then(response => {
@@ -247,7 +247,7 @@ function refresh_data() {
 function filter_data() {
 	$('#table_data').datagrid('load',{
 		kodetrans   : $('#txt_kodetrans_filter').val(),
-		namasupplier: $('#txt_supplier_filter').val(),
+		namacustomer: $('#txt_customer_filter').val(),
 		tglawal     : $('#txt_tgl_aw_filter').datebox('getValue'),
 		tglakhir    : $('#txt_tgl_ak_filter').datebox('getValue'),
 	});
@@ -263,7 +263,7 @@ function buat_table() {
 		striped     : true,
 		rownumbers  : true,
 		pageSize    : 20,
-		url         : link_api.loadDataGridDebetNote,
+		url         : link_api.loadDataGridCreditNote,
 		pagination  : true,
 		clientPaging: false,
         rowStyler   : function(index, row) {
@@ -272,9 +272,9 @@ function buat_table() {
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
 		frozenColumns:[[
-			{field:'kodedebetnote',title:'No. Faktur',width:100, sortable:true,},
+			{field:'kodecreditnote',title:'No. Faktur',width:100, sortable:true,},
 			{field:'namalokasi',title:'Lokasi',width:120, sortable:true,},
-			{field:'namasupplier',title:'Supplier',width:300, sortable:true,},
+			{field:'namacustomer',title:'Customer',width:300, sortable:true,},
 			{field:'tgltrans', title:'Tgl. Trans', align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,}
 		]],
 		columns:[[

@@ -159,14 +159,14 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
 			data = data.data;
 			var UT = data.ubah;
-			// get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/saldo-awal-hutang", "kodetrans", row.kodetrans, function(data) {
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/saldo-awal-hutang", "kodetrans", row.kodetrans, function(data) {
 
-			// 	if (UT == 1 && data.data.status == 'I') {
-			// 		document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
-			// 		$('#mode').val('ubah');
-			// 	} else {
-			// 		document.getElementById('btn_simpan').onclick = ''; $('#btn_simpan').css('filter', 'grayscale(100%)');
-			// 	}
+				if (UT == 1 && data.data.status == 'I') {
+					document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
+					$('#mode').val('ubah');
+				} else {
+					document.getElementById('btn_simpan').onclick = ''; $('#btn_simpan').css('filter', 'grayscale(100%)');
+				}
 
 				$('#form_input').form('load',row);
 				$('#KODETRANS').textbox('readonly');
@@ -175,7 +175,7 @@ async function ubah() {
 
 				$('#GRANDTOTAL').numberbox('setValue', parseFloat(row.grandtotal) < 0 ? -(row.grandtotal) : row.grandtotal)
 				$('#IDSUPPLIER').combogrid('setValue', {id: row.idsupplier, nama: row.namasupplier})
-			// });
+			});
 		});
 	}
 }

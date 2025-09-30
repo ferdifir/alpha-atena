@@ -43,7 +43,7 @@
 										</table>
 									</fieldset>
 								</td>
-								<td valign="top" <?=$AYATSILANG==0 ? '' : 'hidden';?>>
+								<td valign="top" class="ayatsilang0">
 									<fieldset style="height:150px">
 										<legend>Informasi Kas/Bank</legend>
 										<table border="0">
@@ -73,7 +73,7 @@
 										</table>
 									</fieldset>
 								</td>
-								<td valign="top" <?=$AYATSILANG == 1 ? '' : 'hidden'?>>
+								<td valign="top" class="ayatsilang1">
 									<fieldset style="height:150px">
 										<legend>Informasi No Kas/Bank</legend>
 										<table border="0">
@@ -92,7 +92,7 @@
 										</table>
 									</fieldset>
 								</td>
-								<td id="fm-giro" <?=$AYATSILANG==1 ? 'hidden' : '';?>>
+								<td id="fm-giro" class="ayatsilang0">
 									<fieldset style="height:150px">
 										<legend>Informasi Giro Keluar</legend>
 										<table border="0" style="padding:2px">
@@ -183,63 +183,26 @@
 <script src="{{ asset('assets/js/utils.js') }}"></script>
 <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
 <script>
+var mode_load_data = false;
 var cekbtnsimpan = true; //CEK APAKAH TOMBOL SIMPAN BISA DITEKAN ATAU BELUM (SUPAYA TIDAK TERKLIK 2x)
+var flag_get_jurnal = false // jika false maka ger_jurnal_link belum selesai loading, sehingga tidak bisa simpan
 var idtrans = "";
 var row = {};
-$(document).ready(function(){
-	let check1 = false;
-  let check2 = false;
-  const promises = [];
-  promises.push(getConfig('KODEKAS', 'TKAS', 'bearer {{ session('TOKEN') }}',
-      function(response) {
-          if (response.success) {
-              config = response.data;
-              check1 = true;
-          } else {
-              if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
-                  window.alert("Login session sudah habis. Silahkan Login Kembali");
-              } else {
-                  $.messager.alert('Error', error, 'error');
-              }
-          }
-      },
-      function(error) {
-          $.messager.alert('Error', "Request Config Error", 'error');
-      }));
-  promises.push(get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(
-      data) {
-      check2 = true;
-      var UT = data.data.cetak;
-      aksesubah = data.data.ubah;
-      if (UT == 1) {
-          $('#simpan_cetak').css('filter', '');
-      } else {
-          $('#simpan_cetak').css('filter', 'grayscale(100%)');
-          $('#simpan_cetak').removeAttr('onclick');
-      }
-  }, false));
+var ayatsilang;
+$(document).ready(async function(){
 
-  await Promise.all(promises);
-  if (!check1 || !check2) return;
+  await getConfigMenu()
 
-  if (!lihatharga) {
-      // $('#lihatTotalHarga').hide();
-  }
-  if (config.value == "AUTO") {
-      $('#KODEPELUNASAN').textbox({
-          prompt: "Auto Generate",
-          readonly: true,
-          required: false
-      });
-  } else {
-      $('#KODEPELUNASAN').textbox({
-          prompt: "",
-          readonly: false,
-          required: true
-      });
-      $('#KODEPELUNASAN').textbox('clear').textbox('textbox').focus();
-  }
-
+  await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        var UT = data.data.cetak;
+		aksesubah = data.data.ubah;
+		if (UT == 1) {
+			$('#simpan_cetak').css('filter', '');
+		} else {
+			$('#simpan_cetak').css('filter', 'grayscale(100%)');
+			$('#simpan_cetak').removeAttr('onclick');
+		}
+    },false);
 	
 	$("#form_cetak").window({
 		collapsible: false,
@@ -281,10 +244,6 @@ $(document).ready(function(){
         draggable  : true,
         left       : left
     });
-
-	get_status_trans("atena/Keuangan/Transaksi/PelunasanHutang",row.idpelunasan, function(data) {
-		$(".form_status").html(status_transaksi(data.status)); 
-	});
 	
 	browse_data_lokasi('#IDLOKASI');
 	browse_data_referensi('#IDSUPPLIER');
@@ -293,7 +252,7 @@ $(document).ready(function(){
 	browse_no_kas('#IDKAS');
 	browse_no_tt('#IDTANDATERIMA');
 
-	$('#TGLTRANS').datebox('readonly', <?=$AYATSILANG==1 ? 'true' : 'false'?>);
+	$('#TGLTRANS').datebox('readonly', ayatsilang==1 ? 'true' : 'false');
 	
 	$('#AMOUNT').numberbox({
 		onChange: function(newVal, oldVal) {
@@ -434,9 +393,9 @@ async function ubah() {
 	$('#mode').val('ubah');
 	$('#SAMAKANDEBETKREDIT').prop("checked",true);
 	if (row) {
-		get_akses_user('<?= $kodemenu ?>', function(data) {
+		get_akses_user('<?= $kodemenu ?>', async function(data) {
 			var UT = data.ubah;
-			get_status_trans("atena/Keuangan/Transaksi/PelunasanHutang",row.idpelunasan, function(data) {
+			get_status_trans("atena/Keuangan/Transaksi/PelunasanHutang",row.idpelunasan, async function(data) {
 				if (UT == 1 && data.status == 'I') {
 					$('#btn_simpan_modal').css('filter', '');
 					$('#mode').val('ubah');
@@ -479,7 +438,7 @@ async function ubah() {
 
 				$('#AMOUNTKAS').numberbox('setValue', row.total)
 				// console.log(row)
-				load_data(row.idpelunasan, row.kodepelunasan);
+				await load_data(row.idpelunasan, row.kodepelunasan);
 				$('#IDTANDATERIMA').combogrid('readonly');
 				
 				$('#IDSUPPLIER').combogrid('setValue', {id:row.idsupplier, nama:row.namasupplier});
@@ -690,8 +649,8 @@ async function load_data(idtrans, kodetrans) {
 function browse_data_lokasi(id) {
 	$(id).combogrid({
 		panelWidth    : 380,
-		url           : base_url+'atena/Master/Data/Lokasi/comboGrid',
-		idField       : 'id',
+		url           : link_api.browseLokasi,
+		idField       : 'uuidlokasi',
 		textField     : 'nama',
 		mode          : 'local',
 		sortName      : 'nama',
@@ -699,7 +658,7 @@ function browse_data_lokasi(id) {
 		required      : true,
 		selectFirstRow: true,
 		columns       : [[
-			{field:'id',hidden:true},
+			{field:'uuidlokasi',hidden:true},
 			{field:'kode',title:'Kode',width:150, sortable:true},
 			{field:'nama',title:'Nama',width:200, sortable:true},
 		]],
@@ -713,8 +672,8 @@ function browse_data_referensi(id) {
 	$(id).combogrid({
 		panelWidth: 750,
 		required  : true,
-		url       : base_url+'atena/Master/Data/Supplier/comboGrid',
-		idField   : 'id',
+		url       : link_api.browseSupplier,
+		idField   : 'uuidsupplier',
 		textField : 'nama',
 		mode      : 'remote',
 		columns   : [[
@@ -743,7 +702,7 @@ function browse_data_referensi(id) {
 
 						$.ajax({
 							type    : 'POST',
-							url     : base_url + "atena/Keuangan/Transaksi/PelunasanHutang/getHutang",
+							url     : link_api.loadHutangPelunasanHutang,
 							data    : {
 								idtrans   : null,
 								idsupplier: row.id,
@@ -780,7 +739,7 @@ function browse_data_referensi(id) {
 function browse_no_kas(id) {
 	$(id).combogrid({
 		panelWidth: 800,
-		url       : base_url+'atena/Akuntansi/Transaksi/Kas/comboGridforPelunasan/hutang',
+		url       : link_api.browseTandaTerimaPelunasan,
 		idField   : 'idkas',
 		textField : 'kodekas',
 		mode      : 'remote',
@@ -816,7 +775,7 @@ function browse_no_kas(id) {
 function browse_no_tt(id) {
 	$(id).combogrid({
 		panelWidth: 630,
-		url       : base_url+'atena/Keuangan/Transaksi/TandaTerima/comboGridforPelunasan',
+		url       : link_api.browseTandaTerimaPelunasan,
 		idField   : 'idtandaterima',
 		textField : 'kodetandaterima',
 		required  : true,
@@ -875,7 +834,12 @@ function browse_no_tt(id) {
 function browse_data_kas_bank(id) {
 	$(id).combogrid({
 		panelWidth: 400,
-		url       : base_url+'atena/Master/Data/Perkiraan/comboGrid/kas_bank_hutang',
+		// url       : base_url+'atena/Master/Data/Perkiraan/comboGrid/kas_bank_hutang',
+		url		  : link_api.browsePerkiraan,
+		queryParams: {
+			jenis: 'kas_bank_hutang',
+			aktif: 1
+		},
 		idField   : 'id',
 		textField : 'kode',
 		mode      : 'remote',
@@ -895,7 +859,7 @@ function browse_data_kas_bank(id) {
 						$.messager.show({
 							title  : 'Warning',
 							msg	   : 'Perkiraan Yang Diinput Tidak Boleh Sama Dengan Header',
-							timeout: <?= $_SESSION[NAMAPROGRAM]['TIMEOUT'] ?>,
+							timeout: "{{ session('TIMEOUT') }}",
 						});
 
 						$(this).combogrid('clear');
@@ -924,8 +888,8 @@ function browse_data_kas_bank(id) {
 function browse_data_currency(id) {
 	$(id).combogrid({
 		panelWidth: 200,
-		url       : base_url+'atena/Master/Data/Currency/comboGrid',
-		idField   : 'id',
+		url       : link_api.browseCurrency,
+		idField   : 'uuidcurrency',
 		textField : 'simbol',
 		mode      : 'local',
 		required  : true,
@@ -1142,7 +1106,12 @@ function buat_table_detail_perkiraan() {
 					required  : true,
 					idField	  : 'kode',
 					textField : 'kode',
-					url		  : base_url+'atena/Master/Data/Perkiraan/comboGrid/detail_non_kasbank',
+					// url		  : base_url+'atena/Master/Data/Perkiraan/comboGrid/detail_non_kasbank',
+					url		  : link_api.browsePerkiraan,
+					queryParams: {
+                        jenis: 'detail_non_kasbank',
+                        aktif: 1
+                    },
 					columns	  : [[
 						{field:'kode',title:'Kode',width:110},
 						{field:'nama',title:'Nama',width:400},
@@ -1173,7 +1142,7 @@ function buat_table_detail_perkiraan() {
 					required  : true,
 					idField	  : 'simbol',
 					textField : 'simbol',
-					url		  : base_url+'atena/Master/Data/Currency/comboGrid',
+					url		  : link_api.browseCurrency,
 					columns	  : [[
 						{field:'nama',title:'Curr',width:100},
 						{field:'simbol',title:'Simbol',width:70},
@@ -1320,7 +1289,7 @@ function hitung_debet_kredit() {
 	
 	if($('#SAMAKANDEBETKREDIT').prop("checked"))
 	{
-		$('#IDCURRENCY').combogrid('setValue',{{  session('UUIDCURRENCY') }});
+		$('#IDCURRENCY').combogrid('setValue',"{{  session('UUIDCURRENCY') }}");
 		$('#NILAIKURS').numberbox('setValue',1);
 
 		$('#AMOUNT').numberbox('setValue', totaldebet-totalkredit);
@@ -1375,6 +1344,42 @@ function clear_plugin() {
 
 	$('.number').numberbox('setValue', 0);
 	$('#NILAIKURS').numberbox('setValue', 1);
+}
+
+async function getConfigMenu() {
+	try {
+	const res = await fetchData(
+		'{{ session('TOKEN') }}', link_api.loadConfigPelunasanHutang, {
+		kodemenu: '{{ $kodemenu }}'
+		}
+	);
+	if (res.success) {
+    // AYAT SILANG
+    ayatsilang = res.data.AYATSILANG
+
+    // KODE
+		if (res.data.KODE == "AUTO") {
+      $('#KODEPELUNASAN').textbox({
+				prompt: "Auto Generate",
+				readonly: true,
+				required: false
+			});
+		} else {
+			$('#KODEPELUNASAN').textbox({
+				prompt: "",
+				readonly: false,
+				required: true
+			});
+			$('#KODEPELUNASAN').textbox('clear').textbox('textbox').focus();
+		}
+	} else {
+		throw new Error(res.message);
+	}
+	} catch (e) {
+	const error = typeof e === 'string' ? e : e.message;
+	const textError = getTextError(error);
+	$.messager.alert('Error', textError, 'error');
+	}
 }
 </script>
 @endpush

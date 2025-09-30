@@ -6,10 +6,10 @@
 		<div class="easyui-layout" fit="true" >
 			<div data-options="region:'center',border:false ">
 				<div class="easyui-layout" style="height:100%" id="trans_layout" >
-					<div data-options="region:'north',border:false" style="width:100%; height:500px;">
-						<div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;" ></div>
-						
+					<div data-options="region:'north',border:false" style="width:100%; height:200px;">
+						div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
 						<input type="hidden" id="mode" name="mode">
+						<input type="hidden" id="IDCREDITNOTE" name="idcreditnote">
 						<table width="100%">
 							<tr>
 								<td>
@@ -18,81 +18,54 @@
 											<td valign="top">
 												<table>
 													<tr>
-														<td id="label_form">Jenis Trans</td>
+														<td id="label_form">No. Transaksi</td>
 														<td id="label_form">
-															<select name="jenistransaksi" id="JENISTRANSAKSI" style="width:180px" class="easyui-combobox" panelHeight="auto" required="true" data-options="editable: false">
-																<option value="JUAL">Jual</option>
-																<option value="RETUR JUAL">Retur Jual</option>
-																<option value="CREDIT NOTE">Credit Note</option>
-															</select>
+															<input id="KODECREDITNOTE" name="kodecreditnote" class="label_input" style="width:180px" <?=$KODE=='AUTO' ? 'prompt="Auto Generate" readonly' : ''?>>
 														</td>
 													</tr>
 													<tr>
-														<td id="label_form">No. Transaksi</td>
-														<td id="label_form">
-															<input id="KODETRANS" name="kodetrans" class="label_input" style="width:180px" validType='length[0,50]' required="true">
-														</td>
+														<td id="label_form">Tgl. Trans</td>
+														<td><input id="TGLTRANS" name="tgltrans" class="date" style="width:100px"/></td>
 													</tr>
 													<tr>
 														<td id="label_form">Lokasi</td>
-														<td>
-															<input name="uuidlokasi" class="label_input" id="UUIDLOKASI" style="width:250px">
-															<input type="hidden" id="KODELOKASI" name="kodelokasi">
-														</td>
+														<td id="label_form"><input name="idlokasi" id="IDLOKASI" style="width:190px"></td>
 													</tr>
 													<tr>
 														<td id="label_form">Customer</td>
+														<td id="label_form"><input id="IDCUSTOMER" name="idcustomer" class="label_input" style="width:300px" required="true"></td>
+													</tr>
+													<tr>
+														<td id="label_form">Nominal</td>
 														<td>
-															<input name="uuidcustomer" class="label_input" id="UUIDCUSTOMER" style="width:250px">
-															<input type="hidden" id="KODECUSTOMER" name="kodecustomer">
+															<input id="AMOUNT" name="amount" style="width:100px;" class="number">
 														</td>
 													</tr>
-													
-													<tr hidden>
-														<td id="label_form">Sub Customer</td>
-														<td>
-															<input name="idsubcustomer" class="label_input" id="UUIDSUBCUSTOMER" style="width:250px">
-															<input type="hidden" id="KODESUBCUSTOMER" name="kodesubcustomer">
-														</td>
-													</tr>
-													
 													<tr>
-														<td id="label_form">Tgl. Trans
-														<td><input id="TGLTRANS" name="tgltrans" style="width:100px" class="date"/></td>
-													</tr>
-													<tr>
-														<td id="label_form">Tgl. Jatuh Tempo</td>
-														<td><input id="TGLJATUHTEMPO" name="tgljatuhtempo" style="width:100px" class="date"/></td>
-													</tr>
-													<tr>
-														<td id="label_form">Nominal Piutang</td>
-														<td><input name="grandtotal" id="GRANDTOTAL" style="width:100px" class="number" min="0"></td>
-													</tr>
-													<tr>
-														<td id="label_form" valign="top">Catatan</td>
-														<td id="label_form"><textarea rows="10" name="catatan" class="label_input" id="CATATAN" multiline="true" style="width:500px; height:100px" validType='length[0,500]'></textarea></td>
+														<td id="label_form" valign="top">Keterangan</td>
+														<td id="label_form"><textarea rows="3" name="catatan" class="label_input" id="CATATAN" multiline="true" style="width:300px; height:50px" validType='length[0,300]' required="true"></textarea></td>
 													</tr>
 												</table>
 											</td>
 										</tr>
 									</table>
-									<div style="position: fixed;bottom:0;background-color: white;width:100%;">
-										<table cellpadding="0" cellspacing="0" style="width:100%">
-											<tr>
-												<td align="left" id="label_form">
-													<label style="font-weight:normal" id="label_form">User Input :</label>
-													<label id="lbl_kasir"></label>
-													<label style="font-weight:normal" id="label_form">| Tgl Input :</label>
-													<label id="lbl_tanggal"></label>
-												</td>
-											</tr>
-										</table>
-									</div>
 								</td>
 							</tr>
-						</table>	
+						</table>
+						<div style="position: fixed;bottom:0;background-color: white;width:100%;">
+							<table cellpadding="0" cellspacing="0" style="width:100%">
+								<tr>
+									<td align="left" id="label_form">
+										<label style="font-weight:normal" id="label_form">User Input :</label>
+										<label id="lbl_kasir"></label>
+										<label style="font-weight:normal" id="label_form">| Tgl Input :</label>
+										<label id="lbl_tanggal"></label>
+									</td>
+								</tr>
+							</table>
+						</div>	
 					</div>
-				 </div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -115,8 +88,45 @@ var row = {};
 $(document).ready(async function(){
 	
 	browse_data_lokasi('#UUIDLOKASI');
-	browse_data_customer('#UUIDCUSTOMER');
-	browse_data_subcustomer('#UUIDSUBCUSTOMER');
+	browse_data_customer('#IDCUSTOMER');
+
+	let check1 = false;
+  let check2 = false;
+  const promises = [];
+  promises.push(getConfig('KODEDEBETNOTE', 'TDEBETNOTE', 'bearer {{ session('TOKEN') }}',
+      function(response) {
+          if (response.success) {
+              config = response.data;
+              check1 = true;
+          } else {
+              if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
+                  window.alert("Login session sudah habis. Silahkan Login Kembali");
+              } else {
+                  $.messager.alert('Error', error, 'error');
+              }
+          }
+      },
+      function(error) {
+          $.messager.alert('Error', "Request Config Error", 'error');
+      }));
+
+  await Promise.all(promises);
+  if (!check1) return;
+
+  if (config.value == "AUTO") {
+      $('#KODEDEBETNOTE').textbox({
+          prompt: "Auto Generate",
+          readonly: true,
+          required: false
+      });
+  } else {
+      $('#KODEDEBETNOTE').textbox({
+          prompt: "",
+          readonly: false,
+          required: true
+      });
+      $('#KODEDEBETNOTE').textbox('clear').textbox('textbox').focus();
+  }
 	
 	@if ($mode == 'tambah')
 		await tambah();
@@ -152,7 +162,7 @@ async function ubah() {
 	 
 	const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.loadDataHeaderSaldoAwalPiutang, {
+			link_api.loadDataHeaderDebetNote, {
 			kodetrans: '{{ $data }}'
 		}
 	);
@@ -166,7 +176,7 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
 			data = data.data;
 			var UT = data.ubah;
-			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/saldo-awal-piutang", "kodetrans", row.kodetrans, function(data) {
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/nota-debit", "kodetrans", row.kodetrans, function(data) {
 
 				if (UT == 1 && data.data.status == 'I') {
 					document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
@@ -176,12 +186,12 @@ async function ubah() {
 				}
 
 				$('#form_input').form('load',row);
-				$('#KODETRANS').textbox('readonly');
-				$('#lbl_kasir').html(row.userbuat);
-				$('#lbl_tanggal').html(row.tglentry);
 
-				$('#GRANDTOTAL').numberbox('setValue', parseFloat(row.grandtotal) < 0 ? -(row.grandtotal) : row.grandtotal)
-				$('#UUIDCUSTOMER').combogrid('setValue', {uuidcustomer:row.uuidcustomer, nama:row.namacustomer})
+				$('#lbl_kasir').html(row.userentry);
+				$('#lbl_tanggal').html(row.tglentry);
+				
+				//get_combogrid_data ($('#UUIDSUPPLIER'), row.UUIDSUPPLIER, 'customer');
+				$('#UUIDSUPPLIER').combogrid('setValue', {uuid: row.uuidsupplier, nama: row.namasupplier})
 			});
 		});
 	}
@@ -210,7 +220,7 @@ async function simpan() {
 					}
 			});
 
-			let url = link_api.simpanSaldoAwalPiutang;
+			let url = link_api.simpanDebetNote;
 			const response = await fetch(url, {
 					method: 'POST',
 					headers: headers,
@@ -283,53 +293,27 @@ function browse_data_lokasi(id) {
 	});
 }
 
-function browse_data_customer(id, table) {
+function browse_data_supplier(id) {
 	$(id).combogrid({
-		panelWidth: 600,
-		url       : link_api.browseCustomer,
-		idField   : 'uuidcustomer',
+		panelWidth: 880,
+		url       : link_api.browseSupplier,
+		idField   : 'uuidsupplier',
 		textField : 'nama',
+		multiple  : false,
 		mode      : 'remote',
 		sortName  : 'nama',
 		sortOrder : 'asc',
-		required  : true,
-		columns   : [[
-			{field:'uuidcustomer',hidden:true},
-			{field:'kode',title:'Kode',width:150, sortable:true},
-			{field:'nama',title:'Nama',width:200, sortable:true},
-			{field:'kota',title:'Kota',width:100, sortable:true},
-			{field:'alamat',title:'Alamat',width:300, sortable:true},
-			{field:'telp',title:'Telp',width:100, sortable:true},
-			{field:'idsyaratbayar',hidden:true},
-		]],
-		onSelect: function(index, row) {			
-			$("#KODECUSTOMER").val(row.kode);
-		}
-	});
-}
-
-function browse_data_subcustomer(id, table) {
-	$(id).combogrid({
-		panelWidth: 600,
-		url       : link_api.browseCustomer,
-		idField   : 'uuidcustomer',
-		textField : 'nama',
-		mode      : 'remote',
-		sortName  : 'nama',
-		sortOrder : 'asc',
-		required  : false,
-		columns   : [[
-			{field:'uuidcustomer',hidden:true},
-			{field:'kode',title:'Kode',width:150, sortable:true},
-			{field:'nama',title:'Nama',width:200, sortable:true},
-			{field:'alamat',title:'Alamat',width:300, sortable:true},
-			{field:'kota',title:'Kota',width:100, sortable:true},
-			{field:'telp',title:'Telp',width:100, sortable:true},
-			{field:'idsyaratbayar',hidden:true},
-		]],
-		onSelect:function(index, row){			
-			$("#KODESUBCUSTOMER").val(row.kode);
+		rowStyler : function(index,row){
+			if (row.status == 0){
+				return 'background-color:#A8AEA6';
+			}
 		},
+		columns:[[
+			{field:'kode',title:'Kode',width:150, sortable:true},
+			{field:'nama',title:'Nama',width:300, sortable:true},
+			{field:'alamat',title:'Alamat',width:300, sortable:true},
+			{field:'kota',title:'Kota',width:100, sortable:true},
+		]]
 	});
 }
 

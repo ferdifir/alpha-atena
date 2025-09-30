@@ -47,6 +47,21 @@ Route::get('atena/keuangan/debetnote/form', function() {
     ]);
 })->name('atena.keuangan.debet_note.form');
 
+// POTONGAN PENJUALAN
+Route::get('atena/keuangan/creditnote/transaksi', function() {
+    return view('atena.keuangan.credit_note.v_keuangan_list_credit_note', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.keuangan.credit_note.transaksi');
+
+Route::get('atena/keuangan/creditnote/form', function() {
+    return view('atena.keuangan.credit_note.v_keuangan_form_credit_note', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.keuangan.credit_note.form');
+
 // PELUNASAN HUTANG
 Route::get('atena/keuangan/pelunasanhutang/transaksi', function() {
     return view('atena.keuangan.pelunasan_hutang.v_keuangan_list_pelunasan_hutang', [
@@ -76,3 +91,33 @@ Route::get('atena/keuangan/pelunasanpiutang/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.keuangan.pelunasan_piutang.form');
+
+// TANDA TERIMA
+Route::get('atena/keuangan/tandaterima/transaksi', function() {
+    return view('atena.keuangan.tanda_terima.v_keuangan_list_tanda_terima', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.keuangan.tanda_terima.transaksi');
+
+Route::get('atena/keuangan/tandaterima/form', function() {
+    return view('atena.keuangan.tanda_terima.v_keuangan_form_tanda_terima', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.keuangan.tanda_terima.form');
+
+// TAGIHAN PIUTANG
+Route::get('atena/keuangan/tagihanpiutang/transaksi', function() {
+    return view('atena.keuangan.tagihan_piutang.v_keuangan_list_tagihan_piutang', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.keuangan.tagihan_piutang.transaksi');
+
+Route::get('atena/keuangan/tagihanpiutang/form', function() {
+    return view('atena.keuangan.tagihan_piutang.v_keuangan_form_tagihan_piutang', [
+        'kodemenu' => request()->kode,
+        'data'=>request()->data,
+        'mode'=>request()->mode,
+    ]);
+})->name('atena.keuangan.tagihan_piutang.form');

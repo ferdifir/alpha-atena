@@ -167,7 +167,7 @@ async function ubah() {
 	const response = await fetchData(
 			'{{ session('TOKEN') }}',
 			link_api.loadDataHeaderDebetNote, {
-			kodetrans: '{{ $data }}'
+			uuiddebetnote: '{{ $data }}'
 		}
 	);
 	if(response.success) {
