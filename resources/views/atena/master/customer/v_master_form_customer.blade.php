@@ -749,7 +749,7 @@
 
         const [aksesResponse, configResponse] = await Promise.all([
           fetchData(link_api.getAksesFitur, {
-            uuiduser: "{{ session('DATAUSER')['uuid'] }}",
+            uuiduser: "{{ session('DATAUSER')['uuiduser'] }}",
             kodemenu: "I8KJS"
           }),
           fetchData(link_api.getConfig, {
