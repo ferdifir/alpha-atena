@@ -762,6 +762,18 @@ var link_api = {
     loadDataHeaderPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-header`,
     simpanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/simpan`,
     browseAsetPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/browse-aset`,
+    //Aset - Penyusutan Aset
+    loadDataGridPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-grid`,
+    loadConfigPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-config`,
+    loadDataHeaderPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-header`,
+    loadDataPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data`,
+    getStatusTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/get-status-trans`,
+    cetakPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/cetak/`,
+    batalTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/batal-trans`,
+    ubahStatusJadiInputPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-slip`,
+    hitungPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/hitung-aset`,
+    simpanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/simpan`,
 };
 
 var modul_kode = {
