@@ -750,6 +750,18 @@ var link_api = {
     simpanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/simpan`,
     browseAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/browse-aset`,
     hitungNilaiAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/hitung-nilai-aset`,
+    //Aset - Penjualan Aset
+    getStatusTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/get-status-trans`,
+    cetakPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/cetak/`,
+    batalTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/batal-trans`,
+    ubahStatusJadiInputPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-slip`,
+    loadDataGridPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-grid`,
+    loadConfigPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-config`,
+    loadDataPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data`,
+    loadDataHeaderPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-header`,
+    simpanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/simpan`,
+    browseAsetPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/browse-aset`,
 };
 
 var modul_kode = {

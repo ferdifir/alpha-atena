@@ -952,3 +952,18 @@ Route::get('atena/aset/penghapusanaset/form', function () {
         'mode' => request()->mode,
     ]);
 })->name('atena.aset.penghapusanaset.form');
+
+// Aset - Penjualan Aset
+Route::get('atena/aset/penjualanaset/transaksi', function () {
+    return view('atena.aset.penjualan_aset.v_aset_list_penjualan_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.aset.penjualanaset.transaksi');
+
+Route::get('atena/aset/penjualanaset/form', function () {
+    return view('atena.aset.penjualan_aset.v_aset_form_penjualan_aset', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.aset.penjualanaset.form');

@@ -376,7 +376,7 @@
             } else {
               ubah();
             }
-            parent.reload();
+            
             if (jenis_simpan == 'simpan_cetak') {
               cetak(res.data.uuidasethapus);
             }
@@ -678,6 +678,7 @@
                 const res = await response.json();
                 if (res.success) {
                   penyusutan = res.data.penyusutan;
+                  nilaibuku = nilaiperolehan - penyusutan;
                   row_update = {
                     uuidaset: id,
                     namaaset: nama,

@@ -49,15 +49,23 @@
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">No. Penghapusan Aset</td>
+              <td id="label_form" align="center">No. Penjualan Aset</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
-                  class="label_input" /></td>
+              <td align="center">
+                <input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" />
+              </td>
             </tr>
-            <!-- <tr><td id="label_form"><br></td></tr>
-                                                                                                     <tr><td id="label_form" align="center">Supplier</td></tr>
-                                                                                                     <tr><td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter" style="width:100px" class="label_input" /></td></tr> -->
+            <tr>
+              <td id="label_form"><br></td>
+            </tr>
+            <tr>
+              <td id="label_form" align="center">Supplier</td>
+            </tr>
+            <tr>
+              <td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter"
+                  style="width:100px" class="label_input" /></td>
+            </tr>
             <tr>
               <td id="label_form"><br></td>
             </tr>
@@ -104,6 +112,7 @@
       </tr>
     </table>
   </div>
+
   <div id="alasan_pembatalan-buttons">
     <table cellpadding="0" cellspacing="0" style="width:100%">
       <tr>
@@ -122,10 +131,8 @@
     var edit_row = false;
     var idtrans = "";
     var counter = 0;
-
     $(document).ready(function() {
-      //WAKTU BATAL DI GRID, tidak bisa close
-      //PRINT GRID
+
       $("#table_data").datagrid({
         onSelect: function() {
           row = $('#table_data').datagrid('getSelected');
@@ -155,7 +162,7 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Penghapusan Aset', $("#area_cetak").html());
+            export_excel('Faktur Penjualan Aset', $("#area_cetak").html());
             return false;
           }
         }]
@@ -171,6 +178,10 @@
       tutupLoader();
     });
 
+    $("#btn_browse").click(function() {
+      browse_alamat_kirim();
+    });
+
     shortcut.add('F2', function() {
       before_add();
     });
@@ -180,8 +191,8 @@
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Penghapusan Aset',
-            '{{ route('atena.aset.penghapusanaset.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Penjualan Aset',
+            '{{ route('atena.aset.penjualanaset.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -193,15 +204,14 @@
       $('#mode').val('hapus');
 
       if (row) {
-        const status = await getStatusTrans(
-          link_api.getStatusTransPenghapusanAset,
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransPenjualanAset,
           'Bearer {{ session('TOKEN') }}', {
-            uuidasethapus: row.uuidasethapus
+            uuidasetjual: row.uuidasetjual
           }
         );
-
-        if (status == 'I') {
-          var kode = row.kodeasethapus;
+        if (statusTrans == 'I') {
+          var kode = row.kodeasetjual;
           const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
           if (isTabOpen) {
             $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
@@ -226,14 +236,14 @@
       $('#mode').val('batal_cetak');
 
       if (row) {
-        const status = await getStatusTrans(
-          link_api.getStatusTransPenghapusanAset,
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransPenjualanAset,
           'Bearer {{ session('TOKEN') }}', {
-            uuidasethapus: row.uuidasethapus
+            uuidasetjual: row.uuidasetjual
           }
         );
-        if (status == 'S') {
-          var kode = row.kodeasethapus;
+        if (statusTrans == 'S') {
+          var kode = row.kodeasetjual;
           const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
           if (isTabOpen) {
             $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
@@ -256,7 +266,6 @@
 
     function before_print() {
       $('#mode').val('cetak');
-
       if (row) {
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
           data = data.data;
@@ -265,14 +274,15 @@
             return false;
           }
 
-          const status = await getStatusTrans(
-            link_api.getStatusTransPenghapusanAset,
+          const statusTrans = await getStatusTrans(
+            link_api.getStatusTransPenjualanAset,
             'Bearer {{ session('TOKEN') }}', {
-              uuidasethapus: row.uuidasethapus
+              uuidasetjual: row.uuidasetjual
             }
           );
-          if (status == 'I') {
-            var kode = row.kodeasethapus;
+
+          if (statusTrans == 'I') {
+            var kode = row.kodeasetjual;
             const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
             if (isTabOpen) {
               $.messager.alert(
@@ -283,16 +293,15 @@
             } else {
               cetak();
             }
-          } else if (status == 'S' || status == 'P') {
+          } else if (statusTrans == 'S' || statusTrans == 'P') {
             const kodemenu = modul_kode['aset'];
-            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-              data = data.data;
+            get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
               if (data.hakakses == 1) {
                 const doc = await getCetakDocument(
-                  link_api.cetakPenghapusanAset + row.uuidasethapus,
+                  link_api.cetakPenjualanAset + row.uuidasetjual,
                   '{{ session('TOKEN') }}', {
-                    uuidasethapus: row.uuidasethapus,
-                    kodeasethapus: row.kodeasethapus
+                    uuidasetjual: row.uuidasetjual,
+                    kodeasetjual: row.kodeasetjual
                   }
                 );
                 if (doc) {
@@ -320,21 +329,21 @@
       if (row && alasan != "") {
         $.messager.confirm(
           'Confirm',
-          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasethapus + ' ?',
+          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasetjual + ' ?',
           async function(r) {
             if (r) {
               try {
                 bukaLoader();
                 const response = await fetch(
-                  link_api.batalTransPenghapusanAset, {
+                  link_api.batalTransPenjualanAset, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                       'Authorization': 'Bearer {{ session('TOKEN') }}'
                     },
                     body: JSON.stringify({
-                      uuidasethapus: row.uuidasethapus,
-                      kodeasethapus: row.kodeasethapus,
+                      uuidasetjual: row.uuidasetjual,
+                      kodeasetjual: row.kodeasetjual,
                       alasan: alasan
                     })
                   }
@@ -348,7 +357,7 @@
                   $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
                   reload();
                 } else {
-                  $.messager.alert('Error', res.message, 'error');
+                  $.messager.alert('Error', res.errorMsg, 'error');
                 }
               } catch (e) {
                 showErrorAlert(e);
@@ -367,21 +376,21 @@
       if (row) {
         $.messager.confirm(
           'Confirm',
-          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasethapus + ' ?',
+          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasetjual + ' ?',
           async function(r) {
             if (r) {
               try {
                 bukaLoader();
                 const response = await fetch(
-                  link_api.ubahStatusJadiInputPenghapusanAset, {
+                  link_api.ubahStatusJadiInputPenjualanAset, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                       'Authorization': 'Bearer {{ session('TOKEN') }}'
                     },
                     body: JSON.stringify({
-                      uuidasethapus: row.uuidasethapus,
-                      kodeasethapus: row.kodeasethapus
+                      uuidasetjual: row.uuidasetjual,
+                      kodeasetjual: row.kodeasetjual
                     })
                   }
                 );
@@ -394,7 +403,7 @@
                   $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
                   reload();
                 } else {
-                  $.messager.alert('Error', res.message, 'error');
+                  $.messager.alert('Error', res.errorMsg, 'error');
                 }
               } catch (e) {
                 showErrorAlert(e);
@@ -411,15 +420,15 @@
       try {
         bukaLoader();
         const response = await fetch(
-          link_api.ubahStatusJadiSlipPenghapusanAset, {
+          link_api.ubahStatusJadiSlipPenjualanAset, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer {{ session('TOKEN') }}'
             },
             body: JSON.stringify({
-              uuidasethapus: row.uuidasethapus,
-              kodeasethapus: row.kodeasethapus
+              uuidasetjual: row.uuidasetjual,
+              kodeasetjual: row.kodeasetjual
             })
           }
         );
@@ -428,26 +437,27 @@
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const res = await response.json();
-        if (res.success) {
+        if (!res.success) {
+          $.messager.alert('Error', res.message, 'error');
+        } else {
           $.messager.show({
             title: 'Info',
             msg: 'Transaksi Sukses Dicetak',
             showType: 'show'
           });
           const doc = await getCetakDocument(
-            link_api.cetakPenghapusanAset + row.uuidasethapus,
+            link_api.cetakPenjualanAset + row.uuidasetjual,
             '{{ session('TOKEN') }}', {
-              uuidasethapus: row.uuidasethapus,
-              kodeasethapus: row.kodeasethapus
+              uuidasetjual: row.uuidasetjual,
+              kodeasetjual: row.kodeasetjual
             }
           );
           if (doc) {
             $("#area_cetak").html(doc);
             $("#form_cetak").window('open');
           }
+
           reload();
-        } else {
-          $.messager.alert('Error', res.message, 'error');
         }
       } catch (e) {
         showErrorAlert(e);
@@ -465,6 +475,8 @@
       $("[name='cb_status_filter[]']:checked").each(function() {
         status.push($(this).val());
       });
+      status = status.length > 0 ? JSON.stringify(status) : '';
+
       $('#table_data').datagrid('load', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         nama: $('#txt_nama_referensi_filter').val(),
@@ -486,14 +498,14 @@
         pagination: true,
         clientPaging: false,
         pageSize: 20,
-        url: link_api.loadDataGridPenghapusanAset,
-        onLoadSuccess: function(data) {
-          $("#table_data").datagrid('unselectAll');
-        },
+        url: link_api.loadDataGridPenjualanAset,
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
           else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
+        },
+        onLoadSuccess: function(data) {
+          $("#table_data").datagrid('unselectAll');
         },
         frozenColumns: [
           [{
@@ -505,18 +517,18 @@
               align: 'center'
             },
             {
-              field: 'uuidasethapus',
+              field: 'idasetjual',
               hidden: true
             },
             {
-              field: 'kodeasethapus',
-              title: 'No. Penghapusan Aset',
+              field: 'kodeasetjual',
+              title: 'No. Penjualan Aset',
               width: 145,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'uuidlokasi',
+              field: 'idlokasi',
               hidden: true
             },
             {
@@ -527,12 +539,48 @@
               sortable: true,
               align: 'center'
             },
-            //{field:'NAMALOKASI',title:'Nama Lokasi',width:120,sortable:true,align:'center'},
-            //{field:'PERIODESUSUT',title:'Periode Susut',width:150,sortable:true,align:'center'},
+            {
+              field: 'namalokasi',
+              title: 'Nama Lokasi',
+              width: 120,
+              sortable: true,
+              align: 'center'
+            },
+
           ]
         ],
         columns: [
           [{
+              field: 'idcustomer',
+              hidden: true
+            },
+            {
+              field: 'kodecustomer',
+              title: 'Kd. Customer',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'namacustomer',
+              title: 'Nama Customer',
+              width: 200,
+              sortable: true
+            },
+            {
+              field: 'namasubcustomer',
+              title: 'Nama SubCustomer',
+              width: 180,
+              sortable: true
+            },
+            {
+              field: 'grandtotal',
+              title: 'Grand Total',
+              width: 100,
+              sortable: true,
+              formatter: format_amount,
+              align: 'right',
+            },
+            {
               field: 'catatan',
               title: 'Catatan',
               width: 450,
@@ -582,10 +630,10 @@
           ]
         ],
         onDblClickRow: function(index, data) {
-          const kode = data.kodeasethapus;
+          const kode = data.kodeasetjual;
           parent.buka_submenu(null, kode,
-            '{{ route('atena.aset.penghapusanaset.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-            data.uuidasethapus, 'fa fa-pencil');
+            '{{ route('atena.aset.penjualanaset.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            data.uuidasetjual, 'fa fa-pencil');
         },
       });
     }
