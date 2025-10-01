@@ -907,3 +907,33 @@ Route::get('atena/aset/pembelianaset/form', function () {
         'mode' => request()->mode,
     ]);
 })->name('atena.aset.pembelianaset.form');
+
+// Aset - Retur Pembelian Aset
+Route::get('atena/aset/returpembelianaset/transaksi', function () {
+    return view('atena.aset.retur_pembelian_aset.v_aset_list_retur_pembelian_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.aset.returpembelianaset.transaksi');
+
+Route::get('atena/aset/returpembelianaset/form', function () {
+    return view('atena.aset.retur_pembelian_aset.v_aset_form_retur_pembelian_aset', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.aset.returpembelianaset.form');
+
+// Aset - Transfer Aset
+Route::get('atena/aset/transferaset/transaksi', function () {
+    return view('atena.aset.transfer_aset.v_aset_list_transfer_aset', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.aset.transferaset.transaksi');
+
+Route::get('atena/aset/transferaset/form', function () {
+    return view('atena.aset.transfer_aset.v_aset_form_transfer_aset', [
+        'kodemenu' => request()->kode,
+        'data' => request()->data,
+        'mode' => request()->mode,
+    ]);
+})->name('atena.aset.transferaset.form');

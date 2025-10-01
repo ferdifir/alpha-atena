@@ -388,7 +388,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
               });
           }
 
-          set_ppn_aktif(newVal, function(response) {
+          set_ppn_aktif(newVal, 'Bearer {{ session('TOKEN') }}', function(response) {
             response = response.data;
             ppnpersenaktif = response.ppnpersen;
 
@@ -487,8 +487,6 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
           });
         }
       })
-
-      tutupLoader();
     })
 
     shortcut.add('F8', function() {
@@ -516,17 +514,21 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
       parent.tutupTab();
     }
 
-    function cetak(id) {
-      $("#window_button_cetak").window('close');
-      $("#area_cetak").load(base_url + "atena/Aset/Transaksi/PembelianAset/cetak/" + id);
-      $("#form_cetak").window('open');
+    async function cetak(id) {
+      const doc = await getCetakDocument(
+        link_api.cetakPembelianAset + id,
+        '{{ session('TOKEN') }}',
+      );
+      if (doc) {
+        $("#window_button_cetak").window('close');
+        $("#area_cetak").html(doc);
+        $("#form_cetak").window('open');
+      }
     }
 
-    function tambah() {
+    async function tambah() {
       $('#form_input').form('clear');
       $('#mode').val('tambah');
-      parent.changeTitleTab($('#mode').val());
-
 
       $('#lbl_kasir, #lbl_tanggal').html('');
 
@@ -535,31 +537,77 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
       $('#TGLTRANS').combogrid('readonly', false);
       idtrans = "";
 
-      $.ajax({
-        type: 'POST',
-        url: base_url + 'atena/Master/Data/Lokasi/getLokasiDefault',
-        dataType: 'json',
-        cache: false,
-        success: function(msg) {
-          if (msg.idlokasi != null) {
-            $('#IDLOKASI').combogrid('setValue', msg.idlokasi);
-            $("#KODELOKASI").val(msg.kodelokasi);
+      try {
+        const response = await fetch(
+          link_api.getLokasiDefault, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer {{ session('TOKEN') }}'
+            },
           }
+        );
+
+        if (response.ok) {
+          const res = await response.json();
+          if (!res.success) {
+            throw new Error(res.message);
+          }
+          $('#IDLOKASI').combogrid('setValue', res.data.uuidlokasi);
+          $("#KODELOKASI").val(res.data.kodelokasi);
+        } else {
+          throw new Error('Http Error: ' + response.status);
         }
-      });
+      } catch (e) {
+        showErrorAlert(e);
+      }
 
       clear_plugin();
       reset_detail();
+      tutupLoader();
     }
 
-    function ubah() {
+    async function ubah() {
       $(':radio:not(:checked)').attr('disabled', false);
       $('#mode').val('ubah');
+      let row = null;
+
+      try {
+        const response = await fetch(
+          link_api.loadDataHeaderPembelianAset, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'bearer {{ session('TOKEN') }}',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              uuidasetbeli: '{{ $data }}'
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const res = await response.json();
+        if (res.success) {
+          row = res.data;
+        } else {
+          throw new Error(res.message);
+        }
+      } catch (e) {
+        showErrorAlert(e);
+      }
 
       if (row) {
-        get_status_trans("atena/Aset/Transaksi/PembelianAset", row.idasetbeli, function(data) {
-          $(".form_status").html(status_transaksi(data.status));
-        });
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransPembelianAset,
+          'bearer {{ session('TOKEN') }}', {
+            uuidasetbeli: row.uuidasetbeli
+          }
+        );
+        $(".form_status").html(status_transaksi(statusTrans));
+
         //jika tidak punya akses input harga
         if (INPUTHARGA == 0) {
           $(':radio:not(:checked)').attr('disabled', true);
@@ -569,45 +617,51 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
         $('#lbl_tanggal').html(row.tglentry);
 
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-          data = data.data;
-          var UT = data.ubah;
-          get_status_trans("atena/Aset/Transaksi/PembelianAset", row.idasetbeli, function(data) {
-            if (UT == 1 && data.status == 'I') {
-              $('#btn_simpan_modal').css('filter', '');
-              $('#mode').val('ubah');
-            } else {
-              document.getElementById('btn_simpan_modal').onclick = '';
-              $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
-              $('#btn_simpan_modal').removeAttr('onclick');
-            }
+          if (data.data.ubah == 1 && statusTrans == 'I') {
+            $('#btn_simpan_modal').css('filter', '');
+            $('#mode').val('ubah');
+          } else {
+            document.getElementById('btn_simpan_modal').onclick = '';
+            $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
+            $('#btn_simpan_modal').removeAttr('onclick');
+          }
 
-            $("#form_input").form('load', row);
-            $('#IDLOKASI').combogrid('readonly');
-            $('#IDSUPPLIER').combogrid('readonly');
-            $('#TGLTRANS').combogrid('readonly');
+          $("#form_input").form('load', row);
+          $('#IDLOKASI').combogrid('readonly');
+          $('#IDSUPPLIER').combogrid('readonly');
+          $('#TGLTRANS').combogrid('readonly');
 
-            $('#NOSURATJALAN').textbox('setValue', row.nosuratjalan);
-            $('#NOPOL').textbox('setValue', row.nopol);
-            $('#NAMASOPIR').textbox('setValue', row.namasopir);
-            //$('#IDSYARATBAYAR').textbox('setValue',row.IDSYARATBAYAR);
-            get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), row.selisih);
-            $('#table_data_detailaset').datagrid('loadData', []);
+          $('#NOSURATJALAN').textbox('setValue', row.nosuratjalan);
+          $('#NOPOL').textbox('setValue', row.nopol);
+          $('#NAMASOPIR').textbox('setValue', row.namasopir);
 
-            //SUPPLIER
-            var url = base_url + "atena/Master/Data/Supplier/comboGrid";
-            get_combogrid_data($("#IDSUPPLIER"), row.idsupplier, url);
+          get_tgl_jatuh_tempo($('#TGLJATUHTEMPO'), $('#TGLTRANS').datebox('getValue'), row.selisih);
+          $('#table_data_detailaset').datagrid('loadData', []);
 
-            load_data(row.idasetbeli);
-          });
+          //SUPPLIER
+          var url = link_api.browseSupplier;
+          get_combogrid_data($("#IDSUPPLIER"), 'uuidsupplier', row.uuidsupplier, url, '{{ session('TOKEN') }}');
+
+          load_data(row.uuidasetbeli);
         });
       }
     }
 
-    function simpan(jenis_simpan) {
+    async function simpan(jenis_simpan) {
       $(':radio:not(:checked)').attr('disabled', false);
       var mode = $("#mode").val();
+      let dataDetail = $('#table_data_detail').datagrid('getRows');
+      dataDetail = dataDetail.map((item) => {
+        let jml = Number(item.jml) || 0;
+        let masamanfaat = Number(item.masamanfaat) || 0;
+        return {
+          ...item,
+          jml: jml,
+          masamanfaat: masamanfaat
+        };
+      });
 
-      $('#data_detail').val(JSON.stringify($('#table_data_detail').datagrid('getRows')));
+      $('#data_detail').val(JSON.stringify(dataDetail));
       var datanya = $("#form_input :input").serialize();
       var isValid = $('#form_input').form('validate');
 
@@ -620,6 +674,8 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
       for (var i in daftar_detail) {
         data.append('data_gambar[' + i + ']', daftar_detail[i].filegambar);
       }
+
+      data.set('jenis_simpan', jenis_simpan);
 
       if (isValid) {
         var aset = [];
@@ -642,39 +698,47 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
 
       if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
         cekbtnsimpan = false;
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          url: base_url + "atena/Aset/Transaksi/PembelianAset/simpan/" + jenis_simpan,
-          data: data,
-          contentType: false,
-          processData: false,
-          beforeSend: function() {
-            $.messager.progress();
-          },
-          success: function(msg) {
-            $.messager.progress('close');
-            cekbtnsimpan = true;
-
-            if (msg.success) {
-
-              $('#form_input').form('clear');
-              $.messager.show({
-                title: 'Info',
-                msg: 'Transaksi Sukses',
-                showType: 'show'
-              });
-              tambah();
-              parent.reload();
-              if (jenis_simpan == 'simpan_cetak') {
-                cetak(msg.id);
-              }
-
-            } else {
-              $.messager.alert('Error', msg.errorMsg, 'error');
+        try {
+          tampilLoaderSimpan();
+          const response = await fetch(
+            link_api.simpanPembelianAset, {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer {{ session('TOKEN') }}',
+              },
+              body: data
             }
+          );
+
+          cekbtnsimpan = true;
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
           }
-        });
+
+          const res = await response.json();
+          if (res.success) {
+            $('#form_input').form('clear');
+            $.messager.show({
+              title: 'Info',
+              msg: 'Transaksi Sukses',
+              showType: 'show'
+            });
+            @if ($mode == 'tambah')
+              tambah();
+            @elseif ($mode == 'ubah')
+              ubah();
+            @endif
+            if (jenis_simpan == 'simpan_cetak') {
+              cetak(res.data.uuidasetbeli);
+            }
+          } else {
+            throw new Error(res.message);
+          }
+        } catch (e) {
+          showErrorAlert(e);
+        } finally {
+          tutupLoaderSimpan();
+        }
       }
     }
 
@@ -683,28 +747,33 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
       $('#table_data_detailaset').datagrid('loadData', []);
     }
 
-    function load_data(idtrans) {
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + "atena/Aset/Transaksi/PembelianAset/loadData",
-        data: "idtrans=" + idtrans,
-        cache: false,
-        beforeSend: function() {
-          // $.messager.progress();
-        },
-        success: function(msg) {
-          // $.messager.progress('close');
-          if (msg.success) {
-            $('#table_data_detail').datagrid('loadData', msg.detail);
+    async function load_data(idtrans) {
+      try {
+        const response = await fetch(
+          link_api.loadDataPembelianAset, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'bearer {{ session('TOKEN') }}',
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              uuidasetbeli: idtrans
+            }),
           }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      });
+        const res = await response.json();
+        if (res.success) {
+          $('#table_data_detail').datagrid('loadData', res.data);
+        } else {
+          throw new Error(res.message);
+        }
+      } catch (e) {
+        showErrorAlert(e);
+      }
     }
-
-    /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
-
-    /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
 
     /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
     function browse_data_lokasi(id) {
@@ -814,7 +883,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
           $('#TELP').textbox('setValue', row.telp);
           $('#NOREKENING').textbox('setValue', row.norekening);
           $('#NPWP').textbox('setValue', row.npwp);
-          $('#IDSYARATBAYAR').combogrid('setValue', row.idsyaratbayar);
+          $('#IDSYARATBAYAR').combogrid('setValue', row.uuidsyaratbayar);
 
           if ($('#mode').val() != '') {
             reset_detail();
@@ -910,8 +979,6 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
               index: index,
               field: 'kodebarang'
             });
-
-            getRowIndex(target);
           }
         }, {
           text: 'Hapus',
@@ -928,8 +995,11 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
               width: 200,
               editor: {
                 type: 'combogrid',
+                onBeforeLoad: function(param) {
+                  param.uuidlokasi = $("#IDLOKASI").combogrid('getValue');
+                },
                 options: {
-                  panelWidth: 400,
+                  panelWidth: 220,
                   mode: 'remote',
                   idField: 'nama',
                   textField: 'nama',
@@ -1019,7 +1089,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                   panelHeight: 130,
                   required: true,
                   mode: 'remote',
-                  url: base_url + 'atena/Aset/Transaksi/SaldoAwalAset/getSatuan',
+                  url: link_api.loadSatuanSaldoAwalAset,
                   idField: 'satuan',
                   textField: 'satuan',
                   columns: [
@@ -1246,7 +1316,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                     panelWidth: 190,
                     panelHeight: 130,
                     mode: 'remote',
-                    url: base_url + 'atena/Master/Data/Pajak/comboGrid',
+                    url: link_api.browsePajak,
                     idField: 'namapajak',
                     textField: 'namapajak',
                     columns: [
@@ -1279,14 +1349,14 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                 width: 80,
                 formatter: format_amount_2,
                 hidden: true,
-                editor: INPUTHARGA == 1 {
+                editor: INPUTHARGA == 1 ? {
                   type: 'numberbox',
                   options: {
                     min: 0,
                     precision: 2,
                     max: 100
                   }
-                }: null
+                } : null
               },
               {
                 field: 'pajaklain1rp',
@@ -1308,7 +1378,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                     panelWidth: 190,
                     panelHeight: 130,
                     mode: 'remote',
-                    url: base_url + 'atena/Master/Data/Pajak/comboGrid',
+                    url: link_api.browsePajak,
                     idField: 'namapajak',
                     textField: 'namapajak',
                     columns: [
@@ -1370,7 +1440,7 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                     panelWidth: 190,
                     panelHeight: 130,
                     mode: 'remote',
-                    url: base_url + 'atena/Master/Data/Pajak/comboGrid',
+                    url: link_api.browsePajak,
                     idField: 'namapajak',
                     textField: 'namapajak',
                     columns: [
@@ -1443,7 +1513,11 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                   panelWidth: 380,
                   mode: 'remote',
                   required: true,
-                  url: base_url + "atena/Master/Data/Perkiraan/comboGrid/detail",
+                  url: link_api.browsePerkiraan,
+                  onBeforeLoad: function(param) {
+                    param.jenis = 'detail';
+                    param.aktif = 1;
+                  },
                   idField: 'uuidperkiraan',
                   textField: 'nama',
                   columns: [
@@ -1476,7 +1550,11 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                   panelWidth: 380,
                   mode: 'remote',
                   required: true,
-                  url: base_url + "atena/Master/Data/Perkiraan/comboGrid/detail",
+                  url: link_api.browsePerkiraan,
+                  onBeforeLoad: function(param) {
+                    param.jenis = 'detail';
+                    param.aktif = 1;
+                  },
                   idField: 'uuidperkiraan',
                   textField: 'nama',
                   columns: [
@@ -1509,7 +1587,11 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                   panelWidth: 380,
                   mode: 'remote',
                   required: true,
-                  url: base_url + "atena/Master/Data/Perkiraan/comboGrid/detail",
+                  url: link_api.browsePerkiraan,
+                  onBeforeLoad: function(param) {
+                    param.jenis = 'detail';
+                    param.aktif = 1;
+                  },
                   idField: 'uuidperkiraan',
                   textField: 'nama',
                   columns: [
@@ -1549,11 +1631,11 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
           var row = $(this).datagrid('getRows')[index];
           var ed = get_editor('#table_data_detail', index, field);
           if (field == 'namaaset') {
-            var lokasi = $("#IDLOKASI").combogrid('getValue');
-            ed.combogrid('grid').datagrid('options').url = base_url +
-              'atena/Aset/Transaksi/PembelianAset/comboGridAset/' + lokasi;
+            // var lokasi = $("#IDLOKASI").combogrid('getValue');
+            ed.combogrid('grid').datagrid('options').url = link_api.browseAsetPembelianAset;
             ed.combogrid('grid').datagrid('load', {
-              q: ''
+              q: '',
+              //   uuidlokasi: lokasi
             });
             ed.combogrid('showPanel');
 
@@ -1598,7 +1680,15 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
                   'uuidaset': '',
                   'namaaset': row.namaaset,
                   'kodeaset': 'Auto',
-                  'serialnumber': ''
+                  'serialnumber': '',
+                  'masamanfaat': row.masamanfaat,
+                  'spekaset': row.spekaset,
+                  'satuan': row.satuan,
+                  'statusgaransi': row.statusgaransi,
+                  'tglakhirgaransi': row.tglakhirgaransi,
+                  'uuidakunaset': row.uuidakunaset,
+                  'uuidakunbiayasusut': row.uuidakunbiayasusut,
+                  'uuidakunakumulasisusut': row.uuidakunakumulasisusut
                 };
               }
               row.detailaset = detailAset;
@@ -1632,20 +1722,20 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
               break;
             case 'currency':
               var data = ed.combogrid('grid').datagrid('getSelected');
-              var idcurrency = data ? data.id : '';
+              var idcurrency = data ? data.uuidcurrency : '';
               var nilai = get_kurs($('#TGLTRANS').datebox('getValue'), idcurrency);
               row_update = {
-                idcurrency: idcurrency,
+                uuidcurrency: idcurrency,
                 nilaikurs: nilai ? nilai : 1
               };
               break;
             case 'namapajaklain1':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.idpajak : '';
+              var id = data ? data.uuidpajak : '';
               var nilai = data ? data.nilai : '';
               row_update = {
-                idpajaklain1: id,
+                uuidpajaklain1: id,
                 nilaipajaklain1: nilai,
                 pajaklain1persen: nilai
               };
@@ -1669,10 +1759,10 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
             case 'namapajaklain2':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.idpajak : '';
+              var id = data ? data.uuidpajak : '';
               var nilai = data ? data.nilai : '';
               row_update = {
-                idpajaklain2: id,
+                uuidpajaklain2: id,
                 nilaipajaklain2: nilai,
                 pajaklain2persen: nilai
               };
@@ -1696,10 +1786,10 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
             case 'namapajaklain3':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.idpajak : '';
+              var id = data ? data.uuidpajak : '';
               var nilai = data ? data.nilai : '';
               row_update = {
-                idpajaklain3: id,
+                uuidpajaklain3: id,
                 nilaipajaklain3: nilai,
                 pajaklain3persen: nilai
               };
@@ -1723,33 +1813,33 @@ Tekan 'esc' untuk tutup dialog " name="spekaset"
             case 'akunaset':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidperkiraan : '';
               var nama = data ? data.nama : '';
 
               row_update = {
-                idakunaset: id,
+                uuidakunaset: id,
                 akunaset: nama,
               };
               break;
             case 'akunbiayasusut':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidperkiraan : '';
               var nama = data ? data.nama : '';
 
               row_update = {
-                idakunbiayasusut: id,
+                uuidakunbiayasusut: id,
                 akunbiayasusut: nama
               };
               break;
             case 'akunakumulasisusut':
               var data = ed.combogrid('grid').datagrid('getSelected');
 
-              var id = data ? data.id : '';
+              var id = data ? data.uuidperkiraan : '';
               var nama = data ? data.nama : '';
 
               row_update = {
-                idakunakumulasisusut: id,
+                uuidakunakumulasisusut: id,
                 akunakumulasisusut: nama,
               };
               break;

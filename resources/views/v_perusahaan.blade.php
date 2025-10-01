@@ -89,7 +89,7 @@
                 @endphp
                 @foreach ($daftarPerusahaan as $perusahaan)
                     <div class="card card-perusahaan"
-                        onclick="loginPerusahaan('{{ $perusahaan['uuid'] }}','{{ $perusahaan['namaperusahaan'] }}')">
+                        onclick="loginPerusahaan('{{ $perusahaan['uuidperusahaan'] }}','{{ $perusahaan['namaperusahaan'] }}')">
                         <div>
                             <h4>{{ $perusahaan['namaperusahaan'] }}</h4>
                         </div>
@@ -214,13 +214,13 @@
 
         function edit_profile() {
             $('#form_input_user').dialog('open').dialog('setTitle', 'Edit Profile');
-            $('#USERID_PROFILE').textbox('setValue', "{{ session('DATAUSER')['uuid'] }}");
+            $('#USERID_PROFILE').textbox('setValue', "{{ session('DATAUSER')['uuiduser'] }}");
             $('#USERID_PROFILE').textbox('readonly', true);
             $('#USERNAME_PROFILE').textbox('setValue', "{{ session('DATAUSER')['username'] }}");
             $('#EMAIL_PROFILE').textbox('setValue', "{{ session('DATAUSER')['email'] }}");
             $('#NOHP_PROFILE').textbox('setValue', "{{ session('DATAUSER')['nohp'] }}");
             $('#GAMBARUSER_PROFILE').val("{{ session('DATAUSER')['gambar_url'] }}");
-            $('#IDUSER_PROFILE').val("{{ session('DATAUSER')['uuid'] }}");
+            $('#IDUSER_PROFILE').val("{{ session('DATAUSER')['uuiduser'] }}");
 
             if ($('#GAMBARUSER_PROFILE').val() == "{{ session('DATAUSER')['gambar_url'] }}") {
                 $('#preview-image-profile').removeAttr('src').replaceWith($('#preview-image-profile').clone());
@@ -251,7 +251,7 @@
                 type: 'POST',
                 url: link_api.loginPerusahaan,
                 data: {
-                    uuid_user: '{{ session('DATAUSER')['uuid'] }}',
+                    uuid_user: '{{ session('DATAUSER')['uuiduser'] }}',
                     uuid_perusahaan: perusahaan
                 },
                 success: async function(response) {
@@ -332,7 +332,7 @@
                                 dataSession.push({
                                     keySession: "NAMADATABASE",
                                     valueSession: responseDetail.data.namadatabase ?? "",
-                                });                                
+                                });
                                 dataSession.push({
                                     keySession: "KODEPERUSAHAAN",
                                     valueSession: responseDetail.data.kodeperusahaan ?? "",

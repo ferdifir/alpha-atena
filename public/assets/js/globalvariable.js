@@ -702,10 +702,30 @@ var link_api = {
     //Aset - Pembelian Aset
     loadConfigPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-config`,
     loadDataGridPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-grid`,
+    loadDataPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data`,
+    loadDataHeaderPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-header`,
     cetakPembelianAset: `${base_url_api}atena/aset/pembelian-aset/cetak/`,
     batalTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/batal-trans`,
     ubahStatusJadiInputPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-input`,
     ubahStatusJadiSlipPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-slip`,
+    getStatusTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/get-status-trans`,
+    browsePajak: `${base_url_api}atena/master/pajak/browse`,
+    browseAsetPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset`,
+    browseReturPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-retur-pembelian-aset`,
+    browseAsetBeliPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset-beli`,
+    simpanPembelianAset: `${base_url_api}atena/aset/pembelian-aset/simpan`,
+    //Aset - Retur Pembelian Aset
+    loadDataGridReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-grid`,
+    loadConfigReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-config`,
+    loadDataReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data`,
+    loadDataHeaderReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-header`,
+    getStatusTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/get-status-trans`,
+    batalTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/batal-trans`,
+    ubahStatusJadiInputReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-slip`,
+    cetakReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/cetak/`,
+    simpanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/simpan`,
+    browseAsetReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset`,
 };
 
 var modul_kode = {
