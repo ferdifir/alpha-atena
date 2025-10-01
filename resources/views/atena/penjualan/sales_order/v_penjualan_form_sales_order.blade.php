@@ -712,7 +712,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
             function(data) {
               data = data.data;
               if (UT == 1 && data.status == 'I') {
-                if (row.userentry != '{{ session('DATAUSER')['uuid'] }}' &&
+                if (row.userentry != '{{ session('DATAUSER')['uuiduser'] }}' &&
                   lihatsemuatrans == 0) {
                   $('#btn_simpan_modal').css('filter', 'grayscale(100%)');
                   $('#btn_simpan_modal').removeAttr('onclick');

@@ -184,7 +184,7 @@
 
       fetchData(
         link_api.getAksesFitur, {
-          uuiduser: '{{ session('DATAUSER')['uuid'] }}',
+          uuiduser: '{{ session('DATAUSER')['uuiduser'] }}',
           kodemenu: 'I8K83',
         }).then(res => {
         if (res.success) {
