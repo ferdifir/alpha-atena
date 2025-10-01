@@ -387,7 +387,11 @@
                     );
                   }
                 } else {
-                  $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
+                  $.messager.alert(
+                    "Warning",
+                    "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                    "warning"
+                  );
                 }
               });
             } else if (data.status == 'I') {

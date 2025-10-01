@@ -294,8 +294,20 @@
             get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
               data = data.data;
               if (data.hakakses == 1) {
-                $("#area_cetak").load(link_api.cetakPembelianAset + row.uuidasetbeli);
-                $("#form_cetak").window('open');
+                const doc = await getCetakDocument(
+                  link_api.cetakPembelianAset + row.uuidasetbeli,
+                  '{{ session('TOKEN') }}',
+                );
+                if (doc) {
+                  $("#area_cetak").html(doc);
+                  $("#form_cetak").window('open');
+                }
+              } else {
+                $.messager.alert(
+                  "Warning",
+                  "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                  "warning"
+                );
               }
             });
           } else {

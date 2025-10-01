@@ -287,6 +287,12 @@
                   $("#area_cetak").html(doc);
                   $("#form_cetak").window('open');
                 }
+              } else {
+                $.messager.alert(
+                  "Warning",
+                  "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                  "warning"
+                );
               }
             });
           } else {

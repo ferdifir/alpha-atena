@@ -726,6 +726,18 @@ var link_api = {
     cetakReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/cetak/`,
     simpanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/simpan`,
     browseAsetReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset`,
+    //Aset - Transfer Aset
+    getStatusTransTransferAset: `${base_url_api}atena/aset/transfer-aset/get-status-trans`,
+    cetakTransferAset: `${base_url_api}atena/aset/transfer-aset/cetak/`,
+    batalTransTransferAset: `${base_url_api}atena/aset/transfer-aset/batal-trans`,
+    ubahStatusJadiInputTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-slip`,
+    loadDataGridTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-grid`,
+    loadConfigTransferAset: `${base_url_api}atena/aset/transfer-aset/load-config`,
+    loadDataHeaderTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-header`,
+    simpanTransferAset: `${base_url_api}atena/aset/transfer-aset/simpan`,
+    loadDataTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data`,
+    browseAsetTransferAset: `${base_url_api}atena/aset/transfer-aset/browse-aset`,
 };
 
 var modul_kode = {
@@ -1081,17 +1093,14 @@ async function downloadCSV(apiUrl, uuid, token = null) {
 
 async function getCetakDocument(url, token, body) {
     try {
-        const response = await fetch(
-            url,
-            {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json",
-                },
-                body: body ? JSON.stringify(body) : null,
-            }
-        );
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1117,6 +1126,9 @@ function showErrorAlert(e) {
         error = "Terdapat kesalahan dalam memproses data.";
     }
 
-    const textError = getTextError(error);
+    let textError = getTextError(error);
+    if (textError.includes(tokenTidakValid)) {
+        textError = "Sesi login telah habis. Silahkan login ulang";
+    }
     $.messager.alert("Error", textError, "error");
 }

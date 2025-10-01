@@ -73,8 +73,10 @@
               </td>
             </tr>
             <tr>
-              <td align="center"><a id="btn_search" class="easyui-linkbutton"
-                  data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+              <td align="center">
+                <a id="btn_search" class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false"
+                  onclick="filter_data()">Tampilkan Data</a>
+              </td>
             </tr>
           </table>
         </div>
@@ -132,7 +134,7 @@
 
       buat_table();
 
-      $("#txt_tgl_aw_filter").datebox('setValue', "<?= TGLAWALFILTER ?>");
+      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
 
       $("#form_cetak").window({
         collapsible: false,
@@ -175,103 +177,85 @@
 
     function before_add() {
       $('#mode').val('tambah');
-      get_akses_user('<?= $kodemenu ?>', function(data) {
+      get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+        data = data.data;
         if (data.tambah == 1) {
-          counter++;
-          $("#mode").val("tambah");
-          $("#view").val("<?= $namaView ?>");
-          $("#data").val('');
-
-          var tab_title = 'Tambah';
-          var tab_name = tab_title + "_" + counter;
-
-          $('#form_data').attr('target', tab_name);
-
-          $('#tab_transaksi').tabs('add', {
-            title: tab_title,
-            id: counter,
-            content: '<iframe frameborder="0"  class="tab_form"  id="' + counter + '" name="' + tab_name +
-              '"></iframe>',
-            closable: true
-          });
-
-          $('#form_data').submit();
-
+          parent.buka_submenu(null, 'Tambah Transfer Aset',
+            '{{ route('atena.aset.transferaset.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
         }
       });
     }
 
-    function before_delete() {
+    async function before_delete() {
       $('#mode').val('hapus');
 
       if (row) {
-        validasi_session(function() {
-          cek_tanggal_tutup_periode(row.tgltrans, 1, function(data) {
-            if (!data.success) {
-              $.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi no ' + row
-                .kodeasettransfer + '. Prosedur tidak dapat dilanjutkan', 'error')
-              return false
-            }
-
-            get_status_trans("atena/Aset/Transaksi/TransferAset", row.idasettransfer, function(data) {
-              if (data.status == 'I') {
-                var kode = row.kodeasettransfer;
-                if ($('#tab_transaksi').tabs('exists', kode)) {
-                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                    ', Sebelum Dibatalkan ', 'warning');
-                } else {
-                  get_akses_user('<?= $kodemenu ?>', function(data) {
-                    if (data.hapus == 1) {
-                      $("#alasan_pembatalan").dialog('open');
-                    } else {
-                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                    }
-                  });
-                }
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransTransferAset,
+          'bearer {{ session('TOKEN') }}', {
+            uuidasettransfer: row.uuidasettransfer
+          }
+        );
+        if (statusTrans == 'I') {
+          var kode = row.kodeasettransfer;
+          const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+          if (isTabOpen) {
+            $.messager.alert(
+              'Warning',
+              'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
+              'warning'
+            );
+          } else {
+            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+              data = data.data;
+              if (data.hapus == 1) {
+                $("#alasan_pembatalan").dialog('open');
               } else {
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+                $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
               }
             });
-          });
-        });
+          }
+        } else {
+          $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatalkan', 'info');
+        }
       }
     }
 
-    function before_delete_print() {
+    async function before_delete_print() {
       $('#mode').val('batal_cetak');
 
       if (row) {
-        validasi_session(function() {
-          cek_tanggal_tutup_periode(row.tgltrans, 1, function(data) {
-            if (!data.success) {
-              $.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi no ' + row
-                .kodeasettransfer + '. Prosedur tidak dapat dilanjutkan', 'error')
-              return false
-            }
-
-            get_status_trans("atena/Aset/Transaksi/TransferAset", row.idasettransfer, function(data) {
-              if (data.status == 'S') {
-                var kode = row.kodeasettransfer;
-                if ($('#tab_transaksi').tabs('exists', kode)) {
-                  $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
-                    ', Sebelum Dibatal Cetak ', 'warning');
-                } else {
-                  get_akses_user('<?= $kodemenu ?>', function(data) {
-                    if (data.batalcetak == 1) {
-                      batal_cetak();
-                    } else {
-                      $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
-                    }
-                  });
-                }
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransTransferAset,
+          'bearer {{ session('TOKEN') }}', {
+            uuidasettransfer: row.uuidasettransfer
+          }
+        );
+        if (statusTrans == 'S') {
+          var kode = row.kodeasettransfer;
+          const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+          if (isTabOpen) {
+            $.messager.alert(
+              'Warning',
+              'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatal Cetak ',
+              'warning'
+            );
+          } else {
+            get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
+              data = data.data;
+              if (data.batalcetak == 1) {
+                batal_cetak();
               } else {
-                $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+                $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
               }
             });
-          })
-        });
+          }
+        } else {
+          $.messager.alert('Info', 'Transaksi Tidak Dapat Dibatal Cetak', 'info');
+        }
       }
     }
 
@@ -279,44 +263,53 @@
       $('#mode').val('cetak');
 
       if (row) {
-        get_akses_user('<?= $kodemenu ?>', function(data) {
+        get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
+          data = data.data;
           if (data.cetak == 0) {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
 
-          cek_tanggal_tutup_periode(row.tgltrans, 1, function(data) {
-            if (!data.success) {
-              $.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi no ' + row
-                .kodeasettransfer + '. Prosedur tidak dapat dilanjutkan', 'error')
-
-              return false
+          const statusTrans = await getStatusTrans(
+            link_api.getStatusTransTransferAset,
+            'bearer {{ session('TOKEN') }}', {
+              uuidasettransfer: row.uuidasettransfer
             }
-          })
+          );
 
-          get_status_trans("atena/Aset/Transaksi/TransferAset", row.idasettransfer, function(data) {
-            if (data.status == 'I') {
-              var kode = row.kodeasettransfer;
-              if ($('#tab_transaksi').tabs('exists', kode)) {
-                $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
-                  'warning');
-              } else {
-                cetak();
-              }
-            } else if (data.status == 'S' || data.status == 'P') {
-              get_akses_cetak_ulang('aset', function(data) {
-                if (data.hakakses == 1) {
-                  $("#area_cetak").load(base_url + "atena/Aset/Transaksi/TransferAset/cetak/" + row
-                    .idasettransfer);
+          if (statusTrans == 'I') {
+            var kode = row.kodeasettransfer;
+            const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
+            if (isTabOpen) {
+              $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dicetak ',
+                'warning');
+            } else {
+              cetak();
+            }
+          } else if (statusTrans == 'S' || statusTrans == 'P') {
+            const kodemenu = modul_kode['aset'];
+            get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
+              if (data.hakakses == 1) {
+                const doc = await getCetakDocument(
+                  link_api.cetakTransferAset + row.uuidasettransfer,
+                  '{{ session('TOKEN') }}',
+                );
+                if (doc) {
+                  $("#area_cetak").html(doc);
                   $("#form_cetak").window('open');
                 }
-              });
-            } else {
-              $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
-            }
-          });
+              } else {
+                $.messager.alert(
+                  "Warning",
+                  "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                  "warning"
+                );
+              }
+            });
+          } else {
+            $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
+          }
         });
-        //window.open(url, 'Cetak Pesanan Pembelian', 'width=850, height=842, scrollbars=yes');
       }
     }
 
@@ -324,31 +317,47 @@
       $("#alasan_pembatalan").dialog('close');
       alasan = $('#ALASANPEMBATALAN').val();
       if (row && alasan != "") {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasettransfer + ' ?', function(
-          r) {
-          if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Aset/Transaksi/TransferAset/batalTrans",
-              data: "idtrans=" + row.idasettransfer + "&kodetrans=" + row.kodeasettransfer + "&alasan=" + alasan,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
+        $.messager.confirm(
+          'Confirm',
+          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasettransfer + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                bukaLoader();
+                const response = await fetch(
+                  link_api.batalTransTransferAset, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer {{ session('TOKEN') }}'
+                    },
+                    body: JSON.stringify({
+                      uuidasettransfer: row.uuidasettransfer,
+                      kodeasettransfer: row.kodeasettransfer,
+                      alasan: alasan
+                    })
+                  }
+                );
 
-                if (msg.success) {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const res = await response.json();
+                if (res.success) {
                   $.messager.alert('Info', 'Pembatalan Transaksi Sukses', 'info');
                   reload();
                 } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
+                  $.messager.alert('Error', res.message, 'error');
                 }
+              } catch (e) {
+                showErrorAlert(e)
+              } finally {
+                tutupLoader();
               }
-            });
+            }
           }
-        });
+        );
       } else {
         $.messager.alert('Error', 'Alasan harus diisi', 'error');
       }
@@ -356,149 +365,115 @@
 
     function batal_cetak() {
       if (row) {
-        $.messager.confirm('Confirm', 'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasettransfer + ' ?', function(
-          r) {
-          if (r) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              url: base_url + "atena/Aset/Transaksi/TransferAset/ubahStatusJadiInput",
-              data: "idtrans=" + row.idasettransfer + "&kodetrans=" + row.kodeasettransfer,
-              cache: false,
-              beforeSend: function() {
-                $.messager.progress();
-              },
-              success: function(msg) {
-                $.messager.progress('close');
+        $.messager.confirm(
+          'Confirm',
+          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasettransfer + ' ?',
+          async function(r) {
+            if (r) {
+              try {
+                console.log(row);
+                bukaLoader();
+                const response = await fetch(
+                  link_api.ubahStatusJadiInputTransferAset, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                      'Authorization': 'Bearer {{ session('TOKEN') }}'
+                    },
+                    body: JSON.stringify({
+                      uuidasettransfer: row.uuidasettransfer,
+                      kodeasettransfer: row.kodeasettransfer
+                    })
+                  }
+                );
 
-                if (msg.success) {
+                if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const res = await response.json();
+                if (res.success) {
                   $.messager.alert('Info', 'Pembatalan Cetak Sukses', 'info');
                   reload();
                 } else {
-                  $.messager.alert('Error', msg.errorMsg, 'error');
+                  $.messager.alert('Error', res.message, 'error');
                 }
+              } catch (e) {
+                showErrorAlert(e);
+              } finally {
+                tutupLoader();
               }
-            });
+            }
           }
-        });
+        );
       }
     }
 
-    function cetak() {
-
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + 'atena/Aset/Transaksi/TransferAset/ubahStatusJadiSlip',
-        data: {
-          idtrans: row.idasettransfer,
-          kodetrans: row.kodeasettransfer
-        },
-        cache: false,
-        beforeSend: function() {
-          $.messager.progress();
-        },
-        success: function(msg) {
-          $.messager.progress('close');
-          if (msg.success) {
-            $.messager.show({
-              title: 'Info',
-              msg: 'Transaksi Sukses Dicetak',
-              showType: 'show'
-            });
-            $("#area_cetak").load(base_url + "atena/Aset/Transaksi/TransferAset/cetak/" + row.idasettransfer);
-            $("#form_cetak").window('open');
-
-            reload();
-          } else {
-            $.messager.alert('Error', msg.errorMsg, 'error');
+    async function cetak() {
+      try {
+        bukaLoader();
+        const response = await fetch(
+          link_api.ubahStatusJadiSlipTransferAset, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer {{ session('TOKEN') }}'
+            },
+            body: JSON.stringify({
+              uuidasettransfer: row.uuidasettransfer,
+              kodeasettransfer: row.kodeasettransfer
+            })
           }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
         }
-      });
+        const res = await response.json();
+        if (res.success) {
+          $.messager.show({
+            title: 'Info',
+            msg: 'Transaksi Sukses Dicetak',
+            showType: 'show'
+          });
+          const doc = await getCetakDocument(
+            link_api.cetakTransferAset + row.uuidasettransfer,
+            '{{ session('TOKEN') }}',
+          );
+          if (doc) {
+            $("#area_cetak").html(doc);
+            $("#form_cetak").window('open');
+          }
+          reload();
+        }
+      } catch (e) {
+        showErrorAlert(e);
+      } finally {
+        tutupLoader();
+      }
     }
 
     function refresh_data() {
-      //JIKA BERADA PADA TAB FORM TAMBAH / UBAH
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Tambah" || $('#tab_transaksi').tabs(
-          'getSelected').panel('options').title == "Ubah") {
-        row = {
-          idasettransfer: "",
-          kodeasettransfer: "",
-        };
-
-        $("#mode").val("tambah");
-        $("#view").val("<?= $namaView ?>");
-        $("#data").val('');
-
-        var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-        if (tab_name == "Tambah") { //TAMBAH LANGSUNG AMBIL DARI ID
-
-          var counterTambah = $('#tab_transaksi').tabs('getSelected').panel('options').id;
-          tab_name = tab_name + "_" + counterTambah;
-        } else { //UBAH DIAMBIL DARI ID POTONGAN
-          var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-          var counterTambah = trans[2];
-          tab_name = tab_name + "_" + counterTambah;
-
-        }
-
-        var tab_title = 'Tambah';
-
-        var tab = $('#tab_transaksi').tabs('getSelected');
-        var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-
-        var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-        $('#form_data').attr('target', tab_name);
-
-        $('#tab_transaksi').tabs('update', {
-          tab: tabTrans,
-          type: 'header',
-          options: {
-            title: tab_title,
-            content: '<iframe frameborder="0"  class="tab_form" id="' + counterTambah + '" name="' + tab_name +
-              '" ></iframe>',
-            closable: true
-          }
-        });
-        $('#form_data').submit();
-
-      } else {
-        //JIKA DI TAB GRID
-        $('#table_data').datagrid('reload');
-      }
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      filter_data(currentPage);
     }
-    // function load_detail(idtrans) {
-    // 	$.ajax({
-    // 		type    : 'POST',
-    // 		dataType: 'json',
-    // 		url     : base_url+"atena/Aset/Transaksi/BuktiPenerimaanAset/loadDetail",
-    // 		data    : "idtrans="+idtrans,
-    // 		cache   : false,
-    // 		beforeSend : function (){
-    // 			$.messager.progress();
-    // 		},
-    // 		success: function(msg){
-    // 			$.messager.progress('close');
-    // 			if (msg.success) {
-    // 				$('#table_data_detail').datagrid('loadData', msg.detail);
-    // 			}
-    // 		}
-    // 	});
-    // }
 
-    function filter_data() {
+    function filter_data(pagenumber = 1) {
       var status = [];
       $("[name='cb_status_filter[]']:checked").each(function() {
         status.push($(this).val());
       });
-      $('#table_data').datagrid('load', {
+      status = status.length > 0 ? JSON.stringify(status) : '';
+      $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
         nama: $('#txt_nama_supplier_filter').val(),
         perusahaan: $('#txt_perusahaan_filter').val(),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
         status: status,
+        page: pagenumber
       });
     }
 
@@ -512,7 +487,10 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
-        url: base_url + "atena/Aset/Transaksi/TransferAset/dataGrid",
+        pagination: true,
+        clientPaging: false,
+        pageSize: 20,
+        url: link_api.loadDataGridTransferAset,
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
@@ -520,7 +498,7 @@
         },
         frozenColumns: [
           [{
-              field: 'idasettransfer',
+              field: 'uuidasettransfer',
               hidden: true
             },
             {
@@ -539,7 +517,7 @@
               align: 'center'
             },
             {
-              field: 'idlokasiasal',
+              field: 'uuidlokasiasal',
               hidden: true
             },
             {
@@ -557,7 +535,7 @@
               align: 'center'
             },
             {
-              field: 'idlokasitujuan',
+              field: 'uuidlokasitujuan',
               hidden: true
             },
             {
@@ -625,115 +603,19 @@
               sortable: true,
               align: 'center'
             },
-            //{field:'CLOSING',title:'Closing',width:60,sortable:true,align:'center'}
           ]
         ],
         onDblClickRow: function(index, data) {
-          validasi_session(function() {
-            counter++;
-
-            //PELU BUAT SIMPEN INDEX
-            var row = $('#table_data').datagrid('getSelected');
-
-            $("#mode").val("ubah");
-            $("#view").val("<?= $namaView ?>");
-            $("#data").val(row.idasettransfer);
-
-            var tab_title = row.kodeasettransfer;
-            var tab_name = tab_title + "_" + counter;
-
-            $('#form_data').attr('target', tab_name);
-
-            if ($('#tab_transaksi').tabs('exists', tab_title)) {
-              $('#tab_transaksi').tabs('select', tab_title);
-            } else {
-              $('#tab_transaksi').tabs('add', {
-                title: tab_title,
-                id: row.idasettransfer + "|" + row.kodeasettransfer + "|" + counter,
-                content: '<iframe frameborder="0"  class="tab_form"  id="' + counter + '" name="' +
-                  tab_name + '"></iframe>',
-                closable: true
-              });
-
-              $('#form_data').submit();
-            }
-          });
+          const kode = data.kodeasettransfer;
+          parent.buka_submenu(null, kode,
+            '{{ route('atena.aset.transferaset.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            data.uuidasettransfer, 'fa fa-pencil');
         },
       });
     }
 
-    function changeTitleTab(mode) {
-      //DAPATKAN INDEXNYA untuk DIGANTI TITLE
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-      var tabForm = $('#tab_transaksi').tabs('getTab', tabIndex);
-
-      if (mode == 'tambah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Tambah'
-          }
-        });
-      } else if (mode == 'ubah') {
-        $('#tab_transaksi').tabs('update', {
-          tab: tabForm,
-          type: 'header',
-          options: {
-            title: 'Ubah'
-          }
-        });
-      }
-    }
-
-    function tutupTab() {
-      //DAPATKAN TAB dan INDEXNYA untuk DIHAPUS
-      var tab = $('#tab_transaksi').tabs('getSelected');
-      var index = $('#tab_transaksi').tabs('getTabIndex', tab);
-      $('#tab_transaksi').tabs('close', index);
-    }
-
     function reload() {
-      //PELU BUAT SIMPEN INDEX
-      var row = $('#table_data').datagrid('getSelected');
-
-      if ($('#tab_transaksi').tabs('getSelected').panel('options').title == "Ubah") {
-        //INDEX TAB
-        var tab_name = $('#tab_transaksi').tabs('getSelected').panel('options').title;
-
-        //ROW ID dan KODE
-        var trans = $('#tab_transaksi').tabs('getSelected').panel('options').id.split("|");
-        var counterTambah = trans[2];
-        tab_name = tab_name + "_" + counterTambah;
-
-        $("#mode").val("ubah");
-        $("#view").val("<?= $namaView ?>");
-        $("#data").val(trans[0]);
-
-        var tab = $('#tab_transaksi').tabs('getSelected');
-        var tabIndex = $('#tab_transaksi').tabs('getTabIndex', tab);
-        var tabTrans = $('#tab_transaksi').tabs('getTab', tabIndex);
-        var tab_title = 'Ubah';
-        $('#form_data').attr('target', tab_name);
-
-        $('#tab_transaksi').tabs('update', {
-          tab: tabTrans,
-          type: 'header',
-          options: {
-            title: tab_title,
-            content: '<iframe frameborder="0"  class="tab_form" id="' + counterTambah + '" name="' + tab_name +
-              '" ></iframe>',
-            closable: true
-          }
-        });
-        $('#form_data').submit();
-
-
-      }
-
       $('#table_data').datagrid('reload');
-
     }
   </script>
 @endpush
