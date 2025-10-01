@@ -738,6 +738,18 @@ var link_api = {
     simpanTransferAset: `${base_url_api}atena/aset/transfer-aset/simpan`,
     loadDataTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data`,
     browseAsetTransferAset: `${base_url_api}atena/aset/transfer-aset/browse-aset`,
+    //Aset - Penghapusan Aset
+    getStatusTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/get-status-trans`,
+    loadDataGridPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data-grid`,
+    loadConfigPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-config`,
+    loadDataPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data`,
+    batalTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/batal-trans`,
+    ubahStatusJadiInputPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-slip`,
+    cetakPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/cetak/`,
+    simpanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/simpan`,
+    browseAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/browse-aset`,
+    hitungNilaiAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/hitung-nilai-aset`,
 };
 
 var modul_kode = {

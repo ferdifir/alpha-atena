@@ -483,6 +483,9 @@
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
           else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
+        onLoadSuccess: function(data) {
+          $("#table_data").datagrid('unselectAll');
+        },
         frozenColumns: [
           [{
               field: 'tgltrans',
