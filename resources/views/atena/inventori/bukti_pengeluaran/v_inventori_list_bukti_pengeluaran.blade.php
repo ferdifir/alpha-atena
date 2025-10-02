@@ -447,6 +447,12 @@
                   data = data.data;
                   if (data.hakakses == 1) {
                     cetakDocument(jeniscetak, row.uuidbbk);
+                  } else {
+                    $.messager.alert(
+                      "Warning",
+                      "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                      "warning"
+                    );
                   }
                 });
               } else if (data.status == 'I') {

@@ -436,6 +436,12 @@
                   $("#area_cetak").html(doc);
                   $("#form_cetak").window('open');
                 }
+              } else {
+                $.messager.alert(
+                  "Warning",
+                  "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                  "warning"
+                );
               }
             });
           } else {
@@ -487,7 +493,7 @@
           else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
         onLoadSuccess: function(data) {
-            $("#table_data").datagrid('unselectAll');
+          $("#table_data").datagrid('unselectAll');
         },
         frozenColumns: [
           [{

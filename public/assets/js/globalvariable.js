@@ -702,10 +702,78 @@ var link_api = {
     //Aset - Pembelian Aset
     loadConfigPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-config`,
     loadDataGridPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-grid`,
+    loadDataPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data`,
+    loadDataHeaderPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-header`,
     cetakPembelianAset: `${base_url_api}atena/aset/pembelian-aset/cetak/`,
     batalTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/batal-trans`,
     ubahStatusJadiInputPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-input`,
     ubahStatusJadiSlipPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-slip`,
+    getStatusTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/get-status-trans`,
+    browsePajak: `${base_url_api}atena/master/pajak/browse`,
+    browseAsetPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset`,
+    browseReturPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-retur-pembelian-aset`,
+    browseAsetBeliPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset-beli`,
+    simpanPembelianAset: `${base_url_api}atena/aset/pembelian-aset/simpan`,
+    //Aset - Retur Pembelian Aset
+    loadDataGridReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-grid`,
+    loadConfigReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-config`,
+    loadDataReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data`,
+    loadDataHeaderReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-header`,
+    getStatusTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/get-status-trans`,
+    batalTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/batal-trans`,
+    ubahStatusJadiInputReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-slip`,
+    cetakReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/cetak/`,
+    simpanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/simpan`,
+    browseAsetReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset`,
+    //Aset - Transfer Aset
+    getStatusTransTransferAset: `${base_url_api}atena/aset/transfer-aset/get-status-trans`,
+    cetakTransferAset: `${base_url_api}atena/aset/transfer-aset/cetak/`,
+    batalTransTransferAset: `${base_url_api}atena/aset/transfer-aset/batal-trans`,
+    ubahStatusJadiInputTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-slip`,
+    loadDataGridTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-grid`,
+    loadConfigTransferAset: `${base_url_api}atena/aset/transfer-aset/load-config`,
+    loadDataHeaderTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-header`,
+    simpanTransferAset: `${base_url_api}atena/aset/transfer-aset/simpan`,
+    loadDataTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data`,
+    browseAsetTransferAset: `${base_url_api}atena/aset/transfer-aset/browse-aset`,
+    //Aset - Penghapusan Aset
+    getStatusTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/get-status-trans`,
+    loadDataGridPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data-grid`,
+    loadConfigPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-config`,
+    loadDataPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data`,
+    batalTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/batal-trans`,
+    ubahStatusJadiInputPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-slip`,
+    cetakPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/cetak/`,
+    simpanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/simpan`,
+    browseAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/browse-aset`,
+    hitungNilaiAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/hitung-nilai-aset`,
+    //Aset - Penjualan Aset
+    getStatusTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/get-status-trans`,
+    cetakPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/cetak/`,
+    batalTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/batal-trans`,
+    ubahStatusJadiInputPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-slip`,
+    loadDataGridPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-grid`,
+    loadConfigPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-config`,
+    loadDataPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data`,
+    loadDataHeaderPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-header`,
+    simpanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/simpan`,
+    browseAsetPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/browse-aset`,
+    //Aset - Penyusutan Aset
+    loadDataGridPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-grid`,
+    loadConfigPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-config`,
+    loadDataHeaderPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-header`,
+    loadDataPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data`,
+    getStatusTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/get-status-trans`,
+    cetakPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/cetak/`,
+    batalTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/batal-trans`,
+    ubahStatusJadiInputPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-slip`,
+    hitungPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/hitung-aset`,
+    simpanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/simpan`,
 };
 
 var modul_kode = {
@@ -1061,17 +1129,14 @@ async function downloadCSV(apiUrl, uuid, token = null) {
 
 async function getCetakDocument(url, token, body) {
     try {
-        const response = await fetch(
-            url,
-            {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json",
-                },
-                body: body ? JSON.stringify(body) : null,
-            }
-        );
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1097,6 +1162,9 @@ function showErrorAlert(e) {
         error = "Terdapat kesalahan dalam memproses data.";
     }
 
-    const textError = getTextError(error);
+    let textError = getTextError(error);
+    if (textError.includes(tokenTidakValid)) {
+        textError = "Sesi login telah habis. Silahkan login ulang";
+    }
     $.messager.alert("Error", textError, "error");
 }
