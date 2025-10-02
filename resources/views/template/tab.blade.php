@@ -729,6 +729,17 @@
         }
       });
     })
+
+    function bukaMenu(namamenu, queryparameter) {
+      const map = {
+        'penjualan': {
+          url: `{{ route('atena.penjualan.returpenjualan.form') }}?${queryparameter}`,
+          namamenu: 'Penjualan'
+        }
+      }
+
+      buka_submenu(null, map[namamenu].namamenu, map[namamenu].url, '');
+    }
   </script>
   <!--Start of Tawk.to Script-->
   {{-- <script type="text/javascript">
