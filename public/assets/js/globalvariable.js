@@ -83,6 +83,9 @@ var link_api = {
     headerFormCustomer: `${base_url_api}atena/master/customer/load-data-header`,
     hapusCustomer: `${base_url_api}atena/master/customer/hapus`,
     browseCustomer: `${base_url_api}atena/master/customer/browse`,
+    browseKotaCustomer: `${base_url_api}atena/master/customer/browse-kota`,
+    browsePropinsiCustomer: `${base_url_api}atena/master/customer/browse-propinsi`,
+    laporanCustomer: `${base_url_api}atena/master/customer/laporan`,
     //ekspedisi
     loadDataGridMasterEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-grid`,
     browseBadanUsahaEkspedisi: `${base_url_api}atena/master/ekspedisi/browse-badan-usaha`,
@@ -145,6 +148,8 @@ var link_api = {
     simpanSopir: `${base_url_api}atena/master/sopir/simpan`,
     getHeaderSopir: `${base_url_api}atena/master/sopir/load-data-header`,
     loadDataGridSopir: `${base_url_api}atena/master/sopir/load-data-grid`,
+    //marketing
+    browseMarketing: `${base_url_api}atena/master/marketing/browse-marketing`,
     //kendaraan
     simpanKendaraan: `${base_url_api}atena/master/kendaraan/simpan`,
     getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
@@ -1154,6 +1159,16 @@ async function downloadCSV(apiUrl, uuid, token = null) {
     }
 }
 
+/**
+ * Mengunduh file berdasarkan url yang diberikan.
+ * Method ini akan mengembalikan string isi dari file yang diunduh.
+ * Jika terjadi error, maka akan menampilkan alert error dan mengembalikan null.
+ *
+ * @param {string} url - url untuk mengunduh file
+ * @param {string} token - token untuk autentikasi
+ * @param {object} body - data yang akan dikirim dalam bentuk JSON
+ * @return {Promise<string|null>} - string isi dari file yang diunduh atau null jika terjadi error
+ */
 async function getCetakDocument(url, token, body) {
     try {
         const response = await fetch(url, {
@@ -1176,6 +1191,13 @@ async function getCetakDocument(url, token, body) {
     }
 }
 
+/**
+ * Menampilkan pesan error menggunakan jQuery Messager.
+ * Jika error adalah token tidak valid, maka akan menampilkan pesan
+ * "Sesi login telah habis. Silahkan login ulang".
+ *
+ * @param {Error} e - Error yang terjadi
+ */
 function showErrorAlert(e) {
     let error;
 

@@ -87,7 +87,9 @@
                               '&kodelaporan=' .
                               $menuLv2['kodemenu'] .
                               '&jenis=' .
-                              $menuLv3['jenis'];
+                              $menuLv3['jenis'] .
+                              '&menu=' .
+                              $menuLv3['namamenu'];
                         @endphp
 
                         <a href="#" id="linkLaporan" class="Links"
@@ -160,7 +162,9 @@
                                 '&kodeinduk=' .
                                 $menuLv1['kodemenu'] .
                                 '&jenis=' .
-                                $menuLv3['jenis'],
+                                $menuLv3['jenis'] .
+                                '&menu=' .
+                                $menuLv1['namamenu'],
                         );
                       @endphp
                       <li class="submenuListItems">
@@ -395,6 +399,15 @@
       </tr>
     </table>
   </div>
+
+  <form method='post' id="form_input" action="">
+    <input type="hidden" name="jwt_token" id="jwt_token" value="{{ session('TOKEN') }}">
+    <input type="hidden" name="excel" id="excel">
+    <input type="hidden" name="filename" id="file_name" value="LaporanCustomer">
+    <input type="hidden" id="status" name="status">
+    <input type="hidden" id="data_filter" name="data_filter">
+    <input type="hidden" id="data_tampil" name="data_tampil">
+  </form>
 
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
@@ -730,15 +743,104 @@
       });
     })
 
-    function bukaMenu(namamenu, queryparameter) {
-      const map = {
-        'penjualan': {
-          url: `{{ route('atena.penjualan.returpenjualan.form') }}?${queryparameter}`,
-          namamenu: 'Penjualan'
+    function getCounterTerbesar(tabTitle) {
+      let maxCounter = 0;
+      const allTabs = $('#tab_menu').tabs('tabs');
+      allTabs.forEach(tab => {
+        const tabOptions = tab.panel('options');
+        const title = tabOptions.title;
+        if (title.startsWith(tabTitle + ' #')) {
+          const match = title.match(/#(\d+)/);
+          if (match && match[1]) {
+            const currentCounter = parseInt(match[1], 10);
+            if (currentCounter > maxCounter) {
+              maxCounter = currentCounter;
+            }
+          }
         }
+      });
+      return maxCounter;
+    }
+
+    let counterLaporan = {};
+
+    function buka_laporan(urlapi, filename, data_filter, data_tampil, excel, status) {
+      $('#form_input').attr('action', urlapi);
+      $('#data_filter').val(data_filter);
+      $('#data_tampil').val(data_tampil);
+      $('#file_name').val(filename);
+      $('#excel').val(excel);
+      $('#status').val(status);
+      if (excel == 'ya') {
+        $('#form_input').attr('target', '_blank');
+        $('#form_input').submit();
+        return;
+      }
+      counter++;
+
+      var tab_title = $('#file_name').val();
+      const counterTerbesar = getCounterTerbesar(tab_title);
+      var newLapCounter = counterTerbesar + 1;
+      counterLaporan[tab_title] = newLapCounter;
+      var tab_name = `${tab_title} #${newLapCounter}`;
+
+      $('#form_input').attr('target', tab_name);
+
+      const loadingId = 'loading_' + tab_name;
+
+      const svgSpinnerHtml = `
+        <div id="${loadingId}" class="mask-loader-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+            <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+              <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33"
+                r="30"></circle>
+            </svg>
+        </div>
+        `;
+
+      const iframeHtml = `
+        <iframe frameborder="0"
+                id="${tab_name}"
+                name="${tab_name}"
+                width="100%" height="100%"
+                src="#"
+                style="display: none;"
+                onload="document.getElementById('${loadingId}').style.display='none'; this.style.display='block';">
+        </iframe>
+        `;
+
+      const tabContent = svgSpinnerHtml + iframeHtml;
+
+      $('#tab_menu').tabs('add', {
+        id: counter,
+        title: tab_name,
+        content: tabContent,
+        closable: true,
+        tools: [{
+          iconCls: 'icon-print',
+          handler: function() {
+            $('[name="Laporan Master Customer #1"]')[0].contentWindow.postMessage('cetak', '*');
+          }
+        }]
+      });
+
+      $('#form_input').submit();
+    }
+
+    window.addEventListener("message", (event) => {
+      try {
+        const res = JSON.parse(event.data);
+        if (res.action == 'bukamenu') {
+          bukaMenu(res.options);
+        }
+      } catch (e) {}
+    });
+
+    function bukaMenu(options) {
+      const map = {
+        'master_customer': `{{ route('atena.master.customer.form') }}?${options.query_param}`,
       }
 
-      buka_submenu(null, map[namamenu].namamenu, map[namamenu].url, '');
+      buka_submenu(null, options.title, map[options.menu], 'fa fa-pencil');
     }
   </script>
   <!--Start of Tawk.to Script-->
