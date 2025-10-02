@@ -301,25 +301,20 @@
       <!-- DATA USER DARI QUERY -->
       <table style="padding:2px" border="0">
         <tr>
-          <td align="right" id="label_form" style="width:100px">User ID</td>
+          <td align="right" id="label_form" style="width:100px">Nama User </td>
           <td>
-            <input name="userid_profile" id="USERID_PROFILE" style="width:150px" class="label_input"
-              data-options="fontTransform:'normal',prompt:''">
+            <input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
+              validType='length[0,50]'>
           </td>
           <td>&nbsp;</td>
-          <td rowspan="12" style="width:130px" valign="top" align="center">
-            <div style="width:160px; height:160px; ">
+          <td rowspan="11" style="width:130px" valign="top" align="center">
+            <div style="width:140px; height:140px; ">
               <img id="preview-image-profile" src=""
                 style="width:100%; height:100%; object-fit: cover; object-position: 50% 0%;" />
             </div>
             <input id="FILEGAMBAR_PROFILE" name="filegambar_profile" class="easyui-filebox"
-              data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:160px">
+              data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:140px">
           </td>
-        </tr>
-        <tr>
-          <td align="right" id="label_form">Nama User </td>
-          <td><input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
-              validType='length[0,50]'></td>
         </tr>
         <tr>
           <td align="right" id="label_form">Email </td>

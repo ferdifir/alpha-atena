@@ -102,30 +102,24 @@
         <!-- DATA USER DARI QUERY -->
         <table style="padding:2px" border="0">
           <tr>
-            <td align="right" id="label_form" style="width:100px">User ID</td>
+            <td align="right" id="label_form" style="width:100px">Nama User </td>
             <td>
-              <input name="userid_profile" id="USERID_PROFILE" style="width:150px" class="label_input"
-                data-options="fontTransform:'normal',prompt:''">
+              <input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
+                validType='length[0,50]'>
             </td>
             <td>&nbsp;</td>
-            <td rowspan="12" style="width:130px" valign="top" align="center">
-              <div style="width:160px; height:160px; ">
+            <td rowspan="11" style="width:130px" valign="top" align="center">
+              <div style="width:140px; height:140px; ">
                 <img id="preview-image-profile" src=""
                   style="width:100%; height:100%; object-fit: cover; object-position: 50% 0%;" />
               </div>
               <input id="FILEGAMBAR_PROFILE" name="filegambar_profile" class="easyui-filebox"
-                data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:160px">
+                data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:140px">
             </td>
           </tr>
           <tr>
-            <td align="right" id="label_form">Nama User </td>
-            <td><input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
-                validType='length[0,50]'></td>
-          </tr>
-          <tr>
             <td align="right" id="label_form">Email </td>
-            <td><input name="email_profile" id="EMAIL_PROFILE" style="width:150px" class="label_input"
-                validType="email">
+            <td><input name="email_profile" id="EMAIL_PROFILE" style="width:150px" class="label_input" validType="email">
             </td>
           </tr>
           <tr>
@@ -236,178 +230,178 @@
       });
     }
 
-        async function loginPerusahaan(perusahaan, nama_perusahaan) {
-            var token = "";
-            var success = false;
-            Swal.showLoading();
-            $.ajax({
-                type: 'POST',
-                url: link_api.loginPerusahaan,
-                data: {
-                    uuid_user: '{{ session('DATAUSER')['uuid'] }}',
-                    uuid_perusahaan: perusahaan
-                },
-                success: async function(response) {
-                    if (response.success) {
-                        success = true;
-                        token = response.data.token ?? "";
-                        dataSession = [{
-                                keySession: "TOKEN",
-                                valueSession: token,
-                            },
-                            {
-                                keySession: "IDPERUSAHAAN",
-                                valueSession: perusahaan,
-                            },
-                            {
-                                keySession: "NAMAPERUSAHAAN",
-                                valueSession: nama_perusahaan,
-                            },
-                            {
-                                keySession: "WARNA_STATUS_S",
-                                valueSession: '#66CC33',
-                            }, {
-                                keySession: "WARNA_STATUS_P",
-                                valueSession: '#FFCC00',
-                            }, {
-                                keySession: "WARNA_STATUS_D",
-                                valueSession: '#FF5959',
-                            }, {
-                                keySession: "WARNA_STATUS_R",
-                                valueSession: '#A1887F',
-                            }
-                        ];
-                        try {
-                            const urls = [
-                                link_api.getDetailPerusahaan,
-                                link_api.getConfigGlobal,
-                                link_api.getDaftarMenu,
-                            ];
-                            const promises = urls.map(url =>
-                                fetch(url, {
-                                    method: 'POST',
-                                    headers: {
-                                        authorization: `bearer ${token}`,
-                                        'Content-Type': 'application/json'
-                                    },
-                                    body: JSON.stringify({
-                                        "uuidperusahaan": perusahaan,
-                                    }),
-                                }).then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(
-                                            `HTTP error! status: ${response.status} from ${url}`
-                                            );
-                                    }
-                                    return response.json();
-                                })
-                            );
-                            const [responseDetail, responseGlobal, responseMenu] = await Promise.all(
-                                promises);
-                            //ambil detail perusahaan
-                            if (responseDetail.success) {
-                                dataSession.push({
-                                    keySession: "ALAMATPERUSAHAAN",
-                                    valueSession: responseDetail.data.alamat ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "KODEPERUSAHAAN",
-                                    valueSession: responseDetail.data.kodeperusahaan ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "PEMANGGIL",
-                                    valueSession: responseDetail.data.pemanggil ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "NAMAPERUSAHAAN",
-                                    valueSession: responseDetail.data.namaperusahaan ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "NAMADATABASE",
-                                    valueSession: responseDetail.data.namadatabase ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "KODEPERUSAHAAN",
-                                    valueSession: responseDetail.data.kodeperusahaan ?? "",
-                                });
-                                dataSession.push({
-                                    keySession: "PEMANGGIL",
-                                    valueSession: responseDetail.data.pemanggil ?? "",
-                                });
-                            } else {
-                                Swal.close();
-                                Swal.fire({
-                                    type: 'error',
-                                    text: responseDetail.message
-                                });
-                                return null;
-                            }
-                            //ambil config global
-                            if (responseGlobal.success) {
-                                var dataConfig = responseGlobal.data.config;
-                                for (var i = 0; i < dataConfig.length; i++) {
-                                  var conf=dataConfig[i];
-                                    dataSession.push({
-                                        keySession: conf.config,
-                                        valueSession: conf.value ?? "",
-                                    })
-                                }
-                                dataSession.push({
-                                    keySession: "TIMEOUT",
-                                    valueSession: 5000,
-                                })
-                                dataSession.push({
-                                    keySession: "SIMBOLCURRENCY",
-                                    valueSession: responseGlobal.data.simbol_currency,
-                                })
-                                dataSession.push({
-                                    keySession: "UUIDCURRENCY",
-                                    valueSession: responseGlobal.data.uuidcurrency,
-                                })
-                            } else {
-                                Swal.close();
-                                Swal.fire({
-                                    type: 'error',
-                                    text: responseGlobal.message
-                                });
-                                return null;
-                            }
-                            //ambil list menu
-                            if (responseMenu.success) {
-                                dataSession.push({
-                                    keySession: "array_menu",
-                                    valueSession: responseMenu.data,
-                                })
-                            } else {
-                                Swal.close();
-                                Swal.fire({
-                                    type: 'error',
-                                    text: responseMenu.message
-                                });
-                                return null;
-                            }
-                            await saveSession(dataSession);
-                            Swal.close();
-                            Swal.fire({
-                                type: 'success',
-                                text: 'Login Berhasil',
-                            });
-                            window.location.replace("{{ url('home') }}");
-                        } catch (error) {
-                            Swal.close();
-                            console.error('Ada salah satu request yang gagal:', error);
-                            return null;
-                        }
-                    } else {
-                        Swal.close();
-                        Swal.fire({
-                            type: 'error',
-                            text: response.message
-                        });
-                    }
+    async function loginPerusahaan(perusahaan, nama_perusahaan) {
+      var token = "";
+      var success = false;
+      Swal.showLoading();
+      $.ajax({
+        type: 'POST',
+        url: link_api.loginPerusahaan,
+        data: {
+          uuid_user: '{{ session('DATAUSER')['uuiduser'] }}',
+          uuid_perusahaan: perusahaan
+        },
+        success: async function(response) {
+          if (response.success) {
+            success = true;
+            token = response.data.token ?? "";
+            dataSession = [{
+                keySession: "TOKEN",
+                valueSession: token,
+              },
+              {
+                keySession: "IDPERUSAHAAN",
+                valueSession: perusahaan,
+              },
+              {
+                keySession: "NAMAPERUSAHAAN",
+                valueSession: nama_perusahaan,
+              },
+              {
+                keySession: "WARNA_STATUS_S",
+                valueSession: '#66CC33',
+              }, {
+                keySession: "WARNA_STATUS_P",
+                valueSession: '#FFCC00',
+              }, {
+                keySession: "WARNA_STATUS_D",
+                valueSession: '#FF5959',
+              }, {
+                keySession: "WARNA_STATUS_R",
+                valueSession: '#A1887F',
+              }
+            ];
+            try {
+              const urls = [
+                link_api.getDetailPerusahaan,
+                link_api.getConfigGlobal,
+                link_api.getDaftarMenu,
+              ];
+              const promises = urls.map(url =>
+                fetch(url, {
+                  method: 'POST',
+                  headers: {
+                    authorization: `bearer ${token}`,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({
+                    "uuidperusahaan": perusahaan,
+                  }),
+                }).then(response => {
+                  if (!response.ok) {
+                    throw new Error(
+                      `HTTP error! status: ${response.status} from ${url}`
+                    );
+                  }
+                  return response.json();
+                })
+              );
+              const [responseDetail, responseGlobal, responseMenu] = await Promise.all(
+                promises);
+              //ambil detail perusahaan
+              if (responseDetail.success) {
+                dataSession.push({
+                  keySession: "ALAMATPERUSAHAAN",
+                  valueSession: responseDetail.data.alamat ?? "",
+                });
+                dataSession.push({
+                  keySession: "KODEPERUSAHAAN",
+                  valueSession: responseDetail.data.kodeperusahaan ?? "",
+                });
+                dataSession.push({
+                  keySession: "PEMANGGIL",
+                  valueSession: responseDetail.data.pemanggil ?? "",
+                });
+                dataSession.push({
+                  keySession: "NAMAPERUSAHAAN",
+                  valueSession: responseDetail.data.namaperusahaan ?? "",
+                });
+                dataSession.push({
+                  keySession: "NAMADATABASE",
+                  valueSession: responseDetail.data.namadatabase ?? "",
+                });
+                dataSession.push({
+                  keySession: "KODEPERUSAHAAN",
+                  valueSession: responseDetail.data.kodeperusahaan ?? "",
+                });
+                dataSession.push({
+                  keySession: "PEMANGGIL",
+                  valueSession: responseDetail.data.pemanggil ?? "",
+                });
+              } else {
+                Swal.close();
+                Swal.fire({
+                  type: 'error',
+                  text: responseDetail.message
+                });
+                return null;
+              }
+              //ambil config global
+              if (responseGlobal.success) {
+                var dataConfig = responseGlobal.data.config;
+                for (var i = 0; i < dataConfig.length; i++) {
+                  var conf = dataConfig[i];
+                  dataSession.push({
+                    keySession: conf.config,
+                    valueSession: conf.value ?? "",
+                  })
                 }
-            })
+                dataSession.push({
+                  keySession: "TIMEOUT",
+                  valueSession: 5000,
+                })
+                dataSession.push({
+                  keySession: "SIMBOLCURRENCY",
+                  valueSession: responseGlobal.data.simbol_currency,
+                })
+                dataSession.push({
+                  keySession: "UUIDCURRENCY",
+                  valueSession: responseGlobal.data.uuidcurrency,
+                })
+              } else {
+                Swal.close();
+                Swal.fire({
+                  type: 'error',
+                  text: responseGlobal.message
+                });
+                return null;
+              }
+              //ambil list menu
+              if (responseMenu.success) {
+                dataSession.push({
+                  keySession: "array_menu",
+                  valueSession: responseMenu.data,
+                })
+              } else {
+                Swal.close();
+                Swal.fire({
+                  type: 'error',
+                  text: responseMenu.message
+                });
+                return null;
+              }
+              await saveSession(dataSession);
+              Swal.close();
+              Swal.fire({
+                type: 'success',
+                text: 'Login Berhasil',
+              });
+              window.location.replace("{{ url('home') }}");
+            } catch (error) {
+              Swal.close();
+              console.error('Ada salah satu request yang gagal:', error);
+              return null;
+            }
+          } else {
+            Swal.close();
+            Swal.fire({
+              type: 'error',
+              text: response.message
+            });
+          }
         }
+      })
+    }
 
     async function saveSession(dataSession) {
       await fetch("{{ route('save.session') }}", {
