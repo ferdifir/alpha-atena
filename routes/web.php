@@ -42,3 +42,4 @@ require __DIR__ . '/inventori.php';
 require __DIR__ . '/penjualan.php';
 require __DIR__ . '/pembelian.php';
 require __DIR__ . '/aset.php';
+require __DIR__ . '/laporan.php';

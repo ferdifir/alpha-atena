@@ -786,6 +786,33 @@ var modul_kode = {
     akuntansi: "P02MS",
 };
 
+const operatorData = {
+    "String": [
+        { value: "ADALAH", text: "Adalah" },
+        { value: "TIDAK MENCAKUP", text: "Tidak Mencakup" },
+        { value: "BERISI KATA", text: "Berisi kata" },
+        { value: "TIDAK BERISI KATA", text: "Tidak berisi kata" },
+        { value: "DIMULAI DENGAN", text: "Dimulai dengan" },
+        { value: "TIDAK DIMULAI DENGAN", text: "Tidak dimulai dengan" },
+        { value: "DIAKHIRI DENGAN", text: "Diakhiri dengan" },
+        { value: "TIDAK DIAKHIRI DENGAN", text: "Tidak diakhiri dengan" },
+        { value: "LEBIH DARI SAMA DENGAN", text: "Lebih dari sama dengan" },
+        { value: "KURANG DARI SAMA DENGAN", text: "Kurang dari sama dengan" },
+        { value: "KOSONG", text: "Kosong" },
+        { value: "TIDAK KOSONG", text: "Tidak kosong" }
+    ],
+    "Number": [
+        { value: "SAMA DENGAN", text: "Sama dengan" },
+        { value: "TIDAK MENCAKUP", text: "Tidak sama dengan" },
+        { value: "LEBIH BESAR DARI", text: "Lebih besar dari" },
+        { value: "LEBIH BESAR SAMA DENGAN", text: "Lebih besar sama dengan" },
+        { value: "LEBIH KECIL DARI", text: "Lebih kecil dari" },
+        { value: "LEBIH KECIL SAMA DENGAN", text: "Lebih kecil sama dengan" },
+        { value: "NOL", text: "Nol" },
+        { value: "TIDAK NOL", text: "Tidak nol" }
+    ]
+};
+
 function getDateMinusDays(days) {
     const today = new Date();
     today.setDate(today.getDate() - days);
@@ -1167,4 +1194,43 @@ function showErrorAlert(e) {
         textError = "Sesi login telah habis. Silahkan login ulang";
     }
     $.messager.alert("Error", textError, "error");
+}
+
+/**
+ * Mengambil data operator berdasarkan tipe data dan mengisi elemen <select> yang dituju.
+ * @param {string} tipeData - Tipe data yang dicari ("String" atau "Number").
+ * @param {string} selectId - ID dari elemen <select> yang akan diisi.
+ */
+function isiOperatorLaporan(tipeData, selectId) {
+    const selectElement = document.getElementById(selectId);
+
+    // Validasi elemen dan data
+    if (!selectElement) {
+        console.error(`Elemen <select> dengan ID: ${selectId} tidak ditemukan.`);
+        return;
+    }
+    const operators = operatorData[tipeData];
+    if (!operators) {
+        console.error(`Operator untuk tipe data: ${tipeData} tidak ditemukan.`);
+        return;
+    }
+
+    // Kosongkan elemen select yang sudah ada
+    selectElement.innerHTML = '';
+
+    // Membuat dan menambahkan opsi
+    // Menggunakan DocumentFragment untuk meminimalkan manipulasi DOM
+    const fragment = document.createDocumentFragment();
+
+    operators.forEach(operator => {
+        const option = document.createElement('option');
+        option.value = operator.value;
+        option.textContent = operator.text;
+        fragment.appendChild(option);
+    });
+
+    // Masukkan semua opsi ke dalam <select> hanya dalam satu operasi DOM
+    selectElement.appendChild(fragment);
+
+    $('#' + selectId).combobox('loadData', operators);
 }
