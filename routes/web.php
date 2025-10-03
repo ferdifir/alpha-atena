@@ -23,6 +23,9 @@ Route::get('/dashboard', function () {
 });
 
 Route::get('/home', function () {
+    if (!session()->has('TOKEN')) {
+        return view('v_login');
+    }
     return view('v_home');
 });
 
@@ -32,6 +35,9 @@ Route::get('/session', function () {
 });
 
 Route::get('/hompage-perusahaan', function () {
+    if (!session()->has('DATAUSER') && !session()->has('LISTPERUSAHAAN')) {
+        return view('v_login');
+    }
     return view('v_perusahaan');
 })->name('homepage.perusahaan');
 

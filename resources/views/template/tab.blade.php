@@ -70,26 +70,27 @@
                       @foreach ($menuLv2['children'] as $menuLv3)
                         @php
                           $menuutama = str_replace(' ', '', $menuLv1['namamenu']);
-                          $link =
+                          $link = strtolower(
                               url('') .
-                              '/' .
-                              $menuLv3['namamodul'] .
-                              '/' .
-                              $menuutama .
-                              '/' .
-                              str_replace(' ', '', $menuLv2['namamenu']) .
-                              '/' .
-                              $menuLv3['namaclass'] .
-                              '?kode=' .
-                              $menuLv3['kodemenu'] .
-                              '&kodeinduk=' .
-                              $menuLv1['kodemenu'] .
-                              '&kodelaporan=' .
-                              $menuLv2['kodemenu'] .
-                              '&jenis=' .
-                              $menuLv3['jenis'] .
-                              '&menu=' .
-                              $menuLv3['namamenu'];
+                                  '/' .
+                                  $menuLv3['namamodul'] .
+                                  '/' .
+                                  $menuutama .
+                                  '/' .
+                                  str_replace(' ', '', $menuLv2['namamenu']) .
+                                  '/' .
+                                  $menuLv3['namaclass'] .
+                                  '?kode=' .
+                                  $menuLv3['kodemenu'] .
+                                  '&kodeinduk=' .
+                                  $menuLv1['kodemenu'] .
+                                  '&kodelaporan=' .
+                                  $menuLv2['kodemenu'] .
+                                  '&jenis=' .
+                                  $menuLv3['jenis'] .
+                                  '&menu=' .
+                                  $menuLv3['namainduk'] . ' ' . $menuLv3['namamenu'],
+                          );
                         @endphp
 
                         <a href="#" id="linkLaporan" class="Links"
@@ -778,7 +779,7 @@
       }
       counter++;
 
-      var tab_title = $('#file_name').val();
+      var tab_title = filename;
       const counterTerbesar = getCounterTerbesar(tab_title);
       var newLapCounter = counterTerbesar + 1;
       counterLaporan[tab_title] = newLapCounter;
