@@ -10,6 +10,8 @@ var link_api = {
     getConfigGlobal: `${base_url_api}atena/master/config/get-config-global`,
     getConfig: `${base_url_api}atena/master/config/get-config`,
     getDataAkses: `${base_url_api}atena/master/user/get-user-akses`,
+    browseJenisTrans: `${base_url_api}atena/master/perusahaan/browse-jenis-trans`,
+    laporanHistoryProgram: `${base_url_api}atena/master/history-program/laporan`,
     //perkiraan
     hapusPerkiraan: `${base_url_api}atena/master/perkiraan/hapus`,
     loadDataGridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/load-data-grid`,
@@ -20,6 +22,7 @@ var link_api = {
     getPerkiraanUser: `${base_url_api}atena/master/perkiraan/load-perkiraan-user`,
     getPerkiraanLokasi: `${base_url_api}`, //API belum dibuat
     browsePerkiraan: `${base_url_api}atena/master/perkiraan/browse`,
+    laporanPerkiraan: `${base_url_api}atena/master/perkiraan/laporan`,
     //currency
     browseCurrency: `${base_url_api}atena/master/currency/browse`,
     loadDataGridCurrency: `${base_url_api}atena/master/currency/load-data-grid`,
@@ -27,6 +30,7 @@ var link_api = {
     loadHeaderCurrency: `${base_url_api}atena/master/currency/load-data-header`,
     simpanCurrency: `${base_url_api}atena/master/currency/simpan`,
     getRateCurrency: `${base_url_api}atena/master/currency/get-rate`,
+    laporanCurrency: `${base_url_api}atena/master/currency/laporan`,
     //user
     userGetAll: `${base_url_api}atena/master/user/load-all`,
     loadDataGridMasterUser: `${base_url_api}atena/master/user/load-data-grid`,
@@ -72,6 +76,7 @@ var link_api = {
     getHutangBelumLunas: `${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
     simpanSupplier: `${base_url_api}atena/master/supplier/simpan`,
     headerFormSupplier: `${base_url_api}atena/master/supplier/load-data-header`,
+    laporanSupplier: `${base_url_api}atena/master/supplier/laporan`,
     //customer
     loadDataGridMasterCustomer: `${base_url_api}atena/master/customer/load-data-grid`,
     browseBadanUsahaCustomer: `${base_url_api}atena/master/customer/browse-badan-usaha`,
@@ -96,6 +101,7 @@ var link_api = {
     simpanEkspedisi: `${base_url_api}atena/master/ekspedisi/simpan`,
     hapusEkspedisi: `${base_url_api}atena/master/ekspedisi/hapus`,
     browseEkspedisi: `${base_url_api}atena/master/ekspedisi/browse`,
+    laporanEkspedisi: `${base_url_api}atena/master/ekspedisi/laporan`,
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
@@ -133,6 +139,7 @@ var link_api = {
     loadDataGridSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-grid`,
     getHeaderSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-header`,
     simpanSyaratBayar: `${base_url_api}atena/master/syaratbayar/simpan`,
+    laporanSyaratBayar: `${base_url_api}atena/master/syaratbayar/laporan`,
     //Departemen Kerja
     loadDataGridDepartemenKerja: `${base_url_api}atena/master/departemenkerja/load-data-grid`,
     hapusDepartemenKerja: `${base_url_api}atena/master/departemenkerja/hapus`,
@@ -146,11 +153,13 @@ var link_api = {
     simpanKaryawan: `${base_url_api}atena/master/karyawan/simpan`,
     getHeaderKaryawan: `${base_url_api}atena/master/karyawan/load-data-header`,
     browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
+    laporanKaryawan: `${base_url_api}atena/master/karyawan/laporan`,
     //sopir
     hapusSopir: `${base_url_api}atena/master/sopir/hapus`,
     simpanSopir: `${base_url_api}atena/master/sopir/simpan`,
     getHeaderSopir: `${base_url_api}atena/master/sopir/load-data-header`,
     loadDataGridSopir: `${base_url_api}atena/master/sopir/load-data-grid`,
+    laporanSopir: `${base_url_api}atena/master/sopir/laporan`,
     //marketing
     browseMarketing: `${base_url_api}atena/master/marketing/browse-marketing`,
     //kendaraan
@@ -159,6 +168,7 @@ var link_api = {
     loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
     hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
     browseKendaraan: `${base_url_api}atena/master/kendaraan/browse`,
+    laporanKendaraan: `${base_url_api}atena/master/kendaraan/laporan`,
     //jenis pemakaian
     simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
     getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,

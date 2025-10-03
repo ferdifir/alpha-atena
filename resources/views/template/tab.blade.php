@@ -432,6 +432,7 @@
   <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
   <script>
     var counter = 0;
+    let counterLaporan = {};
 
     $("#lbl-user-login").click(function(e) {
       e.preventDefault();
@@ -776,8 +777,6 @@
       return maxCounter;
     }
 
-    let counterLaporan = {};
-
     function buka_laporan(url, payload) {
       const $form = $('#form_input');
       $form.attr('action', url);
@@ -835,77 +834,6 @@
 
       $form.submit();
     }
-
-    // function buka_laporan({
-    //   urlapi,
-    //   filename,
-    //   data_filter,
-    //   data_tampil,
-    //   excel,
-    //   status,
-    //   kodemenu
-    // }) {
-    //   $('#form_input').attr('action', urlapi);
-    //   $('#file_name').val(filename);
-    //   $('#data_filter').val(data_filter);
-    //   $('#data_tampil').val(data_tampil);
-    //   $('#excel').val(excel);
-    //   $('#status').val(status);
-    //   $('#kodemenu').val(kodemenu);
-    //   if (excel == 'ya') {
-    //     $('#form_input').attr('target', '_blank');
-    //     $('#form_input').submit();
-    //     return;
-    //   }
-    //   counter++;
-
-    //   var tab_title = filename;
-    //   const counterTerbesar = getCounterTerbesar(tab_title);
-    //   var newLapCounter = counterTerbesar + 1;
-    //   counterLaporan[tab_title] = newLapCounter;
-    //   var tab_name = `${tab_title} #${newLapCounter}`;
-
-    //   $('#form_input').attr('target', tab_name);
-
-    //   const loadingId = 'loading_' + tab_name;
-
-    //   const svgSpinnerHtml = `
-  //     <div id="${loadingId}" class="mask-loader-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
-  //         <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
-  //           <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33"
-  //             r="30"></circle>
-  //         </svg>
-  //     </div>
-  //     `;
-
-    //   const iframeHtml = `
-  //     <iframe frameborder="0"
-  //             id="${tab_name}"
-  //             name="${tab_name}"
-  //             width="100%" height="100%"
-  //             src="#"
-  //             style="display: none;"
-  //             onload="document.getElementById('${loadingId}').style.display='none'; this.style.display='block';">
-  //     </iframe>
-  //     `;
-
-    //   const tabContent = svgSpinnerHtml + iframeHtml;
-
-    //   $('#tab_menu').tabs('add', {
-    //     id: counter,
-    //     title: tab_name,
-    //     content: tabContent,
-    //     closable: true,
-    //     tools: [{
-    //       iconCls: 'icon-print',
-    //       handler: function() {
-    //         $(`[name="${tab_name}"]`)[0].contentWindow.postMessage('cetak', '*');
-    //       }
-    //     }]
-    //   });
-
-    //   $('#form_input').submit();
-    // }
 
     window.addEventListener("message", (event) => {
       try {

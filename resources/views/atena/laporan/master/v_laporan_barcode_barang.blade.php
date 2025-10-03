@@ -27,14 +27,14 @@
             </td>
           </fieldset>
 
-          @if ($jenis == 'HARGABELI')
+          @if ($jenis == 'hargabeli')
             <fieldset id="hargabeli-wrapper" style="padding: 5px;">
               <legend>Harga Beli Diambil dari:</legend>
 
               <input type="radio" name="jenishargabeli" value="master" checked> Master Barang
               <input type="radio" name="jenishargabeli" value="beli"> Pembelian
             </fieldset>
-          @elseif($jenis == 'HARGAJUAL')
+          @elseif($jenis == 'hargajual')
             <fieldset id="hargajual-wrapper" style="padding: 5px;">
               <legend>Jenis Harga Jual</legend>
 
@@ -273,9 +273,14 @@
       browse_data_pembelian('#txt_nilai_list_beli');
       browse_data_lokasi_hargajual('#txt_lokasi_hargajual');
 
-      create_hint('#hint-tampilan1', 'Menampilkan barcode dalam ukuran kertas A4 dengan 4 label per baris');
-      create_hint('#hint-tampilan2',
-        'Menampilkan barcode untuk printer barcode dengan ukuran kertas 4.17in x 0.9in dengan 3 label per baris');
+      create_hint(
+        '#hint-tampilan1',
+        'Menampilkan barcode dalam ukuran kertas A4 dengan 4 label per baris'
+      );
+      create_hint(
+        '#hint-tampilan2',
+        'Menampilkan barcode untuk printer barcode dengan ukuran kertas 4.17in x 0.9in dengan 3 label per baris'
+      );
 
       $('#jumlah').numberbox({
         precision: 0
@@ -875,7 +880,7 @@
         var data = "BARANG";
         var errMessage = "";
 
-        @if ($jenis == 'HARGAJUAL')
+        @if ($jenis == 'hargajual')
           var idlokasi = $('#txt_lokasi_hargajual').combogrid('getValue');
           var tipeharga = $('#harga').combobox('getValue');
 
@@ -911,7 +916,7 @@
         return false;
 
       } else if (jeniscetak == 'Berdasarkan Penerimaan') {
-        @if ($jenis == 'HARGAJUAL')
+        @if ($jenis == 'hargajual')
           var idlokasi = $('#txt_lokasi_hargajual').combogrid('getValue');
           var tipeharga = $('#harga').combobox('getValue');
 
@@ -946,7 +951,7 @@
 
         return false;
       } else if (jeniscetak == 'Berdasarkan Pembelian') {
-        @if ($jenis == 'HARGAJUAL')
+        @if ($jenis == 'hargajual')
           var idlokasi = $('#txt_lokasi_hargajual').combogrid('getValue');
           var tipeharga = $('#harga').combobox('getValue');
 

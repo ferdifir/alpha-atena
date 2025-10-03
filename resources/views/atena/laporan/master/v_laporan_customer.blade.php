@@ -353,8 +353,7 @@
         if (namaKolom == 'Customer' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
           var msg = $('#txt_nilai_list_customer').combogrid('grid').datagrid("getSelected");
 
-          if (msg != null) //NAMA
-          {
+          if (msg != null) {
             text_laporan = kolom + " " + operator + " " + nilai + ", " + msg.badanusaha;
           }
         }
@@ -371,7 +370,6 @@
           text: text_laporan,
         });
 
-        //CHECKED TRUE
         var rows = $('#list_filter_laporan').datagrid('getRows');
         $('#list_filter_laporan').datagrid('checkRow', rows.length - 1);
       } else {
@@ -379,11 +377,10 @@
       }
     });
 
-    //HAPUS FILTER
     $("#btn_remove").click(function() {
-      var rows = $('#list_filter_laporan').datagrid('getSelections'); // get all selected rows
+      var rows = $('#list_filter_laporan').datagrid('getSelections');
       for (var i = rows.length - 1; i >= 0; i--) {
-        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]); // get the row index
+        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]);
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
