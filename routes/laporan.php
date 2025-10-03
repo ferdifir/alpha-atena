@@ -41,9 +41,13 @@ Route::prefix('atena/laporan/laporanmaster')
         })->name('laporanbarang');
 
         Route::get('laporanbarcodebarang', function () {
+            $menu = preg_replace_callback('/\b([a-z])/', function ($matches) {
+                return strtoupper($matches[1]);
+            }, request()->menu);
             return view('atena.laporan.master.v_laporan_barcode_barang', [
                 'kodemenu' => request()->kode,
-                'menu' => ucwords(request()->menu)
+                'menu' => $menu,
+                'jenis' => request()->jenis
             ]);
         })->name('laporanbarcodebarang');
 
@@ -116,5 +120,4 @@ Route::prefix('atena/laporan/laporanmaster')
                 'menu' => ucwords(request()->menu)
             ]);
         })->name('laporanhistory');
-
     });

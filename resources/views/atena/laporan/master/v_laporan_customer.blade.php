@@ -2,8 +2,7 @@
 
 @section('content')
   <div class="easyui-layout" style="width:350px;height:100%; font-weight:bold;" fit="true">
-    <div class="panel-filter-laporan" data-options="region:'west',hideCollapsedContent:false"
-      title="{{ $menu }}">
+    <div class="panel-filter-laporan" data-options="region:'west',hideCollapsedContent:false" title="{{ $menu }}">
       <table style="border-bottom:1px #000" id="label_laporan">
         <tr>
           <td id="label_laporan">Status </td>
@@ -390,11 +389,12 @@
     });
 
     function cetakLaporanCustomer(excel) {
-      var urlapi = link_api.laporanCustomer;
-      var filename = "Laporan Master Customer";
-      var data_filter = JSON.stringify($("#list_filter_laporan").datagrid('getChecked'));
-      var status = $('#cbStatus').combogrid('getValue');
-      parent.buka_laporan(urlapi, filename, data_filter, null, excel, status);
+      parent.buka_laporan(link_api.laporanCustomer, {
+        filename: "Laporan Master Customer",
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        excel: excel,
+        status: $('#cbStatus').combogrid('getValue'),
+      });
     }
 
     $("#btn_export_excel").click(function() {

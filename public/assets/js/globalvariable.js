@@ -59,6 +59,7 @@ var link_api = {
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
     simpanMerk: `${base_url_api}atena/master/merk/simpan`,
     getHeaderMerk: `${base_url_api}atena/master/merk/load-data-header`,
+    laporanMerk: `${base_url_api}atena/master/merk/laporan`,
     //Servis
     loadDataGridServis: `${base_url_api}atena/master/servis/load-data-grid`,
     hapusServis: `${base_url_api}atena/master/servis/hapus`,
@@ -231,6 +232,11 @@ var link_api = {
     cekCollie: `${base_url_api}atena/master/barang/cek-collie`,
     getDaftarBarangDiskon: `${base_url_api}atena/master/barang/load-daftar-diskon`,
     browseBarangNonStok: `${base_url_api}atena/master/barang/browse-non-stok`,
+    browseBarangKategoriLaporan: `${base_url_api}atena/master/barang/browse-barang-kategori-laporan`,
+    laporanBarang: `${base_url_api}atena/master/barang/laporan`,
+    loadDataGridSimbolHarga: `${base_url_api}atena/master/simbol-harga/load-data-grid`,
+    simpanSimbolHarga: `${base_url_api}atena/master/simbol-harga/simpan`,
+    laporanBarcodeBarang: `${base_url_api}atena/master/barang/laporan-barcode-barang`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,
@@ -457,6 +463,8 @@ var link_api = {
     loadDataHeaderSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-header`,
     browseNonStokBarang: `${base_url_api}atena/master/barang/browse-non-stok`,
     cekBisaBerlanjutBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/cek-bisa-berlanjut`,
+    browseBeliPembelian: `${base_url_api}atena/pembelian/pembelian/browse-beli`,
+    loadDataDetailBarcodePembelian: `${base_url_api}atena/pembelian/pembelian/load-data-detail-barcode`,
     //Penjualan Sales Order
     loadDataGridPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-grid`,
     browseTokoSinkronisasi: `${base_url_api}atena/penjualan/penjualan/browse-toko-sinkronisasi`,
@@ -574,6 +582,8 @@ var link_api = {
     batalTransaksiBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/batal-trans`,
     simpanBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/simpan`,
     passingHargaBeliTerakhir: `${base_url_api}atena/inventori/bukti-penerimaan-barang/passing-harga-beli-terakhir`,
+    browseBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/browse-bukti-penerimaan-barang`,
+    loadDataDetailBarcodeBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-detail-barcode`,
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,

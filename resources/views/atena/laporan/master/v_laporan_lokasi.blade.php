@@ -331,19 +331,20 @@
     });
 
     function cetakLaporanLokasi(excel) {
-      var urlapi = link_api.laporanLokasi;
-      var filename = "Laporan Master Lokasi";
-      var data_filter = JSON.stringify($("#list_filter_laporan").datagrid('getChecked'));
-      var status = $('#cbStatus').combogrid('getValue');
-      parent.buka_laporan(urlapi, filename, data_filter, null, excel, status);
+      parent.buka_laporan(link_api.laporanLokasi, {
+        filename: "Laporan Master Lokasi",
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        excel: excel,
+        status: $('#cbStatus').combogrid('getValue'),
+      });
     }
 
     $("#btn_export_excel").click(function() {
-        cetakLaporanLokasi('ya');
+      cetakLaporanLokasi('ya');
     });
 
     $("#btn_print").click(function() {
-        cetakLaporanLokasi('tidak');
+      cetakLaporanLokasi('tidak');
     });
 
     function browse_data_lokasi(id) {

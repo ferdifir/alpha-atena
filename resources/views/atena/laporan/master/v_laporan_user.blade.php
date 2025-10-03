@@ -330,11 +330,12 @@
     });
 
     function cetakLaporanUser(excel) {
-      var urlapi = link_api.laporanUser;
-      var filename = "Laporan Master User";
-      var data_filter = JSON.stringify($("#list_filter_laporan").datagrid('getChecked'));
-      var status = $('#cbStatus').combogrid('getValue');
-      parent.buka_laporan(urlapi, filename, data_filter, null, excel, status);
+      parent.buka_laporan(link_api.laporanUser, {
+        status: $('#cbStatus').combogrid('getValue'),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        filename: "Laporan Master User",
+        excel: excel,
+      });
     }
 
     // PRINT LAPORAN

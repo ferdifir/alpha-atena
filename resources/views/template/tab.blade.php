@@ -89,7 +89,9 @@
                                   '&jenis=' .
                                   $menuLv3['jenis'] .
                                   '&menu=' .
-                                  $menuLv3['namainduk'] . ' ' . $menuLv3['namamenu'],
+                                  $menuLv3['namainduk'] .
+                                  ' ' .
+                                  $menuLv3['namamenu'],
                           );
                         @endphp
 
@@ -401,13 +403,24 @@
     </table>
   </div>
 
-  <form method='post' id="form_input" action="">
+  <form method='post' id="form_input">
     <input type="hidden" name="jwt_token" id="jwt_token" value="{{ session('TOKEN') }}">
-    <input type="hidden" name="excel" id="excel">
-    <input type="hidden" name="filename" id="file_name" value="LaporanCustomer">
-    <input type="hidden" id="status" name="status">
-    <input type="hidden" id="data_filter" name="data_filter">
-    <input type="hidden" id="data_tampil" name="data_tampil">
+    <input type="hidden" name="excel">
+    <input type="hidden" name="kode">
+    <input type="hidden" name="filename">
+    <input type="hidden" name="status">
+    <input type="hidden" name="data_filter">
+    <input type="hidden" name="data_tampil">
+    <input type="hidden" name="harga">
+    <input type="hidden" name="uuidcustomer">
+    <input type="hidden" name="uuidtipecustomer">
+    <input type="hidden" name="uuidlokasi_hargajual">
+    <input type="hidden" name="satuanbarcode">
+    <input type="hidden" name="jenis">
+    <input type="hidden" name="jenistampilan">
+    <input type="hidden" name="jenishargabeli">
+    <input type="hidden" name="jeniscetakharga">
+    <input type="hidden" name="barcode">
   </form>
 
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
@@ -765,29 +778,25 @@
 
     let counterLaporan = {};
 
-    function buka_laporan(urlapi, filename, data_filter, data_tampil, excel, status) {
-      $('#form_input').attr('action', urlapi);
-      $('#data_filter').val(data_filter);
-      $('#data_tampil').val(data_tampil);
-      $('#file_name').val(filename);
-      $('#excel').val(excel);
-      $('#status').val(status);
-      if (excel == 'ya') {
-        $('#form_input').attr('target', '_blank');
-        $('#form_input').submit();
+    function buka_laporan(url, payload) {
+      const $form = $('#form_input');
+      $form.attr('action', url);
+      $form.form('load', payload);
+      if (payload.excel == 'ya') {
+        $form.attr('target', '_blank');
+        $form.submit();
         return;
       }
       counter++;
-
-      var tab_title = filename;
+      var tab_title = payload.filename;
       const counterTerbesar = getCounterTerbesar(tab_title);
       var newLapCounter = counterTerbesar + 1;
       counterLaporan[tab_title] = newLapCounter;
       var tab_name = `${tab_title} #${newLapCounter}`;
 
-      $('#form_input').attr('target', tab_name);
+      $form.attr('target', tab_name);
 
-      const loadingId = 'loading_' + tab_name;
+      const loadingId = 'loading_' + tab_name.replaceAll(" ", "");
 
       const svgSpinnerHtml = `
         <div id="${loadingId}" class="mask-loader-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
@@ -819,13 +828,84 @@
         tools: [{
           iconCls: 'icon-print',
           handler: function() {
-            $('[name="Laporan Master Customer #1"]')[0].contentWindow.postMessage('cetak', '*');
+            $(`[name="${tab_name}"]`)[0].contentWindow.postMessage('cetak', '*');
           }
         }]
       });
 
-      $('#form_input').submit();
+      $form.submit();
     }
+
+    // function buka_laporan({
+    //   urlapi,
+    //   filename,
+    //   data_filter,
+    //   data_tampil,
+    //   excel,
+    //   status,
+    //   kodemenu
+    // }) {
+    //   $('#form_input').attr('action', urlapi);
+    //   $('#file_name').val(filename);
+    //   $('#data_filter').val(data_filter);
+    //   $('#data_tampil').val(data_tampil);
+    //   $('#excel').val(excel);
+    //   $('#status').val(status);
+    //   $('#kodemenu').val(kodemenu);
+    //   if (excel == 'ya') {
+    //     $('#form_input').attr('target', '_blank');
+    //     $('#form_input').submit();
+    //     return;
+    //   }
+    //   counter++;
+
+    //   var tab_title = filename;
+    //   const counterTerbesar = getCounterTerbesar(tab_title);
+    //   var newLapCounter = counterTerbesar + 1;
+    //   counterLaporan[tab_title] = newLapCounter;
+    //   var tab_name = `${tab_title} #${newLapCounter}`;
+
+    //   $('#form_input').attr('target', tab_name);
+
+    //   const loadingId = 'loading_' + tab_name;
+
+    //   const svgSpinnerHtml = `
+  //     <div id="${loadingId}" class="mask-loader-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+  //         <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+  //           <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33"
+  //             r="30"></circle>
+  //         </svg>
+  //     </div>
+  //     `;
+
+    //   const iframeHtml = `
+  //     <iframe frameborder="0"
+  //             id="${tab_name}"
+  //             name="${tab_name}"
+  //             width="100%" height="100%"
+  //             src="#"
+  //             style="display: none;"
+  //             onload="document.getElementById('${loadingId}').style.display='none'; this.style.display='block';">
+  //     </iframe>
+  //     `;
+
+    //   const tabContent = svgSpinnerHtml + iframeHtml;
+
+    //   $('#tab_menu').tabs('add', {
+    //     id: counter,
+    //     title: tab_name,
+    //     content: tabContent,
+    //     closable: true,
+    //     tools: [{
+    //       iconCls: 'icon-print',
+    //       handler: function() {
+    //         $(`[name="${tab_name}"]`)[0].contentWindow.postMessage('cetak', '*');
+    //       }
+    //     }]
+    //   });
+
+    //   $('#form_input').submit();
+    // }
 
     window.addEventListener("message", (event) => {
       try {
