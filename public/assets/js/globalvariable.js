@@ -53,6 +53,7 @@ var link_api = {
     simpanLokasi: `${base_url_api}atena/master/lokasi/simpan`,
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     browseLokasiTransfer: `${base_url_api}atena/master/lokasi/browse-transfer`,
+    laporanLokasi: `${base_url_api}atena/master/lokasi/laporan`,
     //Merk
     hapusMerk: `${base_url_api}atena/master/merk/hapus`,
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
