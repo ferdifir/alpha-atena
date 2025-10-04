@@ -97,20 +97,20 @@
                     <td align="right" id="label_form">E-mail</td>
                     <td id="label_form"><input name="email" style="width:225px" class="label_input"
                         validType="email">
-                      &nbsp;&nbsp;&nbsp; Website
-                      <input name="website" style="width:225px" class="label_input" validType='url'>
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Website
+                      <input name="website" style="width:255px" class="label_input" validType='url'>
                     </td>
                   </tr>
                   <tr>
                     <td align="right" id="label_form">Syarat Bayar</td>
                     <td align="left" id="label_form">
-                      <input name="uuidsyaratbayar" id="UUIDSYARATBAYAR" style="width:150px">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Disc Min
-                      <input id="DISCOUNTMIN" name="discountmin" style="width:70px;"
+                      <input name="uuidsyaratbayar" id="UUIDSYARATBAYAR" style="width:149px">
+                      &nbsp;&nbsp; Disc Min
+                      <input id="DISCOUNTMIN" name="discountmin" style="width:149px;"
                         class="label_input easyui-numberbox" validType='length[0,14]'
                         data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
                       &nbsp;&nbsp;<span id="label_form">Disc Max</span>
-                      <input id="DISCOUNTMAX" name="discountmax" style="width:70px;"
+                      <input id="DISCOUNTMAX" name="discountmax" style="width:149px;"
                         class="label_input easyui-numberbox" validType='length[0,14]'
                         data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
                     </td>
@@ -126,8 +126,8 @@
                     <td id="label_form">
                       <input name="maxcredit" style="width:150px;" class="number" validType='length[0,50]'
                         data-options="required:true, min:'0', value:'0',precision:2,decimalSeparator:'.',prefix:'Rp.'">
-                      &nbsp; Jml Maksimum Nota Belum Terbayar
-                      <input name="maxnota" style="width:50px;" class="number" validType='length[0,18]'
+                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jml Maksimum Nota Belum Terbayar
+                      <input name="maxnota" style="width:200px;" class="number" validType='length[0,18]'
                         data-options="required:true, min:'0', value:'0'">
                     <td>
                   </tr>
@@ -173,7 +173,7 @@
                   <tr>
                     <td align="right" valign="top" id="label_form">Catatan</td>
                     <td>
-                      <textarea name="catatan" style="width:325px; height:60px;  display: inline-block;" class="label_input"
+                      <textarea name="catatan" style="width:360px; height:60px;  display: inline-block;" class="label_input"
                         multiline='true' validType='length[0,300]'></textarea>
                     </td>
                   </tr>
@@ -291,7 +291,7 @@
             </tr>
             <tr>
               <td align="right" id="label_form">Disc Min</td>
-              <td><input id="DISCOUNTMINTIPE" name="discountmin" style="width:70px;"
+              <td><input id="DISCOUNTMINTIPE" name="discountmin" style="width:68px;"
                   class="label_input easyui-numberbox" validType='length[0,14]'
                   data-options="precision:2,required:true,decimalSeparator:'.',suffix:'%'">
                 &nbsp;&nbsp;<span id="label_form">Disc Max</span>

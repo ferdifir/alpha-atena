@@ -10,6 +10,8 @@ var link_api = {
     getConfigGlobal: `${base_url_api}atena/master/config/get-config-global`,
     getConfig: `${base_url_api}atena/master/config/get-config`,
     getDataAkses: `${base_url_api}atena/master/user/get-user-akses`,
+    browseJenisTrans: `${base_url_api}atena/master/perusahaan/browse-jenis-trans`,
+    laporanHistoryProgram: `${base_url_api}atena/master/history-program/laporan`,
     //perkiraan
     hapusPerkiraan: `${base_url_api}atena/master/perkiraan/hapus`,
     loadDataGridMasterPerkiraan: `${base_url_api}atena/master/perkiraan/load-data-grid`,
@@ -20,6 +22,7 @@ var link_api = {
     getPerkiraanUser: `${base_url_api}atena/master/perkiraan/load-perkiraan-user`,
     getPerkiraanLokasi: `${base_url_api}`, //API belum dibuat
     browsePerkiraan: `${base_url_api}atena/master/perkiraan/browse`,
+    laporanPerkiraan: `${base_url_api}atena/master/perkiraan/laporan`,
     //currency
     browseCurrency: `${base_url_api}atena/master/currency/browse`,
     loadDataGridCurrency: `${base_url_api}atena/master/currency/load-data-grid`,
@@ -27,6 +30,7 @@ var link_api = {
     loadHeaderCurrency: `${base_url_api}atena/master/currency/load-data-header`,
     simpanCurrency: `${base_url_api}atena/master/currency/simpan`,
     getRateCurrency: `${base_url_api}atena/master/currency/get-rate`,
+    laporanCurrency: `${base_url_api}atena/master/currency/laporan`,
     //user
     userGetAll: `${base_url_api}atena/master/user/load-all`,
     loadDataGridMasterUser: `${base_url_api}atena/master/user/load-data-grid`,
@@ -40,6 +44,7 @@ var link_api = {
     getDahboardAksesUser: `${base_url_api}atena/master/user/load-data-akses-dashboard`,
     headerFormUser: `${base_url_api}atena/master/user/load-data-header`,
     hapusUser: `${base_url_api}atena/master/user/hapus`,
+    laporanUser: `${base_url_api}atena/master/user/laporan`,
     //lokasi
     getLokasiAll: `${base_url_api}atena/master/lokasi/load-all`,
     getLokasiPerUser: `${base_url_api}atena/master/lokasi/load-lokasi-per-user`,
@@ -52,11 +57,13 @@ var link_api = {
     simpanLokasi: `${base_url_api}atena/master/lokasi/simpan`,
     browseLokasi: `${base_url_api}atena/master/lokasi/browse`,
     browseLokasiTransfer: `${base_url_api}atena/master/lokasi/browse-transfer`,
+    laporanLokasi: `${base_url_api}atena/master/lokasi/laporan`,
     //Merk
     hapusMerk: `${base_url_api}atena/master/merk/hapus`,
     loadDataGridMerk: `${base_url_api}atena/master/merk/load-data-grid`,
     simpanMerk: `${base_url_api}atena/master/merk/simpan`,
     getHeaderMerk: `${base_url_api}atena/master/merk/load-data-header`,
+    laporanMerk: `${base_url_api}atena/master/merk/laporan`,
     //Servis
     loadDataGridServis: `${base_url_api}atena/master/servis/load-data-grid`,
     hapusServis: `${base_url_api}atena/master/servis/hapus`,
@@ -69,6 +76,7 @@ var link_api = {
     getHutangBelumLunas: `${base_url_api}atena/master/supplier/load-data-hutang-belum-lunas`,
     simpanSupplier: `${base_url_api}atena/master/supplier/simpan`,
     headerFormSupplier: `${base_url_api}atena/master/supplier/load-data-header`,
+    laporanSupplier: `${base_url_api}atena/master/supplier/laporan`,
     //customer
     loadDataGridMasterCustomer: `${base_url_api}atena/master/customer/load-data-grid`,
     browseBadanUsahaCustomer: `${base_url_api}atena/master/customer/browse-badan-usaha`,
@@ -83,6 +91,9 @@ var link_api = {
     headerFormCustomer: `${base_url_api}atena/master/customer/load-data-header`,
     hapusCustomer: `${base_url_api}atena/master/customer/hapus`,
     browseCustomer: `${base_url_api}atena/master/customer/browse`,
+    browseKotaCustomer: `${base_url_api}atena/master/customer/browse-kota`,
+    browsePropinsiCustomer: `${base_url_api}atena/master/customer/browse-propinsi`,
+    laporanCustomer: `${base_url_api}atena/master/customer/laporan`,
     //ekspedisi
     loadDataGridMasterEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-grid`,
     browseBadanUsahaEkspedisi: `${base_url_api}atena/master/ekspedisi/browse-badan-usaha`,
@@ -90,6 +101,7 @@ var link_api = {
     simpanEkspedisi: `${base_url_api}atena/master/ekspedisi/simpan`,
     hapusEkspedisi: `${base_url_api}atena/master/ekspedisi/hapus`,
     browseEkspedisi: `${base_url_api}atena/master/ekspedisi/browse`,
+    laporanEkspedisi: `${base_url_api}atena/master/ekspedisi/laporan`,
     //tipe customer
     browseTipeCustomer: `${base_url_api}atena/master/tipecustomer/browse`,
     simpanTipeCustomer: `${base_url_api}atena/master/tipecustomer/simpan`,
@@ -127,6 +139,7 @@ var link_api = {
     loadDataGridSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-grid`,
     getHeaderSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-header`,
     simpanSyaratBayar: `${base_url_api}atena/master/syaratbayar/simpan`,
+    laporanSyaratBayar: `${base_url_api}atena/master/syaratbayar/laporan`,
     //Departemen Kerja
     loadDataGridDepartemenKerja: `${base_url_api}atena/master/departemenkerja/load-data-grid`,
     hapusDepartemenKerja: `${base_url_api}atena/master/departemenkerja/hapus`,
@@ -140,17 +153,22 @@ var link_api = {
     simpanKaryawan: `${base_url_api}atena/master/karyawan/simpan`,
     getHeaderKaryawan: `${base_url_api}atena/master/karyawan/load-data-header`,
     browseKaryawan: `${base_url_api}atena/master/karyawan/browse`,
+    laporanKaryawan: `${base_url_api}atena/master/karyawan/laporan`,
     //sopir
     hapusSopir: `${base_url_api}atena/master/sopir/hapus`,
     simpanSopir: `${base_url_api}atena/master/sopir/simpan`,
     getHeaderSopir: `${base_url_api}atena/master/sopir/load-data-header`,
     loadDataGridSopir: `${base_url_api}atena/master/sopir/load-data-grid`,
+    laporanSopir: `${base_url_api}atena/master/sopir/laporan`,
+    //marketing
+    browseMarketing: `${base_url_api}atena/master/marketing/browse-marketing`,
     //kendaraan
     simpanKendaraan: `${base_url_api}atena/master/kendaraan/simpan`,
     getHeaderKendaraan: `${base_url_api}atena/master/kendaraan/load-data-header`,
     loadDataGridKendaraan: `${base_url_api}atena/master/kendaraan/load-data-grid`,
     hapusKendaraan: `${base_url_api}atena/master/kendaraan/hapus`,
     browseKendaraan: `${base_url_api}atena/master/kendaraan/browse`,
+    laporanKendaraan: `${base_url_api}atena/master/kendaraan/laporan`,
     //jenis pemakaian
     simpanJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/simpan`,
     getHeaderJenisPemakaian: `${base_url_api}atena/master/jenispemakaian/load-data-header`,
@@ -224,6 +242,11 @@ var link_api = {
     cekCollie: `${base_url_api}atena/master/barang/cek-collie`,
     getDaftarBarangDiskon: `${base_url_api}atena/master/barang/load-daftar-diskon`,
     browseBarangNonStok: `${base_url_api}atena/master/barang/browse-non-stok`,
+    browseBarangKategoriLaporan: `${base_url_api}atena/master/barang/browse-barang-kategori-laporan`,
+    laporanBarang: `${base_url_api}atena/master/barang/laporan`,
+    loadDataGridSimbolHarga: `${base_url_api}atena/master/simbol-harga/load-data-grid`,
+    simpanSimbolHarga: `${base_url_api}atena/master/simbol-harga/simpan`,
+    laporanBarcodeBarang: `${base_url_api}atena/master/barang/laporan-barcode-barang`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,
@@ -450,6 +473,8 @@ var link_api = {
     loadDataHeaderSyaratBayar: `${base_url_api}atena/master/syaratbayar/load-data-header`,
     browseNonStokBarang: `${base_url_api}atena/master/barang/browse-non-stok`,
     cekBisaBerlanjutBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/cek-bisa-berlanjut`,
+    browseBeliPembelian: `${base_url_api}atena/pembelian/pembelian/browse-beli`,
+    loadDataDetailBarcodePembelian: `${base_url_api}atena/pembelian/pembelian/load-data-detail-barcode`,
     //Penjualan Sales Order
     loadDataGridPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-grid`,
     browseTokoSinkronisasi: `${base_url_api}atena/penjualan/penjualan/browse-toko-sinkronisasi`,
@@ -567,6 +592,8 @@ var link_api = {
     batalTransaksiBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/batal-trans`,
     simpanBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/simpan`,
     passingHargaBeliTerakhir: `${base_url_api}atena/inventori/bukti-penerimaan-barang/passing-harga-beli-terakhir`,
+    browseBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/browse-bukti-penerimaan-barang`,
+    loadDataDetailBarcodeBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-detail-barcode`,
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,
@@ -713,6 +740,8 @@ var link_api = {
     //Aset - Pembelian Aset
     loadConfigPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-config`,
     loadDataGridPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-grid`,
+    loadDataPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data`,
+    loadDataHeaderPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-header`,
     cetakPembelianAset: `${base_url_api}atena/aset/pembelian-aset/cetak/`,
     batalTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/batal-trans`,
     ubahStatusJadiInputPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-input`,
@@ -770,6 +799,72 @@ var link_api = {
     ubahStatusjadiSlipPelunasanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/ubah-status-jadi-slip`,
     getStatusPelunasanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/get-status-trans`,
     loadHutangUangMukaPelunasanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/load-hutang-uang-muka`,
+    getStatusTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/get-status-trans`,
+    browsePajak: `${base_url_api}atena/master/pajak/browse`,
+    browseAsetPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset`,
+    browseReturPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-retur-pembelian-aset`,
+    browseAsetBeliPembelianAset: `${base_url_api}atena/aset/pembelian-aset/browse-aset-beli`,
+    simpanPembelianAset: `${base_url_api}atena/aset/pembelian-aset/simpan`,
+    //Aset - Retur Pembelian Aset
+    loadDataGridReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-grid`,
+    loadConfigReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-config`,
+    loadDataReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data`,
+    loadDataHeaderReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/load-data-header`,
+    getStatusTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/get-status-trans`,
+    batalTransReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/batal-trans`,
+    ubahStatusJadiInputReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/ubah-status-jadi-slip`,
+    cetakReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/cetak/`,
+    simpanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/simpan`,
+    browseAsetReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset`,
+    //Aset - Transfer Aset
+    getStatusTransTransferAset: `${base_url_api}atena/aset/transfer-aset/get-status-trans`,
+    cetakTransferAset: `${base_url_api}atena/aset/transfer-aset/cetak/`,
+    batalTransTransferAset: `${base_url_api}atena/aset/transfer-aset/batal-trans`,
+    ubahStatusJadiInputTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipTransferAset: `${base_url_api}atena/aset/transfer-aset/ubah-status-jadi-slip`,
+    loadDataGridTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-grid`,
+    loadConfigTransferAset: `${base_url_api}atena/aset/transfer-aset/load-config`,
+    loadDataHeaderTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data-header`,
+    simpanTransferAset: `${base_url_api}atena/aset/transfer-aset/simpan`,
+    loadDataTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data`,
+    browseAsetTransferAset: `${base_url_api}atena/aset/transfer-aset/browse-aset`,
+    //Aset - Penghapusan Aset
+    getStatusTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/get-status-trans`,
+    loadDataGridPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data-grid`,
+    loadConfigPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-config`,
+    loadDataPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data`,
+    batalTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/batal-trans`,
+    ubahStatusJadiInputPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/ubah-status-jadi-slip`,
+    cetakPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/cetak/`,
+    simpanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/simpan`,
+    browseAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/browse-aset`,
+    hitungNilaiAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/hitung-nilai-aset`,
+    //Aset - Penjualan Aset
+    getStatusTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/get-status-trans`,
+    cetakPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/cetak/`,
+    batalTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/batal-trans`,
+    ubahStatusJadiInputPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/ubah-status-jadi-slip`,
+    loadDataGridPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-grid`,
+    loadConfigPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-config`,
+    loadDataPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data`,
+    loadDataHeaderPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-header`,
+    simpanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/simpan`,
+    browseAsetPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/browse-aset`,
+    //Aset - Penyusutan Aset
+    loadDataGridPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-grid`,
+    loadConfigPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-config`,
+    loadDataHeaderPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-header`,
+    loadDataPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data`,
+    getStatusTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/get-status-trans`,
+    cetakPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/cetak/`,
+    batalTransPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/batal-trans`,
+    ubahStatusJadiInputPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-input`,
+    ubahStatusJadiSlipPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-slip`,
+    hitungPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/hitung-aset`,
+    simpanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/simpan`,
 };
 
 var modul_kode = {
@@ -780,6 +875,33 @@ var modul_kode = {
     aset: "93JK4",
     keuangan: "L03KD",
     akuntansi: "P02MS",
+};
+
+const operatorData = {
+    "String": [
+        { value: "ADALAH", text: "Adalah" },
+        { value: "TIDAK MENCAKUP", text: "Tidak Mencakup" },
+        { value: "BERISI KATA", text: "Berisi kata" },
+        { value: "TIDAK BERISI KATA", text: "Tidak berisi kata" },
+        { value: "DIMULAI DENGAN", text: "Dimulai dengan" },
+        { value: "TIDAK DIMULAI DENGAN", text: "Tidak dimulai dengan" },
+        { value: "DIAKHIRI DENGAN", text: "Diakhiri dengan" },
+        { value: "TIDAK DIAKHIRI DENGAN", text: "Tidak diakhiri dengan" },
+        { value: "LEBIH DARI SAMA DENGAN", text: "Lebih dari sama dengan" },
+        { value: "KURANG DARI SAMA DENGAN", text: "Kurang dari sama dengan" },
+        { value: "KOSONG", text: "Kosong" },
+        { value: "TIDAK KOSONG", text: "Tidak kosong" }
+    ],
+    "Number": [
+        { value: "SAMA DENGAN", text: "Sama dengan" },
+        { value: "TIDAK MENCAKUP", text: "Tidak sama dengan" },
+        { value: "LEBIH BESAR DARI", text: "Lebih besar dari" },
+        { value: "LEBIH BESAR SAMA DENGAN", text: "Lebih besar sama dengan" },
+        { value: "LEBIH KECIL DARI", text: "Lebih kecil dari" },
+        { value: "LEBIH KECIL SAMA DENGAN", text: "Lebih kecil sama dengan" },
+        { value: "NOL", text: "Nol" },
+        { value: "TIDAK NOL", text: "Tidak nol" }
+    ]
 };
 
 function getDateMinusDays(days) {
@@ -1123,19 +1245,26 @@ async function downloadCSV(apiUrl, uuid, token = null) {
     }
 }
 
+/**
+ * Mengunduh file berdasarkan url yang diberikan.
+ * Method ini akan mengembalikan string isi dari file yang diunduh.
+ * Jika terjadi error, maka akan menampilkan alert error dan mengembalikan null.
+ *
+ * @param {string} url - url untuk mengunduh file
+ * @param {string} token - token untuk autentikasi
+ * @param {object} body - data yang akan dikirim dalam bentuk JSON
+ * @return {Promise<string|null>} - string isi dari file yang diunduh atau null jika terjadi error
+ */
 async function getCetakDocument(url, token, body) {
     try {
-        const response = await fetch(
-            url,
-            {
-                method: "POST",
-                headers: {
-                    "Authorization": "Bearer " + token,
-                    "Content-Type": "application/json",
-                },
-                body: body ? JSON.stringify(body) : null,
-            }
-        );
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + token,
+                "Content-Type": "application/json",
+            },
+            body: body ? JSON.stringify(body) : null,
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1148,6 +1277,13 @@ async function getCetakDocument(url, token, body) {
     }
 }
 
+/**
+ * Menampilkan pesan error menggunakan jQuery Messager.
+ * Jika error adalah token tidak valid, maka akan menampilkan pesan
+ * "Sesi login telah habis. Silahkan login ulang".
+ *
+ * @param {Error} e - Error yang terjadi
+ */
 function showErrorAlert(e) {
     let error;
 
@@ -1161,6 +1297,48 @@ function showErrorAlert(e) {
         error = "Terdapat kesalahan dalam memproses data.";
     }
 
-    const textError = getTextError(error);
+    let textError = getTextError(error);
+    if (textError.includes(tokenTidakValid)) {
+        textError = "Sesi login telah habis. Silahkan login ulang";
+    }
     $.messager.alert("Error", textError, "error");
+}
+
+/**
+ * Mengambil data operator berdasarkan tipe data dan mengisi elemen <select> yang dituju.
+ * @param {string} tipeData - Tipe data yang dicari ("String" atau "Number").
+ * @param {string} selectId - ID dari elemen <select> yang akan diisi.
+ */
+function isiOperatorLaporan(tipeData, selectId) {
+    const selectElement = document.getElementById(selectId);
+
+    // Validasi elemen dan data
+    if (!selectElement) {
+        console.error(`Elemen <select> dengan ID: ${selectId} tidak ditemukan.`);
+        return;
+    }
+    const operators = operatorData[tipeData];
+    if (!operators) {
+        console.error(`Operator untuk tipe data: ${tipeData} tidak ditemukan.`);
+        return;
+    }
+
+    // Kosongkan elemen select yang sudah ada
+    selectElement.innerHTML = '';
+
+    // Membuat dan menambahkan opsi
+    // Menggunakan DocumentFragment untuk meminimalkan manipulasi DOM
+    const fragment = document.createDocumentFragment();
+
+    operators.forEach(operator => {
+        const option = document.createElement('option');
+        option.value = operator.value;
+        option.textContent = operator.text;
+        fragment.appendChild(option);
+    });
+
+    // Masukkan semua opsi ke dalam <select> hanya dalam satu operasi DOM
+    selectElement.appendChild(fragment);
+
+    $('#' + selectId).combobox('loadData', operators);
 }

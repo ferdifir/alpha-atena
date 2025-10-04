@@ -393,6 +393,12 @@
                   }
                   $("#area_cetak").html(document);
                   $("#form_cetak").window('open');
+                } else {
+                  $.messager.alert(
+                    "Warning",
+                    "Anda Tidak Memiliki Hak Akses Cetak Ulang",
+                    "warning"
+                  );
                 }
               });
             } else {
@@ -727,6 +733,5 @@
     function reload() {
       $('#table_data').datagrid('reload');
     }
-
   </script>
 @endpush

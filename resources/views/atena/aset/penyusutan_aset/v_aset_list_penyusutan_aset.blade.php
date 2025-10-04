@@ -33,23 +33,21 @@
               <td id="label_form" align="center">Tgl. Transaksi</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form" align="center">s/d</td>
             </tr>
             <tr>
-              <td align="center">
-                <input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" />
-              </td>
+              <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"
+                  style="width:100px" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
             </tr>
             <tr>
-              <td id="label_form" align="center">No. Pembelian Aset</td>
+              <td id="label_form" align="center">No. Penyusutan Aset</td>
             </tr>
             <tr>
               <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px"
@@ -62,8 +60,8 @@
               <td id="label_form" align="center">Supplier</td>
             </tr>
             <tr>
-              <td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px"
-                  class="label_input" /></td>
+              <td align="center"><input id="txt_nama_referensi_filter" name="txt_nama_referensi_filter"
+                  style="width:100px" class="label_input" /></td>
             </tr>
             <tr>
               <td id="label_form"><br></td>
@@ -129,11 +127,7 @@
     var edit_row = false;
     var idtrans = "";
     var counter = 0;
-    let LIHATHARGA;
-    let row;
-
-    $(document).ready(async function() {
-      await loadConfigPembelianAset();
+    $(document).ready(function() {
       $("#table_data").datagrid({
         onSelect: function() {
           row = $('#table_data').datagrid('getSelected');
@@ -163,7 +157,7 @@
           text: '',
           iconCls: 'icon-excel',
           handler: function() {
-            export_excel('Faktur Pembelian Aset', $("#area_cetak").html());
+            export_excel('Faktur Penyusutan Aset', $("#area_cetak").html());
             return false;
           }
         }]
@@ -188,8 +182,8 @@
       get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         data = data.data;
         if (data.tambah == 1) {
-          parent.buka_submenu(null, 'Tambah Pembelian Aset',
-            '{{ route('atena.aset.pembelianaset.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+          parent.buka_submenu(null, 'Tambah Penyusutan Aset',
+            '{{ route('atena.aset.penyusutanaset.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
             'fa fa-plus');
         } else {
           $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -201,18 +195,21 @@
       $('#mode').val('hapus');
 
       if (row) {
-        const status = await getStatusTrans(
-          link_api.getStatusTransPembelianAset,
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransPenyusutanAset,
           'Bearer {{ session('TOKEN') }}', {
-            uuidasetbeli: row.uuidasetbeli
+            uuidasetsusut: row.uuidasetsusut
           }
         );
-        if (status == 'I') {
-          var kode = row.kodeasetbeli;
+        if (statusTrans == 'I') {
+          var kode = row.kodeasetsusut;
           const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
           if (isTabOpen) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
-              'warning');
+            $.messager.alert(
+              'Warning',
+              'Harap Tutup Tab Atas Transaksi ' + kode + ', Sebelum Dibatalkan ',
+              'warning'
+            );
           } else {
             get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
               data = data.data;
@@ -233,14 +230,14 @@
       $('#mode').val('batal_cetak');
 
       if (row) {
-        const status = await getStatusTrans(
-          link_api.getStatusTransPembelianAset,
+        const statusTrans = await getStatusTrans(
+          link_api.getStatusTransPenyusutanAset,
           'Bearer {{ session('TOKEN') }}', {
-            uuidasetbeli: row.uuidasetbeli
+            uuidasetsusut: row.uuidasetsusut
           }
         );
-        if (status == 'S') {
-          var kode = row.kodeasetbeli;
+        if (statusTrans == 'S') {
+          var kode = row.kodeasetsusut;
           const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
           if (isTabOpen) {
             $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + kode +
@@ -266,19 +263,18 @@
 
       if (row) {
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', async function(data) {
-          data = data.data;
           if (data.cetak == 0) {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
             return false;
           }
-          const status = await getStatusTrans(
-            link_api.getStatusTransPembelianAset,
+          const statusTrans = await getStatusTrans(
+            link_api.getStatusTransPenyusutanAset,
             'Bearer {{ session('TOKEN') }}', {
-              uuidasetbeli: row.uuidasetbeli
+              uuidasetsusut: row.uuidasetsusut
             }
           );
-          if (status == 'I') {
-            var kode = row.kodeasetbeli;
+          if (statusTrans == 'I') {
+            var kode = row.kodeasetsusut;
             const isTabOpen = parent.check_tab_exist(kode, 'fa fa-pencil');
             if (isTabOpen) {
               $.messager.alert(
@@ -289,14 +285,17 @@
             } else {
               cetak();
             }
-          } else if (status == 'S' || status == 'P') {
+          } else if (statusTrans == 'S' || statusTrans == 'P') {
             const kodemenu = modul_kode['aset'];
             get_akses_user(kodemenu, 'bearer {{ session('TOKEN') }}', async function(data) {
               data = data.data;
               if (data.hakakses == 1) {
                 const doc = await getCetakDocument(
-                  link_api.cetakPembelianAset + row.uuidasetbeli,
-                  '{{ session('TOKEN') }}',
+                  link_api.cetakPenyusutanAset + row.uuidasetsusut,
+                  '{{ session('TOKEN') }}', {
+                    uuidasetsusut: row.uuidasetsusut,
+                    kodeasetsusut: row.kodeasetsusut
+                  }
                 );
                 if (doc) {
                   $("#area_cetak").html(doc);
@@ -323,25 +322,26 @@
       if (row && alasan != "") {
         $.messager.confirm(
           'Confirm',
-          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasetbeli + ' ?',
+          'Anda Yakin Akan Membatalkan Transaksi ' + row.kodeasetsusut + ' ?',
           async function(r) {
             if (r) {
               try {
                 bukaLoader();
                 const response = await fetch(
-                  link_api.batalTransPembelianAset, {
+                  link_api.batalTransPenyusutanAset, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                       'Authorization': 'Bearer {{ session('TOKEN') }}'
                     },
                     body: JSON.stringify({
-                      uuidasetbeli: row.uuidasetbeli,
-                      kodeasetbeli: row.kodeasetbeli,
+                      uuidasetsusut: row.uuidasetsusut,
+                      kodeasetsusut: row.kodeasetsusut,
                       alasan: alasan
                     })
                   }
                 );
+
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
                 }
@@ -353,12 +353,13 @@
                   $.messager.alert('Error', res.message, 'error');
                 }
               } catch (e) {
-                showErrorAlert(e)
+                showErrorAlert(e);
               } finally {
                 tutupLoader();
               }
             }
-          });
+          }
+        );
       } else {
         $.messager.alert('Error', 'Alasan harus diisi', 'error');
       }
@@ -368,21 +369,21 @@
       if (row) {
         $.messager.confirm(
           'Confirm',
-          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasetbeli + ' ?',
+          'Anda Yakin Akan Batal Cetak Transaksi ' + row.kodeasetsusut + ' ?',
           async function(r) {
             if (r) {
               try {
                 bukaLoader();
                 const response = await fetch(
-                  link_api.ubahStatusJadiInputPembelianAset, {
+                  link_api.ubahStatusJadiInputPenyusutanAset, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
                       'Authorization': 'Bearer {{ session('TOKEN') }}'
                     },
                     body: JSON.stringify({
-                      uuidasetbeli: row.uuidasetbeli,
-                      kodeasetbeli: row.kodeasetbeli
+                      uuidasetsusut: row.uuidasetsusut,
+                      kodeasetsusut: row.kodeasetsusut
                     })
                   }
                 );
@@ -398,12 +399,13 @@
                   $.messager.alert('Error', res.message, 'error');
                 }
               } catch (e) {
-                showErrorAlert(e)
+                showErrorAlert(e);
               } finally {
                 tutupLoader();
               }
             }
-          });
+          }
+        );
       }
     }
 
@@ -411,15 +413,15 @@
       try {
         bukaLoader();
         const response = await fetch(
-          link_api.ubahStatusJadiSlipPembelianAset, {
+          link_api.ubahStatusJadiSlipPenyusutanAset, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'Bearer {{ session('TOKEN') }}'
             },
             body: JSON.stringify({
-              uuidasetbeli: row.uuidasetbeli,
-              kodeasetbeli: row.kodeasetbeli
+              uuidasetsusut: row.uuidasetsusut,
+              kodeasetsusut: row.kodeasetsusut
             })
           }
         );
@@ -428,26 +430,30 @@
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
         const res = await response.json();
-        if (res.success) {
-          $.messager.show({
-            title: 'Info',
-            msg: 'Transaksi Sukses Dicetak',
-            showType: 'show'
-          });
-          const doc = await getCetakDocument(
-            link_api.cetakPembelianAset + row.uuidasetbeli,
-            '{{ session('TOKEN') }}'
-          );
-          if (doc) {
-            $("#area_cetak").html(doc);
-            $("#form_cetak").window('open');
-          }
-          reload();
-        } else {
+        if (!res.success) {
           $.messager.alert('Error', res.message, 'error');
+          return;
         }
+
+        $.messager.show({
+          title: 'Info',
+          msg: 'Transaksi Sukses Dicetak',
+          showType: 'show'
+        });
+        const doc = await getCetakDocument(
+          link_api.cetakPenyusutanAset + row.uuidasetsusut,
+          '{{ session('TOKEN') }}', {
+            uuidasetsusut: row.uuidasetsusut,
+            kodeasetsusut: row.kodeasetsusut
+          }
+        );
+        if (doc) {
+          $("#area_cetak").html(doc);
+          $("#form_cetak").window('open');
+        }
+        reload();
       } catch (e) {
-        showErrorAlert(e)
+        showErrorAlert(e);
       } finally {
         tutupLoader();
       }
@@ -466,10 +472,9 @@
         status.push($(this).val());
       });
       status = status.length > 0 ? JSON.stringify(status) : '';
-
       $('#table_data').datagrid('reload', {
         kodetrans: $('#txt_kodetrans_filter').val(),
-        nama: $('#txt_nama_supplier_filter').val(),
+        nama: $('#txt_nama_referensi_filter').val(),
         perusahaan: $('#txt_perusahaan_filter').val(),
         tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
@@ -489,14 +494,11 @@
         pagination: true,
         clientPaging: false,
         pageSize: 20,
-        url: link_api.loadDataGridPembelianAset,
+        url: link_api.loadDataGridPenyusutanAset,
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
           else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
-        },
-        onLoadSuccess: function(data) {
-          $("#table_data").datagrid('unselectAll');
         },
         frozenColumns: [
           [{
@@ -508,64 +510,39 @@
               align: 'center'
             },
             {
-              field: 'uuidasetbeli',
+              field: 'uuidasetsusut',
               hidden: true
             },
             {
-              field: 'kodeasetbeli',
-              title: 'No. Beli Aset',
+              field: 'kodeasetsusut',
+              title: 'No. Penyusutan Aset',
               width: 145,
               sortable: true,
               align: 'center'
             },
             {
-              field: 'uuidlokasi',
+              field: 'tglperiodesusut',
               hidden: true
             },
             {
-              field: 'kodelokasi',
-              hidden: true,
-              title: 'Lokasi',
-              width: 60,
-              sortable: true,
-              align: 'center'
-            },
-            {
-              field: 'namalokasi',
-              title: 'Nama Lokasi',
-              width: 120,
-              sortable: true,
-              align: 'center'
-            },
-            {
-              field: 'uuidsupplier',
+              field: 'txtbulan',
               hidden: true
             },
             {
-              field: 'kodesupplier',
-              title: 'Kd. Supplier',
-              width: 130,
-              sortable: true
+              field: 'txttahun',
+              hidden: true
             },
             {
-              field: 'namasupplier',
-              title: 'Nama Supplier',
-              width: 200,
-              sortable: true
-            }
+              field: 'periodesusut',
+              title: 'Periode Susut',
+              width: 150,
+              sortable: true,
+              align: 'center'
+            },
           ]
         ],
         columns: [
-          [
-            ...(LIHATHARGA == 1 ? [{
-              field: 'grandtotal',
-              title: 'Grand Total',
-              width: 100,
-              sortable: true,
-              formatter: format_amount,
-              align: 'right'
-            }, ] : []),
-            {
+          [{
               field: 'catatan',
               title: 'Catatan',
               width: 450,
@@ -608,59 +585,23 @@
             {
               field: 'status',
               title: 'Status',
-              width: 50,
+              width: 60,
               sortable: true,
               align: 'center'
             },
-            {
-              field: 'closing',
-              title: 'Closing',
-              width: 50,
-              sortable: true,
-              align: 'center'
-            }
           ]
         ],
         onDblClickRow: function(index, data) {
-          const kode = data.kodeasetbeli;
+          const kode = data.kodeasetsusut;
           parent.buka_submenu(null, kode,
-            '{{ route('atena.aset.pembelianaset.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-            data.uuidasetbeli, 'fa fa-pencil');
+            '{{ route('atena.aset.penyusutanaset.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+            data.uuidasetsusut, 'fa fa-pencil');
         },
       });
     }
 
     function reload() {
-      refresh_data();
-    }
-
-    async function loadConfigPembelianAset() {
-      try {
-        const response = await fetch(
-          link_api.loadConfigPembelianAset, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer {{ session('TOKEN') }}'
-            },
-            body: JSON.stringify({
-              kodemenu: '{{ $kodemenu }}'
-            })
-          }
-        );
-
-        if (response.ok) {
-          const res = await response.json();
-          if (!res.success) {
-            throw new Error(res.message);
-          }
-          LIHATHARGA = res.data.LIHATHARGA;
-        } else {
-          throw new Error('Http Error: ' + response.status);
-        }
-      } catch (e) {
-        showErrorAlert(e);
-      }
+      $('#table_data').datagrid('reload');
     }
   </script>
 @endpush

@@ -70,24 +70,29 @@
                       @foreach ($menuLv2['children'] as $menuLv3)
                         @php
                           $menuutama = str_replace(' ', '', $menuLv1['namamenu']);
-                          $link =
+                          $link = strtolower(
                               url('') .
-                              '/' .
-                              $menuLv3['namamodul'] .
-                              '/' .
-                              $menuutama .
-                              '/' .
-                              str_replace(' ', '', $menuLv2['namamenu']) .
-                              '/' .
-                              $menuLv3['namaclass'] .
-                              '?kode=' .
-                              $menuLv3['kodemenu'] .
-                              '&kodeinduk=' .
-                              $menuLv1['kodemenu'] .
-                              '&kodelaporan=' .
-                              $menuLv2['kodemenu'] .
-                              '&jenis=' .
-                              $menuLv3['jenis'];
+                                  '/' .
+                                  $menuLv3['namamodul'] .
+                                  '/' .
+                                  $menuutama .
+                                  '/' .
+                                  str_replace(' ', '', $menuLv2['namamenu']) .
+                                  '/' .
+                                  $menuLv3['namaclass'] .
+                                  '?kode=' .
+                                  $menuLv3['kodemenu'] .
+                                  '&kodeinduk=' .
+                                  $menuLv1['kodemenu'] .
+                                  '&kodelaporan=' .
+                                  $menuLv2['kodemenu'] .
+                                  '&jenis=' .
+                                  $menuLv3['jenis'] .
+                                  '&menu=' .
+                                  $menuLv3['namainduk'] .
+                                  ' ' .
+                                  $menuLv3['namamenu'],
+                          );
                         @endphp
 
                         <a href="#" id="linkLaporan" class="Links"
@@ -160,7 +165,9 @@
                                 '&kodeinduk=' .
                                 $menuLv1['kodemenu'] .
                                 '&jenis=' .
-                                $menuLv3['jenis'],
+                                $menuLv3['jenis'] .
+                                '&menu=' .
+                                $menuLv1['namamenu'],
                         );
                       @endphp
                       <li class="submenuListItems">
@@ -301,25 +308,20 @@
       <!-- DATA USER DARI QUERY -->
       <table style="padding:2px" border="0">
         <tr>
-          <td align="right" id="label_form" style="width:100px">User ID</td>
+          <td align="right" id="label_form" style="width:100px">Nama User </td>
           <td>
-            <input name="userid_profile" id="USERID_PROFILE" style="width:150px" class="label_input"
-              data-options="fontTransform:'normal',prompt:''">
+            <input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
+              validType='length[0,50]'>
           </td>
           <td>&nbsp;</td>
-          <td rowspan="12" style="width:130px" valign="top" align="center">
-            <div style="width:160px; height:160px; ">
+          <td rowspan="11" style="width:130px" valign="top" align="center">
+            <div style="width:140px; height:140px; ">
               <img id="preview-image-profile" src=""
                 style="width:100%; height:100%; object-fit: cover; object-position: 50% 0%;" />
             </div>
             <input id="FILEGAMBAR_PROFILE" name="filegambar_profile" class="easyui-filebox"
-              data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:160px">
+              data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:140px">
           </td>
-        </tr>
-        <tr>
-          <td align="right" id="label_form">Nama User </td>
-          <td><input name="username_profile" id="USERNAME_PROFILE" style="width:150px" class="label_input"
-              validType='length[0,50]'></td>
         </tr>
         <tr>
           <td align="right" id="label_form">Email </td>
@@ -401,6 +403,26 @@
     </table>
   </div>
 
+  <form method='post' id="form_input">
+    <input type="hidden" name="jwt_token" id="jwt_token" value="{{ session('TOKEN') }}">
+    <input type="hidden" name="excel">
+    <input type="hidden" name="kode">
+    <input type="hidden" name="filename">
+    <input type="hidden" name="status">
+    <input type="hidden" name="data_filter">
+    <input type="hidden" name="data_tampil">
+    <input type="hidden" name="harga">
+    <input type="hidden" name="uuidcustomer">
+    <input type="hidden" name="uuidtipecustomer">
+    <input type="hidden" name="uuidlokasi_hargajual">
+    <input type="hidden" name="satuanbarcode">
+    <input type="hidden" name="jenis">
+    <input type="hidden" name="jenistampilan">
+    <input type="hidden" name="jenishargabeli">
+    <input type="hidden" name="jeniscetakharga">
+    <input type="hidden" name="barcode">
+  </form>
+
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
 
@@ -410,6 +432,7 @@
   <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
   <script>
     var counter = 0;
+    let counterLaporan = {};
 
     $("#lbl-user-login").click(function(e) {
       e.preventDefault();
@@ -734,6 +757,100 @@
         }
       });
     })
+
+    function getCounterTerbesar(tabTitle) {
+      let maxCounter = 0;
+      const allTabs = $('#tab_menu').tabs('tabs');
+      allTabs.forEach(tab => {
+        const tabOptions = tab.panel('options');
+        const title = tabOptions.title;
+        if (title.startsWith(tabTitle + ' #')) {
+          const match = title.match(/#(\d+)/);
+          if (match && match[1]) {
+            const currentCounter = parseInt(match[1], 10);
+            if (currentCounter > maxCounter) {
+              maxCounter = currentCounter;
+            }
+          }
+        }
+      });
+      return maxCounter;
+    }
+
+    function buka_laporan(url, payload) {
+      const $form = $('#form_input');
+      $form.attr('action', url);
+      $form.form('load', payload);
+      if (payload.excel == 'ya') {
+        $form.attr('target', '_blank');
+        $form.submit();
+        return;
+      }
+      counter++;
+      var tab_title = payload.filename;
+      const counterTerbesar = getCounterTerbesar(tab_title);
+      var newLapCounter = counterTerbesar + 1;
+      counterLaporan[tab_title] = newLapCounter;
+      var tab_name = `${tab_title} #${newLapCounter}`;
+
+      $form.attr('target', tab_name);
+
+      const loadingId = 'loading_' + tab_name.replaceAll(" ", "");
+
+      const svgSpinnerHtml = `
+        <div id="${loadingId}" class="mask-loader-container" style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+            <svg class="loader-spinner" width="65px" height="65px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+              <circle class="loader-path" fill="none" stroke-width="6" stroke-linecap="round" cx="33" cy="33"
+                r="30"></circle>
+            </svg>
+        </div>
+        `;
+
+      const iframeHtml = `
+        <iframe frameborder="0"
+                id="${tab_name}"
+                name="${tab_name}"
+                width="100%" height="100%"
+                src="#"
+                style="display: none;"
+                onload="document.getElementById('${loadingId}').style.display='none'; this.style.display='block';">
+        </iframe>
+        `;
+
+      const tabContent = svgSpinnerHtml + iframeHtml;
+
+      $('#tab_menu').tabs('add', {
+        id: counter,
+        title: tab_name,
+        content: tabContent,
+        closable: true,
+        tools: [{
+          iconCls: 'icon-print',
+          handler: function() {
+            $(`[name="${tab_name}"]`)[0].contentWindow.postMessage('cetak', '*');
+          }
+        }]
+      });
+
+      $form.submit();
+    }
+
+    window.addEventListener("message", (event) => {
+      try {
+        const res = JSON.parse(event.data);
+        if (res.action == 'bukamenu') {
+          bukaMenu(res.options);
+        }
+      } catch (e) {}
+    });
+
+    function bukaMenu(options) {
+      const map = {
+        'master_customer': `{{ route('atena.master.customer.form') }}?${options.query_param}`,
+      }
+
+      buka_submenu(null, options.title, map[options.menu], 'fa fa-pencil');
+    }
   </script>
   <!--Start of Tawk.to Script-->
   {{-- <script type="text/javascript">
