@@ -191,6 +191,7 @@ var link_api = {
     loadDataGridNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-grid`,
     simpanNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/simpan`,
     loadLokasiNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/load-data-lokasi`,
+    browseNonTunai: `${base_url_api}atena/master/alat-bayar-non-tunai/browse`,
     //alat bayar
     simpanAlatBayar: `${base_url_api}atena/master/alatbayar/simpan`,
     setUrutanAlatBayar: `${base_url_api}atena/master/alatbayar/set-urutan`,
@@ -548,6 +549,7 @@ var link_api = {
     ubahStatusjadiSlipKas: `${base_url_api}atena/akuntansi/kas/ubah-status-jadi-slip`,
     cetakTransaksiKas: `${base_url_api}atena/akuntansi/kas/cetak/`,
     getStatusTransaksiKas: `${base_url_api}atena/akuntansi/kas/get-status-trans`,
+    browseKasPelunasan: `${base_url_api}atena/akuntansi/kas/browse-for-pelunasan`,
     // simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan`,
     //Saldo Awal Perkiraan
     loadDataGridSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-grid`,
@@ -865,6 +867,14 @@ var link_api = {
     ubahStatusJadiSlipPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-slip`,
     hitungPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/hitung-aset`,
     simpanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/simpan`,
+    // SETORAN PENJUALAN PER KASIR
+    simpanSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan`,
+    tampilDataSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data`,
+    cekSudahPostingSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/cek-sudah-posting`,
+    tampilDataSetoranSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-setoran`,
+    hapusSetoranSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/hapus-setoran`,
+    simpanDetailSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan-detail-setoran`,
+    tampilDataNonTunaiSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-non-tunai`
 };
 
 var modul_kode = {

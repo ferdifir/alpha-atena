@@ -21,9 +21,9 @@
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
                     <tr><td id="label_form" align="center">Tgl. Transaksi</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date"/></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px"/></td></tr>
                     <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date"/></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px"/></td></tr>
                     <tr><td id="label_form"><br></td></tr>
                     <tr><td id="label_form" align="center">No. Transaksi</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
@@ -152,7 +152,7 @@ function before_edit() {
             var row = $('#table_data').datagrid('getSelected');
             parent.buka_submenu(null, row.kodecreditnote,
                 '{{ route('atena.keuangan.credit_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.kodecreditnote,
+                row.uuidcreditnote,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');

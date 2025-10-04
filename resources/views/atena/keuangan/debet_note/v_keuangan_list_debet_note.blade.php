@@ -150,7 +150,7 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.uuiddebetnote,
+            parent.buka_submenu(null, row.kodedebetnote,
                 '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                 row.uuiddebetnote,
                 'fa fa-pencil');
@@ -198,7 +198,7 @@ async function batal_trans() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransaksiKas;
+                        let url = link_api.batalDebetNote;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -207,7 +207,7 @@ async function batal_trans() {
                             },
                             body: JSON.stringify({
                                 uuiddebetnote: row.uuiddebetnote,
-                                kodekas: row.kodekas,
+                                kodedebetnote: row.kodedebetnote,
                                 alasan: alasan,
                             }),
                         }).then(response => {

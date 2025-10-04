@@ -3,14 +3,12 @@
 @section('content')
 <div id="form_input" class="easyui-layout" fit="true">
 	<div data-options="region:'center',border:false">
-		<script>
-			if(screen.height < 450) $("#trans_layout").css('height',"450px");
-		</script>
+		
 		<div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;" ></div>
 		
 		<input type="hidden" id="mode" name="mode">
-		<input type="hidden" id="IDPELUNASAN" name="idpelunasan">
-		<input type="hidden" id="IDGIRO" name="idgiro">
+		<input type="hidden" id="IDPELUNASAN" name="uuidpelunasan">
+		<input type="hidden" id="IDGIRO" name="uuidgiro">
 
 		<input type="hidden" id="data_detail" name="data_detail">
 		<input type="hidden" id="data_detail_perkiraan" name="data_detail_perkiraan">
@@ -32,7 +30,7 @@
 											<tr>
 												<td id="label_form">Lokasi</td>
 												<td id="label_form">
-													<input name="idlokasi" id="IDLOKASI" style="width:190px">
+													<input name="uuidlokasi" id="IDLOKASI" style="width:190px">
 													<input type="hidden" id="KODELOKASI" name="kodelokasi">
 												</td>
 											</tr>
@@ -49,7 +47,7 @@
 										<table border="0">
 											<tr>
 												<td id="label_form" align="left">Kode Akun</td>
-												<td><input id="IDPERKIRAANKAS" name="idperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
+												<td><input id="IDPERKIRAANKAS" name="uuidperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
 											</tr>
 											<tr>
 												<td id="label_form"></td>
@@ -79,7 +77,7 @@
 										<table border="0">
 											<tr>
 												<td id="label_form" align="left">Kodetrans</td>
-												<td><input id="IDKAS" class="label_input" name="idkas" style="width:180px"></td>
+												<td><input id="IDKAS" class="label_input" name="uuidkas" style="width:180px"></td>
 											</tr>
 											<tr>
 												<td id="label_form" align="left">No Giro</td>
@@ -142,13 +140,13 @@
 									<input type="radio" id="TIDAKPAKAITT" onchange="ubahPakaiTT(0)" value="0" name="pakaitt"> Tidak
 									<input type="radio" id="PAKAITT" onchange="ubahPakaiTT(1)" name="pakaitt" value="1"> Ya
 									<label style="margin-left: 20px" id="label_form" align="left">No TT</label>
-									<input name="idtandaterima" id="IDTANDATERIMA" style="width:150px;">
+									<input name="uuidtandaterima" id="IDTANDATERIMA" style="width:150px;">
 								</td>
 							</tr>
 							<tr>
 								<td id="label_form">Supplier</td>
 								<td>
-									<input name="idsupplier" id="IDSUPPLIER" style="width:230px">
+									<input name="uuidsupplier" id="IDSUPPLIER" style="width:230px">
 								</td>
 							</tr>
 						</table>
@@ -183,26 +181,25 @@
 <script src="{{ asset('assets/js/utils.js') }}"></script>
 <script src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
 <script>
-var mode_load_data = false;
-var cekbtnsimpan = true; //CEK APAKAH TOMBOL SIMPAN BISA DITEKAN ATAU BELUM (SUPAYA TIDAK TERKLIK 2x)
-var flag_get_jurnal = false // jika false maka ger_jurnal_link belum selesai loading, sehingga tidak bisa simpan
-var idtrans = "";
-var row = {};
+var mode_load_data  = false;
+var cekbtnsimpan    = true;   //CEK APAKAH TOMBOL SIMPAN BISA DITEKAN ATAU BELUM (SUPAYA TIDAK TERKLIK 2x)
+var flag_get_jurnal = false   // jika false maka ger_jurnal_link belum selesai loading, sehingga tidak bisa simpan
+var idtrans         = "";
+var row             = {};
 var ayatsilang;
 $(document).ready(async function(){
 
   await getConfigMenu()
 
-  await get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
-        var UT = data.data.cetak;
-		aksesubah = data.data.ubah;
-		if (UT == 1) {
+  //TAMBAH CHECK AKSES CETAK
+	get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
+		var UT = data.data.cetak;
+		if (UT == 1){
 			$('#simpan_cetak').css('filter', '');
 		} else {
-			$('#simpan_cetak').css('filter', 'grayscale(100%)');
-			$('#simpan_cetak').removeAttr('onclick');
+			$('#simpan_cetak').css('filter', 'grayscale(100%)');$('#simpan_cetak').removeAttr('onclick');
 		}
-    },false);
+	})
 	
 	$("#form_cetak").window({
 		collapsible: false,
@@ -246,11 +243,11 @@ $(document).ready(async function(){
     });
 	
 	browse_data_lokasi('#IDLOKASI');
-	browse_data_referensi('#IDSUPPLIER');
+	await browse_data_referensi('#IDSUPPLIER');
 	browse_data_kas_bank('#IDPERKIRAANKAS');
 	browse_data_currency('#IDCURRENCY');
 	browse_no_kas('#IDKAS');
-	browse_no_tt('#IDTANDATERIMA');
+	await browse_no_tt('#IDTANDATERIMA');
 
 	$('#TGLTRANS').datebox('readonly', ayatsilang==1 ? 'true' : 'false');
 	
@@ -392,11 +389,25 @@ function ubahPakaiTT(pakai) {
 async function ubah() {
 	$('#mode').val('ubah');
 	$('#SAMAKANDEBETKREDIT').prop("checked",true);
+
+	const response = await fetchData(
+		'{{ session('TOKEN') }}',
+		link_api.loadDataHeaderPelunasanHutang, {
+		uuidpelunasan: '{{ $data }}'
+		}
+	);
+	if(response.success) {
+		row = response.data;
+	} else {
+		$.messager.alert('Error', res.message, 'error');
+	}
+
 	if (row) {
-		get_akses_user('<?= $kodemenu ?>', async function(data) {
-			var UT = data.ubah;
-			get_status_trans("atena/Keuangan/Transaksi/PelunasanHutang",row.idpelunasan, async function(data) {
-				if (UT == 1 && data.status == 'I') {
+		get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
+			var UT = data.data.ubah;
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/pelunasan-hutang", "uuidpelunasan", row.uuidpelunasan, async function(data) {
+				$(".form_status").html(status_transaksi(data.data.status));
+				if (UT == 1 && data.data.status == 'I') {
 					$('#btn_simpan_modal').css('filter', '');
 					$('#mode').val('ubah');
 				} else {
@@ -407,26 +418,26 @@ async function ubah() {
 
 				flag_get_jurnal = true;
 
-				if (row.idmemo != '') {
+				if (row.uuidmemo != '') {
 					$('#IDKAS').combogrid('setValue', row.kodememo)
 				} else {
 					$('#IDKAS').combogrid('setValue', row.kodekas)
 				}
 
-				if (row.idtandaterima == null || row.idtandaterima == 0) {
+				if (row.uuidtandaterima == null || row.uuidtandaterima == 0) {
 					ubahPakaiTT(0);
 					$('#TIDAKPAKAITT').prop('checked', true);
 				}
 				else {
 					$('#PAKAITT').prop('checked', true);
 					$('#IDTANDATERIMA').combogrid('setValue', {
-						idtandaterima: row.idtandaterima,
+						uuidtandaterima: row.uuidtandaterima,
 						kodetandaterima: row.kodetandaterima
 					});
 				}
 
 				$('#IDLOKASI').combogrid('setValue', {
-					id: row.idlokasi,
+					uuidlokasi: row.uuidlokasi,
 					nama: row.namalokasi
 				});
 
@@ -438,12 +449,12 @@ async function ubah() {
 
 				$('#AMOUNTKAS').numberbox('setValue', row.total)
 				// console.log(row)
-				await load_data(row.idpelunasan, row.kodepelunasan);
+				await load_data(row.uuidpelunasan, row.kodepelunasan);
 				$('#IDTANDATERIMA').combogrid('readonly');
-				
-				$('#IDSUPPLIER').combogrid('setValue', {id:row.idsupplier, nama:row.namasupplier});
-
 				$('#IDSUPPLIER').combogrid('readonly');
+				
+				$('#IDSUPPLIER').combogrid('setValue', {uuidsupplier:row.uuidsupplier, nama:row.namasupplier});
+
 
 				$('#lbl_kasir').html(row.userbuat);
 				$('#lbl_tanggal').html(row.tglentry);
@@ -481,73 +492,69 @@ async function simpan(jenis_simpan) {
 
 	if (cekbtnsimpan && isValid && (mode == 'tambah' || mode == 'ubah')) {
 		cekbtnsimpan = false;
-		validasi_session(function () {
-			var adaTrans = false;
+		tampilLoaderSimpan();
 
-			if (mode == 'ubah') {
-				$.ajax({
-					type    : 'POST',
-					dataType: 'json',
-					url     : base_url+'Home/cekTanggalJamInput',
-					data	: {id:row.idpelunasan,table:"pelunasanhutang",whereid:"idpelunasan",tgl:row.tglentry,status:row.status},
-					async	: false,
-					success: function(msg){
-						cekbtnsimpan = true;
-						if(!msg.success)
-						{
-							var errorMsg = 'Sudah Terdapat Perubahan Data Atas Transaksi Ini Yang Dilakukan Pada Tanggal '+msg.tgl+' / '+msg.jam+'.<br>Transaksi Tidak Dapat Disimpan.';
-							$.messager.alert('Warning', errorMsg, 'warning');
-							adaTrans = true;
-						}
-					}
-				});
-			}
+		try {
+            let headers = {
+                'Authorization': 'bearer {{ session('TOKEN') }}',
+                'Content-Type': 'application/json'
+            };
 
-			cek_tanggal_tutup_periode($('#TGLTRANS').datebox('getValue'), 1, function (data) {
-				cekbtnsimpan = true;
-				if (!data.success) {
-					var kode = row.kodepelunasan ? row.kodepelunasan : 'ini';
+            var requestBody = {};
 
-					$.messager.alert('Error', 'Sudah dilakukan tutup periode pada tanggal transaksi untuk no ' + kode + '. Prosedur tidak dapat dilanjutkan', 'error');
+            $('#form_input :input').each(function() {
+                if (this.name) {
+                    requestBody[this.name] = $(this).val();
+                }
+            });
 
-					adaTrans = true;
-				}
-			});
+            requestBody.data_detail           = $('#table_data_detail').datagrid('getChecked');
+            requestBody.data_detail_perkiraan = $('#table_data_perkiraan').datagrid('getRows');
 
-			if (!adaTrans) {
-				$.ajax({
-					type	: 'POST',
-					url		: base_url+"atena/Keuangan/Transaksi/PelunasanHutang/simpan/"+jenis_simpan,
-					data    : "act=simpan_trans&"+dataheader,
-					cache	: false,
-					dataType: 'json',
-					beforeSend : function() {
-						$.messager.progress();
-					},
-					success: function(msg) {
-						$.messager.progress('close');
-						cekbtnsimpan = true;
-						if (msg.success) {
-			
-							$('#form_input').form('clear');
-							$.messager.show({
-									title   : 'Info',
-									msg     : 'Transaksi Sukses',
-									showType: 'show'
-								});
-							tambah();
-							parent.reload();
-							if(jenis_simpan == 'simpan_cetak'){
-								cetak(msg.id,msg.kode);
-							}
+            requestBody.jenis_simpan = jenis_simpan;
 
-						} else {
-							$.messager.alert('Error', msg.errorMsg, 'error');
-						}
-					}
-				});
-			}
-		});
+            let url = link_api.simpanPelunasanHutang;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(requestBody)
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+                }
+                return response.json();
+            });
+
+            if (response.success) {
+                $('#form_input').form('clear');
+
+                $.messager.show({
+                    title: 'Info',
+                    msg: 'Transaksi Sukses',
+                    showType: 'show'
+                });
+
+                if (mode == "tambah") {
+                    await tambah();
+                    $('#table_data_detail').datagrid('loadData', []);
+                } else {
+                    await ubah();
+                }
+
+                if (jenis_simpan == 'simpan_cetak') {
+                    await cetak(response.data.uuidpelunasan);
+                }
+            } else {
+                $.messager.alert('Error', response.message, 'error');
+            }
+
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+
+        cekbtnsimpan = true;
+        tutupLoaderSimpan();
 	}
 }
 
@@ -575,47 +582,48 @@ async function get_jurnal() {
 
 	$('#CATATAN').textbox('setValue', 'PELUNASAN HUTANG KE ' + namasupplier);
 
-	$.ajax({
-		type	: 'POST',
-		dataType: 'json',
-		url		: base_url + "atena/Keuangan/Transaksi/PelunasanHutang/getJurnalLink",
-		data	: {
-			data_detail  : JSON.stringify(rows),
-			kodekasbank  : $('#IDKAS').combogrid('getValue'),
-			kodepelunasan: $("#KODEPELUNASAN").val(),
-			mode         : $("#mode").val()
-		},
-		cache   : false,
-		beforeSend: function () {
-			$.messager.progress();
-		},
-		success : function(msg) {
-			$.messager.progress('close');
+	if(rows.length == 0)
+		return
 
-			if (msg.success) {
-				flag_get_jurnal = true;
-				$('#table_data_perkiraan').datagrid('loadData', msg.data_detail);
+	try {
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.getJurnalLinkPelunasanHutang, {
+				data_detail  : rows,
+				kodekasbank  : $('#IDKAS').combogrid('getValue'),
+				kodepelunasan: $("#KODEPELUNASAN").val(),
+				mode         : $("#mode").val()
 			}
+		);
+		if(response.success) {
+			flag_get_jurnal = true;
+			var msg = response.data
+			$('#table_data_perkiraan').datagrid('loadData', msg);
+		} else {
+			$.messager.alert('Error', response.message, 'error');
 		}
-	});
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+	}
 }
 
-async function load_data(idtrans, kodetrans) {
-	$.ajax({
-		type	: 'POST',
-		dataType: 'json',
-		url		: base_url+"atena/Keuangan/Transaksi/PelunasanHutang/loadData",
-		data	: {idtrans: idtrans, kodetrans: kodetrans},
-		cache	: false,
-		beforeSend : function() {
-			// $.messager.progress();
-		},
-		success: function(msg) {
-			// $.messager.progress('close');
+async function load_data(uuidpelunasan, kodepelunasan) {
+	try {
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.loadDataPelunasanHutang, {
+				uuidpelunasan: uuidpelunasan,
+				kodepelunasan: kodepelunasan
+			}
+		);
+		if(response.success) {
+			var msg = response.data
 			if (msg.kasbank) {
 				var data = msg.kasbank;
 
-				$('#IDPERKIRAANKAS').combogrid('setValue', {id:data.idperkiraan, kode:data.kodeperkiraan});
+				$('#IDPERKIRAANKAS').combogrid('setValue', {uuidperkiraan:data.uuidperkiraan, kode:data.kodeperkiraan});
 				$('#IDCURRENCY').combogrid('setValue', data.uuidcurrency);
 				$('#NAMAPERKIRAANKAS').textbox('setValue', data.namaperkiraan);
 				///$('#KETERANGAN').textbox('setValue', data.KETERANGAN);
@@ -640,9 +648,14 @@ async function load_data(idtrans, kodetrans) {
 			$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').attr('disabled', 'disabled');
 			$('#table_data_detail').datagrid('getPanel').find('div.datagrid-body input[type=checkbox]').attr('disabled', 'disabled');
 			mode_load_data = false;
-
+		} else {
+			$.messager.alert('Error', res.message, 'error');
 		}
-	});
+	} catch (e) {
+		const error = typeof e === "string" ? e : e.message;
+        const textError = getTextError(error);
+        $.messager.alert('Error', textError, 'error');
+	}
 }
 
 /* ================== FUNGSI-FUNGSI YG BERHUBUNGAN DG JQUERYEASY UI ======================= */
@@ -668,7 +681,7 @@ function browse_data_lokasi(id) {
 	});
 }
 
-function browse_data_referensi(id) {
+async function browse_data_referensi(id) {
 	$(id).combogrid({
 		panelWidth: 750,
 		required  : true,
@@ -683,16 +696,19 @@ function browse_data_referensi(id) {
 			{field:'kota',title:'Kota',width:100, sortable:true},
 			{field:'telp',title:'Telp',width:100, sortable:true},
 		]],
-		onChange:function(newVal, oldVal){
+		onChange: async function(newVal, oldVal){
 			if ($('#mode').val() != '') {
-				reset_detail();
+				// reset_d
+				// etail();
 				var row = $(this).combogrid('grid').datagrid('getSelected');
-				if (row) {
-					$("#IDTANDATERIMA").combogrid('clear').combogrid('grid').datagrid('load', {idsupplier: row.id});
-					if ($('#TIDAKPAKAITT').prop('checked') && $('#mode').val() == 'tambah') {
-						var idlokasi = $('#IDLOKASI').combogrid('getValue');
+				console.log(row)
 
-						if ($('#PAKAIFILTERLOKASI').prop('checked') && idlokasi == '') {
+				if (row) {
+					$("#IDTANDATERIMA").combogrid('clear').combogrid('grid').datagrid('load', {uuidsupplier: row.uuidsupplier});
+					if ($('#TIDAKPAKAITT').prop('checked') && $('#mode').val() == 'tambah') {
+						var uuidlokasi = $('#IDLOKASI').combogrid('getValue');
+
+						if ($('#PAKAIFILTERLOKASI').prop('checked') && uuidlokasi == '') {
 							$.messager.alert('Peringatan', 'Lokasi Belum Dipilih', 'warning');
 
 							$('#IDLOKASI').combogrid('clear');
@@ -700,35 +716,36 @@ function browse_data_referensi(id) {
 							return false;
 						}
 
-						$.ajax({
-							type    : 'POST',
-							url     : link_api.loadHutangPelunasanHutang,
-							data    : {
-								idtrans   : null,
-								idsupplier: row.id,
-								pakaifilterlokasi: $('#PAKAIFILTERLOKASI').prop('checked') ? 1 : 0,
-								idlokasi: idlokasi
-							},
-							cache   : false,
-							dataType: 'json',
-							beforeSend: function(xhr) {
-								$.messager.progress();
-							},
-							success: function(msg) {
-								$.messager.progress('close')
-								if (msg.success) {
-									$('#table_data_detail').datagrid('loadData', msg.data_detail);
-									// menghapus atribut disabled pada checkbox agar user bisa
-									// memilih hutang yang ingin dilunasi
-									$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').removeAttr('disabled');
-									$('#table_data_detail').datagrid('getPanel').find('div.datagrid-body input[type=checkbox]').removeAttr('disabled');
-
-									// mengubah checkOnSelect menjadi true
-									$('#table_data_detail').datagrid('options').checkOnSelect = true
-									get_jurnal();
+						try {
+							const response = await fetchData(
+								'{{ session('TOKEN') }}',
+								link_api.loadHutangPelunasanHutang, {
+									uuidtandaterima  : null,
+									uuidsupplier       : row.uuidsupplier,
+									pakaifilterlokasi: $('#PAKAIFILTERLOKASI').prop('checked') ? 1: 0,
+									uuidlokasi         : uuidlokasi
 								}
+							);
+
+							if(response.success) {
+								var msg = response.data
+								$('#table_data_detail').datagrid('loadData', msg);
+								// menghapus atribut disabled pada checkbox agar user bisa
+								// memilih hutang yang ingin dilunasi
+								$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').removeAttr('disabled');
+								$('#table_data_detail').datagrid('getPanel').find('div.datagrid-body input[type=checkbox]').removeAttr('disabled');
+
+								// mengubah checkOnSelect menjadi true
+								$('#table_data_detail').datagrid('options').checkOnSelect = true
+								await get_jurnal();
+							} else {
+								$.messager.alert('Error', response.message, 'error');
 							}
-						});
+						} catch (e) {
+							const error = typeof e === "string" ? e : e.message;
+							const textError = getTextError(error);
+							$.messager.alert('Error', textError, 'error');
+						}
 					}
 				}
 			}
@@ -736,11 +753,11 @@ function browse_data_referensi(id) {
 	});
 }
 
-function browse_no_kas(id) {
+async function browse_no_kas(id) {
 	$(id).combogrid({
 		panelWidth: 800,
 		url       : link_api.browseTandaTerimaPelunasan,
-		idField   : 'idkas',
+		idField   : 'uuidkas',
 		textField : 'kodekas',
 		mode      : 'remote',
 		columns   : [[
@@ -752,7 +769,7 @@ function browse_no_kas(id) {
 			{field:'keterangan',title:'Keterangan',width:250, sortable:true},
 			{field:'userbuat',title:'User Entry',width:110, sortable:true},
 		]],
-		onChange: function(newVal, oldVal) {
+		onChange: async function(newVal, oldVal) {
 			if ($('#mode').val() != '') {
 				var row = $(id).combogrid('grid').datagrid('getSelected');
 				if (row) {
@@ -766,17 +783,17 @@ function browse_no_kas(id) {
 					$('#IDGIRO').val('');
 					$('#TGLTRANS').datebox('setValue', date_format());
 				}
-				get_jurnal();
+				await get_jurnal();
 			}
 		}
 	});
 }
 
-function browse_no_tt(id) {
+async function browse_no_tt(id) {
 	$(id).combogrid({
 		panelWidth: 630,
 		url       : link_api.browseTandaTerimaPelunasan,
-		idField   : 'idtandaterima',
+		idField   : 'uuidtandaterima',
 		textField : 'kodetandaterima',
 		required  : true,
 		queryParams: {
@@ -795,36 +812,40 @@ function browse_no_tt(id) {
 			{field:'amount',title:'Nominal',width:100, align:'right', formatter:format_amount, sortable:true},
 			{field:'userbuat',title:'User Entry',width:110, sortable:true},
 		]],
-		onChange: function(newVal, oldVal) {
+		onChange: async function(newVal, oldVal) {
 			if ($('#mode').val() != '') {
 				var row = $(id).combogrid('grid').datagrid('getSelected');
 				if (row) {
-					$.ajax({
-						type    : 'POST',
-						url     : base_url+"atena/Keuangan/Transaksi/PelunasanHutang/getHutang",
-						data    : {idtrans: row.idtandaterima},
-						cache   : false,
-						dataType: 'json',
-						success: function(msg) {
-							if (msg.success) {
-								$('#table_data_detail').datagrid('loadData', msg.data_detail);
-
-								// secara default seluruh hutang di check
-								$('#table_data_detail').datagrid('checkAll')
-
-								// agar tidak bisa menghilangkan check pada checkbox
-								$('#table_data_detail').datagrid('options').checkOnSelect = false
-
-								// membuat checkbox menjadi disabled
-								$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').attr('disabled','disabled');
-								$('#table_data_detail').datagrid('getPanel').find('div.datagrid-body input[type=checkbox]').attr('disabled','disabled');
-								get_jurnal();
+					try {
+						const response = await fetchData(
+							'{{ session('TOKEN') }}',
+							link_api.loadHutangPelunasanHutang, {
+								uuidtandaterima  : row.uuidtandaterima,
 							}
+						);
+						if(response.success) {
+							var msg = response.data
+							// secara default seluruh hutang di check
+							$('#table_data_detail').datagrid('checkAll')
+
+							// agar tidak bisa menghilangkan check pada checkbox
+							$('#table_data_detail').datagrid('options').checkOnSelect = false
+
+							// membuat checkbox menjadi disabled
+							$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').attr('disabled','disabled');
+							$('#table_data_detail').datagrid('getPanel').find('div.datagrid-body input[type=checkbox]').attr('disabled','disabled');
+							await get_jurnal();
+						} else {
+							$.messager.alert('Error', response.message, 'error');
 						}
-					});
+					} catch (e) {
+						const error = typeof e === "string" ? e : e.message;
+						const textError = getTextError(error);
+						$.messager.alert('Error', textError, 'error');
+					}
 				} else {
 					reset_detail()
-					get_jurnal();
+					await get_jurnal();
 				}
 			}
 		}
@@ -840,7 +861,7 @@ function browse_data_kas_bank(id) {
 			jenis: 'kas_bank_hutang',
 			aktif: 1
 		},
-		idField   : 'id',
+		idField   : 'uuidperkiraan',
 		textField : 'kode',
 		mode      : 'remote',
 		required  : true,
@@ -855,7 +876,7 @@ function browse_data_kas_bank(id) {
 				var data_perkiraan = $('#table_data_perkiraan').datagrid('getRows');
 
 				for (var i = 0; i < data_perkiraan.length; i++) {
-					if (data_perkiraan[i].idperkiraan == row.id) {
+					if (data_perkiraan[i].idperkiraan == row.uuidperkiraan) {
 						$.messager.show({
 							title  : 'Warning',
 							msg	   : 'Perkiraan Yang Diinput Tidak Boleh Sama Dengan Header',
@@ -937,7 +958,7 @@ function buat_table_detail() {
 		onLoadSuccess: function(data) {
 			reload_footer();
 		},
-		onCheckAll: function(rows) {
+		onCheckAll: async function(rows) {
 			if (mode_load_data) {
 				return false;
 			}
@@ -951,11 +972,11 @@ function buat_table_detail() {
 						}
 					});
 				}
-				get_jurnal();
+				await get_jurnal();
 			}
 			reload_footer();
 		},
-		onUncheckAll: function(rows) {
+		onUncheckAll: async function(rows) {
 			if (mode_load_data) {
 				return false;
 			}
@@ -970,11 +991,11 @@ function buat_table_detail() {
 						}
 					});
 				}
-				get_jurnal();
+				await get_jurnal();
 			}
 			reload_footer();
 		},
-		onCheck:function(index, row){
+		onCheck: async function(index, row){
 			if (mode_load_data) {
 				return false;
 			}
@@ -986,9 +1007,9 @@ function buat_table_detail() {
 				}
 			});
 			reload_footer();
-			get_jurnal();
+			await get_jurnal();
 		},
-		onUncheck:function(index, row){
+		onUncheck: async function(index, row){
 			if (mode_load_data) {
 				return false;
 			}
@@ -1000,7 +1021,7 @@ function buat_table_detail() {
 				}
 			});
 			reload_footer();
-			get_jurnal();
+			await get_jurnal();
 		},
 		onCellEdit: function(index, field, val) {
 			// pilih yang tercentang
@@ -1016,7 +1037,7 @@ function buat_table_detail() {
 				}
 			}
 		},
-		onAfterEdit:function(index, row, changes) {
+		onAfterEdit: async function(index, row, changes) {
 			if (changes.pelunasan) {
 				var msg 	  = '';
 				var sisa	  = parseFloat(row.sisa);
@@ -1044,7 +1065,7 @@ function buat_table_detail() {
 				}
 			}
 			reload_footer();
-			get_jurnal();
+			await get_jurnal();
 			hitung_debet_kredit();
 		}
 	}).datagrid('enableCellEditing');
@@ -1356,6 +1377,14 @@ async function getConfigMenu() {
 	if (res.success) {
     // AYAT SILANG
     ayatsilang = res.data.AYATSILANG
+
+		if(ayatsilang == 0) {
+			$('.ayatsilang0').show()
+			$('.ayatsilang1').hide()
+		}else{
+			$('.ayatsilang1').show()
+			$('.ayatsilang0').hide()
+		}
 
     // KODE
 		if (res.data.KODE == "AUTO") {

@@ -6,10 +6,13 @@
 		<div class="easyui-layout" fit="true" >
 			<div data-options="region:'center',border:false ">
 				<div class="easyui-layout" style="height:100%" id="trans_layout" >
+					<script>
+						if(screen.height <= 1080) $("#trans_layout").css('height',"350px");
+					</script>
 					<div data-options="region:'north',border:false" style="width:100%; height:200px;">
-						div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
+						<div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;"></div>
 						<input type="hidden" id="mode" name="mode">
-						<input type="hidden" id="IDCREDITNOTE" name="idcreditnote">
+						<input type="hidden" id="UUIDCREDITNOTE" name="uuidcreditnote">
 						<table width="100%">
 							<tr>
 								<td>
@@ -20,7 +23,7 @@
 													<tr>
 														<td id="label_form">No. Transaksi</td>
 														<td id="label_form">
-															<input id="KODECREDITNOTE" name="kodecreditnote" class="label_input" style="width:180px" <?=$KODE=='AUTO' ? 'prompt="Auto Generate" readonly' : ''?>>
+															<input id="KODECREDITNOTE" name="kodecreditnote" class="label_input" style="width:180px">
 														</td>
 													</tr>
 													<tr>
@@ -29,11 +32,11 @@
 													</tr>
 													<tr>
 														<td id="label_form">Lokasi</td>
-														<td id="label_form"><input name="idlokasi" id="IDLOKASI" style="width:190px"></td>
+														<td id="label_form"><input name="uuidlokasi" id="UUIDLOKASI" style="width:190px"></td>
 													</tr>
 													<tr>
 														<td id="label_form">Customer</td>
-														<td id="label_form"><input id="IDCUSTOMER" name="idcustomer" class="label_input" style="width:300px" required="true"></td>
+														<td id="label_form"><input id="UUIDCUSTOMER" name="uuidcustomer" class="label_input" style="width:300px" required="true"></td>
 													</tr>
 													<tr>
 														<td id="label_form">Nominal</td>
@@ -51,7 +54,7 @@
 									</table>
 								</td>
 							</tr>
-						</table>
+						</table>	
 						<div style="position: fixed;bottom:0;background-color: white;width:100%;">
 							<table cellpadding="0" cellspacing="0" style="width:100%">
 								<tr>
@@ -63,7 +66,7 @@
 									</td>
 								</tr>
 							</table>
-						</div>	
+						</div>
 					</div>
 				</div>
 			</div>
@@ -88,45 +91,9 @@ var row = {};
 $(document).ready(async function(){
 	
 	browse_data_lokasi('#UUIDLOKASI');
-	browse_data_customer('#IDCUSTOMER');
+	browse_data_customer('#UUIDCUSTOMER');
 
-	let check1 = false;
-  let check2 = false;
-  const promises = [];
-  promises.push(getConfig('KODEDEBETNOTE', 'TDEBETNOTE', 'bearer {{ session('TOKEN') }}',
-      function(response) {
-          if (response.success) {
-              config = response.data;
-              check1 = true;
-          } else {
-              if ((response.message ?? "").toLowerCase() == "token tidak valid.") {
-                  window.alert("Login session sudah habis. Silahkan Login Kembali");
-              } else {
-                  $.messager.alert('Error', error, 'error');
-              }
-          }
-      },
-      function(error) {
-          $.messager.alert('Error', "Request Config Error", 'error');
-      }));
-
-  await Promise.all(promises);
-  if (!check1) return;
-
-  if (config.value == "AUTO") {
-      $('#KODEDEBETNOTE').textbox({
-          prompt: "Auto Generate",
-          readonly: true,
-          required: false
-      });
-  } else {
-      $('#KODEDEBETNOTE').textbox({
-          prompt: "",
-          readonly: false,
-          required: true
-      });
-      $('#KODEDEBETNOTE').textbox('clear').textbox('textbox').focus();
-  }
+	await getConfigMenu()
 	
 	@if ($mode == 'tambah')
 		await tambah();
@@ -135,7 +102,6 @@ $(document).ready(async function(){
 	@endif
 
 	tutupLoader();
-	
 })
 
 shortcut.add('F8', function() {
@@ -150,7 +116,7 @@ function tambah() {
 	$('#form_input').form('clear');
 	$('#mode').val('tambah');
 	
-    document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
+  document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
 	$('#lbl_kasir, #lbl_tanggal').html('');
 	$('#KODETRANS').textbox('readonly',false);
 	
@@ -162,8 +128,8 @@ async function ubah() {
 	 
 	const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.loadDataHeaderDebetNote, {
-			kodetrans: '{{ $data }}'
+			link_api.loadDataHeaderCreditNote, {
+			uuidcreditnote: '{{ $data }}'
 		}
 	);
 	if(response.success) {
@@ -176,8 +142,9 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
 			data = data.data;
 			var UT = data.ubah;
-			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/nota-debit", "kodetrans", row.kodetrans, function(data) {
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/nota-kredit", "uuidcreditnote", row.uuidcreditnote, function(data) {
 
+				// $(".form_status").html(status_transaksi(data.data.status));
 				if (UT == 1 && data.data.status == 'I') {
 					document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
 					$('#mode').val('ubah');
@@ -190,8 +157,7 @@ async function ubah() {
 				$('#lbl_kasir').html(row.userentry);
 				$('#lbl_tanggal').html(row.tglentry);
 				
-				//get_combogrid_data ($('#UUIDSUPPLIER'), row.UUIDSUPPLIER, 'customer');
-				$('#UUIDSUPPLIER').combogrid('setValue', {uuid: row.uuidsupplier, nama: row.namasupplier})
+				$('#UUIDCUSTOMER').combogrid('setValue', {uuidcustomer: row.uuidcustomer, nama: row.namacustomer})
 			});
 		});
 	}
@@ -220,7 +186,7 @@ async function simpan() {
 					}
 			});
 
-			let url = link_api.simpanDebetNote;
+			let url = link_api.simpanCreditNote;
 			const response = await fetch(url, {
 					method: 'POST',
 					headers: headers,
@@ -243,7 +209,6 @@ async function simpan() {
 
 					if (mode == "tambah") {
 							await tambah();
-							$('#table_data_detail').datagrid('loadData', []);
 					} else {
 							await ubah();
 					}
@@ -293,17 +258,17 @@ function browse_data_lokasi(id) {
 	});
 }
 
-function browse_data_supplier(id) {
+function browse_data_customer(id) {
 	$(id).combogrid({
 		panelWidth: 880,
-		url       : link_api.browseSupplier,
-		idField   : 'uuidsupplier',
+		url       : link_api.browseCustomer,
+		idField   : 'uuidcustomer',
 		textField : 'nama',
 		multiple  : false,
 		mode      : 'remote',
 		sortName  : 'nama',
 		sortOrder : 'asc',
-		rowStyler : function(index,row){
+		rowStyler : function(index, row) {
 			if (row.status == 0){
 				return 'background-color:#A8AEA6';
 			}
@@ -325,6 +290,39 @@ function clear_plugin() {
 	$("#TGLTRANS, #TGLJATUHTEMPO").datebox('setValue', date_format());
 
 	$('.number').numberbox('setValue', 0);
+}
+
+async function getConfigMenu() {
+	try {
+	const res = await fetchData(
+		'{{ session('TOKEN') }}', link_api.loadConfigCreditNote, {
+		kodemenu: '{{ $kodemenu }}'
+		}
+	);
+	if (res.success) {
+    // KODE
+		if (res.data.KODE == "AUTO") {
+      $('#KODECREDITNOTE').textbox({
+				prompt: "Auto Generate",
+				readonly: true,
+				required: false
+			});
+		} else {
+			$('#KODECREDITNOTE').textbox({
+				prompt: "",
+				readonly: false,
+				required: true
+			});
+			$('#KODECREDITNOTE').textbox('clear').textbox('textbox').focus();
+		}
+	} else {
+		throw new Error(res.message);
+	}
+	} catch (e) {
+	const error = typeof e === 'string' ? e : e.message;
+	const textError = getTextError(error);
+	$.messager.alert('Error', textError, 'error');
+	}
 }
 </script>
 @endpush

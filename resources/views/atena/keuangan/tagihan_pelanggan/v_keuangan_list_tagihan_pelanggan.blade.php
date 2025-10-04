@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="easyui-layout" fit="true">	
-	<div class="btn-group-transaksi" data-options="region: 'west'">
+	<div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
 		<a id="btn_tambah"  title="Tambah Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
 			<img src="{{ asset('assets/images/add.png') }}">
 		</a>
@@ -21,44 +21,40 @@
 	</div>
 
 	<div data-options="region: 'center'">
-		<div id="tab_transaksi" class="easyui-tabs" fit="true">
-			<div title="Grid" id="Grid" >
-				<div class="easyui-layout" fit="true">
-					<div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
-						<table border="0">
-							<tr><td id="label_form"></td></tr>
-							<tr><td id="label_form" align="center">Tgl. Input</td></tr>
-							<tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px"/></td></tr>
-							<tr><td id="label_form" align="center">s/d</td></tr>
-							<tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px"/></td></tr>
-							<tr><td id="label_form"><br></td></tr>
-							<tr><td id="label_form" align="center">No. Trans</td></tr>
-							<tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
-							<tr><td id="label_form"><br></td></tr>
-							<tr><td id="label_form" align="center">Customer</td></tr>
-							<tr><td align="center"><input id="txt_referensi_filter" name="txt_referensi_filter" style="width:100px" class="label_input" /></td></tr>
-							<tr><td id="label_form"><br></td></tr>
-							<tr><td id="label_form" align="center">Status</td></tr>
-							<tr><td align="center">
+		<div class="easyui-layout" fit="true">
+			<div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
+				<table border="0">
+						<tr><td id="label_form"></td></tr>
+						<tr><td id="label_form" align="center">Tgl. Input</td></tr>
+						<tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px"/></td></tr>
+						<tr><td id="label_form" align="center">s/d</td></tr>
+						<tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px"/></td></tr>
+						<tr><td id="label_form"><br></td></tr>
+						<tr><td id="label_form" align="center">No. Trans</td></tr>
+						<tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
+						<tr><td id="label_form"><br></td></tr>
+						<tr><td id="label_form" align="center">Customer</td></tr>
+						<tr><td align="center"><input id="txt_referensi_filter" name="txt_referensi_filter" style="width:100px" class="label_input" /></td></tr>
+						<tr><td id="label_form"><br></td></tr>
+						<tr><td id="label_form" align="center">Status</td></tr>
+						<tr><td align="center">
 								<label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
 								<label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
 								<label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
 								<label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
-							</td></tr>
-							<tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
-						</table>
-					</div>
-					<div data-options="region:'center'">
-                        <div class="easyui-layout" data-options="fit:true">
-                            <div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
-                            <div data-options="region:'center'">
-                            <table id="table_data"></table>
-                            </div>
-                        </div>
-                    </div>
-				</div>
+						</td></tr>
+						<tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
+				</table>
 			</div>
-		</div>
+			<div data-options="region:'center'">
+					<div class="easyui-layout" data-options="fit:true">
+							<div data-options="region:'north'" class="title-grid"> Riwayat Transaksi </div>
+							<div data-options="region:'center'">
+							<table id="table_data"></table>
+							</div>
+					</div>
+			</div>
+	</div>
 	</div>	
 </div>
 
@@ -147,8 +143,8 @@ shortcut.add('F2', function() {
 function before_add() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Faktur Pajak',
-                '{{ route('atena.akuntansi.fakturpajak.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Tagihan Pelanggan',
+                '{{ route('atena.keuangan.tagihan_pelanggan.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -161,9 +157,9 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.nospt,
-                '{{ route('atena.akuntansi.fakturpajak.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.uuidfakturpajak,
+            parent.buka_submenu(null, row.kodetagihan,
+                '{{ route('atena.keuangan.tagihan_pelanggan.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                row.uuidtagihan,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -210,19 +206,19 @@ function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusFakturPajak,
+            var statusTrans = await getStatusTrans(link_api.getStatusTagihanPelanggan,
                 'bearer {{ session('TOKEN') }}', {
-                    uuidfakturpajak: row.uuidfakturpajak
+                    uuidtagihan: row.uuidtagihan
                 });
-            var checkTabAvailable = parent.check_tab_exist(row.kodefakturpajak, 'fa fa-pencil');
+            var checkTabAvailable = parent.check_tab_exist(row.kodetagihan, 'fa fa-pencil');
             if (statusTrans == 'I') {
-                var kode = row.kodefakturpajak;
+                var kode = row.kodetagihan;
                 if (checkTabAvailable) {
                     $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipFakturPajak;
+                        let url = link_api.ubahStatusjadiSlipTagihanPelanggan;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -230,8 +226,8 @@ function before_print() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidfakturpajak: row.uuidfakturpajak,
-                                nospt          : row.nospt,
+                                uuidtagihan: row.uuidtagihan,
+                                kodetagihan          : row.kodetagihan,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -244,7 +240,7 @@ function before_print() {
 
                         if (response.success) {
                             refresh_data();
-                            cetak(row.uuidfakturpajak);
+                            await cetak(row.uuidtagihan);
                         } else {
                             $.messager.alert('Error', response.message, 'error');
                         }
@@ -254,7 +250,7 @@ function before_print() {
                     }
                 }
             } else if (statusTrans == 'S' || statusTrans == 'P') {
-                cetak(row.uuidfakturpajak);
+                await cetak(row.uuidtagihan);
             } else {
                 $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
             }
@@ -270,23 +266,23 @@ async function batal_trans() {
     if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodefakturpajak, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodetagihan, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodefakturpajak +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetagihan +
                 ', Sebelum Dibatalkan ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusFakturPajak,
+        var statusTrans = await getStatusTrans(link_api.getStatusTagihanPelanggan,
             'bearer {{ session('TOKEN') }}', {
-                uuidfakturpajak: row.uuidfakturpajak
+                uuidtagihan: row.uuidtagihan
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalFakturPajak;
+                        let url = link_api.batalTagihanPelanggan;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -294,8 +290,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidfakturpajak: row.uuidfakturpajak,
-                                nospt          : row.nospt,
+                                uuidtagihan: row.uuidtagihan,
+                                kodetagihan          : row.kodetagihan,
                                 alasan         : alasan,
                             }),
                         }).then(response => {
@@ -332,23 +328,23 @@ async function batal_cetak() {
     if (row) {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodefakturpajak, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodetagihan, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodefakturpajak +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetagihan +
                 ', Sebelum Dibatal cetak ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusFakturPajak,
+        var statusTrans = await getStatusTrans(link_api.getStatusTagihanPelanggan,
             'bearer {{ session('TOKEN') }}', {
-                uuidfakturpajak: row.uuidfakturpajak
+                uuidtagihan: row.uuidtagihan
             });
         if (statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputFakturPajak;
+                        let url = link_api.ubahStatusjadiInputTagihanPelanggan;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -356,8 +352,8 @@ async function batal_cetak() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidfakturpajak: row.uuidfakturpajak,
-                                nospt          : row.nospt,
+                                uuidtagihan: row.uuidtagihan,
+                                kodetagihan: row.kodetagihan,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -388,35 +384,28 @@ async function batal_cetak() {
     }
 }
 
-async function cetak(uuidtrans) {
-    bukaLoader();
-    if (row) {
-        try {
-            let url = link_api.cetakFakturPajak + uuidtrans;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'bearer {{ session('TOKEN') }}',
-                    'Content-Type': 'application/json',
-                },
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(
-                        `HTTP error! status: ${response.status} from ${url}`
-                    );
-                }
-                return response.text();
-            })
-
-
-            $("#area_cetak").html(response);
-            $("#form_cetak").window('open');
-        } catch (error) {
-            var textError = getTextError(error);
-            $.messager.alert('Error', getTextError(error), 'error');
-        }
-    }
-    tutupLoader();
+async function cetak(uuid) {
+    $("#window_button_cetak").window('close');
+	var urlcetak = ""
+	if('{{ session('KODEPERUSAHAAN') }}' == 'CN0001')
+	{
+		urlcetak = link_api.cetakF4TagihanPelanggan + uuid
+	}
+	else
+	{
+		urlcetak = link_api.cetakTagihanPelanggan + uuid
+	}
+	const doc = await getCetakDocument(
+		'{{ session('TOKEN') }}',
+		urlcetak
+	);
+	if (doc == null) {
+		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
+			'warning');
+		return false;
+	}
+	$("#area_cetak").html(doc);
+	$("#form_cetak").window('open');
 }
 
 function refresh_data() {
@@ -447,7 +436,7 @@ function buat_table() {
 		striped     : true,
 		rownumbers  : true,
 		pageSize    : 20,
-		url         : link_api.loadTransaksiDataGridFakturPajak,
+		url         : link_api.loadDataGridTagihanPelanggan,
 		pagination  : true,
 		clientPaging: false,
 		rowStyler   : function(index, row) {
@@ -469,7 +458,7 @@ function buat_table() {
 			{field:'status',title:'Status',width:50,sortable:true,align:'center'},
 		]],
 		onDblClickRow: function(index, data) {
-			
+			before_edit();
 		},
 	});
 }

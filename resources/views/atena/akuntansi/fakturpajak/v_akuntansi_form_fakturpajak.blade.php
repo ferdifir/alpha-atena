@@ -373,8 +373,8 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
           data = data.data;
           var UT = data.ubah;
-		  console.log('ubah' + UT)
-          get_status_trans('{{ session("TOKEN") }}', "atena/akuntansi/faktur-pajak", "uuidfakturpajak", row.uuidfakturpajak, function(data) {
+          get_status_trans('{{ session("TOKEN") }}', "atena/akuntansi/faktur-pajak", "uuidfakturpajak", row.uuidfakturpajak,async function(data) {
+			$(".form_status").html(status_transaksi(data.data.status));
             if (UT == 1 && data.data.status == 'I') {
 				$('#btn_simpan_modal').css('filter', '');
 				$('#mode').val('ubah');
@@ -383,7 +383,6 @@ async function ubah() {
 				$('#btn_simpan_modal').css('filter', 'grayscale(100%)');
 				$('#btn_simpan_modal').removeAttr('onclick');
 			}
-
 			$("#form_input").form('load', row);
 			$('#TGLTRANS').datebox('readonly', false);
 			$('#NOSPT').textbox('readonly');
@@ -396,7 +395,7 @@ async function ubah() {
 			// $('#PEMBETULANKE').numberspinner('readonly').numberspinner('setValue',parseFloat(row.PEMBETULANKE) + 1);
 			$('#btn_tampil').linkbutton('disable');
 
-			load_data(row.uuidfakturpajak);
+			await load_data(row.uuidfakturpajak);
 
           });
         });
