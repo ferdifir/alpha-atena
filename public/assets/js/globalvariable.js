@@ -874,7 +874,45 @@ var link_api = {
     tampilDataSetoranSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-setoran`,
     hapusSetoranSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/hapus-setoran`,
     simpanDetailSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan-detail-setoran`,
-    tampilDataNonTunaiSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-non-tunai`
+    tampilDataNonTunaiSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-non-tunai`,
+    //Pelunasan Uang Muka SO
+    loadConfigUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-config`,
+    loadDataGridUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-data-grid`,
+    loadDataGridApproveUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-data-grid-approve`,
+    loadDataHeaderUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-data-header`,
+    simpanUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/simpan`,
+    loadDataUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-data`,
+    cetakUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/cetak/`,
+    batalUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/batal-trans`,
+    ubahStatusjadiInputUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/ubah-status-jadi-input`,
+    ubahStatusjadiSlipUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/ubah-status-jadi-slip`,
+    getStatusUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/get-status-trans`,
+    loadKartuUangMukaUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-kartu-uang-muka`,
+    //Pelunasan Uang Muka PO
+    loadConfigUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-config`,
+    loadDataGridUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-data-grid`,
+    loadDataGridApproveUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-data-grid-approve`,
+    loadDataHeaderUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-data-header`,
+    simpanUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/simpan`,
+    loadDataUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-data`,
+    cetakUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/cetak/`,
+    batalUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/batal-trans`,
+    ubahStatusjadiInputUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/ubah-status-jadi-input`,
+    ubahStatusjadiSlipUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/ubah-status-jadi-slip`,
+    getStatusUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/get-status-trans`,
+    loadKartuUangMukaUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-kartu-uang-muka`,
+    //HUTANG LAIN
+    loadDataGridHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-grid`,
+    loadDataHeaderHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-header`,
+    simpanHutangLain        : `${base_url_api}atena/keuangan/hutang-lain/simpan`,
+    batalHutangLain         : `${base_url_api}atena/keuangan/hutang-lain/batal-trans`,
+    getStatusHutangLain     : `${base_url_api}atena/keuangan/hutang-lain/get-status-trans`,
+    //PIUTANG LAIN
+    loadDataGridPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/load-data-grid`,
+    loadDataHeaderPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/load-data-header`,
+    simpanPiutangLain        : `${base_url_api}atena/keuangan/piutang-lain/simpan`,
+    batalPiutangLain         : `${base_url_api}atena/keuangan/piutang-lain/batal-trans`,
+    getStatusPiutangLain     : `${base_url_api}atena/keuangan/piutang-lain/get-status-trans`,
 };
 
 var modul_kode = {

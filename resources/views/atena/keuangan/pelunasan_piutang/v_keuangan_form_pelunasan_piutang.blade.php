@@ -336,7 +336,7 @@ function tutup(){
 	parent.tutupTab();
 }
 
-async function cetak(id,kode) {
+async function cetak(uuid) {
     const doc = await getCetakDocument(
 		'{{ session('TOKEN') }}',
 		link_api.cetakPelunasanPiutang + uuid
@@ -696,8 +696,8 @@ async function tampil_data() {
 				uuidcustomer     : uuidcustomer,
 				pakaifilterlokasi: $('#PAKAIFILTERLOKASI').prop('checked') ? 1: 0,
 				uuidlokasi       : uuidlokasi,
-				tglawal					 : $('#txt_tgl_aw').datebox('getValue'),
-				tglakhir					 : $('#txt_tgl_ak').datebox('getValue')
+				tglawal          : $('#txt_tgl_aw').datebox('getValue'),
+				tglakhir         : $('#txt_tgl_ak').datebox('getValue')
 			}
 		);
 
