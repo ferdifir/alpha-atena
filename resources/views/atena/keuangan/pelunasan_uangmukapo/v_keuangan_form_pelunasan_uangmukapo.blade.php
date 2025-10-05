@@ -28,7 +28,7 @@
                                         <table border="0">
                                             <tr>
                                                 <td id="label_form">No. Pelunasan</td>
-                                                <td><input name="kodepelunasan" class="label_input" id="KODEPELUNASAN" style="width:190px" <?= $KODE == 'AUTO' ? 'prompt="Auto Generate" readonly' : '' ?>></td>
+                                                <td><input name="kodepelunasan" class="label_input" id="KODEPELUNASAN" style="width:190px"></td>
                                             </tr>
                                             <tr>
                                                 <td id="label_form">Lokasi</td>
@@ -44,7 +44,7 @@
                                         </table>
                                     </fieldset>
                                 </td>
-                                <td valign="top" <?= $AYATSILANG == 0 ? '' : 'hidden'; ?>>
+                                <td valign="top" class="ayatsilang0">
                                     <fieldset style="height:150px">
                                         <legend>Informasi Kas/Bank</legend>
                                         <table border="0">
@@ -74,7 +74,7 @@
                                         </table>
                                     </fieldset>
                                 </td>
-                                <td valign="top" <?= $AYATSILANG == 1 ? '' : 'hidden' ?>>
+                                <td valign="top" class="ayatsilang1">
                                     <fieldset style="height:150px">
                                         <legend>Informasi No Kas/Bank</legend>
                                         <table border="0">
@@ -93,7 +93,7 @@
                                         </table>
                                     </fieldset>
                                 </td>
-                                <td id="fm-giro" <?= $AYATSILANG == 1 ? 'hidden' : ''; ?>>
+                                <td id="fm-giro" class="ayatsilang0">
                                     <fieldset style="height:150px">
                                         <legend>Informasi Giro Keluar</legend>
                                         <table border="0" style="padding:2px">
@@ -180,7 +180,9 @@ var flag_get_jurnal = false   // jika false maka ger_jurnal_link belum selesai l
 var idtrans         = "";
 var row             = {};
 var ayatsilang;
-$(document).ready(function() {
+$(document).ready(async function() {
+	await getConfigMenu()
+
 	//TAMBAH CHECK AKSES CETAK
 	get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
 		var UT = data.data.cetak;
@@ -191,7 +193,6 @@ $(document).ready(function() {
 		}
 	})
 
-	await getConfigMenu()
 
 	$("#form_cetak").window({
 		collapsible: false,
@@ -396,7 +397,7 @@ async function ubah() {
 
 				$('#AMOUNTKAS').numberbox('setValue', row.total)
 
-				awaut load_data(row.uuidpelunasan, row.kodepelunasan);
+				await load_data(row.uuidpelunasan, row.kodepelunasan);
 
 				$('#UUIDSUPPLIER').combogrid('readonly');
 
@@ -532,7 +533,7 @@ async function get_jurnal() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.getJurnalLinkPelunasanUangMukaPO, {
+			link_api.getJurnalLinkUangMukaPO, {
 					data_detail  : rows,
 					kodekasbank  : $('#UUIDKAS').combogrid('getValue'),
 					kodepelunasan: $("#KODEPELUNASAN").val(),
@@ -685,7 +686,7 @@ async function browse_data_referensi(id) {
 							);
 							if(response.success) {
 								var msg = response.data
-								$('#table_data_detail').datagrid('loadData', msg.data_detail);
+								$('#table_data_detail').datagrid('loadData', msg);
 								// menghapus atribut disabled pada checkbox agar user bisa
 								// memilih hutang yang ingin dilunasi
 								$('#table_data_detail').datagrid('getPanel').find('div.datagrid-header input[type=checkbox]').removeAttr('disabled');
@@ -713,6 +714,9 @@ async function browse_no_kas(id) {
 	$(id).combogrid({
 		panelWidth: 800,
 		url       : link_api.browseKasPelunasan,
+		queryParams: {
+			jeniskas: 'hutang',
+		},
 		idField   : 'uuidkas',
 		textField : 'kodekas',
 		mode      : 'remote',
@@ -765,7 +769,7 @@ async function browse_no_kas(id) {
 				},
 			]
 		],
-		onChange: function(newVal, oldVal) {
+		onChange: async function(newVal, oldVal) {
 			if ($('#mode').val() != '') {
 				var row = $(id).combogrid('grid').datagrid('getSelected');
 				if (row) {
@@ -855,7 +859,7 @@ function browse_data_kas_bank(id) {
 function browse_data_currency(id) {
 	$(id).combogrid({
 		panelWidth: 200,
-		url       : link-api.browseCurrency,
+		url       : link_api.browseCurrency,
 		idField   : 'uuidcurrency',
 		textField : 'simbol',
 		mode      : 'local',
@@ -1419,7 +1423,7 @@ function hitung_debet_kredit() {
 	}
 
 	if ($('#SAMAKANDEBETKREDIT').prop("checked")) {
-		$('#UUIDCURRENCY').combogrid('setValue', {{ session('UUIDCURRENCY') }});
+		$('#UUIDCURRENCY').combogrid('setValue', '{{ session('UUIDCURRENCY') }}');
 		$('#NILAIKURS').numberbox('setValue', 1);
 
 		$('#AMOUNT').numberbox('setValue', totaldebet - totalkredit);
@@ -1483,7 +1487,7 @@ function clear_plugin() {
 async function getConfigMenu() {
 	try {
 	const res = await fetchData(
-		'{{ session('TOKEN') }}', link_api.loadConfigPelunasanUangMukaPO, {
+		'{{ session('TOKEN') }}', link_api.loadConfigUangMukaPO, {
 		kodemenu: '{{ $kodemenu }}'
 		}
 	);

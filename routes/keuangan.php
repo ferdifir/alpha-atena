@@ -154,14 +154,16 @@ Route::get('atena/keuangan/setoranpenjualanperkasir/transaksi', function() {
 Route::get('atena/keuangan/pelunasanuangmukaso/transaksi', function() {
     return view('atena.keuangan.pelunasan_uangmukaso.v_keuangan_list_pelunasan_uangmukaso', [
         'kodemenu' => request()->kode,
+        'jenis'    => request()->jenis,
     ]);
 })->name('atena.keuangan.pelunasan_uangmukaso.transaksi');
 
 Route::get('atena/keuangan/pelunasanuangmukaso/form', function() {
     return view('atena.keuangan.pelunasan_uangmukaso.v_keuangan_form_pelunasan_uangmukaso', [
         'kodemenu' => request()->kode,
-        'data'=>request()->data,
-        'mode'=>request()->mode,
+        'data'     => request()->data,
+        'mode'     => request()->mode,
+        'jenis'    => request()->jenis,
     ]);
 })->name('atena.keuangan.pelunasan_uangmukaso.form');
 

@@ -198,7 +198,7 @@ var flag_get_jurnal = false   // jika false maka ger_jurnal_link belum selesai l
 var idtrans         = "";
 var row             = {};
 var ayatsilang;
-$(document).ready(function() {
+$(document).ready(async function() {
 	//TAMBAH CHECK AKSES CETAK
 	get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
 		var UT = data.data.cetak;
@@ -294,7 +294,7 @@ $(document).ready(function() {
 		}
 	});
 
-	$('#TGLTRANS').datebox('readonly', ayatsilang = 1 'true' : 'false');
+	$('#TGLTRANS').datebox('readonly', ayatsilang == 1 ? 'true' : 'false');
 
 	$('#SAMAKANDEBETKREDIT').change(function() {
 		if (this.checked) {
@@ -571,7 +571,7 @@ async function get_jurnal() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.getJurnalLinkPelunasanUangMukaSO, {
+			link_api.getJurnalLinkUangMukaSO, {
 				data_detail  : rows,
 				kodekasbank  : $('#UUIDKAS').combogrid('getValue'),
 				kodepelunasan: $("#KODEPELUNASAN").val(),
@@ -761,6 +761,9 @@ async function browse_no_kas(id) {
 	$(id).combogrid({
 		panelWidth: 800,
 		url       : link_api.browseKasPelunasan,
+		queryParams: {
+			jeniskas: 'piutang',
+		},
 		idField   : 'uuidkas',
 		textField : 'kodekas',
 		mode      : 'remote',
@@ -813,7 +816,7 @@ async function browse_no_kas(id) {
 				},
 			]
 		],
-		onChange: function(newVal, oldVal) {
+		onChange: async function(newVal, oldVal) {
 			if ($('#mode').val() != '') {
 				var row = $(id).combogrid('grid').datagrid('getSelected');
 				if (row) {
@@ -901,7 +904,7 @@ function browse_data_kas_bank(id) {
 function browse_data_currency(id) {
 	$(id).combogrid({
 		panelWidth: 200,
-		url       : link-api.browseCurrency,
+		url       : link_api.browseCurrency,
 		idField   : 'uuidcurrency',
 		textField : 'simbol',
 		mode      : 'local',
@@ -1475,7 +1478,7 @@ function hitung_debet_kredit() {
 	}
 
 	if ($('#SAMAKANDEBETKREDIT').prop("checked")) {
-		$('#UUIDCURRENCY').combogrid('setValue', {{ session('UUIDCURRENCY') }});
+		$('#UUIDCURRENCY').combogrid('setValue', '{{ session('UUIDCURRENCY') }}');
 		$('#NILAIKURS').numberbox('setValue', 1);
 
 		$('#AMOUNT').numberbox('setValue', totalkredit - totaldebet);
@@ -1539,6 +1542,50 @@ function clear_plugin() {
 
 	$('.number').numberbox('setValue', 0);
 	$('#NILAIKURS').numberbox('setValue', 1);
+}
+
+async function getConfigMenu() {
+	try {
+	const res = await fetchData(
+		'{{ session('TOKEN') }}', link_api.loadConfigUangMukaSO, {
+		kodemenu: '{{ $kodemenu }}'
+		}
+	);
+	if (res.success) {
+    // AYAT SILANG
+    ayatsilang = res.data.AYATSILANG
+
+		if(ayatsilang == 0) {
+			$('.ayatsilang0').show()
+			$('.ayatsilang1').hide()
+		}else{
+			$('.ayatsilang1').show()
+			$('.ayatsilang0').hide()
+		}
+
+    // KODE
+		if (res.data.KODE == "AUTO") {
+      $('#KODEPELUNASAN').textbox({
+				prompt: "Auto Generate",
+				readonly: true,
+				required: false
+			});
+		} else {
+			$('#KODEPELUNASAN').textbox({
+				prompt: "",
+				readonly: false,
+				required: true
+			});
+			$('#KODEPELUNASAN').textbox('clear').textbox('textbox').focus();
+		}
+	} else {
+		throw new Error(res.message);
+	}
+	} catch (e) {
+	const error = typeof e === 'string' ? e : e.message;
+	const textError = getTextError(error);
+	$.messager.alert('Error', textError, 'error');
+	}
 }
 </script>
 @endpush

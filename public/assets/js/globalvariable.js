@@ -888,6 +888,7 @@ var link_api = {
     ubahStatusjadiSlipUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/ubah-status-jadi-slip`,
     getStatusUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/get-status-trans`,
     loadKartuUangMukaUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-kartu-uang-muka`,
+    getJurnalLinkUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/get-jurnal-link`,
     //Pelunasan Uang Muka PO
     loadConfigUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-config`,
     loadDataGridUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-data-grid`,
@@ -901,6 +902,7 @@ var link_api = {
     ubahStatusjadiSlipUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/ubah-status-jadi-slip`,
     getStatusUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/get-status-trans`,
     loadKartuUangMukaUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/load-kartu-uang-muka`,
+    getJurnalLinkUangMukaPO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/get-jurnal-link`,
     //HUTANG LAIN
     loadDataGridHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-grid`,
     loadDataHeaderHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-header`,

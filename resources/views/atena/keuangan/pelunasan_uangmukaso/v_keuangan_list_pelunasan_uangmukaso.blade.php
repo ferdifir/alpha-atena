@@ -198,7 +198,7 @@ function before_add() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
             parent.buka_submenu(null, 'Tambah Pelunasan Uang Muka SO',
-                '{{ route('atena.keuangan.pelunasan_uangmukaso.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+                '{{ route('atena.keuangan.pelunasan_uangmukaso.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '', 'jenis' => $jenis]) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -212,7 +212,7 @@ function before_edit() {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
             parent.buka_submenu(null, row.kodepelunasan,
-                '{{ route('atena.keuangan.pelunasan_uangmukaso.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                '{{ route('atena.keuangan.pelunasan_uangmukaso.form', ['kode' => $kodemenu, 'mode' => 'ubah', 'jenis' => $jenis]) }}&data=' +
                 row.uuidpelunasan,
                 'fa fa-pencil');
         } else {
