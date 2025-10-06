@@ -33,10 +33,14 @@
                                 <td id="label_form">Tgl. Trans</td>
                                 <td><input id="TGLTRANS" name="tgltrans" style="width:100px" class="date" /></td>
                             </tr>
+							<tr>
+                                <td id="label_form">Lokasi</td>
+                                <td id="label_form"><input name="uuidlokasi" id="UUIDLOKASI" style="width:190px"></td>
+                            </tr>
                             <tr>
                                 <td id="label_form">Syarat Bayar</td>
                                 <td>
-                                    <input id="IDSYARATBAYAR" name="idsyaratbayar" style="width: 180px" />
+                                    <input id="UUIDSYARATBAYAR" name="uuidsyaratbayar" style="width: 180px" />
                                 </td>
                             </tr>
                             <tr hidden>
@@ -91,7 +95,8 @@ $(document).ready(async function() {
 
 	browse_data_customer('#UUIDCUSTOMER');
 	browse_data_perkiraan('#UUIDPERKIRAAN');
-	browse_data_syaratbayar('#IDSYARATBAYAR');
+	browse_data_syaratbayar('#UUIDSYARATBAYAR');
+	browse_data_lokasi('#UUIDLOKASI');
 
 	@if ($mode == 'tambah')
 		await tambah();
@@ -142,7 +147,7 @@ async function ubah() {
 			var UT = data.data.ubah;
 			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/piutang-lain", "kodetrans", row.kodetrans, async function(data) {
 				$(".form_status").html(status_transaksi(data.data.status));
-				if (UT == 1 && data.status.status == 'I') {
+				if (UT == 1 && data.data.status == 'I') {
 					document.getElementById('btn_simpan').onclick = simpan;
 					$('#btn_simpan').css('filter', '');
 					$('#mode').val('ubah');
@@ -158,7 +163,7 @@ async function ubah() {
 
 				$('#UUIDCUSTOMER').combogrid('setValue', {
 					uuidcustomer: row.uuidcustomer,
-					nama: row.namacustomer
+					nama        : row.namacustomer
 				});
 
 				$('#UUIDPERKIRAAN').combogrid('setValue', {
@@ -360,6 +365,37 @@ function browse_data_perkiraan(id) {
 				}
 			]
 		]
+	});
+}
+
+function browse_data_lokasi(id) {
+	$(id).combogrid({
+		panelWidth: 400,
+		url       : link_api.browseLokasi,
+		idField   : 'uuidlokasi',
+		textField : 'nama',
+		mode      : 'local',
+		sortName  : 'nama',
+		sortOrder : 'asc',
+		required  : true,
+		columns   : [[
+			{
+				field: 'uuidlokasi',
+				hidden: true
+			},
+			{
+				field: 'kode',
+				title: 'Kode',
+				width: 150,
+				sortable: true
+			},
+			{
+				field: 'nama',
+				title: 'Nama',
+				width: 200,
+				sortable: true
+			},
+		]],
 	});
 }
 

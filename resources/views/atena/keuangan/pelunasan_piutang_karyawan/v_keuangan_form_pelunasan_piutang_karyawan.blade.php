@@ -30,7 +30,7 @@
                                             <tr>
                                                 <td id="label_form">Lokasi</td>
                                                 <td id="label_form">
-                                                    <input name="idlokasi" id="UUIDLOKASI" style="width:190px">
+                                                    <input name="uuidlokasi" id="UUIDLOKASI" style="width:190px">
                                                     <input type="hidden" id="KODELOKASI" name="kodelokasi">
                                                 </td>
                                             </tr>
@@ -47,7 +47,7 @@
                                         <table border="0">
                                             <tr>
                                                 <td id="label_form" align="left">Kode Akun</td>
-                                                <td><input id="IDPERKIRAANKAS" name="idperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
+                                                <td><input id="UUIDPERKIRAANKAS" name="uuidperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
                                             </tr>
                                             <tr>
                                                 <td id="label_form"></td>
@@ -250,7 +250,7 @@ $(document).ready(async function() {
 
 	browse_data_lokasi('#UUIDLOKASI');
 	browse_data_referensi('#UUIDKARYAWAN');
-	browse_data_kas_bank('#IDPERKIRAANKAS');
+	browse_data_kas_bank('#UUIDPERKIRAANKAS');
 	browse_data_currency('#UUIDCURRENCY');
 	browse_no_kas('#UUIDKAS');
 
@@ -323,7 +323,7 @@ function tutup() {
 	parent.tutupTab();
 }
 
-async function cetak(id, kode) {
+async function cetak(uuid) {
 	const doc = await getCetakDocument(
 		'{{ session('TOKEN') }}',
 		link_api.cetakPelunasanPiutangKaryawan + uuid
@@ -599,8 +599,13 @@ async function load_data(uuidpelunasan, kodepelunasan) {
 			if (msg.kasbank) {
 				var data = msg.kasbank;
 
-				$('#IDPERKIRAANKAS').combogrid('setValue', data.idperkiraan);
-				$('#UUIDCURRENCY').combogrid('setValue', data.idcurrency);
+				$('#UUIDPERKIRAANKAS').combogrid('setValue', 
+					{
+						uuidperkiraan: data.uuidperkiraan,
+						kode: data.kodeperkiraan
+					}
+				);
+				$('#UUIDCURRENCY').combogrid('setValue', data.uuidcurrency);
 				$('#NAMAPERKIRAANKAS').textbox('setValue', data.namaperkiraan);
 				///$('#KETERANGAN').textbox('setValue', data.KETERANGAN);
 				$('#AMOUNT').numberbox('setValue', data.amount);
@@ -1396,7 +1401,7 @@ function buat_table_detail_perkiraan() {
 									var uuidcurrency   = data ? data.uuidcurrency : '{{ session('UUIDCURRENCY') }}';
 									var simbolcurrency = data ? data.simbolcurrency : '{{ session('SIMBOLCURRENCY') }}';
 
-									if (uuid == $('#IDPERKIRAANKAS').combogrid('getValue')) {
+									if (uuid == $('#UUIDPERKIRAANKAS').combogrid('getValue')) {
 											$.messager.show({
 													title: 'Warning',
 													msg: 'Perkiraan Yang Diinput Tidak Boleh Sama Dengan Header',

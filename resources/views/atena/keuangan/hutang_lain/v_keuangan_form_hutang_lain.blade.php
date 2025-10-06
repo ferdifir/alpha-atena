@@ -149,7 +149,7 @@ async function ubah() {
 			var UT = data.data.ubah;
 			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/hutang-lain", "kodetrans", row.kodetrans, async function(data) {
 				$(".form_status").html(status_transaksi(data.data.status));
-				if (UT == 1 && data.status.status == 'I') {
+				if (UT == 1 && data.data.status == 'I') {
 					document.getElementById('btn_simpan').onclick = simpan;
 					$('#btn_simpan').css('filter', '');
 					$('#mode').val('ubah');

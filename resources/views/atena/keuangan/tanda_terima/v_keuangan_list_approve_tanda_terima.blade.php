@@ -162,11 +162,12 @@ shortcut.add('F8', function() {
 
 function before_approve() {
 	$('#mode').val('approve');
-	get_akses_user('<?=$kodemenu?>', function(data) {
-		if (data.tambah == 1) {
-			$.messager.confirm('Confirm', 'Anda Yakin Akan Approve Transaksi?', function(r) {
+	get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', function(data) {
+		var UT = data.data.tambah;
+		if (UT == 1) {
+			$.messager.confirm('Confirm', 'Anda Yakin Akan Approve Transaksi?', async function(r) {
 			if (r){
-				approve();
+				await approve();
 			}
 		});
 		} else {
@@ -177,13 +178,12 @@ function before_approve() {
 
 function before_cancel_approve() {
 	$('#mode').val('batal_approve');
-	get_akses_user('<?=$kodemenu?>', function(data) {
-		if (data.hapus == 1) {
-			$.messager.confirm('Confirm', 'Anda Yakin Akan Batalkan Approve Transaksi?', function(r) {
+	get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', function(data) {
+		var UT = data.data.hapus;
+		if (UT == 1) {
+			$.messager.confirm('Confirm', 'Anda Yakin Akan Batalkan Approve Transaksi?', async function(r) {
 			if (r) {
-				batal_approve();
-				//untuk verifikasi
-				//$('#verify').dialog('open').dialog('setTitle', 'Verification');
+				await batal_approve();
 			}
 		});
 		} else {
@@ -238,63 +238,51 @@ function ubah() {
 	$("#btn_ubah").linkbutton('disable');
 }
 
-function approve() {
+async function approve() {
 	var mode = $("#mode").val();
 
-	$('#data_detail').val(JSON.stringify($('#table_data').datagrid('getChecked')));
+	var data_detail = $('#table_data').datagrid('getChecked')
 
 	var datanya = $("#form_input :input").serialize();
 	var isValid = $('#form_input').form('validate');
 	if (isValid && mode=='approve') {
-		$.ajax({
-			type	: 'POST',
-			dataType: 'json',
-			url		: base_url+"atena/Keuangan/Transaksi/TandaTerima/approve",
-			data	: datanya,
-			cache	: false,
-			beforeSend : function() {
-				$.messager.progress();
-			},
-			success: function(msg) {
-				$.messager.progress('close');
-				if (msg.success) {
-					$.messager.alert('Info','Transaksi Sukses','info');
-					refresh_data();
-				} else {
-					$.messager.alert('Error', msg.errorMsg, 'error');
-				}
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.approveTandaTerima, {
+				jenis : '{{ $jenis }}',
+				data_detail : data_detail
 			}
-		});
+		);
+		if(response.success) {
+			$.messager.alert('Info','Transaksi Sukses','info');
+			refresh_data();
+		} else {
+			$.messager.alert('Error', response.message, 'error');
+		}
 	}
 }
 
-function batal_approve() {
+async function batal_approve() {
 	var mode = $("#mode").val();
 
-	$('#data_detail').val(JSON.stringify($('#table_data').datagrid('getChecked')));
+	var data_detail = $('#table_data').datagrid('getChecked')
 
 	var datanya = $("#form_input :input").serialize();
 	var isValid = $('#form_input').form('validate');
 	if (isValid && mode == 'batal_approve') {
-		$.ajax({
-			type	: 'POST',
-			dataType: 'json',
-			url		: base_url+"atena/Keuangan/Transaksi/TandaTerima/batalApprove",
-			data	: datanya,
-			cache	: false,
-			beforeSend : function() {
-				$.messager.progress();
-			},
-			success: function(msg) {
-				$.messager.progress('close');
-				if (msg.success) {
-					$.messager.alert('Info','Transaksi Sukses','info');
-					refresh_data();
-				} else {
-					$.messager.alert('Error', msg.errorMsg, 'error');
-				}
+		const response = await fetchData(
+			'{{ session('TOKEN') }}',
+			link_api.batalApproveTandaTerima, {
+				jenis : '{{ $jenis }}',
+				data_detail : data_detail
 			}
-		});
+		);
+		if(response.success) {
+			$.messager.alert('Info','Transaksi Sukses','info');
+			refresh_data();
+		} else {
+			$.messager.alert('Error', response.message, 'error');
+		}
 	}
 }
 
@@ -391,7 +379,7 @@ function buat_table() {
 		rownumbers	 : true,
 		checkOnSelect: false,
 		selectOnCheck: false,
-		url         : link_api.loadDataGridTandaTerima,
+		url         : link_api.loadDataGridApproveTandaTerima,
         queryParams     : {
             jenis: '{{ $jenis }}',
         },

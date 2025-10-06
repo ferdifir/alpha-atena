@@ -495,7 +495,7 @@ function buat_table() {
 		striped     : true,
 		rownumbers  : true,
 		pageSize    : 20,
-		url         : link_api.loadDataGridApproveTandaTerima,
+		url         : link_api.loadDataGridTandaTerima,
 		pagination  : true,
 		clientPaging: false,
 		rowStyler   : function(index, row) {

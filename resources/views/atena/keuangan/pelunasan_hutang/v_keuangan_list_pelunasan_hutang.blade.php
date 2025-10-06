@@ -394,38 +394,18 @@ async function batal_cetak() {
     }
 }
 
-async function cetak(uuidtrans) {
-    bukaLoader();
-    if (row) {
-        try {
-            let url = link_api.cetakPelunasanHutang + uuidtrans;
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'bearer {{ session('TOKEN') }}',
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uuidpelunasan: uuidtrans,
-                }),
-            }).then(response => {
-                if (!response.ok) {
-                    throw new Error(
-                        `HTTP error! status: ${response.status} from ${url}`
-                    );
-                }
-                return response.text();
-            })
-
-
-            $("#area_cetak").html(response);
-            $("#form_cetak").window('open');
-        } catch (error) {
-            var textError = getTextError(error);
-            $.messager.alert('Error', getTextError(error), 'error');
-        }
-    }
-    tutupLoader();
+async function cetak(uuid) {
+	const doc = await getCetakDocument(
+		'{{ session('TOKEN') }}',
+		link_api.cetakPelunasanHutang + uuid
+	);
+	if (doc == null) {
+		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
+			'warning');
+		return false;
+	}
+	$("#area_cetak").html(doc);
+	$("#form_cetak").window('open');
 }
 
 function refresh_data() {

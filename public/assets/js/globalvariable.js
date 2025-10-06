@@ -788,6 +788,8 @@ var link_api = {
     ubahStatusjadiSlipTandaTerima: `${base_url_api}atena/keuangan/tanda-terima/ubah-status-jadi-slip`,
     getStatusTandaTerima: `${base_url_api}atena/keuangan/tanda-terima/get-status-trans`,
     loadHutangUangMukaTandaTerima: `${base_url_api}atena/keuangan/tanda-terima/load-hutang-uang-muka`,
+    approveTandaTerima: `${base_url_api}atena/keuangan/tanda-terima/approve`,
+    batalApproveTandaTerima: `${base_url_api}atena/keuangan/tanda-terima/batal-approve`,
     //Pelunasan Piutang Karyawan
     loadConfigPelunasanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/load-config`,
     loadDataGridPelunasanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/load-data-grid`,

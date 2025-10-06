@@ -319,13 +319,18 @@ function tutup(){
 	parent.tutupTab();
 }
 
-function cetak(id,kode) {
-    $("#window_button_cetak").window('close');
-    $("#area_cetak").load(base_url+"atena/Keuangan/Transaksi/PelunasanHutang/cetak",{
-		idtrans  : id,
-		kodetrans: kode
-	});
-    $("#form_cetak").window('open');
+async function cetak(uuid) {
+	const doc = await getCetakDocument(
+		'{{ session('TOKEN') }}',
+		link_api.cetakPelunasanHutang + uuid
+	);
+	if (doc == null) {
+		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
+			'warning');
+		return false;
+	}
+	$("#area_cetak").html(doc);
+	$("#form_cetak").window('open');
 }
 
 function tambah() {

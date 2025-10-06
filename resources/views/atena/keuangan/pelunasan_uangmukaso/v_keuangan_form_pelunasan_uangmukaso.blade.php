@@ -96,7 +96,7 @@
                                         </table>
                                     </fieldset>
                                 </td>
-                                <td id="fm-giro" class="ayatsilang0" ?>>
+                                <td id="fm-giro" class="ayatsilang0">
                                     <fieldset style="height:150px">
                                         <legend>Informasi Giro Masuk</legend>
                                         <table border="0" style="padding:2px">
@@ -142,7 +142,7 @@
                             <tr>
                                 <td id="label_form">Customer</td>
                                 <td>
-                                    <input name="uuidcustomer" id="UUIDCUSTOMER" style="width:228px">
+                                    <input name="uuidcustomer[]" id="UUIDCUSTOMER" style="width:228px">
                                 </td>
                             </tr>
                             <tr>
@@ -580,7 +580,7 @@ async function get_jurnal() {
 		);
 		if(response.success) {
 			flag_get_jurnal = true;
-			$('#table_data_perkiraan').datagrid('loadData', msg.data_detail);
+			$('#table_data_perkiraan').datagrid('loadData', response.data);
 		} else {
 			$.messager.alert('Error', response.message, 'error');
 		}
@@ -1552,8 +1552,9 @@ async function getConfigMenu() {
 		}
 	);
 	if (res.success) {
-    // AYAT SILANG
-    ayatsilang = res.data.AYATSILANG
+    	// AYAT SILANG
+    	ayatsilang = res.data.AYATSILANG
+		ayatsilang = 0
 
 		if(ayatsilang == 0) {
 			$('.ayatsilang0').show()
@@ -1563,9 +1564,9 @@ async function getConfigMenu() {
 			$('.ayatsilang0').hide()
 		}
 
-    // KODE
+    	// KODE
 		if (res.data.KODE == "AUTO") {
-      $('#KODEPELUNASAN').textbox({
+      	$('#KODEPELUNASAN').textbox({
 				prompt: "Auto Generate",
 				readonly: true,
 				required: false
