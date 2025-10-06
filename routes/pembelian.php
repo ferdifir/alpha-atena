@@ -2,107 +2,143 @@
 
 use Illuminate\Support\Facades\Route;
 
-// Pembelian Permintaan Barang
-Route::get('atena/pembelian/permintaanbarang/transaksi', function () {
-    return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.permintaan_barang.transaksi');
+Route::prefix('atena/pembelian')
+    ->name('atena.pembelian.')
+    ->group(function () {
+        // Pembelian - Permintaan Barang
+        Route::prefix('permintaanbarang')
+            ->name('permintaan_barang.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.permintaan_barang.v_pembelian_list_permintaan_barang', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/permintaanbarang/form', function () {
-    return view('atena.pembelian.permintaan_barang.v_pembelian_form_permintaan_barang', [
-        'kodemenu' => request()->kode,
-        'data' => request()->data,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.permintaan_barang.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.permintaan_barang.v_pembelian_form_permintaan_barang', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Pembelian PO
-Route::get('atena/pembelian/pesananpembelian/transaksi', function () {
-    return view('atena.pembelian.pesanan_pembelian.v_pembelian_list_pesanan_pembelian', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.pesanan_pembelian.transaksi');
+        // Pembelian - PO
+        Route::prefix('pesananpembelian')
+            ->name('pesanan_pembelian.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.pesanan_pembelian.v_pembelian_list_pesanan_pembelian', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/pesananpembelian/form', function () {
-    return view('atena.pembelian.pesanan_pembelian.v_pembelian_form_pesanan_pembelian', [
-        'kodemenu' => request()->kode,
-        'data' => request()->data,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.pesanan_pembelian.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.pesanan_pembelian.v_pembelian_form_pesanan_pembelian', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Pembelian
-Route::get('atena/pembelian/pembelian/transaksi', function () {
-    return view('atena.pembelian.pembelian.v_pembelian_list_pembelian', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.pembelian.transaksi');
+        // Pembelian
+        Route::prefix('pembelian')
+            ->name('pembelian.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.pembelian.v_pembelian_list_pembelian', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/pembelian/form', function () {
-    return view('atena.pembelian.pembelian.v_pembelian_form_pembelian', [
-        'kodemenu' => request()->kode,
-        'data' => request()->data,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.pembelian.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.pembelian.v_pembelian_form_pembelian', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Retur Pembelian
-Route::get('atena/pembelian/returpembelian/transaksi', function () {
-    return view('atena.pembelian.retur_pembelian.v_pembelian_list_retur_pembelian', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.retur_pembelian.transaksi');
+        // Pembelian - Retur Pembelian
+        Route::prefix('returpembelian')
+            ->name('retur_pembelian.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.retur_pembelian.v_pembelian_list_retur_pembelian', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/returpembelian/form', function () {
-    return view('atena.pembelian.retur_pembelian.v_pembelian_form_retur_pembelian', [
-        'kodemenu' => request()->kode,
-        'data' => request()->data,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.retur_pembelian.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.retur_pembelian.v_pembelian_form_retur_pembelian', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Analisa Pesanan Pembelian
-Route::get('atena/pembelian/analisispo/transaksi', function () {
-    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_list_analisa_pesanan_pembelian', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.analisispo.transaksi');
+        // Pembelian - Analisa Pesanan Pembelian
+        Route::prefix('analisispo')
+            ->name('analisispo.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_list_analisa_pesanan_pembelian', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/analisispo/form', function () {
-    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_form_analisa_pemesanan_pembelian', [
-        'kodemenu' => request()->kode,
-        'data' => request()->data,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.analisispo.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.analisa_pesanan_pembelian.v_pembelian_form_analisa_pemesanan_pembelian', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Uang Muka PO
-Route::get('atena/pembelian/uangmukapo/transaksi', function () {
-    return view('atena.pembelian.uang_muka_po.v_pembelian_list_uang_muka_po', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.uang_muka_po.transaksi');
+        // Pembelian - Uang Muka PO
+        Route::prefix('uangmukapo')
+            ->name('uang_muka_po.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.uang_muka_po.v_pembelian_list_uang_muka_po', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
 
-Route::get('atena/pembelian/uangmukapo/form', function () {
-    return view('atena.pembelian.uang_muka_po.v_pembelian_form_uang_muka_po', [
-        'kodemenu' => request()->kode,
-        'datapo' => request()->datapo,
-        'datauangmukapo' => request()->datauangmukapo,
-        'mode' => request()->mode,
-    ]);
-})->name('atena.pembelian.uang_muka_po.form');
+                Route::get('form', function () {
+                    return view('atena.pembelian.uang_muka_po.v_pembelian_form_uang_muka_po', [
+                        'kodemenu' => request()->kode,
+                        'datapo' => request()->datapo,
+                        'datauangmukapo' => request()->datauangmukapo,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
 
-// Tutup Permintaan Barang
-Route::get('atena/pembelian/tutuppermintaanbarang/transaksi', function () {
-    return view('atena.pembelian.tutup_permintaan_barang.v_pembelian_list_tutup_permintaan_barang', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.tutup_permintaan_barang.transaksi');
+        // Pembelian - Tutup Permintaan Barang
+        Route::prefix('tutuppermintaanbarang')
+            ->name('tutup_permintaan_barang.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.tutup_permintaan_barang.v_pembelian_list_tutup_permintaan_barang', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
+            });
 
-// Tutup Pesanan Pembelian
-Route::get('atena/pembelian/tutuppesananpembelian/transaksi', function () {
-    return view('atena.pembelian.tutup_pesanan_pembelian.v_pembelian_list_tutup_pesanan_pembelian', [
-        'kodemenu' => request()->kode,
-    ]);
-})->name('atena.pembelian.tutup_pesanan_pembelian.transaksi');
+        // Pembelian - Tutup Pesanan Pembelian
+        Route::prefix('tutuppesananpembelian')
+            ->name('tutup_pesanan_pembelian.')
+            ->group(function () {
+                Route::get('transaksi', function () {
+                    return view('atena.pembelian.tutup_pesanan_pembelian.v_pembelian_list_tutup_pesanan_pembelian', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('transaksi');
+            });
+    });

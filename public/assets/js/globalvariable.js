@@ -454,6 +454,8 @@ var link_api = {
     cekBisaBerlanjutPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/cek-bisa-berlanjut`,
     loadDataBBMPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/load-data-bukti-penerimaan-barang`,
     browseBarangPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-barang`,
+    browsePesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-pesanan-pembelian`,
+    laporanPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/laporan`,
     //pembelian
     loadDataHeaderPembelian: `${base_url_api}atena/pembelian/pembelian/load-data-header`,
     loadConfigPembelian: `${base_url_api}atena/pembelian/pembelian/load-config`,

@@ -153,4 +153,32 @@ Route::prefix('atena/laporan')
                     ]);
                 });
             });
+
+        Route::prefix('laporanpenjualan')
+            ->name('laporanpenjualan.')
+            ->group(function () {
+
+                Route::get('laporansalesorder', function () {
+                    return view('atena.laporan.penjualan.v_laporan_sales_order', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporansalesorder');
+
+                // laporandeliveryorder
+                Route::get('laporandeliveryorder', function () {
+                    return view('atena.laporan.penjualan.v_laporan_delivery_order', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporandeliveryorder');
+
+                //atena/laporan/laporanpenjualan/laporanpenjualan
+                Route::get('laporanpenjualan', function () {
+                    return view('atena.laporan.penjualan.v_laporan_penjualan', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpenjualan');
+            });
     });

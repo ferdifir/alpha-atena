@@ -216,6 +216,19 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
       tutupLoader();
     });
+
+    function hideNilaiList(keyKolom = "") {
+      // Hide semua form input nilai
+      $('#hide_nilai_list_merk').hide();
+      $('#hide_nilai_list_barang').hide();
+      $('#hide_nilai_list_kategori').hide();
+
+      // Jika keyKolom tidak kosong, maka show form input nilai berdasarkan keyKolom
+      if (keyKolom != "") {
+        $(keyKolom).show();
+      }
+    }
+
     //FILTER KOLOM
     $("#kolom").combobox({
       onChange: function() {
@@ -227,21 +240,7 @@
 
 
         if (checkData == "Kode" || checkData == "Nama") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-
-          if (namaKolom == 'Merk') {
-            $('#hide_nilai_list_merk').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_kategori').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-          }
+          hideNilaiList('#hide_nilai_list_' + namaKolom.toLowerCase());
 
           tipedata = "STRING";
           $('#lap_operatorString').show();
@@ -259,9 +258,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
+          hideNilaiList();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -289,36 +286,19 @@
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Merk') {
-            $('#hide_nilai_list_merk').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_kategori').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-          }
+          hideNilaiList('#hide_nilai_list_' + namaKolom.toLowerCase());
 
           $('#hide_nilai').hide();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
-
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
+          hideNilaiList();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
+          hideNilaiList();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -337,17 +317,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
+          hideNilaiList();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
+          hideNilaiList();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -549,21 +525,14 @@
         },
         columns: [
           [{
-              field: 'uuidbarang',
-              hidden: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 300,
-              sortable: true
-            },
-          ],
+            field: 'nama',
+            title: 'Nama',
+            width: 300,
+            sortable: true
+          }],
         ],
         onSelect: function(index, data, checkdata) {
-          if (checkData == "Kode") {
-            $('#txt_nilai_list_kategori').combogrid('setValue', data.kode);
-          } else if (checkData == "Nama") {
+          if (checkData == "Nama") {
             $('#txt_nilai_list_kategori').combogrid('setValue', data.nama);
           }
         }
