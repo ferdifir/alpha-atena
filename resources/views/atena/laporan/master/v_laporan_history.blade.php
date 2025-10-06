@@ -95,12 +95,20 @@
     });
 
     function cetakLaporan(excel) {
-    //   parent.buka_laporan(link_api.laporanHistoryProgram, {
-    //     status: $('#cbStatus').combogrid('getValue'),
-    //     data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
-    //     filename: "Laporan History Program",
-    //     excel: excel,
-    //   });
+      let jenistrans = $("#txt_jenistrans").val(); //ANALISIS PO,FAKTUR PAJAK,DELIVERY ORDER,MASTER BARANG
+      jenistrans = jenistrans.split(',');
+      parent.buka_laporan(link_api.laporanHistoryProgram, {
+        tgl: "TGLTRANS",
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        tglawalhistory: $("#txt_tgl_aw_h").datebox('getValue'),
+        tglakhirhistory: $("#txt_tgl_ak_h").datebox('getValue'),
+        user: $("#txt_nilai_user").val(),
+        kode: $("#txt_nilai_kode").val(),
+        jenistransaksi: JSON.stringify(jenistrans),
+        excel: excel,
+        filename: "Laporan History Program"
+      });
     }
 
     // PRINT LAPORAN

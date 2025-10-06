@@ -290,3 +290,11 @@ table.p-0 tr td {
     font-weight: bold;
     padding: 5px;
 }
+
+.hint {
+	background-image: url('../images/tooltip2.png');
+	width           : 12px;
+	height          : 12px;
+	background-size : cover;
+	display         : inline-block
+}

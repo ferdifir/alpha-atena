@@ -2,238 +2,259 @@
 
 @section('content')
   <div class="easyui-layout" style="height:100%; font-weight:bold;" fit="true">
-    <div style="width: 350px;" class="panel-filter-laporan" data-options="region:'west',hideCollapsedContent:false"
+    <div style="width: 360px;overflow-x: hidden;" class="panel-filter-laporan" data-options="region:'west',hideCollapsedContent:false"
       title="{{ $menu }}">
-      <input type="hidden" name="jenis" value="{{ $jenis }}">
-      <div id="tab_transaksi" class="easyui-tabs" style="width:100%;">
-        <div title="Filter Data">
-          <fieldset style="padding: 5px">
-            <legend>Jenis Barcode yang Dicetak</legend>
+      <form method='post' target="LaporanBarang" id="form_input">
+        <input type="hidden" name="jenis" value="{{ $jenis }}">
+        <div id="tab_transaksi" class="easyui-tabs" style="width:100%;">
+          <div title="Filter Data">
+            <fieldset style="padding: 5px">
+              <legend>Jenis Barcode yang Dicetak</legend>
 
-            <input type="radio" value="satuan1" name="satuanbarcode" checked>Satuan 1
-            <input type="radio" value="satuan2" name="satuanbarcode">Satuan 2
-            <input type="radio" value="satuan3" name="satuanbarcode">Satuan 3
-            <br>
-            <input type="radio" value="satuanterbesar" name="satuanbarcode">Satuan Terbesar
-            <input type="radio" value="satuanterkecil" name="satuanbarcode">Satuan Terkecil
-          </fieldset>
-
-          <fieldset style="padding: 5px;">
-            <legend>Bentuk Harga yang Dicetak</legend>
-
-            <td>
-              <input type="radio" name="jeniscetakharga" value="simbol" checked> Simbol
-              <input type="radio" name="jeniscetakharga" value="angka"> Angka
-            </td>
-          </fieldset>
-
-          @if ($jenis == 'hargabeli')
-            <fieldset id="hargabeli-wrapper" style="padding: 5px;">
-              <legend>Harga Beli Diambil dari:</legend>
-
-              <input type="radio" name="jenishargabeli" value="master" checked> Master Barang
-              <input type="radio" name="jenishargabeli" value="beli"> Pembelian
+              <input type="radio" value="satuan1" name="satuanbarcode" checked>Satuan 1
+              <input type="radio" value="satuan2" name="satuanbarcode">Satuan 2
+              <input type="radio" value="satuan3" name="satuanbarcode">Satuan 3
+              <br>
+              <input type="radio" value="satuanterbesar" name="satuanbarcode">Satuan Terbesar
+              <input type="radio" value="satuanterkecil" name="satuanbarcode">Satuan Terkecil
             </fieldset>
-          @elseif($jenis == 'hargajual')
-            <fieldset id="hargajual-wrapper" style="padding: 5px;">
-              <legend>Jenis Harga Jual</legend>
 
-              <table>
-                <tbody>
+            <fieldset style="padding: 5px;">
+              <legend>Bentuk Harga yang Dicetak</legend>
+
+              <td>
+                <input type="radio" name="jeniscetakharga" value="simbol" checked> Simbol
+                <input type="radio" name="jeniscetakharga" value="angka"> Angka
+              </td>
+            </fieldset>
+
+            @if ($jenis == 'hargabeli')
+              <fieldset id="hargabeli-wrapper" style="padding: 5px;">
+                <legend>Harga Beli Diambil dari:</legend>
+
+                <input type="radio" name="jenishargabeli" value="master" checked> Master Barang
+                <input type="radio" name="jenishargabeli" value="beli"> Pembelian
+              </fieldset>
+            @elseif($jenis == 'hargajual')
+              <fieldset id="hargajual-wrapper" style="padding: 5px;">
+                <legend>Jenis Harga Jual</legend>
+
+                <table>
+                  <tbody>
+                    <tr>
+                      <td id="label_laporan">
+                        Jenis
+                      </td>
+                      <td>
+                        <select id="harga" class="easyui-combobox" name="harga" style="width:220px;">
+                          <option value="CUSTOMER">Harga Berdasarkan Customer</option>
+                          <option value="TIPECUSTOMER">Harga Berdasarkan Tipe Customer</option>
+                          <option value="BARANG">Harga Berdasarkan Barang</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr id="pilihcustomer">
+                      <td id="label_laporan">
+                        Customer
+                      </td>
+                      <td>
+                        <div id="hide_nilai_list_customer">
+                          <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:220px"
+                            prompt="Nama Customer" />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr id="pilihtipecustomer">
+                      <td id="label_laporan">
+                        Tipe Cust
+                      </td>
+                      <td>
+                        <div id="hide_nilai_list_tipecustomer">
+                          <input id="txt_nilai_list_tipecustomer" name="txt_nilai_list_tipecustomer" style="width:220px"
+                            prompt="Nama Tipe Customer" />
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td id="label_laporan" style="width:55px">Lokasi Harga Jual</td>
+                      <td><input id="txt_lokasi_hargajual" name="txt_lokasi_hargajual" style="width:220px" /></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </fieldset>
+            @endif
+
+            <fieldset id="tampilan-wrapper" style="padding: 5px;">
+              <legend>Jenis Tampilan Cetak:</legend>
+
+              <input type="radio" name="jenistampilan" value="1" checked> Tampilan 1 <div class="hint"
+                id="hint-tampilan1"></div>
+              <input type="radio" name="jenistampilan" value="2"> Tampilan 2 <div class="hint"
+                id="hint-tampilan2">
+              </div>
+            </fieldset>
+
+            <div id="accordion" class="easyui-accordion" style="margin-top: 5px;">
+              <div title="Berdasarkan Barang">
+                <div style="padding: 5px;">
+                </div>
+
+                <table style="border-bottom:1px #000" id="label_laporan">
                   <tr>
-                    <td id="label_laporan">
-                      Jenis
-                    </td>
+                    <td></td>
                     <td>
-                      <select id="harga" class="easyui-combobox" name="harga" style="width:200px;">
-                        <option value="CUSTOMER">Harga Berdasarkan Customer</option>
-                        <option value="TIPECUSTOMER">Harga Berdasarkan Tipe Customer</option>
-                        <option value="BARANG">Harga Berdasarkan Barang</option>
+                      <a style="float: right;" class="easyui-linkbutton btn_print"
+                        data-options="iconCls:'icon-print'">Cetak</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="label_laporan">Barcode </td>
+                    <td id="label_laporan">
+                      <input style="width: 285px" class="label_input" name="barcode" id="barcode" />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="label_laporan">Status </td>
+                    <td id="label_laporan">
+                      <select style="width: 285px" id="cbStatus" class="easyui-combogrid" name="cbstatus[]">
                       </select>
                     </td>
                   </tr>
-                  <tr id="pilihcustomer">
+                  <tr>
                     <td id="label_laporan">
-                      Customer
+                      Kolom
                     </td>
                     <td>
-                      <div id="hide_nilai_list_customer">
-                        <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:200px"
-                          prompt="Nama Customer" />
+                      <select id="kolom" class="easyui-combobox" name="kolom" style="width:285px;">
+                        <option value="mbarang.kodebarang">Kode Barang</option>
+                        <option value="mbarang.namabarang">Nama Barang</option>
+                      </select>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="label_laporan">
+                      Operator
+                    </td>
+                    <td>
+                      <div id="lap_operatorString">
+                        <select id="operatorString" class="easyui-combobox" name="operatorstring"
+                          style="width:285px;">
+                          <option value="ADALAH">Adalah</option>
+                          <option value="BERISI KATA">Berisi Kata</option>
+                        </select>
+                      </div>
+                      <div id="lap_operatorNumber" hidden>
+                        <select id="operatorNumber" class="easyui-combobox" name="operatornumber"
+                          style="width:285px;">
+                        </select>
                       </div>
                     </td>
                   </tr>
-                  <tr id="pilihtipecustomer">
-                    <td id="label_laporan">
-                      Tipe Cust
-                    </td>
+                  <tr>
+                    <td id="label_laporan" class="label_nilai">Nilai </td>
                     <td>
-                      <div id="hide_nilai_list_tipecustomer">
-                        <input id="txt_nilai_list_tipecustomer" name="txt_nilai_list_tipecustomer" style="width:200px"
-                          prompt="Nama Tipe Customer" />
+                      <div id="hide_nilai" hidden>
+                        <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:285px"
+                          prompt="Nilai">
+                      </div>
+                      <div id="hide_nilai_list_merk" hidden>
+                        <input id="txt_nilai_list_merk" name="txt_nilai_list_merk" style="width:285px"
+                          prompt="Nilai" />
+                      </div>
+                      <div id="hide_nilai_list_barang">
+                        <input id="txt_nilai_list_barang" name="txt_nilai_list_barang" style="width:285px"
+                          prompt="Nilai" />
                       </div>
                     </td>
                   </tr>
                   <tr>
-                    <td id="label_laporan" style="width:55px">Lokasi Harga Jual</td>
-                    <td><input id="txt_lokasi_hargajual" name="txt_lokasi_hargajual" style="width:200px" /></td>
+                    <td id="label_laporan" class="label_nilai">Jumlah </td>
+                    <td>
+                      <input class="number" id="jumlah" style="width:285px">
+                    </td>
                   </tr>
-                </tbody>
-              </table>
-            </fieldset>
-          @endif
-
-          <fieldset id="tampilan-wrapper" style="padding: 5px;">
-            <legend>Jenis Tampilan Cetak:</legend>
-
-            <input type="radio" name="jenistampilan" value="1" checked> Tampilan 1 <div class="hint"
-              id="hint-tampilan1"></div>
-            <input type="radio" name="jenistampilan" value="2"> Tampilan 2 <div class="hint" id="hint-tampilan2">
-            </div>
-          </fieldset>
-
-          <div id="accordion" class="easyui-accordion" style="margin-top: 5px;">
-            <div title="Berdasarkan Barang">
-              <div style="padding: 5px;">
-                <a style="float: right;" class="easyui-linkbutton btn_print" data-options="iconCls:'icon-print'">Cetak</a>
+                  <tr valign="top">
+                    <td colspan="2">
+                      <ul class="easyui-datagrid" title="Parameter Kolom" id="list_filter_laporan" lines="true"
+                        data-options="tools:'#title_parameter'">
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
               </div>
+              <div title="Berdasarkan Penerimaan">
+                <div style="padding: 5px;">
+                </div>
 
-              <table style="border-bottom:1px #000" id="label_laporan">
-                <!-- FILTER LAPORAN -->
-                <tr>
-                  <td id="label_laporan">Barcode </td>
-                  <td id="label_laporan">
-                    <input style="width: 285px" class="label_input" name="barcode" />
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_laporan">Status </td>
-                  <td id="label_laporan">
-                    <select style="width: 285px" id="cbStatus" class="easyui-combogrid" name="cbstatus[]">
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_laporan">
-                    Kolom
-                  </td>
-                  <td>
-                    <select id="kolom" class="easyui-combobox" name="kolom" style="width:285px;">
-                      <option value="mbarang.kodebarang">Kode Barang</option>
-                      <option value="mbarang.namabarang">Nama Barang</option>
-                    </select>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_laporan">
-                    Operator
-                  </td>
-                  <td>
-                    <div id="lap_operatorString">
-                      <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:285px;">
-                        <option value="ADALAH">Adalah</option>
-                        <option value="BERISI KATA">Berisi Kata</option>
-                      </select>
-                    </div>
-                    <div id="lap_operatorNumber" hidden>
-                      <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:285px;">
+                <table style="border-bottom:1px #000" id="label_laporan">
+                  <tr>
+                    <td></td>
+                    <td>
+                      <a style="float: right;" class="easyui-linkbutton btn_print"
+                        data-options="iconCls:'icon-print'">Cetak</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="label_laporan">
+                      No. Trans
+                    </td>
+                    <td>
+                      <input id="txt_nilai_list_bbm" name="txt_nilai_list_bbm" style="width:285px"
+                        prompt="No Bukti Penerimaan" />
+                    </td>
+                  </tr>
 
-                      </select>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_laporan" class="label_nilai">Nilai </td>
-                  <td>
-                    <div id="hide_nilai" hidden>
-                      <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:285px" prompt="Nilai">
-                    </div>
-                    <div id="hide_nilai_list_merk" hidden>
-                      <input id="txt_nilai_list_merk" name="txt_nilai_list_merk" style="width:285px" prompt="Nilai" />
-                    </div>
-                    <div id="hide_nilai_list_barang">
-                      <input id="txt_nilai_list_barang" name="txt_nilai_list_barang" style="width:285px"
-                        prompt="Nilai" />
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td id="label_laporan" class="label_nilai">Jumlah </td>
-                  <td>
-                    <input class="number" id="jumlah" style="width:285px">
-                  </td>
-                </tr>
-                <tr valign="top">
-                  <td colspan="2">
-                    <ul class="easyui-datagrid" title="Parameter Kolom" id="list_filter_laporan" lines="true"
-                      data-options="tools:'#title_parameter'">
-                    </ul>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div title="Berdasarkan Penerimaan">
-              <div style="padding: 5px;">
-                <a style="float: right;" class="easyui-linkbutton btn_print"
-                  data-options="iconCls:'icon-print'">Cetak</a>
+                  <tr valign="top">
+                    <td colspan="2">
+                      <ul class="easyui-datagrid" title="Data Penerimaan" id="list_filter_laporan_penerimaan"
+                        lines="true">
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
               </div>
+              <div title="Berdasarkan Pembelian">
+                <div style="padding: 5px;">
+                </div>
 
-              <table style="border-bottom:1px #000" id="label_laporan">
-                <tr>
-                  <td id="label_laporan">
-                    No. Trans
-                  </td>
-                  <td>
-                    <input id="txt_nilai_list_bbm" name="txt_nilai_list_bbm" style="width:285px"
-                      prompt="No Bukti Penerimaan" />
-                  </td>
-                </tr>
+                <table style="border-bottom:1px #000" id="label_laporan">
+                  <tr>
+                    <td></td>
+                    <td>
+                      <a style="float: right;" class="easyui-linkbutton btn_print"
+                        data-options="iconCls:'icon-print'">Cetak</a>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td id="label_laporan">
+                      No. Trans
+                    </td>
+                    <td>
+                      <input id="txt_nilai_list_beli" name="txt_nilai_list_beli" style="width:285px"
+                        prompt="No Pembelian" />
+                    </td>
+                  </tr>
 
-                <tr valign="top">
-                  <td colspan="2">
-                    <ul class="easyui-datagrid" title="Data Penerimaan" id="list_filter_laporan_penerimaan"
-                      lines="true">
-                    </ul>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <div title="Berdasarkan Pembelian">
-              <div style="padding: 5px;">
-                <a style="float: right;" class="easyui-linkbutton btn_print"
-                  data-options="iconCls:'icon-print'">Cetak</a>
+                  <tr valign="top">
+                    <td colspan="2">
+                      <ul class="easyui-datagrid" title="Data Pembelian" id="list_filter_laporan_beli" lines="true">
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
               </div>
-
-              <table style="border-bottom:1px #000" id="label_laporan">
-                <tr>
-                  <td id="label_laporan">
-                    No. Trans
-                  </td>
-                  <td>
-                    <input id="txt_nilai_list_beli" name="txt_nilai_list_beli" style="width:285px"
-                      prompt="No Pembelian" />
-                  </td>
-                </tr>
-
-                <tr valign="top">
-                  <td colspan="2">
-                    <ul class="easyui-datagrid" title="Data Pembelian" id="list_filter_laporan_beli" lines="true">
-                    </ul>
-                  </td>
-                </tr>
-              </table>
             </div>
           </div>
-        </div>
-        <div title="Pengaturan Simbol" id="Pengaturan Simbol" style="padding: 5px;">
-          <a style="margin-bottom: 5px;" class="easyui-linkbutton" data-options="iconCls:'icon-save'"
-            onclick="simpan_simbol_harga()">Simpan</a>
+          <div title="Pengaturan Simbol" id="Pengaturan Simbol" style="padding: 5px;">
+            <a style="margin-bottom: 5px;" class="easyui-linkbutton" data-options="iconCls:'icon-save'"
+              onclick="simpan_simbol_harga()">Simpan</a>
 
-          <div id="datagrid-simbol"></div>
+            <div id="datagrid-simbol"></div>
+          </div>
         </div>
-      </div>
 
-      <br>
+        <br>
+      </form>
     </div>
     <div data-options="region:'center'">
       <div class="easyui-layout" style="width: 100%;height: 100%">
@@ -286,55 +307,6 @@
         precision: 0
       });
       $('#jumlah').numberbox('setValue', 1);
-
-      $('#accordion').accordion({
-        onSelect: function(title, index) {
-          jeniscetak = title;
-
-          if (title == 'Berdasarkan Barang') {
-            kolom = "Kode Barang";
-            namaKolom = "Barang";
-            kolomVal = "mbarang.kodebarang"
-            checkData = "Kode";
-            operator = "Adalah";
-            operatorVal = "ADALAH";
-            tipedata = "STRING";
-
-            $("#data_tampil").val('BARANG');
-
-            $('[name="jenishargabeli"][value="master"]').prop('checked', true);
-          } else if (title == 'Berdasarkan Penerimaan') {
-            kolom = "Kode Penerimaan";
-            namaKolom = "Penerimaan";
-            kolomVal = "tbbm.kodebbm"
-            checkData = "Kode";
-            operator = "Adalah";
-            operatorVal = "ADALAH";
-            tipedata = "STRING";
-
-            $("#data_tampil").val('BBM');
-
-            $('[name="jenishargabeli"][value="master"]').prop('checked', true);
-          } else if (title == 'Berdasarkan Pembelian') {
-            kolom = "Kode Pembelian";
-            namaKolom = "Pembelian";
-            kolomVal = "tbeli.kodebeli"
-            checkData = "Kode";
-            operator = "Adalah";
-            operatorVal = "ADALAH";
-            tipedata = "STRING";
-
-            $("#data_tampil").val('BELI');
-          }
-
-          $('#list_filter_laporan').datagrid('loadData', []);
-
-          index_filter_barang = null;
-        },
-        onUnselect: function(title, index) {
-          jeniscetak = null;
-        }
-      });
 
       $("#data_tampil").val('BARANG');
 
@@ -414,7 +386,6 @@
               title: 'Jml',
               width: 50,
               align: 'right',
-              // formatter: format_qty,
               editor: {
                 type: 'numberbox',
                 options: {
@@ -476,7 +447,6 @@
               title: 'Jml Cetak',
               width: 50,
               align: 'right',
-              // formatter: 0,
               editor: {
                 type: 'numberbox',
                 options: {
@@ -582,6 +552,55 @@
           }
         }
       }).datagrid('enableCellEditing');
+
+      $('#accordion').accordion({
+        onSelect: function(title, index) {
+          jeniscetak = title;
+
+          if (title == 'Berdasarkan Barang') {
+            kolom = "Kode Barang";
+            namaKolom = "Barang";
+            kolomVal = "mbarang.kodebarang"
+            checkData = "Kode";
+            operator = "Adalah";
+            operatorVal = "ADALAH";
+            tipedata = "STRING";
+
+            $("#data_tampil").val('BARANG');
+
+            $('[name="jenishargabeli"][value="master"]').prop('checked', true);
+          } else if (title == 'Berdasarkan Penerimaan') {
+            kolom = "Kode Penerimaan";
+            namaKolom = "Penerimaan";
+            kolomVal = "tbbm.kodebbm"
+            checkData = "Kode";
+            operator = "Adalah";
+            operatorVal = "ADALAH";
+            tipedata = "STRING";
+
+            $("#data_tampil").val('BBM');
+
+            $('[name="jenishargabeli"][value="master"]').prop('checked', true);
+          } else if (title == 'Berdasarkan Pembelian') {
+            kolom = "Kode Pembelian";
+            namaKolom = "Pembelian";
+            kolomVal = "tbeli.kodebeli"
+            checkData = "Kode";
+            operator = "Adalah";
+            operatorVal = "ADALAH";
+            tipedata = "STRING";
+
+            $("#data_tampil").val('BELI');
+          }
+
+          $('#list_filter_laporan').datagrid('loadData', []);
+
+          index_filter_barang = null;
+        },
+        onUnselect: function(title, index) {
+          jeniscetak = null;
+        }
+      });
 
       $('#cbStatus').combogrid({
         idField: 'value',
@@ -824,11 +843,6 @@
       if (checknilai == 1) {
         var text_laporan = kolom + " " + operator + " " + nilai;
 
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
-
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
           kolom: kolomVal,
@@ -853,25 +867,23 @@
       }
     });
 
-    function cetakLaporanBarcodeBarang(excel) {
-      const filter =
-        "[{\"tipedata\":\"STRING\",\"kolom\":\"mbarang.kodebarang\",\"operator\":\"\",\"nilai\":\"\",\"text\":\"Kode Barang Adalah ACOST10\"}]";
+    function cetakLaporanBarcodeBarang(filter, data_tampil) {
       parent.buka_laporan(link_api.laporanBarcodeBarang, {
-        "status": "1",
-        "data_filter": filter,
-        "filename": "Laporan Barcode Barang",
-        "excel": "tidak",
-        "harga": "CUSTOMER",
-        "uuidcustomer": "a420dd87-63aa-11f0-92f3-1c1b0d80570e",
-        "uuidtipecustomer": "1d44b56b-62e4-11f0-870c-1c1b0d80570e",
-        "uuidlokasi_hargajual": "852ad885-62d6-11f0-870c-1c1b0d80570e",
-        "satuanbarcode": "satuan1",
-        "data_tampil": "BARANG",
-        "jeniscetakharga": "angka",
-        "jenis": "HARGAJUAL",
-        "jenishargabeli": null,
-        "jenistampilan": 2,
-        "barcode": "726165281091"
+        status: $('#cbStatus').combogrid('getValue'),
+        data_filter: JSON.stringify($("#" + filter).datagrid('getChecked')),
+        data_tampil: data_tampil,
+        filename: "Laporan Barcode Barang",
+        excel: "tidak",
+        harga: $('#harga').combogrid('getValue'),
+        uuidcustomer: $('#txt_nilai_list_customer').combogrid('getValue'),
+        uuidtipecustomer: $('#txt_nilai_list_tipecustomer').combogrid('getValue'),
+        uuidlokasi_hargajual: $('#txt_lokasi_hargajual').combogrid('getValue'),
+        satuanbarcode: $('[name="satuanbarcode"]:checked').val(),
+        jeniscetakharga: $('[name="jeniscetakharga"]:checked').val(),
+        jenis: $('[name="jenis"]').val(),
+        jenishargabeli: $('[name="jenishargabeli"]:checked').val(),
+        jenistampilan: $('[name="jenistampilan"]:checked').val(),
+        barcode: $('#barcode').val()
       });
     }
 
@@ -911,7 +923,10 @@
           }
         @endif
 
-        cetakLaporanBarcodeBarang("tidak");
+        cetakLaporanBarcodeBarang(
+          "list_filter_laporan",
+          "BARANG"
+        );
 
         return false;
 
@@ -947,7 +962,10 @@
           }
         @endif
 
-        cetakLaporanBarcodeBarang("tidak");
+        cetakLaporanBarcodeBarang(
+          "list_filter_laporan_penerimaan",
+          "BBM"
+        );
 
         return false;
       } else if (jeniscetak == 'Berdasarkan Pembelian') {
@@ -982,14 +1000,19 @@
           }
         @endif
 
-        cetakLaporanBarcodeBarang("tidak");
+        cetakLaporanBarcodeBarang(
+          "list_filter_laporan_beli",
+          "BELI"
+        );
 
         return false;
       }
     });
 
     async function simpan_simbol_harga() {
-      var data = $('#datagrid-simbol').datagrid('getRows');
+      var data = {
+        data: $('#datagrid-simbol').datagrid('getRows')
+      };
       try {
         const response = await fetch(
           link_api.simpanSimbolHarga, {
@@ -1119,7 +1142,7 @@
       $(id).combogrid({
         panelWidth: 740,
         url: link_api.browseCustomer,
-        idField: 'id',
+        idField: 'uuidcustomer',
         textField: 'nama',
         mode: 'remote',
         sortOrder: 'asc',
@@ -1294,7 +1317,7 @@
             },
             body: JSON.stringify({
               uuidbbm: id,
-              satuanbarcode: $('[name="satuanbarcode"]:checked').val()
+              //   satuanbarcode: $('[name="satuanbarcode"]:checked').val()
             })
           }
         );

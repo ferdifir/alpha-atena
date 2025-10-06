@@ -421,6 +421,14 @@
     <input type="hidden" name="jenishargabeli">
     <input type="hidden" name="jeniscetakharga">
     <input type="hidden" name="barcode">
+    {{-- History Program --}}
+    <input type="hidden" name="tgl">
+    <input type="hidden" name="tglawal">
+    <input type="hidden" name="tglakhir">
+    <input type="hidden" name="tglawalhistory">
+    <input type="hidden" name="tglakhirhistory">
+    <input type="hidden" name="user">
+    <input type="hidden" name="jenistransaksi">
   </form>
 
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
