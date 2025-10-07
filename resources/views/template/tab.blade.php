@@ -795,7 +795,7 @@
         return;
       }
       counter++;
-      var tab_title = payload.filename || payload.file_name;
+      var tab_title = payload.filename;
       const counterTerbesar = getCounterTerbesar(tab_title);
       var newLapCounter = counterTerbesar + 1;
       counterLaporan[tab_title] = newLapCounter;

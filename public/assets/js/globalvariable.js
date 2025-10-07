@@ -94,6 +94,8 @@ var link_api = {
     browseKotaCustomer: `${base_url_api}atena/master/customer/browse-kota`,
     browsePropinsiCustomer: `${base_url_api}atena/master/customer/browse-propinsi`,
     laporanCustomer: `${base_url_api}atena/master/customer/laporan`,
+    browsePajakCustomer: `${base_url_api}atena/master/customer/browse-pajak`,
+    browseGridIdentitasCustomer: `${base_url_api}atena/master/customer/browse-identitas`,
     //ekspedisi
     loadDataGridMasterEkspedisi: `${base_url_api}atena/master/ekspedisi/load-data-grid`,
     browseBadanUsahaEkspedisi: `${base_url_api}atena/master/ekspedisi/browse-badan-usaha`,
@@ -247,6 +249,8 @@ var link_api = {
     loadDataGridSimbolHarga: `${base_url_api}atena/master/simbol-harga/load-data-grid`,
     simpanSimbolHarga: `${base_url_api}atena/master/simbol-harga/simpan`,
     laporanBarcodeBarang: `${base_url_api}atena/master/barang/laporan-barcode-barang`,
+    browseGridBarcodeBarang: `${base_url_api}atena/master/barang/browse-barcode`,
+    browseGridPartNumber: `${base_url_api}atena/master/barang/browse-part-number`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,
@@ -504,6 +508,8 @@ var link_api = {
     browseBarangPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
     browseBarangSO: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang`,
     loadDataRekapPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/load-data-rekap`,
+    browsePesananPenjualan: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-pesanan-penjualan`,
+    laporanPenjualanSalesOrder: `${base_url_api}atena/penjualan/pesanan-penjualan/laporan`,
     //Penjualan Delivery Order
     loadDataGridPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid`,
     loadDataGridPendingPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-grid-pending`,
@@ -519,6 +525,8 @@ var link_api = {
     browseBarangDO: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-barang`,
     loadDataDetailPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/load-data-detail`,
     browseBBKPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-bukti-pengeluaran-barang`,
+    browsePesananPengiriman: `${base_url_api}atena/penjualan/pesanan-pengiriman/browse-pesanan-pengiriman`,
+    laporanPenjualanDeliveryOrder: `${base_url_api}atena/penjualan/pesanan-pengiriman/laporan`,
     //Retur Pembelian
     cekBisaBerlanjutReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/cek-bisa-berlanjut`,
     browseBBKReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/browse-bukti-pengeluaran-barang`,
@@ -623,6 +631,8 @@ var link_api = {
     loadDataRekapPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-rekap`,
     browseOrderJual: `${base_url_api}atena/penjualan/order-penjualan/browse`,
     loadDataHeaderPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-header`,
+    browseGridJual: `${base_url_api}atena/penjualan/penjualan/browse-jual`,
+    laporanPenjualan: `${base_url_api}atena/penjualan/penjualan/laporan`,
     // pembelian retur pembelian
     loadDataHeaderReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-data-header`,
     loadConfigReturPembelian: `${base_url_api}atena/pembelian/retur-pembelian/load-config`,
@@ -657,6 +667,7 @@ var link_api = {
     cekBisaBerlanjutReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cek-bisa-berlanjut`,
     browseBarangReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/browse-barang-bukti-penerimaan-barang`,
     loadDataBBMReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-bukti-penerimaan-barang`,
+    browseGridReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/browse-retur-jual`,
     //Uang Muka SO
     loadDataGridUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-data-grid`,
     loadDaftarUangMukaSO: `${base_url_api}atena/penjualan/uang-muka-pesanan-penjualan/load-daftar-uang-muka`,

@@ -145,7 +145,23 @@
     var checkData = "Kode";
     var operator = "Adalah";
     var operatorVal = "ADALAH";
-    var tipedata = "STRING"
+    var tipedata = "STRING";
+    const fieldMap = {
+      'Barang': '#hide_nilai_list_barang',
+      'Supplier': '#hide_nilai_list_supplier',
+      'Pembelian': '#hide_nilai_list_beli',
+      'Retur Pembelian': '#hide_nilai_list_retur_beli',
+      'Kategori': '#hide_nilai_list_kategori',
+      'Merk': '#hide_nilai_list_merk'
+    };
+    const allFields = [
+      '#hide_nilai_list_barang',
+      '#hide_nilai_list_supplier',
+      '#hide_nilai_list_beli',
+      '#hide_nilai_list_retur_beli',
+      '#hide_nilai_list_kategori',
+      '#hide_nilai_list_merk'
+    ].join(', ');
 
     $(document).ready(async function() {
       isiOperatorLaporan("String", "operatorString");
@@ -370,48 +386,10 @@
 
         if (checkData == "Kode" || checkData == "Nama") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Supplier') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').show();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Pembelian') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').show();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Retur Pembelian') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').show();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').show();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Merk') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').show();
+          $(allFields).hide();
+          const fieldToShow = fieldMap[namaKolom];
+          if (fieldToShow) {
+            $(fieldToShow).show();
           }
 
           tipedata = "STRING";
@@ -429,12 +407,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_beli').hide();
-          $('#hide_nilai_list_retur_beli').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
-          $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -465,64 +438,23 @@
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Supplier') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').show();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Pembelian') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').show();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Retur Pembelian') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').show();
-            $('#hide_nilai_list_kategori').hide();
-            $('#hide_nilai_list_merk').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_beli').hide();
-            $('#hide_nilai_list_retur_beli').hide();
-            $('#hide_nilai_list_kategori').show();
-            $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
+          const fieldToShow = fieldMap[namaKolom];
+          if (fieldToShow) {
+            $(fieldToShow).show();
           }
 
           $('#hide_nilai').hide();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
-          $('#hide_nilai_list_retur_beli').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_beli').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
-          $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_retur_beli').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_beli').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
-          $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -541,23 +473,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_retur_beli').hide();
-          $('#hide_nilai_list_marketing').hide();
-          $('#hide_nilai_list_beli').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
-          $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_retur_beli').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_beli').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_kategori').hide();
-          $('#hide_nilai_list_merk').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();

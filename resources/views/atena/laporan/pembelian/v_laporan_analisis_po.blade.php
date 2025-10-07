@@ -447,7 +447,7 @@
         tglawal: $('#txt_tgl_aw').datebox('getValue'),
         tglakhir: $('#txt_tgl_ak').datebox('getValue'),
         excel: excel,
-        file_name: "Laporan Analisis PO"
+        filename: "Laporan Analisis PO"
       });
     }
 

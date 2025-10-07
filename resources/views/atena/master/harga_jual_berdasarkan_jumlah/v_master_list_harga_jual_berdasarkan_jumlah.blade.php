@@ -601,7 +601,7 @@
         sortOrder: 'asc',
         columns: [
           [{
-              field: 'id',
+              field: 'uuidbarang',
               hidden: true
             },
             {
