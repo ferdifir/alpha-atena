@@ -150,9 +150,9 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.kodetrans,
+            parent.buka_submenu(null, row.kodedebetnote,
                 '{{ route('atena.keuangan.debet_note.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.kodetrans,
+                row.uuiddebetnote,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -189,16 +189,16 @@ async function batal_trans() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
+        var statusTrans = await getStatusTrans(link_api.getStatusDebetNote,
             'bearer {{ session('TOKEN') }}', {
-                uuidkas: row.uuidkas
+                uuiddebetnote: row.uuiddebetnote
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransaksiKas;
+                        let url = link_api.batalDebetNote;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -206,8 +206,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidkas: row.uuidkas,
-                                kodekas: row.kodekas,
+                                uuiddebetnote: row.uuiddebetnote,
+                                kodedebetnote: row.kodedebetnote,
                                 alasan: alasan,
                             }),
                         }).then(response => {
@@ -272,17 +272,17 @@ function buat_table() {
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
 		frozenColumns:[[
-			{field:'jenistransaksi',title:'Jenis Transaksi',width:120, sortable:true,},
-			{field:'kodetrans',title:'No. Transaksi',width:120, sortable:true,},
+			{field:'kodedebetnote',title:'No. Faktur',width:100, sortable:true,},
+			{field:'namalokasi',title:'Lokasi',width:120, sortable:true,},
+			{field:'namasupplier',title:'Supplier',width:300, sortable:true,},
+			{field:'tgltrans', title:'Tgl. Trans', align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,}
 		]],
 		columns:[[
-			{field:'namalokasi',title:'Lokasi',width:140, sortable:true,},
-			{field:'kodecustomer',title:'Kd. Customer',width:140, sortable:true,},
-			{field:'namacustomer',title:'Customer',width:250, sortable:true,},
-			{field:'tgltrans', title:'Tgl. Trans', align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,},
-			{field:'tgljatuhtempo', title:'Tgl. Jth Tempo',align:'center',width:90, sortable:true, formatter:ubah_tgl_indo,},
-			{field:'grandtotal', title:'Nominal Piutang',width:120, sortable:true, align:'right', formatter:format_amount,},
-			{field:'catatan',title:'Catatan',width:400, sortable:true,},
+			{field:'catatan',title:'Keterangan',width:400,sortable:true},
+			{field:'amount',title:'Nominal',width:110,sortable:true,formatter:format_amount, align:'right'},
+			{field:'userentry',title:'User',width:100,sortable:true},
+			{field:'tglentry',title:'Tgl. Input',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
+			{field:'status',title:'Status',width:50,sortable:true,align:'center'},
 		]],
 		onDblClickRow: function (index, data) {
 			before_edit();

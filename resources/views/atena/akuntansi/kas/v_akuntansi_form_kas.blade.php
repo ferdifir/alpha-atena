@@ -897,7 +897,6 @@ function browse_data_kas_bank(id,jeniskas) {
 	$(id).combogrid({
 		panelWidth: 370,
 		url       : link_api.browsePerkiraan,
-		url       : link_api.browsePerkiraan,
 		queryParams     : {
 			jenis: jeniskas,
 			aktif: 1

@@ -27,9 +27,9 @@
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
                     <tr><td id="label_form" align="center">Tgl. Pelunasan</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px" class="date" /></td></tr>
                     <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px" class="date" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
                     <tr><td id="label_form" align="center">Lokasi</td></tr>
                     <tr><td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td></tr>
@@ -37,16 +37,19 @@
                     <tr><td id="label_form" align="center">No. Pelunasan</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Supplier</td></tr>
-                    <tr><td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px" class="label_input" /></td></tr>
+                    <tr><td id="label_form" align="center">Customer</td></tr>
+                    <tr><td align="center"><input id="txt_nama_customer_filter" name="txt_nama_customer_filter" style="width:100px" class="label_input" /></td></tr>
+                    <tr><td id="label_form"><br></td></tr>
+                    <tr><td id="label_form" align="center">Kota</td></tr>
+                    <tr><td align="center"><input id="txt_kota" name="txt_kota" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
                     <tr><td align="center">
-                        <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                        <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                        <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                        <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+                            <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
+                            <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
+                            <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
+                            <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
                     </td></tr>
-                    <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
+                    <tr><td align="center"><a id="btn_search" class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
             </div>
             <div data-options="region:'center'">
@@ -154,8 +157,8 @@ function before_add() {
     $('#mode').val('tambah');
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Pelunasan Hutang }}',
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Pelunasan Piutang',
+                '{{ route('atena.keuangan.pelunasan_piutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -168,9 +171,9 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.kodepelunasan_hutang,
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.uuidkas,
+            parent.buka_submenu(null, row.kodepelunasan,
+                '{{ route('atena.keuangan.pelunasan_piutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                row.uuidpelunasan,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -216,19 +219,19 @@ async function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
+            var statusTrans = await getStatusTrans(link_api.getStatusPelunasanPiutang,
                 'bearer {{ session('TOKEN') }}', {
-                    uuidkas: row.uuidkas
+                    uuidpelunasan: row.uuidpelunasan
                 });
-            var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
+            var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
             if (statusTrans == 'I') {
-                var kode = row.kodekas;
+                var kode = row.kodepelunasan;
                 if (checkTabAvailable) {
                     $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipKas;
+                        let url = link_api.ubahStatusjadiSlipPelunasanPiutang;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -236,8 +239,8 @@ async function before_print() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidkas: row.uuidkas,
-                                kodekas: row.kodekas,
+                                uuidpelunasan: row.uuidpelunasan,
+                                kodepelunasan: row.kodepelunasan,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -249,7 +252,7 @@ async function before_print() {
                         })
 
                         if (response.success) {
-                            await cetak(row.uuidkas);
+                            await cetak(row.uuidpelunasan);
                             refresh_data();
                         } else {
                             $.messager.alert('Error', response.message, 'error');
@@ -260,7 +263,7 @@ async function before_print() {
                     }
                 }
             } else if (statusTrans == 'S' || statusTrans == 'P') {
-                await cetak(row.uuidkas);
+                await cetak(row.uuidpelunasan);
             } else {
                 $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
             }
@@ -276,23 +279,23 @@ async function batal_trans() {
     if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodekas +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepelunasan +
                 ', Sebelum Dibatalkan ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanPiutang,
             'bearer {{ session('TOKEN') }}', {
-                uuidkas: row.uuidkas
+                uuidpelunasan: row.uuidpelunasan
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalTransaksiKas;
+                        let url = link_api.batalPelunasanPiutang;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -300,8 +303,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidkas: row.uuidkas,
-                                kodekas: row.kodekas,
+                                uuidpelunasan: row.uuidpelunasan,
+                                kodepelunasan: row.kodepelunasan,
                                 alasan: alasan,
                             }),
                         }).then(response => {
@@ -338,23 +341,23 @@ async function batal_cetak() {
     if (row) {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodekas, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodekas +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepelunasan +
                 ', Sebelum Dibatal cetak ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusTransaksiKas,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanPiutang,
             'bearer {{ session('TOKEN') }}', {
-                uuidkas: row.uuidkas
+                uuidpelunasan: row.uuidpelunasan
             });
         if (statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputKas;
+                        let url = link_api.ubahStatusjadiInputPelunasanPiutang;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -362,8 +365,8 @@ async function batal_cetak() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidkas: row.uuidkas,
-                                kodekas: row.kodekas,
+                                uuidpelunasan: row.uuidpelunasan,
+                                kodepelunasan: row.kodepelunasan,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -398,7 +401,7 @@ async function cetak(uuidtrans) {
     bukaLoader();
     if (row) {
         try {
-            let url = link_api.cetakTransaksiKas + uuidtrans;
+            let url = link_api.cetakPelunasanPiutang + uuidtrans;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -406,7 +409,7 @@ async function cetak(uuidtrans) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    uuidkas: uuidtrans,
+                    uuidpelunasan: uuidtrans,
                 }),
             }).then(response => {
                 if (!response.ok) {
@@ -446,11 +449,12 @@ function filter_data() {
 	});
 	$('#table_data').datagrid('load',{
 		kodetrans: $('#txt_kodetrans_filter').val(),
-		referensi: $('#txt_nama_supplier_filter').val(),
+		referensi: $('#txt_nama_customer_filter').val(),
 		tglawal  : $('#txt_tgl_aw_filter').datebox('getValue'),
 		tglakhir : $('#txt_tgl_ak_filter').datebox('getValue'),
-		status   : status,
-		lokasi   : lokasi,
+		kota	 : $('#txt_kota').textbox('getValue'),
+		status	 : status,
+		lokasi	 : lokasi
 	});
 }
 
@@ -463,7 +467,7 @@ function buat_table() {
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadDataGridPelunasanHutang,
+        url         : link_api.loadDataGridPelunasanPiutang,
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {
@@ -476,14 +480,12 @@ function buat_table() {
 			{field:'kodepelunasan',title:'No. Pelunasan',width:150,sortable:true},
 			{field:'kodelokasi',title:'Lokasi',width:60,sortable:true,align:'center'},
 			{field:'namalokasi',title:'Nama Lokasi',width:120,sortable:true,align:'center'},
-			{field:'namasupplier',title:'Nama Supplier',width:150,sortable:true},
-			{field:'kodetandaterima',title:'No. TT',width:150,sortable:true},
-			{field:'kodekasbank',title:'No. Perkiraan',width:100,sortable:true},
-			//{field:'KODEKAS',title:'Kd. Kas/Bank',width:120,sortable:true},
-			//{field:'KODEMEMO',title:'Giro Trans ID',width:120,sortable:true},
-			//{field:'NOGIRO',title:'Giro Number',width:100,sortable:true},
+			{field:'namacustomer',title:'Nama Customer',width:180,sortable:true},
+			{field:'kota',title:'Kota',width:100,sortable:true},
 			{field:'total',title:'Nominal',width:110,sortable:true,formatter:format_amount, align:'right'},
+			{field:'kodekasbank',title:'No. Perkiraan',width:100,sortable:true},
 			{field:'catatan',title:'Keterangan',width:250,sortable:true},
+			{field:'catatan2',title:'Catatan',width:250,sortable:true},
 			{field:'userbuat',title:'User Entry',width:100,sortable:true},
 			{field:'tglentry',title:'Tgl. Input',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
 			{field:'userhapus',title:'User Batal',width:100,sortable:true},

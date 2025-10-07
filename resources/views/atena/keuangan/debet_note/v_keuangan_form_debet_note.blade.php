@@ -6,9 +6,6 @@
 		<div class="easyui-layout" fit="true" >
 			<div data-options="region:'center',border:false ">
 				<div class="easyui-layout" style="height:100%" id="trans_layout" >
-					<script>
-						if(screen.height <= 1080) $("#trans_layout").css('height',"350px");
-					</script>
 					<div data-options="region:'north',border:false" style="width:100%; height:200px;">
 						<div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;" ></div>
 						
@@ -167,7 +164,7 @@ async function ubah() {
 	const response = await fetchData(
 			'{{ session('TOKEN') }}',
 			link_api.loadDataHeaderDebetNote, {
-			kodetrans: '{{ $data }}'
+			uuiddebetnote: '{{ $data }}'
 		}
 	);
 	if(response.success) {
@@ -180,8 +177,9 @@ async function ubah() {
 		get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
 			data = data.data;
 			var UT = data.ubah;
-			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/nota-debit", "kodetrans", row.kodetrans, function(data) {
-
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/nota-debit", "uuiddebetnote", row.uuiddebetnote, function(data) {
+				
+				$(".form_status").html(status_transaksi(data.data.status)); 
 				if (UT == 1 && data.data.status == 'I') {
 					document.getElementById('btn_simpan').onclick = simpan; $('#btn_simpan').css('filter', '');
 					$('#mode').val('ubah');
@@ -194,8 +192,7 @@ async function ubah() {
 				$('#lbl_kasir').html(row.userentry);
 				$('#lbl_tanggal').html(row.tglentry);
 				
-				//get_combogrid_data ($('#UUIDSUPPLIER'), row.UUIDSUPPLIER, 'customer');
-				$('#UUIDSUPPLIER').combogrid('setValue', {uuid: row.uuidsupplier, nama: row.namasupplier})
+				$('#UUIDSUPPLIER').combogrid('setValue', {uuidsupplier: row.uuidsupplier, nama: row.namasupplier})
 			});
 		});
 	}
@@ -247,7 +244,6 @@ async function simpan() {
 
 					if (mode == "tambah") {
 							await tambah();
-							$('#table_data_detail').datagrid('loadData', []);
 					} else {
 							await ubah();
 					}

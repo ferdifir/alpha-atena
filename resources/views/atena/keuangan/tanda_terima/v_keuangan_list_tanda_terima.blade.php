@@ -23,28 +23,31 @@
 
     <div data-options="region: 'center'">
         <div class="easyui-layout" fit="true">
-            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
+            <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;"  align="center">
                 <table border="0">
                     <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Tgl. Pelunasan</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" /></td></tr>
+                    <tr><td id="label_form" align="center">Tgl. Input</td></tr>
+                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px" class="date"/></td></tr>
                     <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" /></td></tr>
+                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px" class="date"/></td></tr>
                     <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Lokasi</td></tr>
-                    <tr><td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td></tr>
-                    <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">No. Pelunasan</td></tr>
+                    <tr><td id="label_form" align="center">No. Trans</td></tr>
                     <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
                     <tr><td id="label_form" align="center">Supplier</td></tr>
-                    <tr><td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px" class="label_input" /></td></tr>
+                    <tr><td align="center"><input id="txt_referensi_filter" name="txt_referensi_filter" style="width:100px" class="label_input" /></td></tr>
                     <tr><td id="label_form"><br></td></tr>
+                    <tr><td id="label_form" align="center">Status</td></tr>
                     <tr><td align="center">
-                        <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                        <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                        <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                        <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+                        <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I (Input)</label>
+                        <br>
+                        <label id="label_form" style="background-color: {{ session('WARNA_STATUS_S') }}"><input type="checkbox" value="S" name="cb_status_filter[]"> S (Cetak)</label>
+                        <br>
+                        <label id="label_form" style="background-color:#F775CC"><input type="checkbox" value="R" name="cb_status_filter[]"> R (Approve)</label>
+                        <br>
+                        <label id="label_form" style="background-color: {{ session('WARNA_STATUS_P') }}"><input type="checkbox" value="T" name="cb_status_filter[]"> T (Tuntas)</label>
+                        <br>
+                        <label id="label_form" style="background-color: {{ session('WARNA_STATUS_D') }}"><input type="checkbox" value="D" name="cb_status_filter[]"> D (Batal)</label>
                     </td></tr>
                     <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
                 </table>
@@ -98,8 +101,8 @@ var counter = 0;
 var row = {};
 
 $(document).ready( function() {
-	browse_data_lokasi('#txt_lokasi');
-	
+	//WAKTU BATAL DI GRID, tidak bisa close
+	//PRINT GRID
 	$("#table_data").datagrid({
 		onSelect: function() {
 			row = $('#table_data').datagrid('getSelected');
@@ -109,13 +112,13 @@ $(document).ready( function() {
 	create_form_login();
 	buat_table();
 
-    $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
+	$("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
 
-	$("#alasan_pembatalan").dialog({
+	$("#form_input").dialog({
 		onOpen: function() {
-			$('#alasan_pembatalan').form('clear');
+			$('#form_input').form('clear');
 		},
-		buttons: '#alasan_pembatalan-buttons',
+		buttons: '#dlg-buttons'
 	}).dialog('close');
 
 	$("#form_cetak").window({
@@ -131,31 +134,53 @@ $(document).ready( function() {
 					closed: true
 				});
 			}
-		},{
+		}, {
 			text   : '',
 			iconCls: 'icon-excel',
 			handler: function() {
-				export_excel('Faktur Pelunasan Hutang', $("#area_cetak").html());
+				export_excel('Faktur Keuangan Tanda Terima', $("#area_cetak").html());
 				return false;
 			}
 		}]
 	}).window('close');
 
-    tutupLoader();
+	$("#alasan_pembatalan").dialog({
+		onOpen: function() {
+			$('#alasan_pembatalan').form('clear');
+		},
+		buttons: '#alasan_pembatalan-buttons',
+	}).dialog('close');
+
+	tutupLoader();
+	
 });
 
-/*==================== FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER ===================*/
+/* FUNGSI YG BERHUBUNGAN DG INFORMASI HEADER */
 
-shortcut.add('F2',function() {
+shortcut.add('F2', function() {
 	before_add();
 });
+
+function disable_button() {
+	$('#btn_refresh').linkbutton('disable');
+	$('#btn_batal').linkbutton('disable')
+	$('#btn_cetak').linkbutton('disable')
+	$('#btn_batal_cetak').linkbutton('disable')
+}
+
+function enable_button() {
+	$('#btn_refresh').linkbutton('enable');
+	$('#btn_batal').linkbutton('enable')
+	$('#btn_cetak').linkbutton('enable')
+	$('#btn_batal_cetak').linkbutton('enable')
+}
 
 function before_add() {
     $('#mode').val('tambah');
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Pelunasan Hutang',
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Tagihan Pemasok',
+                '{{ route('atena.keuangan.tanda_terima.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -168,9 +193,9 @@ function before_edit() {
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
-            parent.buka_submenu(null, row.kodepelunasan,
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
-                row.uuidpelunasan,
+            parent.buka_submenu(null, row.kodetandaterima,
+                '{{ route('atena.keuangan.tanda_terima.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                row.uuidtandaterima,
                 'fa fa-pencil');
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -216,19 +241,19 @@ async function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+            var statusTrans = await getStatusTrans(link_api.getStatusTandaTerima,
                 'bearer {{ session('TOKEN') }}', {
-                    uuidpelunasan: row.uuidpelunasan
+                    uuidtandaterima: row.uuidtandaterima
                 });
-            var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
+            var checkTabAvailable = parent.check_tab_exist(row.kodetandaterima, 'fa fa-pencil');
             if (statusTrans == 'I') {
-                var kode = row.kodepelunasan;
+                var kode = row.kodetandaterima;
                 if (checkTabAvailable) {
                     $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' +
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipPelunasanHutang;
+                        let url = link_api.ubahStatusjadiSlipTandaTerima;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -236,8 +261,8 @@ async function before_print() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidpelunasan: row.uuidpelunasan,
-                                kodepelunasan: row.kodepelunasan,
+                                uuidtandaterima: row.uuidtandaterima,
+                                kodetandaterima: row.kodetandaterima,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -249,7 +274,7 @@ async function before_print() {
                         })
 
                         if (response.success) {
-                            await cetak(row.uuidpelunasan);
+                            await cetak(row.uuidtandaterima);
                             refresh_data();
                         } else {
                             $.messager.alert('Error', response.message, 'error');
@@ -260,7 +285,7 @@ async function before_print() {
                     }
                 }
             } else if (statusTrans == 'S' || statusTrans == 'P') {
-                await cetak(row.uuidpelunasan);
+                await cetak(row.uuidtandaterima);
             } else {
                 $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
             }
@@ -276,23 +301,23 @@ async function batal_trans() {
     if (row && alasan != "") {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodetandaterima, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepelunasan +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetandaterima +
                 ', Sebelum Dibatalkan ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+        var statusTrans = await getStatusTrans(link_api.getStatusTandaTerima,
             'bearer {{ session('TOKEN') }}', {
-                uuidpelunasan: row.uuidpelunasan
+                uuidtandaterima: row.uuidtandaterima
             });
         if (statusTrans == "I" || statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Membatalkan Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalPelunasanHutang;
+                        let url = link_api.batalTandaTerima;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -300,8 +325,8 @@ async function batal_trans() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidpelunasan: row.uuidpelunasan,
-                                kodepelunasan: row.kodepelunasan,
+                                uuidtandaterima: row.uuidtandaterima,
+                                kodetandaterima: row.kodetandaterima,
                                 alasan: alasan,
                             }),
                         }).then(response => {
@@ -338,23 +363,23 @@ async function batal_cetak() {
     if (row) {
         bukaLoader();
 
-        var checkTabAvailable = parent.check_tab_exist(row.kodepelunasan, 'fa fa-pencil');
+        var checkTabAvailable = parent.check_tab_exist(row.kodetandaterima, 'fa fa-pencil');
         if (checkTabAvailable) {
-            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodepelunasan +
+            $.messager.alert('Warning', 'Harap Tutup Tab Atas Transaksi ' + row.kodetandaterima +
                 ', Sebelum Dibatal cetak ', 'warning');
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+        var statusTrans = await getStatusTrans(link_api.getStatusTandaTerima,
             'bearer {{ session('TOKEN') }}', {
-                uuidpelunasan: row.uuidpelunasan
+                uuidtandaterima: row.uuidtandaterima
             });
         if (statusTrans == "S") {
             $.messager.confirm('Confirm', 'Anda Yakin Batal Cetak Transaksi Ini ?', async function(r) {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputPelunasanHutang;
+                        let url = link_api.ubahStatusjadiInputTandaTerima;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -362,8 +387,8 @@ async function batal_cetak() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                uuidpelunasan: row.uuidpelunasan,
-                                kodepelunasan: row.kodepelunasan,
+                                uuidtandaterima: row.uuidtandaterima,
+                                kodetandaterima: row.kodetandaterima,
                             }),
                         }).then(response => {
                             if (!response.ok) {
@@ -394,18 +419,52 @@ async function batal_cetak() {
     }
 }
 
-async function cetak(uuid) {
-	const doc = await getCetakDocument(
-		'{{ session('TOKEN') }}',
-		link_api.cetakPelunasanHutang + uuid
-	);
-	if (doc == null) {
-		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
-			'warning');
-		return false;
+async function cetak(uuidtrans) {
+    bukaLoader();
+    if (row) {
+        try {
+            let url = link_api.cetakTandaTerima + uuidtrans;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uuidtandaterima: uuidtrans,
+                }),
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP error! status: ${response.status} from ${url}`
+                    );
+                }
+                return response.text();
+            })
+
+
+            $("#area_cetak").html(response);
+            $("#form_cetak").window('open');
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+    }
+    tutupLoader();
+}
+
+function ubah_status() {
+	$('#mode').val('ubah_status');
+	if (row) {
+		get_status_trans(row.kodetandaterima, 'tkas', 'KODETANDATERIMA', function(data) {
+			if (data.status == 'S')
+				$('#form_login').dialog('open');
+			else if (data.status == 'P')
+				$.messager.alert('Error', 'Transaksi Sudah Berlanjut Ke Proses Selanjutnya, Status Transaksi Tidak Dapat Diubah', 'error');
+			else if (data.status == 'I')
+				$.messager.alert('Error', 'Transaksi Dalam Mode Input, Status Transaksi Tidak Dapat Diubah', 'error');
+		});
 	}
-	$("#area_cetak").html(doc);
-	$("#form_cetak").window('open');
 }
 
 function refresh_data() {
@@ -413,63 +472,51 @@ function refresh_data() {
 }
 
 function filter_data() {
-	var getLokasi  = $('#txt_lokasi').combogrid('grid');
-	var dataLokasi = getLokasi.datagrid('getChecked');
-	var lokasi     = "";
-	for (var i = 0; i < dataLokasi.length; i++) {
-		lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
-	}
-	lokasi = lokasi.substring(0, lokasi.length - 1);
 	var status = [];
-	$("[name='cb_status_filter[]']:checked").each( function() {
+	$("[name='cb_status_filter[]']:checked").each(function(){
 		status.push($(this).val());
 	});
+
 	$('#table_data').datagrid('load',{
-		kodetrans: $('#txt_kodetrans_filter').val(),
-		referensi: $('#txt_nama_supplier_filter').val(),
 		tglawal  : $('#txt_tgl_aw_filter').datebox('getValue'),
 		tglakhir : $('#txt_tgl_ak_filter').datebox('getValue'),
+		kodetrans: $('#txt_kodetrans_filter').val(),
+		referensi: $('#txt_referensi_filter').val(),
 		status   : status,
-		lokasi   : lokasi,
 	});
 }
 
 function buat_table() {
 	$("#table_data").datagrid({
 		fit         : true,
-        singleSelect: true,
-        remoteSort  : false,
-        multiSort   : true,
-        striped     : true,
-        rownumbers  : true,
-        pageSize    : 20,
-        url         : link_api.loadDataGridPelunasanHutang,
-        pagination  : true,
-        clientPaging: false,
-        rowStyler   : function(index, row) {
+		singleSelect: true,
+		remoteSort  : false,
+		multiSort   : true,
+		striped     : true,
+		rownumbers  : true,
+		pageSize    : 20,
+		url         : link_api.loadDataGridTandaTerima,
+		pagination  : true,
+		clientPaging: false,
+		rowStyler   : function(index, row) {
             if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
             else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
+		frozenColumns: [[
+			{field:'tgltrans',title:'Tgl. Trans',width:70,sortable:true,formatter:ubah_tgl_indo, align:'center',},
+			{field:'kodetandaterima',title:'No. Trans',width:140,sortable:true},
+			{field:'namasupplier',title:'Supplier',width:200,sortable:true},
+			{field:'grandtotal',title:'Grand Total',width:110,sortable:true,align:'right',formatter:format_amount},
+		]],
 		columns: [[
-			{field:'tgltrans',title:'Tgl. Pelunasan',width:100,sortable:true,formatter:ubah_tgl_indo,align:'center'},
-			{field:'kodepelunasan',title:'No. Pelunasan',width:150,sortable:true},
-			{field:'kodelokasi',title:'Lokasi',width:60,sortable:true,align:'center'},
-			{field:'namalokasi',title:'Nama Lokasi',width:120,sortable:true,align:'center'},
-			{field:'namasupplier',title:'Nama Supplier',width:150,sortable:true},
-			{field:'kodetandaterima',title:'No. TT',width:150,sortable:true},
-			{field:'kodepelunasanbank',title:'No. Perkiraan',width:100,sortable:true},
-			//{field:'KODEKAS',title:'Kd. Kas/Bank',width:120,sortable:true},
-			//{field:'KODEMEMO',title:'Giro Trans ID',width:120,sortable:true},
-			//{field:'NOGIRO',title:'Giro Number',width:100,sortable:true},
-			{field:'total',title:'Nominal',width:110,sortable:true,formatter:format_amount, align:'right'},
-			{field:'catatan',title:'Keterangan',width:250,sortable:true},
+			{field:'keterangan',title:'Keterangan',width:400,sortable:true},
 			{field:'userbuat',title:'User Entry',width:100,sortable:true},
 			{field:'tglentry',title:'Tgl. Input',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
 			{field:'userhapus',title:'User Batal',width:100,sortable:true},
 			{field:'tglbatal',title:'Tgl. Batal',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
 			{field:'alasanbatal',title:'Alasan Pembatalan',width:250,sortable:true},
-			{field:'status',title:'Status',width:60,sortable:true,align:'center'},
+			{field:'status',title:'Status',width:50,sortable:true,align:'center'},
 		]],
 		onDblClickRow: function(index, data) {
 			before_edit();
@@ -479,45 +526,7 @@ function buat_table() {
 
 function reload()
 {
-	$('#table_data').datagrid('reload');	
-}
-
-function browse_data_lokasi(id) {
-	$(id).combogrid({
-		panelWidth: 380,
-        url: link_api.browseLokasi,
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-            if (row.status == 0) {
-                return 'background-color:#A8AEA6';
-            }
-        },
-		columns: [
-			[{
-					field: 'ck',
-					checkbox: true
-				},
-				{
-					field: 'kode',
-					title: 'Kode',
-					width: 80,
-					sortable: true
-				},
-				{
-					field: 'nama',
-					title: 'Nama',
-					width: 240,
-					sortable: true
-				},
-			]
-		]
-	});
+	$('#table_data').datagrid('reload');
 }
 </script>
 @endpush

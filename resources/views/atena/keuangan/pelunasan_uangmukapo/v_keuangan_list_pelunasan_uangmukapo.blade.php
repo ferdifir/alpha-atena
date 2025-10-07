@@ -25,28 +25,71 @@
         <div class="easyui-layout" fit="true">
             <div data-options="region:'west',split:true,hideCollapsedContent:false,collapsed:false" title="Filter" style="width:150px;" align="center">
                 <table border="0">
-                    <tr><td id="label_form"></td></tr>
-                    <tr><td id="label_form" align="center">Tgl. Pelunasan</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" style="width:100px" /></td></tr>
-                    <tr><td id="label_form" align="center">s/d</td></tr>
-                    <tr><td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" style="width:100px" /></td></tr>
-                    <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Lokasi</td></tr>
-                    <tr><td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td></tr>
-                    <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">No. Pelunasan</td></tr>
-                    <tr><td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td></tr>
-                    <tr><td id="label_form"><br></td></tr>
-                    <tr><td id="label_form" align="center">Supplier</td></tr>
-                    <tr><td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px" class="label_input" /></td></tr>
-                    <tr><td id="label_form"><br></td></tr>
-                    <tr><td align="center">
-                        <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
-                        <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
-                        <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
-                        <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
-                    </td></tr>
-                    <tr><td align="center"><a id="btn_search"  class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td></tr>
+                    <tr>
+                        <td id="label_form"></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">Tgl. Pelunasan</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">s/d</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">Lokasi</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_lokasi" name="txt_lokasi[]" style="width:100px" class="label_input" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">No. Pelunasan</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_kodetrans_filter" name="txt_kodetrans_filter" style="width:100px" class="label_input" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">Supplier</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_nama_supplier_filter" name="txt_nama_supplier_filter" style="width:100px" class="label_input" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form" align="center">Kota</td>
+                    </tr>
+                    <tr>
+                        <td align="center"><input id="txt_kota" name="txt_kota" style="width:100px" class="label_input" /></td>
+                    </tr>
+                    <tr>
+                        <td id="label_form"><br></td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <label id="label_form"><input type="checkbox" value="I" name="cb_status_filter[]"> I</label>
+                            <label id="label_form"><input type="checkbox" value="S" name="cb_status_filter[]"> S</label>
+                            <label id="label_form"><input type="checkbox" value="P" name="cb_status_filter[]"> P</label>
+                            <label id="label_form"><input type="checkbox" value="D" name="cb_status_filter[]"> D</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center"><a id="btn_search" class="easyui-linkbutton" data-options="iconCls:'icon-search', plain:false" onclick="filter_data()">Tampilkan Data</a></td>
+                    </tr>
                 </table>
             </div>
             <div data-options="region:'center'">
@@ -154,8 +197,8 @@ function before_add() {
     $('#mode').val('tambah');
     get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
         if (data.data.tambah == 1) {
-            parent.buka_submenu(null, 'Tambah Pelunasan Hutang',
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
+            parent.buka_submenu(null, 'Tambah Pelunasan Uang Muka PO',
+                '{{ route('atena.keuangan.pelunasan_uangmukapo.form', ['kode' => $kodemenu, 'mode' => 'tambah', 'data' => '']) }}',
                 'fa fa-plus')
         } else {
             $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
@@ -169,7 +212,7 @@ function before_edit() {
         if (data.data.ubah == 1 || data.data.hakakses == 1) {
             var row = $('#table_data').datagrid('getSelected');
             parent.buka_submenu(null, row.kodepelunasan,
-                '{{ route('atena.keuangan.pelunasan_hutang.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
+                '{{ route('atena.keuangan.pelunasan_uangmukapo.form', ['kode' => $kodemenu, 'mode' => 'ubah']) }}&data=' +
                 row.uuidpelunasan,
                 'fa fa-pencil');
         } else {
@@ -216,7 +259,7 @@ async function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+            var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
                 'bearer {{ session('TOKEN') }}', {
                     uuidpelunasan: row.uuidpelunasan
                 });
@@ -228,7 +271,7 @@ async function before_print() {
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipPelunasanHutang;
+                        let url = link_api.ubahStatusjadiSlipUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -283,7 +326,7 @@ async function batal_trans() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -292,7 +335,7 @@ async function batal_trans() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalPelunasanHutang;
+                        let url = link_api.batalUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -345,7 +388,7 @@ async function batal_cetak() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanHutang,
+        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -354,7 +397,7 @@ async function batal_cetak() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputPelunasanHutang;
+                        let url = link_api.ubahStatusjadiInputUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -394,18 +437,38 @@ async function batal_cetak() {
     }
 }
 
-async function cetak(uuid) {
-	const doc = await getCetakDocument(
-		'{{ session('TOKEN') }}',
-		link_api.cetakPelunasanHutang + uuid
-	);
-	if (doc == null) {
-		$.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data cetak transaksi',
-			'warning');
-		return false;
-	}
-	$("#area_cetak").html(doc);
-	$("#form_cetak").window('open');
+async function cetak(uuidtrans) {
+    bukaLoader();
+    if (row) {
+        try {
+            let url = link_api.cetakUangMukaPO + uuidtrans;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'bearer {{ session('TOKEN') }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    uuidpelunasan: uuidtrans,
+                }),
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error(
+                        `HTTP error! status: ${response.status} from ${url}`
+                    );
+                }
+                return response.text();
+            })
+
+
+            $("#area_cetak").html(response);
+            $("#form_cetak").window('open');
+        } catch (error) {
+            var textError = getTextError(error);
+            $.messager.alert('Error', getTextError(error), 'error');
+        }
+    }
+    tutupLoader();
 }
 
 function refresh_data() {
@@ -413,25 +476,26 @@ function refresh_data() {
 }
 
 function filter_data() {
-	var getLokasi  = $('#txt_lokasi').combogrid('grid');
-	var dataLokasi = getLokasi.datagrid('getChecked');
-	var lokasi     = "";
-	for (var i = 0; i < dataLokasi.length; i++) {
-		lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
-	}
-	lokasi = lokasi.substring(0, lokasi.length - 1);
-	var status = [];
-	$("[name='cb_status_filter[]']:checked").each( function() {
-		status.push($(this).val());
-	});
-	$('#table_data').datagrid('load',{
-		kodetrans: $('#txt_kodetrans_filter').val(),
-		referensi: $('#txt_nama_supplier_filter').val(),
-		tglawal  : $('#txt_tgl_aw_filter').datebox('getValue'),
-		tglakhir : $('#txt_tgl_ak_filter').datebox('getValue'),
-		status   : status,
-		lokasi   : lokasi,
-	});
+    var getLokasi  = $('#txt_lokasi').combogrid('grid');
+    var dataLokasi = getLokasi.datagrid('getChecked');
+    var lokasi     = "";
+    for (var i = 0; i < dataLokasi.length; i++) {
+        lokasi += (dataLokasi[i]["uuidlokasi"] + ",");
+    }
+    lokasi = lokasi.substring(0, lokasi.length - 1);
+    var status = [];
+    $("[name='cb_status_filter[]']:checked").each(function() {
+        status.push($(this).val());
+    });
+    $('#table_data').datagrid('load', {
+        kodetrans: $('#txt_kodetrans_filter').val(),
+        referensi: $('#txt_nama_supplier_filter').val(),
+        tglawal: $('#txt_tgl_aw_filter').datebox('getValue'),
+        tglakhir: $('#txt_tgl_ak_filter').datebox('getValue'),
+        kota: $('#txt_kota').textbox('getValue'),
+        status: status,
+        lokasi: lokasi
+    });
 }
 
 function buat_table() {
@@ -443,7 +507,7 @@ function buat_table() {
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadDataGridPelunasanHutang,
+        url         : link_api.loadDataGridUangMukaPO,
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {
@@ -451,26 +515,108 @@ function buat_table() {
             else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
-		columns: [[
-			{field:'tgltrans',title:'Tgl. Pelunasan',width:100,sortable:true,formatter:ubah_tgl_indo,align:'center'},
-			{field:'kodepelunasan',title:'No. Pelunasan',width:150,sortable:true},
-			{field:'kodelokasi',title:'Lokasi',width:60,sortable:true,align:'center'},
-			{field:'namalokasi',title:'Nama Lokasi',width:120,sortable:true,align:'center'},
-			{field:'namasupplier',title:'Nama Supplier',width:150,sortable:true},
-			{field:'kodetandaterima',title:'No. TT',width:150,sortable:true},
-			{field:'kodepelunasanbank',title:'No. Perkiraan',width:100,sortable:true},
-			//{field:'KODEKAS',title:'Kd. Kas/Bank',width:120,sortable:true},
-			//{field:'KODEMEMO',title:'Giro Trans ID',width:120,sortable:true},
-			//{field:'NOGIRO',title:'Giro Number',width:100,sortable:true},
-			{field:'total',title:'Nominal',width:110,sortable:true,formatter:format_amount, align:'right'},
-			{field:'catatan',title:'Keterangan',width:250,sortable:true},
-			{field:'userbuat',title:'User Entry',width:100,sortable:true},
-			{field:'tglentry',title:'Tgl. Input',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
-			{field:'userhapus',title:'User Batal',width:100,sortable:true},
-			{field:'tglbatal',title:'Tgl. Batal',width:120,sortable:true,formatter:ubah_tgl_indo,align:'center'},
-			{field:'alasanbatal',title:'Alasan Pembatalan',width:250,sortable:true},
-			{field:'status',title:'Status',width:60,sortable:true,align:'center'},
-		]],
+		columns: [
+        [{
+                field: 'tgltrans',
+                title: 'Tgl. Pelunasan',
+                width: 100,
+                sortable: true,
+                formatter: ubah_tgl_indo,
+                align: 'center'
+            },
+            {
+                field: 'kodepelunasan',
+                title: 'No. Pelunasan',
+                width: 150,
+                sortable: true
+            },
+            {
+                field: 'kodelokasi',
+                title: 'Lokasi',
+                width: 60,
+                sortable: true,
+                align: 'center'
+            },
+            {
+                field: 'namalokasi',
+                title: 'Nama Lokasi',
+                width: 120,
+                sortable: true,
+                align: 'center'
+            },
+            {
+                field: 'namasupplier',
+                title: 'Nama Supplier',
+                width: 180,
+                sortable: true
+            },
+            {
+                field: 'total',
+                title: 'Nominal',
+                width: 110,
+                sortable: true,
+                formatter: format_amount,
+                align: 'right'
+            },
+            {
+                field: 'kodekasbank',
+                title: 'No. Perkiraan',
+                width: 100,
+                sortable: true
+            },
+            {
+                field: 'catatan',
+                title: 'Keterangan',
+                width: 250,
+                sortable: true
+            },
+            {
+                field: 'userbuat',
+                title: 'User Entry',
+                width: 100,
+                sortable: true
+            },
+            {
+                field: 'tglentry',
+                title: 'Tgl. Input',
+                width: 120,
+                sortable: true,
+                formatter: ubah_tgl_indo,
+                align: 'center'
+            },
+            {
+                field: 'userhapus',
+                title: 'User Batal',
+                width: 100,
+                sortable: true
+            },
+            {
+                field: 'tglbatal',
+                title: 'Tgl. Batal',
+                width: 120,
+                sortable: true,
+                formatter: ubah_tgl_indo,
+                align: 'center'
+            },
+            {
+                field: 'alasanbatal',
+                title: 'Alasan Pembatalan',
+                width: 250,
+                sortable: true
+            },
+            {
+                field: 'status',
+                title: 'Status',
+                width: 60,
+                sortable: true,
+                align: 'center'
+            },
+            {
+                field: 'idsupplier',
+                hidden: true
+            },
+        ]
+    ],
 		onDblClickRow: function(index, data) {
 			before_edit();
 		},
