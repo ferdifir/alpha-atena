@@ -236,7 +236,7 @@
 
       $('#list_tampil_laporan').datalist({
         width: 280,
-        height: 155,
+        height: 255,
         checkbox: true,
         data: arrayTampilLaporan,
         columns: [
@@ -252,6 +252,7 @@
 
       $('#cbStatus').combogrid({
         width: 220,
+        panelWidth: 260,
         idField: 'value',
         textField: 'status',
         multiple: true,
@@ -264,7 +265,7 @@
             {
               field: 'status',
               title: 'Status',
-              width: 60
+              width: 50
             },
             {
               field: 'keterangan',
@@ -297,6 +298,8 @@
       });
 
       $('#cbStatus').combogrid("setValues", ["I", "S", "P"]);
+      $("#kolom").combobox('setValue', kolomVal);
+      $("#operatorString").combobox('setValues', 'ADALAH');
       tutupLoader();
     });
 
@@ -450,10 +453,6 @@
             text_laporan = kolom + " " + operator + " " + nilai + ", " + msg.badanusaha;
           }
         }
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
 
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
@@ -473,27 +472,48 @@
 
     //HAPUS FILTER
     $("#btn_remove").click(function() {
-      var rows = $('#list_filter_laporan').datagrid('getSelections'); // get all selected rows
+      var rows = $('#list_filter_laporan').datagrid('getSelections');
       for (var i = rows.length - 1; i >= 0; i--) {
-        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]); // get the row index
+        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]);
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
 
+    function cekDataLokasi() {
+      var getLokasi = $('#txt_lokasi').combogrid('grid');
+      var lokasi = getLokasi.datalist('getSelected');
+      if (lokasi == null) {
+        $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
+        return false;
+      }
+      return true;
+    }
+
     function cetakLaporan(excel) {
-      parent.buka_laporan(link_api.laporanPesananPembelian, {
+      const isValid = cekDataLokasi();
+      if (!isValid) {
+        return;
+      }
+      const payload = {
         filename: "Laporan Pesanan Pembelian",
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
-        excel: excel
-      });
+        excel: excel,
+        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+        status: JSON.stringify($('#cbStatus').combogrid('getValues')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        tglawal: $('#txt_tgl_aw').datebox('getValue'),
+        tglakhir: $('#txt_tgl_ak').datebox('getValue'),
+        kode: '{{ $kodemenu }}',
+      };
+      parent.buka_laporan(link_api.laporanPesananPembelian, payload);
     }
 
     $("#btn_export_excel").click(function() {
-
+      cetakLaporan('ya');
     });
 
     $("#btn_print").click(function() {
-
+      cetakLaporan('tidak');
     });
 
     function browse_data_lokasi(id) {
@@ -607,6 +627,15 @@
         onBeforeLoad: function(param) {
           if ('undefined' === typeof param.q || param.q.length == 0) {
             return false;
+          }
+        },
+        loadMsg: 'Loading...',
+        onShowPanel: function() {
+          const $cg = $(this);
+          const grid = $cg.combogrid('grid');
+          const rows = grid.datagrid('getRows');
+          if (rows.length == 0) {
+            $cg.next().find('.textbox-text').attr('placeholder', 'Ketikkan Kode / Nama Barang');
           }
         },
         rowStyler: function(index, row, checkData) {

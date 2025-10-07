@@ -152,6 +152,14 @@ Route::prefix('atena/laporan')
                         'menu' => ucwords(request()->menu)
                     ]);
                 });
+
+                // atena/laporan/laporanpembelian/analisispo
+                Route::get('analisispo', function () {
+                    return view('atena.laporan.pembelian.v_laporan_analisis_po', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('analisispo');
             });
 
         Route::prefix('laporanpenjualan')
@@ -180,5 +188,6 @@ Route::prefix('atena/laporan')
                         'menu' => ucwords(request()->menu)
                     ]);
                 })->name('laporanpenjualan');
+
             });
     });

@@ -147,7 +147,7 @@
     var operatorVal = "ADALAH";
     var tipedata = "STRING"
 
-    $(document).ready(function() {
+    $(document).ready(async function() {
       isiOperatorLaporan("String", "operatorString");
       isiOperatorLaporan("Number", "operatorNumber");
 
@@ -160,23 +160,34 @@
       browse_data_kategori('#txt_nilai_list_kategori');
       browse_data_merk('#txt_nilai_list_merk');
 
-      //SET SEMUA LOKASI
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: base_url + 'atena/Master/Data/Lokasi/ComboGrid',
-        cache: false,
-        success: function(msg) {
+      try {
+        const response = await fetch(
+          link_api.browseLokasi, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer {{ session('TOKEN') }}',
+              'Content-Type': 'application/json'
+            },
+          }
+        );
 
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const res = await response.json();
+        if (res.success) {
           var arrayLokasi = [];
 
-          for (var i = 0; i < msg.rows.length; i++) {
-            arrayLokasi.push(msg.rows[i].kode);
+          for (var i = 0; i < res.data.length; i++) {
+            arrayLokasi.push(res.data[i].kode);
           }
 
           $('#txt_lokasi').combogrid("setValues", arrayLokasi);
         }
-      });
+      } catch (e) {
+        showErrorAlert(e);
+      }
 
       $('#list_filter_laporan').datagrid({
         width: 280,
@@ -205,7 +216,8 @@
               checkbox: true
             },
             {
-              field: 'text'
+              field: 'text',
+              width: '96%',
             },
           ]
         ],
@@ -249,7 +261,7 @@
 
       $('#list_tampil_laporan').datalist({
         width: 280,
-        height: 155,
+        height: 255,
         checkbox: true,
         data: arrayTampilLaporan,
         columns: [
@@ -342,6 +354,7 @@
       });
 
       $('#cbJenis').combogrid("setValues", ["BELI", "RETUR"]);
+      $("#operatorString").combobox('setValues', 'ADALAH');
       tutupLoader();
     });
 
@@ -612,10 +625,6 @@
             text_laporan = kolom + " " + operator + " " + nilai + ", " + msg.badanusaha;
           }
         }
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
 
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
@@ -644,77 +653,43 @@
 
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
-      validasi_session(function() {
-        var getLokasi = $('#txt_lokasi').combogrid('grid');
-        var lokasi = getLokasi.datagrid('getSelected');
-        var jenistrans = $('#cbJenis').combogrid("getValues").length;
-
-        //SIMPAN DATA FILTER
-        $('#data_filter').val(JSON.stringify($("#list_filter_laporan").datagrid('getChecked')));
-
-        //SIMPAN DATA JENIS LAPORAN
-        $('#data_tampil').val(JSON.stringify($("#list_tampil_laporan").datalist('getChecked')));
-
-        if (lokasi != null && jenistrans > 0) {
-          $('#excel').val('ya');
-          $('#form_input').attr('target', '_blank');
-          $('#form_input').submit();
-          return false;
-        } else if (jenistrans == 0) {
-          $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
-        } else {
-          $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
-        }
-      });
+      cetakLaporan('ya');
     });
 
+    function cetakLaporan(excel) {
+      var getLokasi = $('#txt_lokasi').combogrid('grid');
+      var lokasi = getLokasi.datagrid('getSelected');
+      var jenistrans = $('#cbJenis').combogrid("getValues").length;
+
+      if (lokasi != null && jenistrans > 0) {
+        parent.buka_laporan(link_api.laporanPembelian, {
+          lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+          syarat: JSON.stringify($("#txt_syaratbayar").combogrid('getValues')),
+          data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+          data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+          jenis: JSON.stringify($('#cbJenis').combogrid("getValues")),
+          excel: excel,
+          filename: "Laporan Pembelian",
+          kode: "{{ $kodemenu }}",
+          tglawal: $('#txt_tgl_aw').datebox('getValue'),
+          tglakhir: $('#txt_tgl_ak').datebox('getValue'),
+          status: JSON.stringify($('#cbStatus').combogrid("getValues"))
+        });
+      } else if (jenistrans == 0) {
+        $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
+      } else {
+        $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
+      }
+    }
+
     $("#btn_print").click(function() {
-      validasi_session(function() {
-        var getLokasi = $('#txt_lokasi').combogrid('grid');
-        var lokasi = getLokasi.datagrid('getSelected');
-        var jenistrans = $('#cbJenis').combogrid("getValues").length;
-
-        //SIMPAN DATA FILTER
-        $('#data_filter').val(JSON.stringify($("#list_filter_laporan").datagrid('getChecked')));
-
-        //SIMPAN DATA JENIS LAPORAN
-        $('#data_tampil').val(JSON.stringify($("#list_tampil_laporan").datalist('getChecked')));
-
-        if (lokasi != null && jenistrans > 0) {
-          $('#excel').val('tidak');
-          counter++
-          var tab_title = $('#file_name').val();
-          var tab_name = tab_title + counter;
-          $('#form_input').attr('target', tab_name);
-
-          $('#tab_laporan').tabs('add', {
-            title: tab_title,
-            content: '<iframe frameborder="0"  id="' + tab_name + '" name="' + tab_name +
-              '" width="99%" height="99%" src="#"></iframe>',
-            closable: true,
-            tools: [{
-              iconCls: 'icon-print',
-              handler: function() {
-                window.frames[tab_name].print();
-              }
-
-            }]
-          })
-
-          $('#form_input').submit();
-          return false;
-        } else if (jenistrans == 0) {
-          $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
-        } else {
-          $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
-        }
-      });
+      cetakLaporan('tidak');
     });
 
     function browse_data_beli(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: base_url + 'atena/Pembelian/Transaksi/Pembelian/comboGridBeli',
+        url: link_api.browseBeliPembelian,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',
@@ -727,7 +702,7 @@
         },
         columns: [
           [{
-              field: 'id',
+              field: 'uuidbeli',
               hidden: true
             },
             {
@@ -758,7 +733,7 @@
     function browse_data_retur_beli(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: base_url + 'atena/Pembelian/Transaksi/ReturPembelian/comboGridReturBeli',
+        url: link_api.browseReturBeli,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',
@@ -771,7 +746,7 @@
         },
         columns: [
           [{
-              field: 'id',
+              field: 'uuidreturbeli',
               hidden: true
             },
             {
@@ -912,6 +887,15 @@
             return false;
           }
         },
+        loadMsg: 'Loading...',
+        onShowPanel: function() {
+          const $cg = $(this);
+          const grid = $cg.combogrid('grid');
+          const rows = grid.datagrid('getRows');
+          if (rows.length == 0) {
+            $cg.next().find('.textbox-text').attr('placeholder', 'Ketikkan Kode / Nama Barang');
+          }
+        },
         rowStyler: function(index, row) {
           if (row.status == 0) {
             return 'background-color:#A8AEA6';
@@ -991,8 +975,8 @@
     function browse_data_syaratbayar(id) {
       $(id).combogrid({
         panelWidth: 250,
-        url: base_url + 'atena/Master/Data/SyaratBayar/ComboGrid',
-        idField: 'id',
+        url: link_api.browseSyaratBayar,
+        idField: 'uuidsyaratbayar',
         textField: 'nama',
         mode: 'local',
         sortName: 'selisih',
@@ -1029,7 +1013,7 @@
     function browse_data_merk(id) {
       $(id).combogrid({
         panelWidth: 650,
-        url: base_url + 'atena/Master/Data/Merk/comboGrid',
+        url: link_api.browseMerk,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',
@@ -1042,7 +1026,7 @@
         },
         columns: [
           [{
-              field: 'id',
+              field: 'uuidmerk',
               hidden: true
             },
             {

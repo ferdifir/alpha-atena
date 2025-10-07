@@ -411,24 +411,6 @@
     <input type="hidden" name="status">
     <input type="hidden" name="data_filter">
     <input type="hidden" name="data_tampil">
-    <input type="hidden" name="harga">
-    <input type="hidden" name="uuidcustomer">
-    <input type="hidden" name="uuidtipecustomer">
-    <input type="hidden" name="uuidlokasi_hargajual">
-    <input type="hidden" name="satuanbarcode">
-    <input type="hidden" name="jenis">
-    <input type="hidden" name="jenistampilan">
-    <input type="hidden" name="jenishargabeli">
-    <input type="hidden" name="jeniscetakharga">
-    <input type="hidden" name="barcode">
-    {{-- History Program --}}
-    <input type="hidden" name="tgl">
-    <input type="hidden" name="tglawal">
-    <input type="hidden" name="tglakhir">
-    <input type="hidden" name="tglawalhistory">
-    <input type="hidden" name="tglakhirhistory">
-    <input type="hidden" name="user">
-    <input type="hidden" name="jenistransaksi">
   </form>
 
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
@@ -785,9 +767,27 @@
       return maxCounter;
     }
 
+    function tambahInputBelumTersedia(payload) {
+      const $form = $('#form_input');
+      //   remove all input except jwt_token
+      $form.find('input').not('[name="jwt_token"]').remove();
+      for (const key in payload) {
+        if (payload.hasOwnProperty(key)) {
+          if ($form.find(`input[name="${key}"]`).length === 0) {
+            $form.append($('<input>', {
+              type: 'hidden',
+              name: key,
+              value: payload[key]
+            }));
+          }
+        }
+      }
+    }
+
     function buka_laporan(url, payload) {
       const $form = $('#form_input');
       $form.attr('action', url);
+      tambahInputBelumTersedia(payload);
       $form.form('load', payload);
       if (payload.excel == 'ya') {
         $form.attr('target', '_blank');
@@ -795,7 +795,7 @@
         return;
       }
       counter++;
-      var tab_title = payload.filename;
+      var tab_title = payload.filename || payload.file_name;
       const counterTerbesar = getCounterTerbesar(tab_title);
       var newLapCounter = counterTerbesar + 1;
       counterLaporan[tab_title] = newLapCounter;
