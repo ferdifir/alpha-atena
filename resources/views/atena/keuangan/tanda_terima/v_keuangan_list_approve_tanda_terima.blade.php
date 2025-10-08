@@ -95,7 +95,8 @@ var idtrans = "";
 var counter = 0;
 var row = {};
 
-$(document).ready(function(){
+$(document).ready(async function(){
+	console.log('testd atas das')
 	create_form_login();
 	buat_table();
 	browse_filter_departemen('#txt_departemen_referensi_filter', 'Departemen');
@@ -249,7 +250,7 @@ async function approve() {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
 			link_api.approveTandaTerima, {
-				jenis : '{{ $jenis }}',
+				jenis : '{{ $jenis }}'.toUpperCase(),
 				data_detail : data_detail
 			}
 		);
@@ -273,7 +274,7 @@ async function batal_approve() {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
 			link_api.batalApproveTandaTerima, {
-				jenis : '{{ $jenis }}',
+				jenis : '{{ $jenis }}'.toUpperCase(),
 				data_detail : data_detail
 			}
 		);

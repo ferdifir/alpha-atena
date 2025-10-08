@@ -112,7 +112,7 @@
                                                         <a href="#" class="easyui-linkbutton"
                                                             onclick="hapusSetoran(event, 'sementara')"
                                                             id="btn_hapus_setoran_sementara">Hapus Setoran Sementara</a>
-                                                        <input type="hidden" id="IDSETORANSEMENTARA">
+                                                        <input type="hidden" id="UUIDSETORANSEMENTARA">
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -125,7 +125,7 @@
                                                         <a href="#" class="easyui-linkbutton"
                                                             onclick="hapusSetoran(event, 'closing')"
                                                             id="btn_hapus_setoran_closing">Hapus Setoran Closing</a>
-                                                        <input type="hidden" id="IDSETORANCLOSING">
+                                                        <input type="hidden" id="UUIDSETORANCLOSING">
                                                     </td>
                                                 </tr>
                                             </table>
@@ -877,7 +877,7 @@
                 const response = await fetchData(
                     '{{ session('TOKEN') }}',
                     link_api.simpanSetorPenjualanPerKasir, {
-                        idlokasi: $('#UUIDLOKASI').combogrid('getValue'),
+                        uuidlokasi: $('#UUIDLOKASI').combogrid('getValue'),
                         data_detail: [row]
                     }
                 );
@@ -956,22 +956,23 @@
                     }
                 );
                 if (response.success) {
-                    $('#KODESETORANSEMENTARA').textbox('setValue', response.setoransementara?.kodesetorankasir);
-                    $('#KODESETORANCLOSING').textbox('setValue', response.setoranclosing?.kodesetorankasir);
+                    var msg = response.data
+                    $('#KODESETORANSEMENTARA').textbox('setValue', msg.setoransementara?.kodesetorankasir);
+                    $('#KODESETORANCLOSING').textbox('setValue', msg.setoranclosing?.kodesetorankasir);
 
-                    $('#IDSETORANSEMENTARA').val(response.setoransementara?.idsetorankasir);
-                    $('#IDSETORANCLOSING').val(response.setoranclosing?.idsetorankasir);
+                    $('#UUIDSETORANSEMENTARA').val(msg.setoransementara?.uuidsetorankasir);
+                    $('#UUIDSETORANCLOSING').val(msg.setoranclosing?.uuidsetorankasir);
 
                     $('#btn_hapus_setoran_sementara').hide();
                     $('#btn_hapus_setoran_closing').hide();
 
-                    if (response.setoransementara == null && response.setoranclosing == null) {
+                    if (msg.setoransementara == null && msg.setoranclosing == null) {
                         $('#JENIS_SETORANSEMENTARA').prop('checked', false);
                         $('#JENIS_SETORANCLOSING').prop('checked', false);
 
                         $('#JENIS_SETORANSEMENTARA').prop('disabled', false);
                         $('#JENIS_SETORANCLOSING').prop('disabled', false);
-                    } else if (response.setoransementara != null && response.setoranclosing == null) {
+                    } else if (msg.setoransementara != null && msg.setoranclosing == null) {
                         $('#JENIS_SETORANSEMENTARA').prop('checked', false);
                         $('#JENIS_SETORANCLOSING').prop('checked', true);
 
@@ -979,7 +980,7 @@
 
                         $('#JENIS_SETORANSEMENTARA').prop('disabled', true);
                         $('#JENIS_SETORANCLOSING').prop('disabled', false);
-                    } else if (response.setoransementara == null && response.setoranclosing != null) {
+                    } else if (msg.setoransementara == null && msg.setoranclosing != null) {
                         $('#JENIS_SETORANSEMENTARA').prop('checked', true);
                         $('#JENIS_SETORANCLOSING').prop('checked', false);
 
@@ -987,7 +988,7 @@
 
                         $('#JENIS_SETORANSEMENTARA').prop('disabled', false);
                         $('#JENIS_SETORANCLOSING').prop('disabled', true);
-                    } else if (response.setoransementara != null && response.setoranclosing != null) {
+                    } else if (msg.setoransementara != null && msg.setoranclosing != null) {
                         $('#JENIS_SETORANSEMENTARA').prop('checked', false);
                         $('#JENIS_SETORANCLOSING').prop('checked', false);
 
@@ -998,8 +999,8 @@
                         $('#JENIS_SETORANCLOSING').prop('disabled', true);
                     }
 
-                    $('#table_detail_setoran').datagrid('loadData', response.setorantunai);
-                    $('#table_detail_nontunai').datagrid('loadData', response.setorannontunai);
+                    $('#table_detail_setoran').datagrid('loadData', msg.setorantunai);
+                    $('#table_detail_nontunai').datagrid('loadData', msg.setorannontunai);
                 } else {
                     $.messager.alert('Error', response.message, 'error');
                 }
@@ -1018,24 +1019,24 @@
                     var uuidsetoran = 0;
 
                     if (jenis == 'sementara') {
-                        uuidsetoran = $('#IDSETORANSEMENTARA').val();
+                        uuidsetoran = $('#UUIDSETORANSEMENTARA').val();
                     } else if (jenis == 'closing') {
-                        uuidsetoran = $('#IDSETORANCLOSING').val();
+                        uuidsetoran = $('#UUIDSETORANCLOSING').val();
                     }
 
                     try {
                         const response = await fetchData(
                             '{{ session('TOKEN') }}',
                             link_api.hapusSetoranSetorPenjualanPerKasir, {
-                                uuidsetoran: uuidsetoran
+                                uuidsetorankasir: uuidsetoran
                             }
                         );
                         if (response.success) {
                             if (jenis == 'sementara') {
-                                $('#IDSETORANSEMENTARA').val('');
+                                $('#UUIDSETORANSEMENTARA').val('');
                                 $('#KODESETORANSEMENTARA').textbox('setValue', '');
                             } else if (jenis == 'closing') {
-                                $('#IDSETORANCLOSING').val('');
+                                $('#UUIDSETORANCLOSING').val('');
                                 $('#KODESETORANCLOSING').textbox('setValue', '');
                             }
 
@@ -1228,9 +1229,9 @@
                         }
                     );
                     if (response.success) {
-                        $('#table_detail_trans_nontunai').datagrid('loadData', response.detail);
+                        $('#table_detail_trans_nontunai').datagrid('loadData', response.data);
 
-                        detail_trans_non_tunai = JSON.parse(JSON.stringify(response.detail));
+                        detail_trans_non_tunai = JSON.parse(JSON.stringify(response.data));
                     } else {
                         $.messager.alert('Error', response.message, 'error');
                     }
@@ -1307,15 +1308,11 @@
                                 type: 'combogrid',
                                 options: {
                                     panelWidth: 380,
-                                    // url: base_url + 'atena/Master/Data/AlatBayarNonTunai/comboGrid',
                                     idField: 'nama',
                                     textField: 'nama',
                                     mode: 'remote',
                                     columns: [
-                                        [{
-                                                field: 'id',
-                                                hidden: true
-                                            },
+                                        [
                                             {
                                                 field: 'kode',
                                                 title: 'Kode',
@@ -1393,18 +1390,20 @@
                     var ed = get_editor('#table_detail_trans_nontunai', index, field);
 
                     if (field == 'akunbank') {
-                        var idlokasi = $('#UUIDLOKASI').combogrid('getValue');
+                        var uuidlokasi = $('#UUIDLOKASI').combogrid('getValue');
 
-                        ed.combogrid('grid').datagrid('options').url = base_url +
-                            'atena/Master/Data/AlatBayarNonTunai/comboGridAkunBank/' + idlokasi;
+                        // ed.combogrid('grid').datagrid('options').url = base_url +
+                        //     'atena/Master/Data/AlatBayarNonTunai/comboGridAkunBank/' + idlokasi;
+                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunai;
                         ed.combogrid('grid').datagrid('load');
                         ed.combogrid('showPanel');
                     } else if (field == 'namanontunai') {
-                        var idlokasi = $('#UUIDLOKASI').combogrid('getValue');
-                        var idakunbank = row.idakunbank;
+                        var uuidlokasi = $('#UUIDLOKASI').combogrid('getValue');
+                        var idakunbank = row.uuidakunbank;
 
-                        ed.combogrid('grid').datagrid('options').url = base_url +
-                            'atena/Master/Data/AlatBayarNonTunai/comboGrid/' + idlokasi + '/' + idakunbank;
+                        // ed.combogrid('grid').datagrid('options').url = base_url +
+                        //     'atena/Master/Data/AlatBayarNonTunai/comboGrid/' + idlokasi + '/' + idakunbank;
+                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunaiAkunBank;
                         ed.combogrid('grid').datagrid('load');
                         ed.combogrid('showPanel');
                     }
@@ -1419,14 +1418,15 @@
                             var selected = ed.combogrid('grid').datagrid('getSelected');
 
                             row_update = {
-                                uuidnontunai: 0,
-                                namanontunai: '',
-                                uuidakunbank: selected.uuidakunbank,
-                                akunbank    : selected.nama,
-                                amountbank  : 0,
-                                chargerp    : 0,
-                                chargepersen: 0,
-                                total       : 0
+                                uuidnontunai : 0,
+                                uuidalatbayar: selected.uuidnontunai,
+                                namanontunai : '',
+                                uuidakunbank : selected.uuidakunbank,
+                                akunbank     : selected.nama,
+                                amountbank   : 0,
+                                chargerp     : 0,
+                                chargepersen : 0,
+                                total        : 0
                             };
 
                             break;
@@ -1436,10 +1436,11 @@
                             var total = parseFloat(row.amountbank) + chargerp;
 
                             row_update = {
-                                uuidnontunai: selected.uuidnontunai,
-                                chargepersen: selected.charge,
-                                chargerp    : chargerp,
-                                total       : total
+                                uuidnontunai : selected.uuidnontunai,
+                                uuidalatbayar: selected.uuidnontunai,
+                                chargepersen : selected.charge,
+                                chargerp     : chargerp,
+                                total        : total
                             };
 
                             break;

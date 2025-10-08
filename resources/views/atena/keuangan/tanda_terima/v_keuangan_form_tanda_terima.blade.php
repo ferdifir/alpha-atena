@@ -368,7 +368,7 @@ async function simpan(jenis_simpan) {
 				}
 
 				if (jenis_simpan == 'simpan_cetak') {
-						await cetak(response.data.uuidpelunasan);
+						await cetak(response.data.uuidtandaterima);
 				}
 			} else {
 					$.messager.alert('Error', response.message, 'error');
