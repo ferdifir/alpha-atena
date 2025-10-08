@@ -312,6 +312,8 @@ var link_api = {
     loadDataGridInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-grid`,
     simpanInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/simpan/`,
     loadDataInventoryTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data`,
+    browseTransferPersediaan: `${base_url_api}atena/inventori/transfer-persediaan/browse-transfer`,
+    laporanTransferPersediaan: `${base_url_api}atena/inventori/transfer-persediaan/laporan`,
     // Inventori Terima Transaksi
     batalTransaksiInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/batal-trans`,
     loadDataHeaderInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/load-data-header`,
@@ -324,6 +326,8 @@ var link_api = {
     loadDataInventoryTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/load-data`,
     loadDataDetailInventoryTerimaTransfer: `${base_url_api}atena/inventori/transfer-persediaan/load-data-detail-terima-transfer`,
     browseInventoriTerimaTransfer: `${base_url_api}atena/inventori/transfer-persediaan/browse-terima-transfer`,
+    browseTerimaTransferPersediaan: `${base_url_api}atena/inventori/terima-transfer-persediaan/browse-terima-transfer`,
+    laporanTerimaTransfer: `${base_url_api}atena/inventori/terima-transfer-persediaan/laporan`,
     //Inventori Pemakaian Bahan
     batalTransaksiPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/batal-trans`,
     loadDataHeaderPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/load-data-header`,
@@ -334,6 +338,8 @@ var link_api = {
     loadDataGridPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/load-data-grid`,
     simpanPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/simpan`,
     loadDataDetailPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/load-data-detail`,
+    browsePemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/browse-pemakaian-bahan`,
+    laporanPemakaianBahan: `${base_url_api}atena/inventori/pemakaian-bahan/laporan`,
     //Inventori Repacking
     loadDataPenjualanLangsung: `${base_url_api}atena/inventori/repacking/load-data-penjualan-langsung`,
     batalTransRepacking: `${base_url_api}atena/inventori/repacking/batal-trans`,
@@ -350,6 +356,8 @@ var link_api = {
     browseSalesOrderRepacking: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-repacking`,
     browseBarangSalesOrderRepacking: `${base_url_api}atena/penjualan/pesanan-penjualan/browse-barang-repacking`,
     browsePenjualanLangsungRepacking: `${base_url_api}atena/inventori/repacking/browse-penjualan-langsung`,
+    browseRepacking: `${base_url_api}atena/inventori/repacking/browse-repacking`,
+    laporanRepacking: `${base_url_api}atena/inventori/repacking/laporan`,
     //Inventori Saldo Awal Stok
     batalTransSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/batal-trans`,
     loadDataHeaderSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/load-data-header`,
@@ -360,6 +368,8 @@ var link_api = {
     loadDataGridSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/load-data-grid`,
     simpanSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/simpan`,
     loadDataSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/load-data`,
+    browseSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/browse-saldo-stok`,
+    laporanSaldoAwalStok: `${base_url_api}atena/inventori/saldo-awal-stok/laporan`,
     //Inventori Penyesuaian Stok
     loadDataPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     //Inventori Opname Stok
@@ -393,6 +403,8 @@ var link_api = {
     cetakInventoryOpnameStok: `${base_url_api}atena/inventori/opname-stok/cetak/`,
     loadDataOpnamePenyesuaian: `${base_url_api}atena/inventori/opname-stok/load-data-opname-penyesuaian`,
     browseOpnameStok: `${base_url_api}atena/inventori/opname-stok/browse`,
+    browseOpnameStokInventori: `${base_url_api}atena/inventori/opname-stok/browse-opname-stok`,
+    laporanOpnameStok: `${base_url_api}atena/inventori/opname-stok/laporan`,
     //Inventory Penyesuaian Stok
     loadDataGridInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-grid`,
     batalTransaksiInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/batal-trans`,
@@ -402,6 +414,8 @@ var link_api = {
     loadDataInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data`,
     simpanInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/simpan`,
     loadDataHeaderInventoryPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/load-data-header`,
+    browsePenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/browse-penyesuaian-stok`,
+    laporanPenyesuaianStok: `${base_url_api}atena/inventori/penyesuaian-stok/laporan`,
     //Inventory Barang Keluar
     loadDataGridInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-grid`,
     batalTransaksiInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/batal-trans`,
@@ -423,6 +437,8 @@ var link_api = {
     cekBisaBerlanjutInventoryBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/cek-bisa-berlanjut`,
     loadDataUangMukaSO: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-uang-muka-pesanan-penjualan`,
     loadDataPenjualanBarangKeluar: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/load-data-penjualan`,
+    browseBBK: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/browse-bukti-pengeluaran-barang`,
+    laporanBuktiPengeluaranBarang: `${base_url_api}atena/inventori/bukti-pengeluaran-barang/laporan`,
     //Pembelian Permintaan Barang
     loadDataHeaderPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-data-header`,
     loadConfigPermintaanBarang: `${base_url_api}atena/pembelian/permintaan-barang/load-config`,
@@ -610,6 +626,7 @@ var link_api = {
     passingHargaBeliTerakhir: `${base_url_api}atena/inventori/bukti-penerimaan-barang/passing-harga-beli-terakhir`,
     browseBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/browse-bukti-penerimaan-barang`,
     loadDataDetailBarcodeBBM: `${base_url_api}atena/inventori/bukti-penerimaan-barang/load-data-detail-barcode`,
+    laporanBuktiPenerimaanBarang: `${base_url_api}atena/inventori/bukti-penerimaan-barang/laporan`,
     //Penjualan
     loadConfigPenjualan: `${base_url_api}atena/penjualan/penjualan/load-config`,
     loadDataGridPenjualanPenjualan: `${base_url_api}atena/penjualan/penjualan/load-data-grid`,
@@ -708,15 +725,15 @@ var link_api = {
     //Saldo Awal Hutang
     loadDataGridSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-grid`,
     loadDataHeaderSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/load-data-header`,
-    simpanSaldoAwalHutang        : `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
-    batalSaldoAwalHutang         : `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
-    getStatusSaldoAwalHutang     : `${base_url_api}atena/keuangan/saldo-awal-hutang/get-status-trans`,
+    simpanSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/simpan`,
+    batalSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/batal-trans`,
+    getStatusSaldoAwalHutang: `${base_url_api}atena/keuangan/saldo-awal-hutang/get-status-trans`,
     //Saldo Awal Piutang
     loadDataGridSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-grid`,
     loadDataHeaderSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/load-data-header`,
-    simpanSaldoAwalPiutang        : `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
-    batalSaldoAwalPiutang         : `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
-    getStatusSaldoAwalPiutang     : `${base_url_api}atena/keuangan/saldo-awal-piutang/get-status-trans`,
+    simpanSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/simpan`,
+    batalSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/batal-trans`,
+    getStatusSaldoAwalPiutang: `${base_url_api}atena/keuangan/saldo-awal-piutang/get-status-trans`,
     //Debet Note
     loadConfigDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-config`,
     loadDataGridDebetNote: `${base_url_api}atena/keuangan/nota-debit/load-data-grid`,
@@ -893,9 +910,9 @@ var link_api = {
     tampilDataSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data`,
     cekSudahPostingSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/cek-sudah-posting`,
     tampilDataSetoranSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-setoran`,
-    hapusSetoranSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/hapus-setoran`,
-    simpanDetailSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan-detail-setoran`,
-    tampilDataNonTunaiSetorPenjualanPerKasir:`${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-non-tunai`,
+    hapusSetoranSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/hapus-setoran`,
+    simpanDetailSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan-detail-setoran`,
+    tampilDataNonTunaiSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data-non-tunai`,
     //Pelunasan Uang Muka SO
     loadConfigUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-config`,
     loadDataGridUangMukaSO: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/load-data-grid`,
@@ -927,15 +944,19 @@ var link_api = {
     //HUTANG LAIN
     loadDataGridHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-grid`,
     loadDataHeaderHutangLain: `${base_url_api}atena/keuangan/hutang-lain/load-data-header`,
-    simpanHutangLain        : `${base_url_api}atena/keuangan/hutang-lain/simpan`,
-    batalHutangLain         : `${base_url_api}atena/keuangan/hutang-lain/batal-trans`,
-    getStatusHutangLain     : `${base_url_api}atena/keuangan/hutang-lain/get-status-trans`,
+    simpanHutangLain: `${base_url_api}atena/keuangan/hutang-lain/simpan`,
+    batalHutangLain: `${base_url_api}atena/keuangan/hutang-lain/batal-trans`,
+    getStatusHutangLain: `${base_url_api}atena/keuangan/hutang-lain/get-status-trans`,
     //PIUTANG LAIN
     loadDataGridPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/load-data-grid`,
     loadDataHeaderPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/load-data-header`,
-    simpanPiutangLain        : `${base_url_api}atena/keuangan/piutang-lain/simpan`,
-    batalPiutangLain         : `${base_url_api}atena/keuangan/piutang-lain/batal-trans`,
-    getStatusPiutangLain     : `${base_url_api}atena/keuangan/piutang-lain/get-status-trans`,
+    simpanPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/simpan`,
+    batalPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/batal-trans`,
+    getStatusPiutangLain: `${base_url_api}atena/keuangan/piutang-lain/get-status-trans`,
+    //Laporan
+    laporanKartuStok: `${base_url_api}atena/inventori/kartu-stok/laporan`,
+    laporanMutasiStok: `${base_url_api}atena/inventori/mutasi-stok/laporan`,
+    laporanPosisiStok: `${base_url_api}atena/inventori/posisi-stok/laporan`,
 };
 
 var modul_kode = {
@@ -949,7 +970,7 @@ var modul_kode = {
 };
 
 const operatorData = {
-    "String": [
+    String: [
         { value: "ADALAH", text: "Adalah" },
         { value: "TIDAK MENCAKUP", text: "Tidak Mencakup" },
         { value: "BERISI KATA", text: "Berisi kata" },
@@ -961,9 +982,9 @@ const operatorData = {
         { value: "LEBIH DARI SAMA DENGAN", text: "Lebih dari sama dengan" },
         { value: "KURANG DARI SAMA DENGAN", text: "Kurang dari sama dengan" },
         { value: "KOSONG", text: "Kosong" },
-        { value: "TIDAK KOSONG", text: "Tidak kosong" }
+        { value: "TIDAK KOSONG", text: "Tidak kosong" },
     ],
-    "Number": [
+    Number: [
         { value: "SAMA DENGAN", text: "Sama dengan" },
         { value: "TIDAK MENCAKUP", text: "Tidak sama dengan" },
         { value: "LEBIH BESAR DARI", text: "Lebih besar dari" },
@@ -971,8 +992,8 @@ const operatorData = {
         { value: "LEBIH KECIL DARI", text: "Lebih kecil dari" },
         { value: "LEBIH KECIL SAMA DENGAN", text: "Lebih kecil sama dengan" },
         { value: "NOL", text: "Nol" },
-        { value: "TIDAK NOL", text: "Tidak nol" }
-    ]
+        { value: "TIDAK NOL", text: "Tidak nol" },
+    ],
 };
 
 function getDateMinusDays(days) {
@@ -1385,7 +1406,9 @@ function isiOperatorLaporan(tipeData, selectId) {
 
     // Validasi elemen dan data
     if (!selectElement) {
-        console.error(`Elemen <select> dengan ID: ${selectId} tidak ditemukan.`);
+        console.error(
+            `Elemen <select> dengan ID: ${selectId} tidak ditemukan.`
+        );
         return;
     }
     const operators = operatorData[tipeData];
@@ -1395,14 +1418,14 @@ function isiOperatorLaporan(tipeData, selectId) {
     }
 
     // Kosongkan elemen select yang sudah ada
-    selectElement.innerHTML = '';
+    selectElement.innerHTML = "";
 
     // Membuat dan menambahkan opsi
     // Menggunakan DocumentFragment untuk meminimalkan manipulasi DOM
     const fragment = document.createDocumentFragment();
 
-    operators.forEach(operator => {
-        const option = document.createElement('option');
+    operators.forEach((operator) => {
+        const option = document.createElement("option");
         option.value = operator.value;
         option.textContent = operator.text;
         fragment.appendChild(option);
@@ -1411,5 +1434,45 @@ function isiOperatorLaporan(tipeData, selectId) {
     // Masukkan semua opsi ke dalam <select> hanya dalam satu operasi DOM
     selectElement.appendChild(fragment);
 
-    $('#' + selectId).combobox('loadData', operators);
+    $("#" + selectId).combobox("loadData", operators);
+}
+
+/**
+ * Mengisi elemen <select> dengan kode lokasi berdasarkan token yang diberikan.
+ * Method ini akan mengembalikan array kode lokasi yang diambil dari API.
+ * Jika terjadi error, maka akan menampilkan alert error dan mengembalikan null.
+ *
+ * @param {string} token - token untuk autentikasi
+ * @param {string[]} ids - array ID dari elemen <select> yang akan diisi
+ * @return {Promise<string[]>} - array kode lokasi yang diambil dari API atau null jika terjadi error
+ */
+async function setLokasiCombogrid(token, ids = []) {
+    try {
+        const response = await fetch(link_api.browseLokasi, {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const res = await response.json();
+        if (res.success) {
+            var arrayLokasi = [];
+
+            for (var i = 0; i < res.data.length; i++) {
+                arrayLokasi.push(res.data[i].kode);
+            }
+
+            for (var i = 0; i < ids.length; i++) {
+                $(ids[i]).combogrid("setValue", arrayLokasi);
+            }
+        }
+    } catch (e) {
+        showErrorAlert(e);
+    }
 }

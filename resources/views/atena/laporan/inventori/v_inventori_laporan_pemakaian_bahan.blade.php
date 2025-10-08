@@ -30,7 +30,9 @@
           </td>
           <td>
             <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
-              <option value="tpenyesuaianstok.kodepenyesuaianstok">Kode Penyesuaian Stok Persediaan</option>
+              <option value="tpemakaianbahan.kodepemakaianbahan">Kode Pemakaian Bahan</option>
+              <option value="mjenispemakaian.kodejenispemakaian">Kode Jenis Pemakaian</option>
+              <option value="mjenispemakaian.namajenispemakaian">Nama Jenis Pemakaian</option>
               <option value="mbarang.kodebarang">Kode Barang</option>
               <option value="mbarang.namabarang">Nama Barang</option>
             </select>
@@ -59,9 +61,13 @@
             <div id="hide_nilai" hidden>
               <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
             </div>
-            <div id="hide_nilai_list_penyesuaian_stok_persediaan">
-              <input id="txt_nilai_list_penyesuaian_stok_persediaan" name="txt_nilai_list_penyesuaian_stok_persediaan"
-                style="width:220px" prompt="Nilai" />
+            <div id="hide_nilai_list_pemakaian_bahan">
+              <input id="txt_nilai_list_pemakaian_bahan" name="txt_nilai_list_pemakaian_bahan" style="width:220px"
+                prompt="Nilai" />
+            </div>
+            <div id="hide_nilai_list_jenis_pemakaian" hidden>
+              <input id="txt_nilai_list_jenis_pemakaian" name="txt_nilai_list_jenis_pemakaian" style="width:220px"
+                prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_barang" hidden>
               <input id="txt_nilai_list_barang" name="txt_nilai_list_barang" style="width:220px" prompt="Nilai" />
@@ -113,9 +119,9 @@
 @push('js')
   <script>
     var counter = 0;
-    var kolom = "Kode Penyesuaian Stok Persediaan";
-    var namaKolom = "Penyesuaian Stok Persediaan";
-    var kolomVal = "tpenyesuaianstok.kodepenyesuaianstok";
+    var kolom = "Kode Pemakaian Bahan Persediaan";
+    var namaKolom = "Pemakaian Bahan Persediaan";
+    var kolomVal = "tpemakaianbahan.kodepemakaianbahan";
     var checkData = "Kode";
     var operator = "Adalah";
     var operatorVal = "ADALAH";
@@ -124,7 +130,8 @@
     $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
       browse_data_barang('#txt_nilai_list_barang');
-      browse_data_penyesuaian_stok_persediaan('#txt_nilai_list_penyesuaian_stok_persediaan');
+      browse_data_pemakaian_bahan('#txt_nilai_list_pemakaian_bahan');
+      browse_data_jenis_pemakaian('#txt_nilai_list_jenis_pemakaian');
 
       isiOperatorLaporan("String", "operatorString");
       isiOperatorLaporan("Number", "operatorNumber");
@@ -228,12 +235,16 @@
         },
         {
           value: 'REGISTERLOKASI',
-          jenis: 'Register per Lokasi'
+          jenis: 'Register Per Lokasi'
+        },
+        {
+          value: 'REGISTERJENIS',
+          jenis: 'Register Per Jenis Pemakaian'
         },
         {
           value: 'REGISTERBARANG',
-          jenis: 'Register per Barang'
-        }
+          jenis: 'Register Per Barang'
+        },
       ];
 
       $('#list_tampil_laporan').datalist({
@@ -260,18 +271,29 @@
         kolom = $("#kolom").combobox('getText');
         kolomVal = $("#kolom").combobox('getValue');
 
-        checkData = kolom.substr(0, 4); // CEK NAMA FILTER, APAKAH KODE DAN NAMA
-        namaKolom = kolom.substr(5, kolom.length - 1); // CEK JENIS FILTER APA (SUPPLIER,BARANG,ORDERRETURBELI)
+        checkData = kolom.split(" ")[0]; // CEK NAMA FILTER, APAKAH KODE DAN NAMA
 
+        namaKolom = "";
+        for (var i = 1; i < kolom.split(" ").length; i++) {
+          namaKolom += kolom.split(" ")[i] + " ";
+        }
+
+        namaKolom = namaKolom.slice(0, -1);
 
         if (checkData == "Kode" || checkData == "Nama") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Penyesuaian Stok Persediaan') {
+          if (namaKolom == 'Pemakaian Bahan Persediaan') {
+            $('#hide_nilai_list_pemakaian_bahan').show();
             $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_penyesuaian_stok_persediaan').show();
+            $('#hide_nilai_list_jenis_pemakaian').hide();
+          } else if (namaKolom == 'Jenis Pemakaian') {
+            $('#hide_nilai_list_jenis_pemakaian').show();
+            $('#hide_nilai_list_barang').hide();
+            $('#hide_nilai_list_pemakaian_bahan').hide();
           } else if (namaKolom == 'Barang') {
             $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+            $('#hide_nilai_list_pemakaian_bahan').hide();
+            $('#hide_nilai_list_jenis_pemakaian').hide();
           }
 
           tipedata = "STRING";
@@ -291,7 +313,8 @@
           $('#lap_operatorNumber').show();
 
           $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+          $('#hide_nilai_list_pemakaian_bahan').hide();
+          $('#hide_nilai_list_jenis_pemakaian').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -303,7 +326,8 @@
 
         //CLEAR FIELD SETIAP UBAH
         $('#txt_nilai_list_barang').combogrid('clear');
-        $('#txt_nilai_list_penyesuaian_stok_persediaan').combogrid('clear');
+        $('#txt_nilai_list_pemakaian_bahan').combogrid('clear');
+        $('#txt_nilai_list_jenis_pemakaian').combogrid('clear');
         $('#txt_nilai').textbox('clear');
       }
     });
@@ -318,12 +342,18 @@
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Penyesuaian Stok Persediaan') {
+          if (namaKolom == 'Pemakaian Bahan Persediaan') {
+            $('#hide_nilai_list_pemakaian_bahan').show();
             $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_penyesuaian_stok_persediaan').show();
+            $('#hide_nilai_list_jenis_pemakaian').hide();
+          } else if (namaKolom == 'Jenis Pemakaian') {
+            $('#hide_nilai_list_jenis_pemakaian').show();
+            $('#hide_nilai_list_barang').hide();
+            $('#hide_nilai_list_pemakaian_bahan').hide();
           } else if (namaKolom == 'Barang') {
             $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+            $('#hide_nilai_list_pemakaian_bahan').hide();
+            $('#hide_nilai_list_jenis_pemakaian').hide();
           }
 
           $('#hide_nilai').hide();
@@ -331,14 +361,16 @@
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
           $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+          $('#hide_nilai_list_pemakaian_bahan').hide();
+          $('#hide_nilai_list_jenis_pemakaian').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
           $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+          $('#hide_nilai_list_pemakaian_bahan').hide();
+          $('#hide_nilai_list_jenis_pemakaian').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -357,14 +389,16 @@
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
           $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+          $('#hide_nilai_list_pemakaian_bahan').hide();
+          $('#hide_nilai_list_jenis_pemakaian').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
           $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_penyesuaian_stok_persediaan').hide();
+          $('#hide_nilai_list_pemakaian_bahan').hide();
+          $('#hide_nilai_list_jenis_pemakaian').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -379,13 +413,18 @@
       var checknilai = 0;
 
       //UNTUK KOLOM BESERTA COMBOGRID
-      if (namaKolom == 'Penyesuaian Stok Persediaan' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
-        nilai = $('#txt_nilai_list_penyesuaian_stok_persediaan').combogrid('getValue');
+      if (namaKolom == 'Pemakaian Bahan Persediaan' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
+        nilai = $('#txt_nilai_list_pemakaian_bahan').combogrid('getValue');
+        if (nilai != "") {
+          checknilai = 1;
+        }
+      } else if (namaKolom == 'Jenis Pemakaian' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
+        nilai = $('#txt_nilai_list_jenis_pemakaian').combogrid('getValue');
         if (nilai != "") {
           checknilai = 1;
         }
       } else if (namaKolom == 'Barang' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
-        nilai = $('#txt_nilai_list_barang').combogrid('getValue');
+        nilai = $('#txt_nilai_list_barang').combogrid('getValue')
         if (nilai != "") {
           checknilai = 1;
         }
@@ -503,7 +542,7 @@
         },
         columns: [
           [{
-              field: 'id',
+              field: 'uuidbarang',
               hidden: true
             },
             {
@@ -555,14 +594,47 @@
       });
     }
 
-    function browse_data_penyesuaian_stok_persediaan(id) {
+    function browse_data_pemakaian_bahan(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: link_api.browsePenyesuaianStok,
+        url: link_api.browsePemakaianBahan,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',
         sortName: 'kode',
+        sortOrder: 'asc',
+        rowStyler: function(index, row) {
+          if (row.status == 0) {
+            return 'background-color:#A8AEA6';
+          }
+        },
+        columns: [
+          [{
+              field: 'kode',
+              title: 'Kode',
+              width: 100,
+              sortable: true
+            },
+            {
+              field: 'tgltrans',
+              title: 'Tgl Trans',
+              width: 100,
+              sortable: true
+            },
+          ]
+        ],
+
+      });
+    }
+
+    function browse_data_jenis_pemakaian(id) {
+      $(id).combogrid({
+        panelWidth: 230,
+        url: link_api.browseJenisPemakaian,
+        idField: 'kode',
+        textField: 'kode',
+        mode: 'remote',
+        sortName: 'nama',
         sortOrder: 'asc',
         rowStyler: function(index, row) {
           if (row.status == 0) {
@@ -581,13 +653,20 @@
               sortable: true
             },
             {
-              field: 'tgltrans',
-              title: 'Tgl Trans',
+              field: 'nama',
+              title: 'Nama',
               width: 100,
               sortable: true
             },
           ]
         ],
+        onSelect: function(index, data, checkdata) {
+          if (checkData == "Kode") {
+            $('#txt_nilai_list_jenis_pemakaian').combogrid('setValue', data.kode);
+          } else if (checkData == "Nama") {
+            $('#txt_nilai_list_jenis_pemakaian').combogrid('setValue', data.nama);
+          }
+        }
 
       });
     }
@@ -597,7 +676,7 @@
       var lokasi = getLokasi.datagrid('getSelected');
 
       if (lokasi != null) {
-        parent.buka_laporan(link_api.laporanPenyesuaianStok, {
+        parent.buka_laporan(link_api.laporanPemakaianBahan, {
           lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
           status: JSON.stringify($('#cbStatus').combogrid("getValues")),
           data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
@@ -605,7 +684,7 @@
           tglawal: $("#txt_tgl_aw").datebox('getValue'),
           tglakhir: $("#txt_tgl_ak").datebox('getValue'),
           excel: excel,
-          filename: "Laporan Penyesuaian Stok",
+          filename: "Laporan Pemakaian Bahan",
           kode: "{{ $kodemenu }}"
         });
       } else {

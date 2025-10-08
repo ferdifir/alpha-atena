@@ -250,6 +250,15 @@ Route::prefix('atena/laporan')
                     ]);
                 })->name('laporanrepacking');
 
+                // Laporan Inventori - Pemakaian Bahan
+                // atena/laporan/laporaninventori/laporanpemakaianbahan
+                Route::get('laporanpemakaianbahan', function () {
+                    return view('atena.laporan.inventori.v_inventori_laporan_pemakaian_bahan', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpemakaianbahan');
+
                 // Laporan Inventori - Saldo Awal Stok
                 // atena/laporan/laporaninventori/laporansaldoawal
                 Route::get('laporansaldoawal', function () {
