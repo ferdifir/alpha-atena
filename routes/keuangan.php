@@ -97,7 +97,7 @@ Route::get('atena/keuangan/tandaterima/transaksi', function() {
     if(request()->kode == 'yuq25') {
         return view('atena.keuangan.tanda_terima.v_keuangan_list_approve_tanda_terima', [
             'kodemenu' => request()->kode,
-            'jenis'    => request()->jenis,
+            'jenis'    => strtoupper(request()->jenis),
         ]);
     }
     return view('atena.keuangan.tanda_terima.v_keuangan_list_tanda_terima', [

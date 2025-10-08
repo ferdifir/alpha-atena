@@ -323,8 +323,8 @@ $(document).ready(async function() {
 
 })
 
-shortcut.add('F8', function() {
-	simpan();
+shortcut.add('F8', async function() {
+	await simpan();
 });
 
 function tutup() {
@@ -571,7 +571,7 @@ async function get_jurnal() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.getJurnalLinkUangMukaSO, {
+			link_api.getJurnalLinkPelunasanUangMukaSO, {
 				data_detail  : rows,
 				kodekasbank  : $('#UUIDKAS').combogrid('getValue'),
 				kodepelunasan: $("#KODEPELUNASAN").val(),
@@ -591,7 +591,7 @@ async function get_jurnal() {
 	}
 }
 
-async function load_data(idtrans, kodetrans) {
+async function load_data(uuidpelunasan, kodepelunasan) {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
@@ -605,7 +605,7 @@ async function load_data(idtrans, kodetrans) {
 			if (msg.kasbank) {
 				var data = msg.kasbank;
 
-				$('#UUIDPERKIRAANKAS').combogrid('setValue', data.idperkiraan);
+				$('#UUIDPERKIRAANKAS').combogrid('setValue', data.uuidperkiraan);
 				$('#UUIDCURRENCY').combogrid('setValue', data.uuidcurrency);
 				$('#NAMAPERKIRAANKAS').textbox('setValue', data.namaperkiraan);
 				///$('#KETERANGAN').textbox('setValue', data.KETERANGAN);
@@ -652,9 +652,10 @@ async function tampil_data() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.loadKartuUangMukaUangMukaSO, {
-				tglawal : $('#txt_tgl_aw').datebox('getValue'),
-				tglakhir: $('#txt_tgl_ak').datebox('getValue')
+			link_api.loadKartuUangMukaPelunasanUangMukaSO, {
+				tglawal     : $('#txt_tgl_aw').datebox('getValue'),
+				tglakhir    : $('#txt_tgl_ak').datebox('getValue'),
+				uuidcustomers: $('#UUIDCUSTOMER').combogrid('getValues')
 			}
 		);
 		if(response.success) {
@@ -1346,6 +1347,7 @@ function buat_table_detail_perkiraan() {
 			indexDetail = index;
 		},
 		onLoadSuccess: function(data) {
+			console.log('test data')
 			hitung_debet_kredit();
 		},
 		onAfterDeleteRow: function(index, row) {
@@ -1481,6 +1483,9 @@ function hitung_debet_kredit() {
 		$('#UUIDCURRENCY').combogrid('setValue', '{{ session('UUIDCURRENCY') }}');
 		$('#NILAIKURS').numberbox('setValue', 1);
 
+		console.log(totalkredit)
+		console.log(totaldebet)
+
 		$('#AMOUNT').numberbox('setValue', totalkredit - totaldebet);
 
 		$('#AMOUNTKURS').numberbox('setValue', $('#AMOUNT').numberbox('getValue'));
@@ -1547,7 +1552,7 @@ function clear_plugin() {
 async function getConfigMenu() {
 	try {
 	const res = await fetchData(
-		'{{ session('TOKEN') }}', link_api.loadConfigUangMukaSO, {
+		'{{ session('TOKEN') }}', link_api.loadConfigPelunasanUangMukaSO, {
 		kodemenu: '{{ $kodemenu }}'
 		}
 	);

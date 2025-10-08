@@ -32,13 +32,13 @@
                         <td id="label_form" align="center">Tgl. Pelunasan</td>
                     </tr>
                     <tr>
-                        <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" class="date" /></td>
+                        <td align="center"><input id="txt_tgl_aw_filter" name="txt_tgl_aw_filter" style="width:100px" class="date" /></td>
                     </tr>
                     <tr>
                         <td id="label_form" align="center">s/d</td>
                     </tr>
                     <tr>
-                        <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" class="date" /></td>
+                        <td align="center"><input id="txt_tgl_ak_filter" name="txt_tgl_ak_filter" style="width:100px" class="date" /></td>
                     </tr>
                     <tr>
                         <td id="label_form"><br></td>
@@ -259,7 +259,7 @@ async function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
+            var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaPO,
                 'bearer {{ session('TOKEN') }}', {
                     uuidpelunasan: row.uuidpelunasan
                 });
@@ -271,7 +271,7 @@ async function before_print() {
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipUangMukaPO;
+                        let url = link_api.ubahStatusjadiSlipPelunasanUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -326,7 +326,7 @@ async function batal_trans() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaPO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -335,7 +335,7 @@ async function batal_trans() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalUangMukaPO;
+                        let url = link_api.batalPelunasanUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -388,7 +388,7 @@ async function batal_cetak() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaPO,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaPO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -397,7 +397,7 @@ async function batal_cetak() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputUangMukaPO;
+                        let url = link_api.ubahStatusjadiInputPelunasanUangMukaPO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -441,7 +441,7 @@ async function cetak(uuidtrans) {
     bukaLoader();
     if (row) {
         try {
-            let url = link_api.cetakUangMukaPO + uuidtrans;
+            let url = link_api.cetakPelunasanUangMukaPO + uuidtrans;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -507,7 +507,7 @@ function buat_table() {
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadDataGridUangMukaPO,
+        url         : link_api.loadDataGridPelunasanUangMukaPO,
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {

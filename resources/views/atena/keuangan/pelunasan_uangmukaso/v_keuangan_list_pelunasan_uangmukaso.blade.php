@@ -259,7 +259,7 @@ async function before_print() {
                 $.messager.alert('Warning', 'Anda Tidak Memiliki Hak Akses', 'warning');
                 return false;
             }
-            var statusTrans = await getStatusTrans(link_api.getStatusUangMukaSO,
+            var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaSO,
                 'bearer {{ session('TOKEN') }}', {
                     uuidpelunasan: row.uuidpelunasan
                 });
@@ -271,7 +271,7 @@ async function before_print() {
                         kode + ', Sebelum Dicetak ', 'warning');
                 } else {
                     try {
-                        let url = link_api.ubahStatusjadiSlipUangMukaSO;
+                        let url = link_api.ubahStatusjadiSlipPelunasanUangMukaSO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -326,7 +326,7 @@ async function batal_trans() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaSO,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaSO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -335,7 +335,7 @@ async function batal_trans() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.batalUangMukaSO;
+                        let url = link_api.batalPelunasanUangMukaSO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -388,7 +388,7 @@ async function batal_cetak() {
             tutupLoader();
             return;
         }
-        var statusTrans = await getStatusTrans(link_api.getStatusUangMukaSO,
+        var statusTrans = await getStatusTrans(link_api.getStatusPelunasanUangMukaSO,
             'bearer {{ session('TOKEN') }}', {
                 uuidpelunasan: row.uuidpelunasan
             });
@@ -397,7 +397,7 @@ async function batal_cetak() {
                 if (r) {
                     bukaLoader();
                     try {
-                        let url = link_api.ubahStatusjadiInputUangMukaSO;
+                        let url = link_api.ubahStatusjadiInputPelunasanUangMukaSO;
                         const response = await fetch(url, {
                             method: 'POST',
                             headers: {
@@ -441,7 +441,7 @@ async function cetak(uuidtrans) {
     bukaLoader();
     if (row) {
         try {
-            let url = link_api.cetakUangMukaSO + uuidtrans;
+            let url = link_api.cetakPelunasanUangMukaSO + uuidtrans;
             const response = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -507,7 +507,7 @@ function buat_table() {
         striped     : true,
         rownumbers  : true,
         pageSize    : 20,
-        url         : link_api.loadDataGridUangMukaSO,
+        url         : link_api.loadDataGridPelunasanUangMukaSO,
         pagination  : true,
         clientPaging: false,
         rowStyler   : function(index, row) {

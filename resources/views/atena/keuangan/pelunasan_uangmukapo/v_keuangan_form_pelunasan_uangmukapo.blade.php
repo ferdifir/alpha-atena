@@ -50,7 +50,7 @@
                                         <table border="0">
                                             <tr>
                                                 <td id="label_form" align="left">Kode Akun</td>
-                                                <td><input id="UUIDPERKIRAANKAS" name="idperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
+                                                <td><input id="UUIDPERKIRAANKAS" name="uuidperkiraankas" style="width:110px"> <input id="NAMAPERKIRAANKAS" name="namaperkiraankas" style="width:250px" class="label_input" readonly prompt="Nama Akun"></td>
                                             </tr>
                                             <tr>
                                                 <td id="label_form"></td>
@@ -80,7 +80,7 @@
                                         <table border="0">
                                             <tr>
                                                 <td id="label_form" align="left">Kodetrans</td>
-                                                <td><input id="UUIDKAS" class="label_input" name="idkas" style="width:180px"></td>
+                                                <td><input id="UUIDKAS" class="label_input" name="uuidkas" style="width:180px"></td>
                                             </tr>
                                             <tr>
                                                 <td id="label_form" align="left">No Giro</td>
@@ -138,7 +138,7 @@
                         <table id="fm-filter">
                             <tr>
                                 <td id="label_form">Supplier</td>
-                                <td><input name="idsupplier" id="UUIDSUPPLIER" style="width:230px"></td>
+                                <td><input name="uuidsupplier" id="UUIDSUPPLIER" style="width:230px"></td>
                             </tr>
                         </table>
                     </div>
@@ -355,7 +355,7 @@ async function ubah() {
 	const response = await fetchData(
 		'{{ session('TOKEN') }}',
 		link_api.loadDataHeaderPelunasanUangMukaPO, {
-		uuuuidpelunasan: '{{ $data }}'
+		uuidpelunasan: '{{ $data }}'
 		}
 	);
 	if(response.success) {
@@ -367,7 +367,7 @@ async function ubah() {
 	if (row) {
 		get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
 			var UT = data.data.ubah;
-			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/pelunasan-uang-muka-pesanan-pembelian", "uuuuidpelunasan", row.uuuuidpelunasan, async function(data) {
+			get_status_trans('{{ session("TOKEN") }}', "atena/keuangan/pelunasan-uang-muka-pesanan-pembelian", "uuidpelunasan", row.uuidpelunasan, async function(data) {
 				$(".form_status").html(status_transaksi(data.data.status));
 				if (UT == 1 && data.data.status == 'I') {
 					$('#btn_simpan_modal').css('filter', '');
@@ -429,8 +429,11 @@ async function simpan(jenis_simpan) {
 
 	$('#window_button_simpan').window('close');
 
-	if (isValid)
+	if (isValid){
 		isValid = cek_datagrid($('#table_data_detail'));
+	}
+
+	console.log(isValid)
 
 	var debet = parseFloat($('#TOTALDEBET').numberbox('getValue'));
 	var kredit = parseFloat($('#TOTALKREDIT').numberbox('getValue'));
@@ -533,7 +536,7 @@ async function get_jurnal() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.getJurnalLinkUangMukaPO, {
+			link_api.getJurnalLinkPelunasanUangMukaPO, {
 					data_detail  : rows,
 					kodekasbank  : $('#UUIDKAS').combogrid('getValue'),
 					kodepelunasan: $("#KODEPELUNASAN").val(),
@@ -542,7 +545,7 @@ async function get_jurnal() {
 		);
 		if(response.success) {
 			flag_get_jurnal = true;
-			$('#table_data_perkiraan').datagrid('loadData', msg.data_detail);
+			$('#table_data_perkiraan').datagrid('loadData', response.data);
 		} else {
 			$.messager.alert('Error', response.message, 'error');
 		}
@@ -568,10 +571,10 @@ async function load_data(uuidpelunasan, kodepelunasan) {
 				var data = msg.kasbank;
 
 				$('#UUIDPERKIRAANKAS').combogrid('setValue', {
-					id: data.idperkiraan,
+					uuidperkiraan: data.uuidperkiraan,
 					kode: data.kodeperkiraan
 				});
-				$('#UUIDCURRENCY').combogrid('setValue', data.idcurrency);
+				$('#UUIDCURRENCY').combogrid('setValue', data.uuidcurrency);
 				$('#NAMAPERKIRAANKAS').textbox('setValue', data.namaperkiraan);
 				///$('#KETERANGAN').textbox('setValue', data.KETERANGAN);
 				$('#AMOUNT').numberbox('setValue', data.amount);
@@ -680,7 +683,7 @@ async function browse_data_referensi(id) {
 						try {
 							const response = await fetchData(
 								'{{ session('TOKEN') }}',
-								link_api.loadKartuUangMukaUangMukaPO, {
+								link_api.loadKartuUangMukaPelunasanUangMukaPO, {
 									uuidsupplier: row.uuidsupplier
 								}
 							);
@@ -797,7 +800,7 @@ function browse_data_kas_bank(id) {
 			jenis: 'kas_bank_hutang',
 			aktif: 1
 		},
-		idField: 'id',
+		idField: 'uuidperkiraan',
 		textField: 'kode',
 		mode: 'remote',
 		required: true,
@@ -826,7 +829,7 @@ function browse_data_kas_bank(id) {
 				var data_perkiraan = $('#table_data_perkiraan').datagrid('getRows');
 
 				for (var i = 0; i < data_perkiraan.length; i++) {
-					if (data_perkiraan[i].uuidperkiraan == row.uuidcurrency) {
+					if (data_perkiraan[i].uuidperkiraan == row.uuidperkiraan) {
 						$.messager.show({
 							title: 'Warning',
 							msg: 'Perkiraan Yang Diinput Tidak Boleh Sama Dengan Header',
@@ -1111,8 +1114,6 @@ function buat_table_detail_perkiraan() {
 						index: index,
 						field: 'kodebarang'
 					});
-
-					getRowIndex(target);
 				}
 			}, {
 				text: 'Hapus',
@@ -1340,7 +1341,7 @@ function buat_table_detail_perkiraan() {
 					var uuidcurrency   = data ? data.uuidcurrency : '{{ session('UUIDCURRENCY') }}';
 					var simbolcurrency = data ? data.simbolcurrency : '{{ session('SIMBOLCURRENCY') }}';
 
-					if (id == $('#UUIDPERKIRAANKAS').combogrid('getValue')) {
+					if (uuidperkiraan == $('#UUIDPERKIRAANKAS').combogrid('getValue')) {
 						$.messager.show({
 							title: 'Warning',
 							msg: 'Perkiraan Yang Diinput Tidak Boleh Sama Dengan Header',
@@ -1487,13 +1488,13 @@ function clear_plugin() {
 async function getConfigMenu() {
 	try {
 	const res = await fetchData(
-		'{{ session('TOKEN') }}', link_api.loadConfigUangMukaPO, {
+		'{{ session('TOKEN') }}', link_api.loadConfigPelunasanUangMukaPO, {
 		kodemenu: '{{ $kodemenu }}'
 		}
 	);
 	if (res.success) {
     // AYAT SILANG
-    ayatsilang = res.data.AYATSILANG
+    ayatsilang = res.data.AYATSILANG || 0
 
 		if(ayatsilang == 0) {
 			$('.ayatsilang0').show()

@@ -501,6 +501,7 @@ function buat_table() {
 		rowStyler   : function(index, row) {
             if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
             else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
+            else if (row.status == 'R') return 'background-color:#b085f5';
             else if (row.status == 'D') return 'background-color:{{ session('WARNA_STATUS_D') }}';
         },
 		frozenColumns: [[

@@ -537,7 +537,7 @@ function reset_detail() {
 
 async function get_jurnal() {
 	if (mode_load_data) {
-			return false;
+		return false;
 	}
 
 	flag_get_jurnal = false;
@@ -559,8 +559,10 @@ async function get_jurnal() {
 			$('#CATATAN').textbox('setValue', 'PELUNASAN PIUTANG DARI ' + referensi);
 	}
 
-	if(rows.length == 0)
+	if(rows.length == 0){
+		$('#table_data_perkiraan').datagrid('loadData',[]);
 		return
+	}
 
 	try {
 		const response = await fetchData(
@@ -574,7 +576,7 @@ async function get_jurnal() {
 		);
 		if(response.success) {
 			flag_get_jurnal = true;
-			$('#table_data_perkiraan').datagrid('loadData', msg.data_detail);
+			$('#table_data_perkiraan').datagrid('loadData',response.data);
 		} else {
 			$.messager.alert('Error', response.message, 'error');
 		}
@@ -661,8 +663,8 @@ async function tampil_data() {
 	try {
 		const response = await fetchData(
 			'{{ session('TOKEN') }}',
-			link_api.loadPiutangPelunasanPiutang, {
-				uuidcustomer: uuidcustomer,
+			link_api.loadPiutangPelunasanPiutangKaryawan, {
+				uuidkaryawan: uuidkaryawan,
 				uuidlokasi  : uuidlokasi,
 				tglawal     : $('#txt_tgl_aw').datebox('getValue'),
 				tglakhir    : $('#txt_tgl_ak').datebox('getValue')
@@ -671,10 +673,10 @@ async function tampil_data() {
 
 		if(response.success) {
 			var msg = response.data
-			$('#table_data_detail').datagrid('loadData', msg.data_detail);
-			if (msg.data_detail.length == 0)
+			$('#table_data_detail').datagrid('loadData', msg);
+			if (msg.length == 0)
 					$.messager.alert('Warning', 'Tidak Ada Piutang', 'warning');
-			get_jurnal();
+			await get_jurnal();
 		} else {
 			$.messager.alert('Error', response.message, 'error');
 		}
@@ -719,37 +721,37 @@ async function browse_data_referensi(id) {
 			mode      : 'remote',
 			multiple  : true,
 			columns   : [
-					[{
-									field: 'kode',
-									title: 'Kode',
-									width: 150,
-									sortable: true
-							},
-							{
-									field: 'nama',
-									title: 'Nama',
-									width: 200,
-									sortable: true
-							},
-							{
-									field: 'alamat',
-									title: 'Alamat',
-									width: 300,
-									sortable: true
-							},
-							{
-									field: 'kota',
-									title: 'Kota',
-									width: 100,
-									sortable: true
-							},
-							{
-									field: 'telp',
-									title: 'Telp',
-									width: 100,
-									sortable: true
-							},
-					]
+				[{
+							field: 'kode',
+							title: 'Kode',
+							width: 150,
+							sortable: true
+					},
+					{
+							field: 'nama',
+							title: 'Nama',
+							width: 200,
+							sortable: true
+					},
+					{
+							field: 'alamat',
+							title: 'Alamat',
+							width: 300,
+							sortable: true
+					},
+					{
+							field: 'kota',
+							title: 'Kota',
+							width: 100,
+							sortable: true
+					},
+					{
+							field: 'telp',
+							title: 'Telp',
+							width: 100,
+							sortable: true
+					},
+				]
 			],
 			onChange: async function(newVal, oldVal) {
 					if ($('#mode').val() != '') {
