@@ -5,15 +5,31 @@
     <div class="panel-filter-laporan" data-options="region:'west',hideCollapsedContent:false" title="{{ $menu }}">
 
       <table style="border-bottom:1px #000" id="label_laporan">
-        <!-- FILTER LAPRRAN -->
+        <!-- FILTER LAPORAN -->
         <tr>
-          <td id="label_laporan" style="width:55px">Lokasi</td>
-          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:220px" /></td>
+          <td id="label_laporan">Tgl. Trans</td>
+          <td id="label_laporan" style="padding-left:21px;"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:95px;"
+              class="date" /> - <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:95px;" class="date" /></td>
         </tr>
         <tr>
-          <td id="label_laporan">Tgl. Trans </td>
-          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:105px;" class="date" /> -
-            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:105px;" class="date" />
+          <td id="label_laporan">Tgl. Plnasan</td>
+          <td id="label_laporan"><input type="checkbox" name="cb_tglpelunasancheckbox" id="cb_tglpelunasancheckbox"
+              value="0" style="padding-top:5px;"><input id="txt_tgl_pelunasan" name="txt_tgl_pelunasan"
+              style="width:95px;" class="date" /></td>
+        </tr>
+        <tr>
+          <td id="label_laporan">Jth Tempo</td>
+          <td id="label_laporan"><input type="checkbox" name="cb_tglcheckbox" id="cb_tglcheckbox" value="0"
+              style="padding-top:5px;"><input id="txt_tgl_aw_jatuh_tempo" name="txt_tgl_aw_jatuh_tempo"
+              style="width:95px;" class="date" /> - <input id="txt_tgl_ak_jatuh_tempo" name="txt_tgl_ak_jatuh_tempo"
+              style="width:95px;" class="date" /></td>
+        </tr>
+        <tr>
+          <td id="label_laporan">Jenis</td>
+          <td id="label_laporan">
+            <div id="cbJenis" class="easyui-combogrid" name="cbjenis[]" data-options="iconCls:'',">
+
+            </div>
           </td>
         </tr>
         <tr>
@@ -30,9 +46,9 @@
           </td>
           <td>
             <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
-              <option value="tpr.kodepr">Kode Analisis PO</option>
-              <option value="mbarang.kodebarang">Kode Barang</option>
-              <option value="mbarang.namabarang">Nama Barang</option>
+              <option value="msupplier.kodesupplier">Kode Supplier</option>
+              <option value="msupplier.namasupplier">Nama Supplier</option>
+              <option value="kartuhutang.sisa">Saldo</option>
             </select>
           </td>
         </tr>
@@ -43,14 +59,15 @@
           <td>
             <div id="lap_operatorString">
               <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
               <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+
               </select>
             </div>
           </td>
-
         </tr>
         <tr>
           <td id="label_laporan" class="label_nilai">Nilai </td>
@@ -58,11 +75,8 @@
             <div id="hide_nilai" hidden>
               <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
             </div>
-            <div id="hide_nilai_list_analisispo">
-              <input id="txt_nilai_list_analisispo" name="txt_nilai_list_analisispo" style="width:220px" prompt="Nilai" />
-            </div>
-            <div id="hide_nilai_list_barang" hidden>
-              <input id="txt_nilai_list_barang" name="txt_nilai_list_barang" style="width:220px" prompt="Nilai" />
+            <div id="hide_nilai_list_supplier">
+              <input id="txt_nilai_list_supplier" name="txt_nilai_list_supplier" style="width:220px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -75,7 +89,7 @@
         </tr>
         <tr valign="top">
           <td colspan="2">
-            <ul class="easyui-datalist" title="Jenis Laporan" name="list_tampil_laporan" id="list_tampil_laporan">
+            <ul class="easyui-datalist" title="Tampilkan Secara" name="list_tampil_laporan" id="list_tampil_laporan">
             </ul>
           </td>
         </tr>
@@ -109,49 +123,16 @@
 @push('js')
   <script>
     var counter = 0;
-    var kolom = "Kode Analisis PO";
-    var namaKolom = "Analisis PO";
-    var kolomVal = "tanalisispo.kodeanalisispo"
+    var kolom = "Kode Supplier";
+    var namaKolom = "Supplier";
+    var kolomVal = "msupplier.kodesupplier";
     var checkData = "Kode";
     var operator = "Adalah";
     var operatorVal = "ADALAH";
     var tipedata = "STRING"
 
-    $(document).ready(async function() {
-      isiOperatorLaporan("String", "operatorString");
-      isiOperatorLaporan("Number", "operatorNumber");
-      browse_data_lokasi('#txt_lokasi');
-      browse_data_barang('#txt_nilai_list_barang');
-      browse_data_analisispo('#txt_nilai_list_analisispo');
-
-      try {
-        const response = await fetch(
-          link_api.browseLokasi, {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer {{ session('TOKEN') }}',
-              'Content-Type': 'application/json'
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const res = await response.json();
-        if (res.success) {
-          var arrayLokasi = [];
-
-          for (var i = 0; i < res.data.length; i++) {
-            arrayLokasi.push(res.data[i].kode);
-          }
-
-          $('#txt_lokasi').combogrid("setValues", arrayLokasi);
-        }
-      } catch (e) {
-        showErrorAlert(e);
-      }
+    $(document).ready(function() {
+      browse_data_supplier('#txt_nilai_list_supplier');
 
       $('#list_filter_laporan').datagrid({
         width: 280,
@@ -192,16 +173,32 @@
         ],
       });
 
-
-      //JENIS TAMPILAN LAPRRAN
+      //JENIS TAMPILAN LAPORAN
       var arrayTampilLaporan = [{
-        value: 'REGISTER',
-        jenis: 'Register'
-      }];
+          value: 'DETAILNOTA',
+          jenis: 'Detail Nota'
+        },
+        {
+          value: 'KARTUHUTANG',
+          jenis: 'Kartu'
+        },
+        {
+          value: 'REKAPHUTANG',
+          jenis: 'Rekapitulasi'
+        },
+        {
+          value: 'REKAPPELUNASANHUTANG',
+          jenis: 'Rekapitulasi Pelunasan'
+        },
+        {
+          value: 'RINCIANPELUNASANHUTANG',
+          jenis: 'Rincian Pelunasan'
+        }
+      ];
 
       $('#list_tampil_laporan').datalist({
         width: 280,
-        height: 155,
+        height: 165,
         checkbox: true,
         data: arrayTampilLaporan,
         columns: [
@@ -211,6 +208,17 @@
             width: 200
           }, ]
         ],
+        onClickRow: function(index, row) {
+          if (row.value == "DETAILNOTA") {
+            $("#cb_tglcheckbox").prop('checked', false);
+            $("#cb_tglcheckbox").prop('disabled', false);
+          } else {
+            $("#cb_tglcheckbox").prop('checked', false);
+            $("#cb_tglcheckbox").prop('disabled', true);
+            $("#txt_tgl_aw_jatuh_tempo").datebox('disable');
+            $("#txt_tgl_ak_jatuh_tempo").datebox('disable');
+          }
+        }
       });
       //SET CHECK REKAP
       $('#list_tampil_laporan').datalist('checkRow', 0);
@@ -219,8 +227,9 @@
         width: 220,
         idField: 'value',
         textField: 'status',
-        multiple: true,
+        multiple: false,
         selectFirstRow: true,
+        showHeader: false,
         columns: [
           [{
               field: 'value',
@@ -229,11 +238,6 @@
             {
               field: 'status',
               title: 'Status',
-              width: 60
-            },
-            {
-              field: 'keterangan',
-              title: 'Keterangan',
               width: 200
             },
           ]
@@ -241,29 +245,78 @@
 
       });
       $('#cbStatus').combogrid("grid").datagrid("appendRow", {
-        value: 'I',
-        status: 'Input',
-        keterangan: 'Transaksi belum dicetak'
+        value: 'SEMUA',
+        status: 'Semua'
       });
       $('#cbStatus').combogrid("grid").datagrid("appendRow", {
-        value: 'S',
-        status: 'Slip',
-        keterangan: 'Transaksi sudah dicetak'
+        value: 'BELUMLUNAS',
+        status: 'Belum Lunas'
       });
       $('#cbStatus').combogrid("grid").datagrid("appendRow", {
-        value: 'P',
-        status: 'Posting',
-        keterangan: 'Transaksi berlanjut ke penerimaan'
-      });
-      $('#cbStatus').combogrid("grid").datagrid("appendRow", {
-        value: 'D',
-        status: 'Delete',
-        keterangan: 'Transaksi dibatalkan'
+        value: 'LUNAS',
+        status: 'Lunas'
       });
 
-      $('#cbStatus').combogrid("setValues", ["I", "S", "P"]);
+      $('#cbStatus').combogrid("setValues", ["SEMUA", "BELUMLUNAS", "LUNAS"]);
+
+      $('#cbJenis').combogrid({
+        width: 220,
+        idField: 'value',
+        textField: 'jenis',
+        multiple: true,
+        selectFirstRow: true,
+        columns: [
+          [{
+              field: 'value',
+              hidden: true
+            },
+            {
+              field: 'jenis',
+              title: 'Jenis Transaksi',
+              width: 200
+            },
+          ]
+        ],
+
+      });
+      $('#cbJenis').combogrid("grid").datagrid("appendRow", {
+        value: 'PERSEDIAAN',
+        jenis: 'Pembelian Persediaan'
+      });
+      $('#cbJenis').combogrid("grid").datagrid("appendRow", {
+        value: 'ASET',
+        jenis: 'Pembelian Aset'
+      });
+
+      $('#cbJenis').combogrid("setValues", ["PERSEDIAAN", "ASET"]);
+
+      $("#txt_tgl_pelunasan").datebox('disable');
+      $("#txt_tgl_aw_jatuh_tempo").datebox('disable');
+      $("#txt_tgl_ak_jatuh_tempo").datebox('disable');
+
+      // Tambahkan fungsi-fungsi yang diminta
+      isiOperatorLaporan("String", "operatorString");
+      isiOperatorLaporan("Number", "operatorNumber");
       $('#operatorString').combobox('setValue', operatorVal);
       tutupLoader();
+    });
+
+    $("#cb_tglcheckbox").click(function() {
+      if ($(this).prop('checked')) {
+        $("#txt_tgl_aw_jatuh_tempo").datebox('enable');
+        $("#txt_tgl_ak_jatuh_tempo").datebox('enable');
+      } else {
+        $("#txt_tgl_aw_jatuh_tempo").datebox('disable');
+        $("#txt_tgl_ak_jatuh_tempo").datebox('disable');
+      }
+    });
+
+    $("#cb_tglpelunasancheckbox").click(function() {
+      if ($(this).prop('checked')) {
+        $("#txt_tgl_pelunasan").datebox('enable');
+      } else {
+        $("#txt_tgl_pelunasan").datebox('disable');
+      }
     });
 
     //FILTER KOLOM
@@ -273,21 +326,18 @@
         kolomVal = $("#kolom").combobox('getValue');
 
         checkData = kolom.substr(0, 4); // CEK NAMA FILTER, APAKAH KODE DAN NAMA
-        namaKolom = kolom.substr(5, kolom.length - 1); // CEK JENIS FILTER APA (SUPPLIER,BARANG,PR)
+        namaKolom = kolom.substr(5, kolom.length - 1); // CEK JENIS FILTER APA (SUPPLIER,BARANG,ORDERRETURBELI)
 
         if (checkData == "Kode" || checkData == "Nama") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_analisispo').hide();
-          } else if (namaKolom == 'Permintaan Barang') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_analisispo').show();
+          if (namaKolom == 'Supplier') {
+            $('#hide_nilai_list_supplier').show();
           }
 
           tipedata = "STRING";
           $('#lap_operatorString').show();
           $('#lap_operatorNumber').hide();
+
 
           $('#hide_nilai').hide();
           $('.label_nilai').show();
@@ -295,13 +345,15 @@
           $("#operatorString").combobox('setValues', 'ADALAH');
           operator = "Adalah";
           operatorVal = "ADALAH";
+
         } else {
+          namaKolom = kolom;
+
           tipedata = "NUMBER";
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_analisispo').hide();
+          $('#hide_nilai_list_supplier').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -312,8 +364,7 @@
         }
 
         //CLEAR FIELD SETIAP UBAH
-        $('#txt_nilai_list_barang').combogrid('clear');
-        $('#txt_nilai_list_analisispo').combogrid('clear');
+        $('#txt_nilai_list_supplier').combogrid('clear');
         $('#txt_nilai').textbox('clear');
       }
     });
@@ -328,28 +379,21 @@
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
           //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_analisispo').hide();
-          } else if (namaKolom == 'Permintaan Barang') {
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_analisispo').show();
-
+          if (namaKolom == 'Supplier') {
+            $('#hide_nilai_list_supplier').show();
           }
 
           $('#hide_nilai').hide();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_analisispo').hide();
+          $('#hide_nilai_list_supplier').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_analisispo').hide();
+          $('#hide_nilai_list_supplier').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -367,15 +411,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_analisispo').hide();
+          $('#hide_nilai_list_supplier').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_analisispo').hide();
+          $('#hide_nilai_list_supplier').hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -388,15 +430,10 @@
     $("#btn_add").click(function() {
       var nilai = "";
       var checknilai = 0;
-
       //UNTUK KOLOM BESERTA COMBOGRID
-      if (namaKolom == 'Barang' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
-        nilai = $('#txt_nilai_list_barang').combogrid('getValue');
-        if (nilai != "") {
-          checknilai = 1;
-        }
-      } else if (namaKolom == 'Analisis PO' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
-        nilai = $('#txt_nilai_list_analisispo').combogrid('getValue')
+      if (namaKolom == 'Supplier' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
+
+        nilai = $('#txt_nilai_list_supplier').combogrid('getValue');
         if (nilai != "") {
           checknilai = 1;
         }
@@ -411,6 +448,16 @@
 
       if (checknilai == 1) {
         var text_laporan = kolom + " " + operator + " " + nilai;
+        //TAMBAHAN SUPPLIER BETJIK
+        if (namaKolom == 'Supplier' && (operator == "Adalah" || operator == "Tidak Mencakup")) {
+          var msg = $('#txt_nilai_list_supplier').combogrid('grid').datagrid("getSelected");
+
+          if (msg != null) //NAMA
+          {
+            text_laporan = kolom + " " + operator + " " + nilai + ", " + msg.badanusaha;
+          }
+        }
+
 
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
@@ -424,239 +471,109 @@
         var rows = $('#list_filter_laporan').datagrid('getRows');
         $('#list_filter_laporan').datagrid('checkRow', rows.length - 1);
       } else {
-        alert("Isi Nilai Telebih Dahulu");
+        $.messager.alert('Warning', 'Isi Nilai Telebih Dahulu', 'warning');
       }
     });
 
     //HAPUS FILTER
     $("#btn_remove").click(function() {
-      var rows = $('#list_filter_laporan').datagrid('getSelections');
+      var rows = $('#list_filter_laporan').datagrid('getSelections'); // get all selected rows
       for (var i = rows.length - 1; i >= 0; i--) {
-        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]);
+        var index = $('#list_filter_laporan').datagrid('getRowIndex', rows[i]); // get the row index
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
 
     function cetakLaporan(excel) {
-      parent.buka_laporan(link_api.laporanAnalisisPesananPembelian, {
+      parent.buka_laporan(link_api.laporanCreditNote, {
         kode: "{{ $kodemenu }}",
-        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
         status: JSON.stringify($('#cbStatus').combogrid("getValues")),
-        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
-        data_filter: JSON.stringify($('#list_filter_laporan').datagrid('getRows')),
-        tglawal: $('#txt_tgl_aw').datebox('getValue'),
-        tglakhir: $('#txt_tgl_ak').datebox('getValue'),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
         excel: excel,
-        filename: "Laporan Analisis PO"
+        filename: "Laporan Hutang",
       });
     }
 
-    // PRINT LAPRRAN
+    // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
-      var getLokasi = $('#txt_lokasi').combogrid('grid');
-      var lokasi = getLokasi.datalist('getSelected');
+      var jenistrans = $('#cbJenis').combogrid("getValues").length;
 
-      if (lokasi != null) {
+      if (jenistrans > 0) {
         cetakLaporan('ya');
-      } else {
-        $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
+      } else if (jenistrans == 0) {
+        $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
       }
     });
 
     $("#btn_print").click(function() {
-      var getLokasi = $('#txt_lokasi').combogrid('grid');
-      var lokasi = getLokasi.datalist('getSelected');
+      var jenistrans = $('#cbJenis').combogrid("getValues").length;
 
-      if (lokasi != null) {
+      if (jenistrans > 0) {
         cetakLaporan('tidak');
-      } else {
-        $.messager.alert('Warning', 'Data Lokasi Tidak Boleh Kosong');
+      } else if (jenistrans == 0) {
+        $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
       }
     });
 
-    function browse_data_lokasi(id) {
+    function browse_data_supplier(id) {
       $(id).combogrid({
-        panelWidth: 380,
-        url: link_api.browseLokasi,
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-              field: 'ck',
-              checkbox: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80,
-              sortable: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 240,
-              sortable: true
-            },
-          ]
-        ]
-      });
-    }
-
-    function browse_data_lokasi_tujuan(id) {
-      $(id).combogrid({
-        panelWidth: 380,
-        url: link_api.browseLokasi,
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-              field: 'ck',
-              checkbox: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80,
-              sortable: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 240,
-              sortable: true
-            },
-          ]
-        ]
-      });
-    }
-
-    function browse_data_barang(id) {
-      $(id).combogrid({
-        panelWidth: 650,
-        url: link_api.browseBarang,
+        panelWidth: 740,
+        url: link_api.browseSupplier,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',
         sortName: 'nama',
         sortOrder: 'asc',
-        onBeforeLoad: function(param) {
-          if ('undefined' === typeof param.q || param.q.length == 0) {
-            return false;
-          }
-        },
-        loadMsg: 'Loading...',
-        onShowPanel: function() {
-          const $cg = $(this);
-          const grid = $cg.combogrid('grid');
-          const rows = grid.datagrid('getRows');
-          if (rows.length == 0) {
-            $cg.next().find('.textbox-text').attr('placeholder', 'Ketikkan Kode / Nama Barang');
-          }
-        },
-        rowStyler: function(index, row, checkData) {
+        rowStyler: function(index, row) {
           if (row.status == 0) {
             return 'background-color:#A8AEA6';
           }
         },
         columns: [
           [{
-              field: 'uuidbarang',
+              field: 'id',
               hidden: true
             },
             {
               field: 'kode',
               title: 'Kode',
-              width: 100,
+              width: 60,
               sortable: true
             },
             {
               field: 'nama',
               title: 'Nama',
-              width: 300,
+              width: 240,
               sortable: true
             },
             {
-              field: 'satuan',
-              title: 'Satuan',
+              field: 'badanusaha',
+              title: 'Badan Usaha',
               width: 80,
               sortable: true
             },
             {
-              field: 'partnumber',
-              title: 'Part Number',
-              width: 150,
+              field: 'alamat',
+              title: 'Alamat',
+              width: 240,
+              sortable: true
+            },
+            {
+              field: 'kota',
+              title: 'Kota',
+              width: 80,
               sortable: true
             },
           ]
         ],
         onSelect: function(index, data, checkdata) {
           if (checkData == "Kode") {
-            $('#txt_nilai_list_barang').combogrid('setValue', data.kode);
+            $('#txt_nilai_list_supplier').combogrid('setValue', data.kode);
           } else if (checkData == "Nama") {
-            $('#txt_nilai_list_barang').combogrid('setValue', data.nama);
-          }
-        }
-      });
-    }
-
-    function browse_data_analisispo(id) {
-      $(id).combogrid({
-        panelWidth: 600,
-        mode: 'remote',
-        url: link_api.browseLaporanAnalisisPesananPembelian,
-        idField: 'uuidanalisispo',
-        textField: 'kode',
-        columns: [
-          [{
-              field: 'uuidanalisispo',
-              hidden: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 150
-            },
-            {
-              field: 'kodelokasi',
-              title: 'Kode Lokasi',
-              width: 120
-            },
-            {
-              field: 'tgltrans',
-              title: 'Tgl Trans',
-              width: 80,
-              align: 'center'
-            },
-            {
-              field: 'username',
-              title: 'User',
-              width: 150
-            },
-          ]
-        ],
-        onSelect: function(index, row) {
-          if (checkData == "Kode") {
-            $('#txt_nilai_list_analisispo').combogrid('setValue', row.kode);
+            $('#txt_nilai_list_supplier').combogrid('setValue', data.nama);
           }
         }
       });

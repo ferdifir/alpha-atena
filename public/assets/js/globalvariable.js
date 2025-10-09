@@ -487,6 +487,7 @@ var link_api = {
     browseBarangPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-barang`,
     browsePesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/browse-pesanan-pembelian`,
     laporanPesananPembelian: `${base_url_api}atena/pembelian/pesanan-pembelian/laporan`,
+    
     //pembelian
     loadDataHeaderPembelian: `${base_url_api}atena/pembelian/pembelian/load-data-header`,
     loadConfigPembelian: `${base_url_api}atena/pembelian/pembelian/load-config`,
@@ -967,6 +968,11 @@ var link_api = {
     laporanKartuStok: `${base_url_api}atena/inventori/kartu-stok/laporan`,
     laporanMutasiStok: `${base_url_api}atena/inventori/mutasi-stok/laporan`,
     laporanPosisiStok: `${base_url_api}atena/inventori/posisi-stok/laporan`,
+    laporanCreditNote: `${base_url_api}atena/keuangan/nota-kredit/laporan`,
+    laporanDebitNote: `${base_url_api}atena/keuangan/nota-debit/laporan`,
+    laporanHutang: `${base_url_api}atena/keuangan/hutang/laporan`,
+    laporanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/laporan`,
+    laporanPiutang: `${base_url_api}atena/keuangan/piutang/laporan`,
 };
 
 var modul_kode = {

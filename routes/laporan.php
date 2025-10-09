@@ -345,4 +345,91 @@ Route::prefix('atena/laporan')
                     ]);
                 })->name('laporanmutasistok');
             });
+
+        Route::prefix('laporankeuangan')
+            ->name('laporankeuangan.')
+            ->group(function () {
+
+                // Laporan Keuangan - Uang Muka Pembelian
+                // atena/laporan/laporankeuangan/laporanuangmukapembelian
+                Route::get('laporanuangmukapembelian', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_uangmuka_pembelian', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanuangmuka');
+
+                // Laporan Keuangan - Uang Muka Penjualan
+                // atena/laporan/laporankeuangan/laporanuangmukapenjualan
+                Route::get('laporanuangmukapenjualan', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_uangmuka_penjualan', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanuangmuka');
+
+                // Laporan Keuangan - Potongan Pembelian
+                // atena/laporan/laporankeuangan/laporandebetnote
+                Route::get('laporandebetnote', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_debet_note', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporandebetnote');
+
+                // Laporan Keuangan - Potongan Penjualan
+                // atena/laporan/laporankeuangan/laporancreditnote
+                Route::get('laporancreditnote', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_credit_note', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporancreditnote');
+
+                // Laporan Keuangan - Tanda Terima Pemasok
+                // atena/laporan/laporankeuangan/laporantandaterimatagihansupplier
+                Route::get('laporantandaterimatagihansupplier', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_tanda_terima_tagihan_supplier', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporantandaterimatagihansupplier');
+
+                // Laporan Keuangan - Tagihan Pelanggan
+                // atena/laporan/laporankeuangan/laporantagihancustomer
+                Route::get('laporantagihancustomer', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_tagihan_customer', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporantagihancustomer');
+
+                // Laporan Keuangan - Hutang dan Pelunasan Hutang
+                // atena/laporan/laporankeuangan/laporanhutang
+                Route::get('laporanhutang', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_hutang', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanhutang');
+
+                // Laporan Keuangan - Piutang dan Pelunasan Piutang
+                // atena/laporan/laporankeuangan/laporanpiutang
+                Route::get('laporanpiutang', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_piutang', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpiutang');
+
+
+                // Laporan Keuangan - Piutang Karyawan dan Pelunasan
+                // atena/laporan/laporankeuangan/laporanpiutangkaryawan
+                Route::get('laporanpiutangkaryawan', function () {
+                    return view('atena.laporan.keuangan.v_keuangan_laporan_piutang_karyawan', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpiutangkaryawan');
+            });
     });

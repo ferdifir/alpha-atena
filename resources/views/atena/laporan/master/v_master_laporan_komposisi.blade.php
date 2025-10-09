@@ -63,12 +63,12 @@
             </ul>
           </td>
         </tr>
-        <tr valign="top">
+        {{-- <tr valign="top">
           <td colspan="2">
             <ul class="easyui-datalist" title="Jenis Laporan" name="list_tampil_laporan" id="list_tampil_laporan">
             </ul>
           </td>
-        </tr>
+        </tr> --}}
       </table>
       <br>
     </div>
@@ -193,21 +193,21 @@
         },
       ];
 
-      $('#list_tampil_laporan').datalist({
-        width: 280,
-        height: 155,
-        checkbox: true,
-        data: arrayTampilLaporan,
-        columns: [
-          [{
-            field: 'jenis',
-            title: 'Status',
-            width: 200
-          }, ]
-        ],
-      });
-      //SET CHECK REKAP
-      $('#list_tampil_laporan').datalist('checkRow', 0);
+      //   $('#list_tampil_laporan').datalist({
+      //     width: 280,
+      //     height: 155,
+      //     checkbox: true,
+      //     data: arrayTampilLaporan,
+      //     columns: [
+      //       [{
+      //         field: 'jenis',
+      //         title: 'Status',
+      //         width: 200
+      //       }, ]
+      //     ],
+      //   });
+      //   //SET CHECK REKAP
+      //   $('#list_tampil_laporan').datalist('checkRow', 0);
       $('#operatorString').combobox('setValue', operatorVal);
       tutupLoader();
     });
@@ -392,8 +392,8 @@
       parent.buka_laporan(link_api.laporanProduksi, {
         filename: "Laporan Master Komposisi",
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
-        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
         excel: excel,
+        data_tampil: "[]",
         status: $('#cbStatus').combogrid('getValue'),
         kode: '{{ $kodemenu }}',
       });
