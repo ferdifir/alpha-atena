@@ -603,6 +603,11 @@ var link_api = {
     simpanTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/simpan`,
     batalTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
     browseTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/browse`,
+    //Hitung HPP
+    browseHitungHPP: `${base_url_api}atena/akuntansi/hitung-hpp/browse`,
+    batalHitungHPP: `${base_url_api}atena/akuntansi/hitung-hpp/batal-trans`,
+    simpanHitungHPP: `${base_url_api}atena/akuntansi/hitung-hpp/simpan`,
+    cekAdjustmentHitungHPP: `${base_url_api}atena/akuntansi/hitung-hpp/cek-adjustment`,
     //Faktur Pajak
     loadTransaksiDataGridFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-grid`,
     loadTransaksiDataHeaderFakturPajak: `${base_url_api}atena/akuntansi/faktur-pajak/load-data-header`,
