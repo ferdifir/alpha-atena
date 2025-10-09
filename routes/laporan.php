@@ -125,6 +125,38 @@ Route::prefix('atena/laporan')
                         'menu' => ucwords(request()->menu)
                     ]);
                 })->name('laporanhistory');
+
+                // atena/laporan/laporanmaster/laporanalatbayar
+                Route::get('laporanalatbayar', function () {
+                    return view('atena.laporan.master.v_master_laporan_alat_bayar', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanalatbayar');
+
+                // atena/laporan/laporanmaster/laporandepartemenkerja
+                Route::get('laporandepartemenkerja', function () {
+                    return view('atena.laporan.master.v_master_laporan_departemen_kerja', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporandepartemenkerja');
+
+                // atena/laporan/laporanmaster/laporankomposisi
+                Route::get('laporankomposisi', function () {
+                    return view('atena.laporan.master.v_master_laporan_komposisi', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporankomposisi');
+
+                // atena/laporan/laporanmaster/laporantipecustomer
+                Route::get('laporantipecustomer', function () {
+                    return view('atena.laporan.master.v_master_laporan_tipe_customer', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporantipecustomer');
             });
 
 

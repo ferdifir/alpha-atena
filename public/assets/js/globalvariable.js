@@ -110,6 +110,7 @@ var link_api = {
     getHeaderTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-header`,
     loadDataGridTipeCustomer: `${base_url_api}atena/master/tipecustomer/load-data-grid`,
     hapusTipeCustomer: `${base_url_api}atena/master/tipecustomer/hapus`,
+    laporanTipeCustomer: `${base_url_api}atena/master/tipecustomer/laporan`,
     //harga jual
     browseBarang: `${base_url_api}atena/master/barang/browse`,
     browseBarangAll: `${base_url_api}atena/master/barang/browse-all`,
@@ -149,6 +150,7 @@ var link_api = {
     simpanDepartemenKerja: `${base_url_api}atena/master/departemenkerja/simpan`,
     browseDataDepartemenKerja: `${base_url_api}atena/master/departemenkerja/browse`,
     browseSyaratBayar: `${base_url_api}atena/master/syaratbayar/browse`,
+    laporanDepartemenKerja: `${base_url_api}atena/master/departemenkerja/laporan`,
     //Karyawan
     hapusKaryawan: `${base_url_api}atena/master/karyawan/hapus`,
     loadDataGridKaryawan: `${base_url_api}atena/master/karyawan/load-data-grid`,
@@ -201,6 +203,8 @@ var link_api = {
     getHeaderAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-header`,
     loadDataGridAlatBayar: `${base_url_api}atena/master/alatbayar/load-data-grid`,
     hapusAlatBayar: `${base_url_api}atena/master/alatbayar/hapus`,
+    browseAlatBayar: `${base_url_api}atena/master/alatbayar/browse`,
+    laporanAlatBayar: `${base_url_api}atena/master/alatbayar/laporan`,
     //satuan
     simpanSatuan: `${base_url_api}atena/master/satuan/simpan`,
     getHeaderSatuan: `${base_url_api}atena/master/satuan/load-data-header`,
@@ -260,6 +264,9 @@ var link_api = {
     browseBarangPromo: `${base_url_api}atena/master/promo/browse-barang`,
     loadDataPromo: `${base_url_api}atena/master/promo/load-data`,
     headerFormPromo: `${base_url_api}atena/master/promo/load-data-header`,
+    //Produksi2
+    browseProduksi: `${base_url_api}atena/master/produksi2/browse`,
+    laporanProduksi: `${base_url_api}atena/master/produksi2/laporan`,
     //Jurnal Link
     simpanJurnalLink: `${base_url_api}atena/master/jurnal-link/simpan`,
     loadAllJurnalLink: `${base_url_api}atena/master/jurnal-link/load-all`,
