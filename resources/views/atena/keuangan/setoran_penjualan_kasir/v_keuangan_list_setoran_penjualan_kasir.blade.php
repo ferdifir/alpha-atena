@@ -1176,13 +1176,13 @@
                         const response = await fetchData(
                             '{{ session('TOKEN') }}',
                             link_api.simpanDetailSetorPenjualanPerKasir, {
-                                uuidkasir: $('#UUIDKASIR').val(),
-                                tgltrans: $('#TGLSETORAN').datebox('getValue'),
-                                detail_setoran: detail_setoran,
-                                modal: modal,
-                                uuidlokasi: uuidlokasi,
+                                uuidkasir             : $('#UUIDKASIR').val(),
+                                tgltrans              : $('#TGLSETORAN').datebox('getValue'),
+                                detail_setoran        : detail_setoran,
+                                modal                 : modal,
+                                uuidlokasi            : uuidlokasi,
                                 detail_trans_non_tunai: detail_trans_non_tunai,
-                                jenis: jenis
+                                jenis                 : jenis
                             }
                         );
                         if (response.success) {
@@ -1276,7 +1276,7 @@
                                     panelWidth: 380,
                                     idField: 'nama',
                                     textField: 'nama',
-                                    mode: 'remote',
+                                    mode: 'local',
                                     columns: [
                                         [{
                                                 field: 'id',
@@ -1310,7 +1310,7 @@
                                     panelWidth: 380,
                                     idField: 'nama',
                                     textField: 'nama',
-                                    mode: 'remote',
+                                    mode: 'local',
                                     columns: [
                                         [
                                             {
@@ -1392,18 +1392,21 @@
                     if (field == 'akunbank') {
                         var uuidlokasi = $('#UUIDLOKASI').combogrid('getValue');
 
-                        // ed.combogrid('grid').datagrid('options').url = base_url +
-                        //     'atena/Master/Data/AlatBayarNonTunai/comboGridAkunBank/' + idlokasi;
-                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunai;
+                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunaiAkunBank;
+                        ed.combogrid('grid').datagrid('options').queryParams = {
+                            uuidlokasi: uuidlokasi
+                        };
                         ed.combogrid('grid').datagrid('load');
                         ed.combogrid('showPanel');
                     } else if (field == 'namanontunai') {
                         var uuidlokasi = $('#UUIDLOKASI').combogrid('getValue');
-                        var idakunbank = row.uuidakunbank;
+                        var uuidakunbank = row.uuidakunbank;
 
-                        // ed.combogrid('grid').datagrid('options').url = base_url +
-                        //     'atena/Master/Data/AlatBayarNonTunai/comboGrid/' + idlokasi + '/' + idakunbank;
-                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunaiAkunBank;
+                        ed.combogrid('grid').datagrid('options').url = link_api.browseNonTunai;
+                        ed.combogrid('grid').datagrid('options').queryParams = {
+                            uuidlokasi: uuidlokasi,
+                            uuidakunbank: uuidakunbank
+                        };
                         ed.combogrid('grid').datagrid('load');
                         ed.combogrid('showPanel');
                     }
@@ -1418,8 +1421,7 @@
                             var selected = ed.combogrid('grid').datagrid('getSelected');
 
                             row_update = {
-                                uuidnontunai : 0,
-                                uuidalatbayar: selected.uuidnontunai,
+                                uuidnontunai : selected.uuidnontunai,
                                 namanontunai : '',
                                 uuidakunbank : selected.uuidakunbank,
                                 akunbank     : selected.nama,
@@ -1437,7 +1439,6 @@
 
                             row_update = {
                                 uuidnontunai : selected.uuidnontunai,
-                                uuidalatbayar: selected.uuidnontunai,
                                 chargepersen : selected.charge,
                                 chargerp     : chargerp,
                                 total        : total

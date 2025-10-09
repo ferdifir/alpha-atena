@@ -565,8 +565,10 @@ async function get_jurnal() {
 		$('#CATATAN').textbox('setValue', 'PELUNASAN UANG MUKA DARI ' + referensi);
 	}
 
-	if(rows.length == 0)
+	if(rows.length == 0){
+		$('#table_data_perkiraan').datagrid('loadData', []);
 		return
+	}
 
 	try {
 		const response = await fetchData(
