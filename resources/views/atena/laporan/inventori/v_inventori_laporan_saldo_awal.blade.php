@@ -200,9 +200,7 @@
           } else if (namaKolom == 'Saldo Stok') {
             $('#hide_nilai_list_saldo_stok').show();
             $('#hide_nilai_list_barang').hide();
-
           }
-
 
           tipedata = "STRING";
           $('#lap_operatorString').show();

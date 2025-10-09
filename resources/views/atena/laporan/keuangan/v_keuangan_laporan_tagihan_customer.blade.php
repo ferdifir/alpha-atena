@@ -459,6 +459,19 @@
       }
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanTagihanCustomer, {
+        kode: "{{ $kodemenu }}",
+        status: JSON.stringify($('#cbStatus').combogrid("getValues")),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        excel: excel,
+        filename: "Laporan Tagihan Customer",
+      });
+    }
+
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
       cetakLaporan('ya');

@@ -264,18 +264,13 @@
 
         if (checkData == "Kode" || checkData == "Nama") {
           //UNTUK KOLOM BESERTA COMBOGRID
-
           if (namaKolom == 'Barang') {
             $('#hide_nilai_list_barang').show();
-
             $('#hide_nilai_list_transfer').hide();
           } else if (namaKolom == 'Transfer Persediaan') {
             $('#hide_nilai_list_transfer').show();
-
             $('#hide_nilai_list_barang').hide();
-
           }
-
 
           tipedata = "STRING";
           $('#lap_operatorString').show();

@@ -438,6 +438,19 @@
       }
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanTandaTerimaSupplier, {
+        kode: "{{ $kodemenu }}",
+        status: JSON.stringify($('#cbStatus').combogrid("getValues")),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        excel: excel,
+        filename: "Laporan Tanda Terima Supplier",
+      });
+    }
+
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
       cetakLaporan('ya');
@@ -446,44 +459,6 @@
     $("#btn_print").click(function() {
       cetakLaporan('tidak');
     });
-
-    function browse_data_lokasi_region(id) {
-      $(id).combogrid({
-        panelWidth: 380,
-        url: base_url + 'atena/Master/Data/Region/ComboGrid',
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-              field: 'ck',
-              checkbox: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80,
-              sortable: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 240,
-              sortable: true
-            },
-          ]
-        ]
-      });
-    }
 
     function browse_data_supplier(id) {
       $(id).combogrid({

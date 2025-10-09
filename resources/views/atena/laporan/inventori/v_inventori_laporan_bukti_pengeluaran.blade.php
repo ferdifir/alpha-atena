@@ -146,6 +146,14 @@
     var operator = "Adalah";
     var operatorVal = "ADALAH";
     var tipedata = "STRING";
+    const fieldMap = {
+      'Customer': '#hide_nilai_list_customer',
+      'Kendaraan': '#hide_nilai_list_kendaraan',
+      'Sopir': '#hide_nilai_list_sopir',
+      'Barang': '#hide_nilai_list_barang',
+      'Bukti Pengeluaran Persediaan': '#hide_nilai_list_bbk'
+    };
+    const allFields = Object.values(fieldMap).join(', ');
 
     $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
@@ -322,45 +330,12 @@
 
 
         if (checkData == "Kode" || checkData == "Nama") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Customer') {
-            $('#hide_nilai_list_customer').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_kendaraan').hide();
-          } else if (namaKolom == 'Kendaraan') {
-            $('#hide_nilai_list_kendaraan').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-
-          } else if (namaKolom == 'Sopir') {
-            $('#hide_nilai_list_sopir').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-          } else if (namaKolom == 'Barang') {
-
-            $('#hide_nilai_list_barang').show();
-
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-          } else if (namaKolom == 'Bukti Pengeluaran Persediaan') {
-            $('#hide_nilai_list_bbk').show();
-
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
+
           tipedata = "STRING";
           $('#lap_operatorString').show();
           $('#lap_operatorNumber').hide();
@@ -377,13 +352,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-
-          $('#hide_nilai_list_kendaraan').hide();
-          $('#hide_nilai_list_sopir').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_bbk').hide();
-          $('#hide_nilai_list_customer').hide();
-
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -412,42 +381,10 @@
         operatorVal = operatorStringVal;
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
-          if (namaKolom == 'Customer') {
-            $('#hide_nilai_list_customer').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_kendaraan').hide();
-          } else if (namaKolom == 'kendaraan') {
-            $('#hide_nilai_list_kendaraan').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-          } else if (namaKolom == 'Sopir') {
-            $('#hide_nilai_list_sopir').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-          } else if (namaKolom == 'Barang') {
-
-            $('#hide_nilai_list_barang').show();
-
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_bbk').hide();
-            $('#hide_nilai_list_customer').hide();
-          } else if (namaKolom == 'Bukti Pengeluaran Persediaan') {
-            $('#hide_nilai_list_bbk').show();
-
-            $('#hide_nilai_list_kendaraan').hide();
-            $('#hide_nilai_list_sopir').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
 
           $('#hide_nilai').hide();
@@ -455,22 +392,14 @@
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
 
-          $('#hide_nilai_list_kendaraan').hide();
-          $('#hide_nilai_list_sopir').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_bbk').hide();
-          $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
 
-          $('#hide_nilai_list_kendaraan').hide();
-          $('#hide_nilai_list_sopir').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_bbk').hide();
-          $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -490,22 +419,14 @@
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
 
-          $('#hide_nilai_list_kendaraan').hide();
-          $('#hide_nilai_list_sopir').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_bbk').hide();
-          $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
 
-          $('#hide_nilai_list_kendaraan').hide();
-          $('#hide_nilai_list_sopir').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_bbk').hide();
-          $('#hide_nilai_list_customer').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();

@@ -24,7 +24,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:229px;">
               <option value="kartuuangmukaso.kodeso">Kode SO</option>
               <option value="mcustomer.kodecustomer">Kode Customer</option>
               <option value="mcustomer.namacustomer">Nama Customer</option>
@@ -37,12 +37,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorString" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorString" style="width:229px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatorNumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatorNumber" style="width:229px;">
 
               </select>
             </div>
@@ -52,13 +52,13 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:229px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_so">
-              <input id="txt_nilai_list_so" name="txt_nilai_list_so" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_so" name="txt_nilai_list_so" style="width:229px" prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_customer" hidden>
-              <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:229px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -401,6 +401,19 @@
       }
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanUangMukaPenjualan, {
+        kode: "{{ $kodemenu }}",
+        status: JSON.stringify($('#cbStatus').combogrid("getValues")),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        excel: excel,
+        filename: "Laporan Uang Muka Penjualan",
+      });
+    }
+
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
       var jenistrans = $('#cbJenis').combogrid("getValues").length;
@@ -420,45 +433,7 @@
       } else if (jenistrans == 0) {
         $.messager.alert('Warning', 'Jenis Transaksi Tidak Boleh Kosong');
       }
-    });
-
-    function browse_data_lokasi_region(id, table, sort) {
-      $(id).combogrid({
-        panelWidth: 380,
-        url: base_url + 'atena/Master/Data/Region/ComboGrid',
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: sort,
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-              field: 'ck',
-              checkbox: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80,
-              sortable: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 240,
-              sortable: true
-            },
-          ]
-        ]
-      });
-    }
+    })
 
     function browse_data_customer(id) {
       $(id).combogrid({

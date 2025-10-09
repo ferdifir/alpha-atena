@@ -135,7 +135,7 @@
       browse_data_supplier('#txt_nilai_list_supplier');
 
       $('#list_filter_laporan').datagrid({
-        width: 280,
+        width: 285,
         height: 160,
         fitColumns: false,
         selectOnCheck: false,
@@ -197,7 +197,7 @@
       ];
 
       $('#list_tampil_laporan').datalist({
-        width: 280,
+        width: 285,
         height: 165,
         checkbox: true,
         data: arrayTampilLaporan,
@@ -485,15 +485,19 @@
     });
 
     function cetakLaporan(excel) {
-      parent.buka_laporan(link_api.laporanCreditNote, {
-        kode: "{{ $kodemenu }}",
-        status: JSON.stringify($('#cbStatus').combogrid("getValues")),
-        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
-        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
-        tglawal: $("#txt_tgl_aw").datebox('getValue'),
-        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
-        excel: excel,
-        filename: "Laporan Hutang",
+      parent.buka_laporan(link_api.laporanHutang, {
+        "kode": "{{ $kodemenu }}",
+        "status": JSON.stringify($('#cbStatus').combogrid("getValues")),
+        "jenis": JSON.stringify($('#cbJenis').combogrid("getValues")),
+        "data_tampil": JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+        "data_filter": JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        "tglawal": $("#txt_tgl_aw").datebox('getValue'),
+        "tglakhir": $("#txt_tgl_ak").datebox('getValue'),
+        "excel": excel,
+        "filename": "Laporan Hutang",
+        "tgl_pelunasan": $("#txt_tgl_pelunasan").datebox('getValue'),
+        "tglakhir_jatuh_tempo": $("#txt_tgl_ak_jatuh_tempo").datebox('getValue'),
+        "tglawal_jatuh_tempo": $("#txt_tgl_aw_jatuh_tempo").datebox('getValue'),
       });
     }
 

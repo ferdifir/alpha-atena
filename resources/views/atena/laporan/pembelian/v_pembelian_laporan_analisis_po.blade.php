@@ -115,7 +115,7 @@
     var checkData = "Kode";
     var operator = "Adalah";
     var operatorVal = "ADALAH";
-    var tipedata = "STRING"
+    var tipedata = "STRING";
 
     $(document).ready(async function() {
       isiOperatorLaporan("String", "operatorString");

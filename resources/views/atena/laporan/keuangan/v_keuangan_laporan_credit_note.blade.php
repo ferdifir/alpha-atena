@@ -7,8 +7,8 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td id="label_laporan">Tgl. Trans </td>
-          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:105px;" class="date" /> -
-            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:105px;" class="date" />
+          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:108px;" class="date" /> -
+            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:108px;" class="date" />
           </td>
         </tr>
         <tr>
@@ -24,7 +24,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:227px;">
               <option value="mcustomer.kodecustomer">Kode Customer</option>
               <option value="mcustomer.namacustomer">Nama Customer</option>
             </select>
@@ -36,12 +36,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:227px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:227px;">
 
               </select>
             </div>
@@ -51,10 +51,10 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:227px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_customer">
-              <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_customer" name="txt_nilai_list_customer" style="width:227px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -177,7 +177,7 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
       $('#cbStatus').combogrid({
-        width: 220,
+        width: 227,
         idField: 'value',
         textField: 'status',
         multiple: true,
@@ -416,44 +416,6 @@
     $("#btn_print").click(function() {
       cetakLaporan('tidak');
     });
-
-    function browse_data_lokasi_region(id, table, sort) {
-      $(id).combogrid({
-        panelWidth: 380,
-        url: base_url + 'atena/Master/Data/Region/ComboGrid',
-        idField: 'kode',
-        textField: 'nama',
-        mode: 'local',
-        sortName: sort,
-        sortOrder: 'asc',
-        multiple: true,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-              field: 'ck',
-              checkbox: true
-            },
-            {
-              field: 'kode',
-              title: 'Kode',
-              width: 80,
-              sortable: true
-            },
-            {
-              field: 'nama',
-              title: 'Nama',
-              width: 240,
-              sortable: true
-            },
-          ]
-        ]
-      });
-    }
 
     function browse_data_customer(id) {
       $(id).combogrid({

@@ -6,8 +6,8 @@
       <table style="border-bottom:1px #000" id="label_laporan">
         <tr>
           <td><label id="label_laporan">Tgl. Trans</label></td>
-          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:95px;" class="date" /> - <input
-              id="txt_tgl_ak" name="txt_tgl_ak" style="width:95px;" class="date" /></td>
+          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:108px;" class="date" /> - <input
+              id="txt_tgl_ak" name="txt_tgl_ak" style="width:108px;" class="date" /></td>
         </tr>
         <tr>
           <td id="label_laporan">Status </td>
@@ -22,7 +22,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:227px;">
               <option value="mkaryawan.kodekaryawan">Kode Karyawan</option>
               <option value="mkaryawan.namakaryawan">Nama Karyawan</option>
               <option value="kartupiutang.sisa">Saldo</option>
@@ -35,12 +35,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:227px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:227px;">
 
               </select>
             </div>
@@ -50,10 +50,10 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:227px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_karyawan">
-              <input id="txt_nilai_list_karyawan" name="txt_nilai_list_karyawan" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_karyawan" name="txt_nilai_list_karyawan" style="width:227px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -202,7 +202,7 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
       $('#cbStatus').combogrid({
-        width: 220,
+        width: 227,
         idField: 'value',
         textField: 'status',
         multiple: false,
@@ -444,6 +444,9 @@
         tglawal: $("#txt_tgl_aw").datebox('getValue'),
         tglakhir: $("#txt_tgl_ak").datebox('getValue'),
         excel: excel,
+        tgl_pelunasan: '',
+        tglawal_jatuh_tempo: '',
+        tglakhir_jatuh_tempo: '',
         filename: "Laporan Piutang Karyawan",
       });
     }
@@ -456,33 +459,6 @@
     $("#btn_print").click(function() {
       cetakLaporan('tidak');
     });
-
-    function browse_data_kota(id) {
-      $(id).combogrid({
-        panelWidth: 250,
-        url: base_url + 'atena/Master/Data/Karyawan/ComboGridKota',
-        idField: 'nama',
-        textField: 'nama',
-        mode: 'local',
-        sortName: 'nama',
-        sortOrder: 'asc',
-        multiple: false,
-        selectFirstRow: true,
-        rowStyler: function(index, row) {
-          if (row.status == 0) {
-            return 'background-color:#A8AEA6';
-          }
-        },
-        columns: [
-          [{
-            field: 'nama',
-            title: 'Nama',
-            width: 220,
-            sortable: true
-          }, ]
-        ]
-      });
-    }
 
     function browse_data_karyawan(id) {
       $(id).combogrid({

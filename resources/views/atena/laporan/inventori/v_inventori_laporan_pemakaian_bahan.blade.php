@@ -125,7 +125,13 @@
     var checkData = "Kode";
     var operator = "Adalah";
     var operatorVal = "ADALAH";
-    var tipedata = "STRING"
+    var tipedata = "STRING";
+    const fieldMap = {
+      'Pemakaian Bahan Persediaan': '#hide_nilai_list_pemakaian_bahan',
+      'Jenis Pemakaian': '#hide_nilai_list_jenis_pemakaian',
+      'Barang': '#hide_nilai_list_barang'
+    };
+    const allFields = Object.values(fieldMap).join(', ');
 
     $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
@@ -281,19 +287,10 @@
         namaKolom = namaKolom.slice(0, -1);
 
         if (checkData == "Kode" || checkData == "Nama") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Pemakaian Bahan Persediaan') {
-            $('#hide_nilai_list_pemakaian_bahan').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_jenis_pemakaian').hide();
-          } else if (namaKolom == 'Jenis Pemakaian') {
-            $('#hide_nilai_list_jenis_pemakaian').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_pemakaian_bahan').hide();
-          } else if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_pemakaian_bahan').hide();
-            $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
 
           tipedata = "STRING";
@@ -312,9 +309,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_pemakaian_bahan').hide();
-          $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -341,36 +336,23 @@
         operatorVal = operatorStringVal;
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Pemakaian Bahan Persediaan') {
-            $('#hide_nilai_list_pemakaian_bahan').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_jenis_pemakaian').hide();
-          } else if (namaKolom == 'Jenis Pemakaian') {
-            $('#hide_nilai_list_jenis_pemakaian').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_pemakaian_bahan').hide();
-          } else if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_pemakaian_bahan').hide();
-            $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
 
           $('#hide_nilai').hide();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_pemakaian_bahan').hide();
-          $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_pemakaian_bahan').hide();
-          $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -388,17 +370,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_pemakaian_bahan').hide();
-          $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_pemakaian_bahan').hide();
-          $('#hide_nilai_list_jenis_pemakaian').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();

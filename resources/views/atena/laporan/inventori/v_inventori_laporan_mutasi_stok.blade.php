@@ -130,6 +130,14 @@
     var operator = "Adalah";
     var operatorVal = "ADALAH";
     var tipedata = "STRING";
+    const fieldMap = {
+      'Barang': '#hide_nilai_list_barang',
+      'Barcode': '#hide_nilai_list_barcode',
+      'Part': '#hide_nilai_list_partnumber',
+      'Merk': '#hide_nilai_list_merk',
+      'Kategori': '#hide_nilai_list_kategori'
+    };
+    const allFields = Object.values(fieldMap).join(', ');
 
     $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
@@ -216,37 +224,10 @@
 
         if (checkData == "Kode" || checkData == "Nama" || checkData == "Barcode" || checkData == "Part") {
           //UNTUK KOLOM BESERTA COMBOGRID
-
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (checkData == 'Barcode') {
-            $('#hide_nilai_list_barcode').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (checkData == 'Part') {
-            $('#hide_nilai_list_partnumber').show();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Merk') {
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').show();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').show();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom] || fieldMap[checkData];
+          if (showField) {
+            $(showField).show();
           }
 
           tipedata = "STRING";
@@ -265,11 +246,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_barcode').hide();
-          $('#hide_nilai_list_partnumber').hide();
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_kategori').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -298,37 +275,10 @@
         operatorVal = operatorStringVal;
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (checkData == 'Barcode') {
-            $('#hide_nilai_list_barcode').show();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (checkData == 'Part') {
-            $('#hide_nilai_list_partnumber').show();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Merk') {
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').show();
-            $('#hide_nilai_list_kategori').hide();
-          } else if (namaKolom == 'Kategori') {
-            $('#hide_nilai_list_partnumber').hide();
-            $('#hide_nilai_list_barcode').hide();
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_merk').hide();
-            $('#hide_nilai_list_kategori').show();
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom] || fieldMap[checkData];
+          if (showField) {
+            $(showField).show();
           }
 
           $('#hide_nilai').hide();
@@ -336,21 +286,13 @@
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
 
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_barcode').hide();
-          $('#hide_nilai_list_partnumber').hide();
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_kategori').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_barcode').hide();
-          $('#hide_nilai_list_partnumber').hide();
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_kategori').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -369,21 +311,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_barcode').hide();
-          $('#hide_nilai_list_partnumber').hide();
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_kategori').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_barcode').hide();
-          $('#hide_nilai_list_partnumber').hide();
-          $('#hide_nilai_list_merk').hide();
-          $('#hide_nilai_list_kategori').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();

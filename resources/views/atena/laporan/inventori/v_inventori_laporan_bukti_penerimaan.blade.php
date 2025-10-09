@@ -132,6 +132,12 @@
     var operator = "Adalah";
     var operatorVal = "ADALAH";
     var tipedata = "STRING";
+    const fieldMap = {
+      'Barang': '#hide_nilai_list_barang',
+      'Supplier': '#hide_nilai_list_supplier',
+      'Bukti Penerimaan Persediaan': '#hide_nilai_list_bbm'
+    };
+    const allFields = Object.values(fieldMap).join(', ');
 
     $(document).ready(function() {
       browse_data_lokasi('#txt_lokasi');
@@ -300,26 +306,11 @@
 
 
         if (checkData == "Kode" || checkData == "Nama") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_bbm').hide();
-          } else if (namaKolom == 'Supplier') {
-            $('#hide_nilai_list_supplier').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_bbm').hide();
-          } else if (namaKolom == 'Bukti Penerimaan Persediaan') {
-            $('#hide_nilai_list_bbm').show();
-
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_barang').hide();
-
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
-
 
           tipedata = "STRING";
           $('#lap_operatorString').show();
@@ -337,9 +328,7 @@
           $('#lap_operatorString').hide();
           $('#lap_operatorNumber').show();
 
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_bbm').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -366,23 +355,10 @@
         operatorVal = operatorStringVal;
 
         if (operatorStringVal == "ADALAH" || operatorStringVal == "TIDAK MENCAKUP") {
-          //UNTUK KOLOM BESERTA COMBOGRID
-          if (namaKolom == 'Barang') {
-            $('#hide_nilai_list_barang').show();
-
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_bbm').hide();
-          } else if (namaKolom == 'Supplier') {
-            $('#hide_nilai_list_supplier').show();
-
-            $('#hide_nilai_list_barang').hide();
-            $('#hide_nilai_list_bbm').hide();
-          } else if (namaKolom == 'Bukti Penerimaan Persediaan') {
-            $('#hide_nilai_list_bbm').show();
-
-            $('#hide_nilai_list_supplier').hide();
-            $('#hide_nilai_list_barang').hide();
-
+          $(allFields).hide();
+          const showField = fieldMap[namaKolom];
+          if (showField) {
+            $(showField).show();
           }
 
           $('#hide_nilai').hide();
@@ -390,17 +366,13 @@
           $('#txt_nilai').textbox('enable');
         } else if (operatorStringVal == "KOSONG" || operatorStringVal == "TIDAK KOSONG") {
 
-          $('#hide_nilai_list_bbm').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_barang').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_bbm').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_barang').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
@@ -419,17 +391,13 @@
         operatorVal = operatorNumberVal;
 
         if (operatorNumberVal == "NOL" || operatorNumberVal == "TIDAK NOL") {
-          $('#hide_nilai_list_bbm').hide();
-          $('#hide_nilai_list_barang').hide();
-          $('#hide_nilai_list_supplier').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
           $('#txt_nilai').textbox('disable');
         } else {
-          $('#hide_nilai_list_bbm').hide();
-          $('#hide_nilai_list_supplier').hide();
-          $('#hide_nilai_list_barang').hide();
+          $(allFields).hide();
 
           $('#hide_nilai').show();
           $('.label_nilai').show();
