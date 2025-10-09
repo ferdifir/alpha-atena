@@ -55,3 +55,10 @@ Route::get('atena/akuntansi/fakturpajak/form', function() {
         'mode'=>request()->mode,
     ]);
 })->name('atena.akuntansi.fakturpajak.form');
+
+// HITUNG HPP
+Route::get('atena/akuntansi/hitunghpp/transaksi', function() {
+    return view('atena.akuntansi.hitunghpp.v_akuntansi_list_hitunghpp', [
+        'kodemenu' => request()->kode,
+    ]);
+})->name('atena.akuntansi.hitunghpp.transaksi');
