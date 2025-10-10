@@ -720,12 +720,17 @@
       parent.buka_laporan(link_api.laporanPiutang, {
         kode: "{{ $kodemenu }}",
         status: JSON.stringify($('#cbStatus').combogrid("getValues")),
-        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        jenis: JSON.stringify($('#cbJenis').combogrid("getValues")),
+        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
         tglawal: $("#txt_tgl_aw").datebox('getValue'),
         tglakhir: $("#txt_tgl_ak").datebox('getValue'),
         excel: excel,
         filename: "Laporan Piutang",
+        tgl_pelunasan: $("#txt_tgl_pelunasan").datebox('getValue'),
+        tglawal_jatuh_tempo: $("#txt_tgl_aw_jatuh_tempo").datebox('getValue'),
+        tglakhir_jatuh_tempo: $("#txt_tgl_ak_jatuh_tempo").datebox('getValue'),
       });
     }
 

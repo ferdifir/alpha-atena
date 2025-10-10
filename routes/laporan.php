@@ -507,7 +507,6 @@ Route::prefix('atena/laporan')
                     ]);
                 })->name('laporanjurnaltransaksi');
 
-                // TODO: tanya ke backend terkait namaclass satu untuk tiga view (Kas/Bank, Giro, Memorial)
                 Route::get('laporankas', function () {
                     return view('atena.laporan.akuntansi.v_akuntansi_laporan_kas', [
                         'kodemenu' => request()->kode,

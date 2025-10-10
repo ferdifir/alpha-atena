@@ -442,6 +442,7 @@
       parent.buka_laporan(link_api.laporanTandaTerimaSupplier, {
         kode: "{{ $kodemenu }}",
         status: JSON.stringify($('#cbStatus').combogrid("getValues")),
+        jenis: JSON.stringify($('#cbJenis').combogrid("getValues")),
         data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
         tglawal: $("#txt_tgl_aw").datebox('getValue'),

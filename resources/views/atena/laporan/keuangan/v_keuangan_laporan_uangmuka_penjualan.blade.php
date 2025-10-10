@@ -404,7 +404,8 @@
     function cetakLaporan(excel) {
       parent.buka_laporan(link_api.laporanUangMukaPenjualan, {
         kode: "{{ $kodemenu }}",
-        status: JSON.stringify($('#cbStatus').combogrid("getValues")),
+        status: JSON.stringify([]), // tidak ada status, tapi backend perlu parameternya
+        lokasi: JSON.stringify([]), // tidak ada lokasi, tapi backend perlu parameternya
         data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
         tglawal: $("#txt_tgl_aw").datebox('getValue'),

@@ -977,11 +977,11 @@ var link_api = {
     laporanDebitNote: `${base_url_api}atena/keuangan/nota-debit/laporan`,
     laporanHutang: `${base_url_api}atena/keuangan/hutang/laporan`,
     laporanPiutangKaryawan: `${base_url_api}atena/keuangan/pelunasan-piutang-karyawan/laporan`,
-    laporanPiutang: `${base_url_api}atena/keuangan/piutang/laporan`,
+    laporanPiutang: `${base_url_api}atena/keuangan/pelunasan-piutang/laporan`,
     laporanTagihanCustomer: `${base_url_api}atena/keuangan/tagihan-pelanggan/laporan`,
-    laporanUangMukaPembelian: `${base_url_api}atena/keuangan/uang-muka-pesanan-pembelian/laporan`,
-    laporanUangMukaPenjualan: `${base_url_api}atena/keuangan/uang-muka-pesanan-penjualan/laporan`,
-    laporanTandaTerimaSupplier: `${base_url_api}atena/keuangan/tanda-terima-supplier/laporan`,
+    laporanUangMukaPembelian: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/laporan`,
+    laporanUangMukaPenjualan: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/laporan`,
+    laporanTandaTerimaSupplier: `${base_url_api}atena/keuangan/tanda-terima/laporan`,
 };
 
 var modul_kode = {

@@ -262,12 +262,13 @@
         value: 'PIUTANG',
         jenis: 'Piutang'
       });
-      $('#cbJenis').combogrid("grid").datagrid("appendRow", {
-        value: 'UANGMUKA',
-        jenis: 'Uang Muka'
-      });
+      // yang baru tidak dipakai lagi
+      //   $('#cbJenis').combogrid("grid").datagrid("appendRow", {
+      //     value: 'UANGMUKA',
+      //     jenis: 'Uang Muka'
+      //   });
 
-      $('#cbJenis').combogrid("setValues", ["PIUTANG", "UANGMUKA"]);
+      $('#cbJenis').combogrid("setValues", ["PIUTANG"]);
 
       // Tambahkan fungsi-fungsi yang diminta
       isiOperatorLaporan("String", "operatorString");
@@ -462,6 +463,7 @@
     function cetakLaporan(excel) {
       parent.buka_laporan(link_api.laporanTagihanCustomer, {
         kode: "{{ $kodemenu }}",
+        jenis: JSON.stringify($('#cbJenis').combogrid("getValues")),
         status: JSON.stringify($('#cbStatus').combogrid("getValues")),
         data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
         data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
