@@ -432,4 +432,130 @@ Route::prefix('atena/laporan')
                     ]);
                 })->name('laporanpiutangkaryawan');
             });
+
+        // Laporan Aset
+        Route::prefix('laporanaset')
+            ->name('laporanaset.')
+            ->group(function () {
+
+                Route::get('laporansaldoawalaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_saldo_awal_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporansaldoawalaset');
+
+                Route::get('laporanpembelianaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_pembelian_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpembelianaset');
+
+                Route::get('laporanreturpembelianaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_retur_pembelian_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanreturpembelianaset');
+
+                Route::get('laporantransferaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_transfer_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporantransferaset');
+
+                Route::get('laporanpenghapusanaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_penghapusan_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpenghapusanaset');
+
+                Route::get('laporanpenjualanaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_penjualan_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpenjualanaset');
+
+                Route::get('laporanpenyusutanaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_penyusutan_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanpenyusutanaset');
+
+                Route::get('laporandetailaset', function () {
+                    return view('atena.laporan.aset.v_aset_laporan_detail_aset', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporandetailaset');
+            });
+
+        // Laporan Akuntansi
+        Route::prefix('laporanakuntansi')
+            ->name('laporanakuntansi.')
+            ->group(function () {
+
+                Route::get('laporanjurnaltransaksi', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_jurnal_transaksi', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanjurnaltransaksi');
+
+                // TODO: tanya ke backend terkait namaclass satu untuk tiga view (Kas/Bank, Giro, Memorial)
+                Route::get('laporankas', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_kas', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporankas');
+
+                Route::get('laporandaftargiro', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_daftar_giro', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporandaftargiro');
+
+                Route::get('laporansaldoawalperkiraan', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_saldo_awal_perkiraan', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporansaldoawalperkiraan');
+
+                Route::get('laporanbukubesar', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_buku_besar', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanbukubesar');
+
+                Route::get('laporanneracamutasi', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_neraca_mutasi', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanneracamutasi');
+
+                Route::get('laporanlabarugi', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_laba_rugi', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanlabarugi');
+
+                Route::get('laporanneraca', function () {
+                    return view('atena.laporan.akuntansi.v_akuntansi_laporan_neraca', [
+                        'kodemenu' => request()->kode,
+                        'menu' => ucwords(request()->menu)
+                    ]);
+                })->name('laporanneraca');
+
+            });
     });
