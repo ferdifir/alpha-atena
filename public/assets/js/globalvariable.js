@@ -589,6 +589,7 @@ var link_api = {
     cetakTransaksiKas: `${base_url_api}atena/akuntansi/kas/cetak/`,
     getStatusTransaksiKas: `${base_url_api}atena/akuntansi/kas/get-status-trans`,
     browseKasPelunasan: `${base_url_api}atena/akuntansi/kas/browse-for-pelunasan`,
+    browseDaftarGiro: `${base_url_api}atena/akuntansi/giro/browse-daftar-giro`,
     // simpanTransaksiKas: `${base_url_api}atena/akuntansi/kas/simpan`,
     //Saldo Awal Perkiraan
     loadDataGridSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/load-data-grid`,
@@ -600,6 +601,7 @@ var link_api = {
     ubahStatusjadiInputSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-input`,
     ubahStatusjadiSlipSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-slip`,
     getStatusSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/get-status-trans`,
+    browseJurnal: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/browse-jurnal`,
     //Tutup Periode Akuntansi
     simpanTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/simpan`,
     batalTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
@@ -982,6 +984,15 @@ var link_api = {
     laporanUangMukaPembelian: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-pembelian/laporan`,
     laporanUangMukaPenjualan: `${base_url_api}atena/keuangan/pelunasan-uang-muka-pesanan-penjualan/laporan`,
     laporanTandaTerimaSupplier: `${base_url_api}atena/keuangan/tanda-terima/laporan`,
+    //Akuntansi Laporan
+    laporanBukuBesar: `${base_url_api}atena/akuntansi/buku-besar/laporan`,
+    laporanDaftarGiro: `${base_url_api}atena/akuntansi/giro/laporan`,
+    laporanJurnalTransaksi: `${base_url_api}atena/akuntansi/jurnal-transaksi/laporan`, // perlu dicek lagi
+    laporanKas: `${base_url_api}atena/akuntansi/kas/laporan`,
+    laporanLabaRugi: `${base_url_api}atena/akuntansi/laba-rugi/laporan`,
+    laporanNeracaMutasi: `${base_url_api}atena/akuntansi/neraca-mutasi/laporan`,
+    laporanNeraca: `${base_url_api}atena/akuntansi/neraca/laporan`, // perlu dicek lagi
+    laporanSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/laporan`, // perlu dicek lagi
 };
 
 var modul_kode = {

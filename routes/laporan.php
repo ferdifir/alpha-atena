@@ -510,7 +510,8 @@ Route::prefix('atena/laporan')
                 Route::get('laporankas', function () {
                     return view('atena.laporan.akuntansi.v_akuntansi_laporan_kas', [
                         'kodemenu' => request()->kode,
-                        'menu' => ucwords(request()->menu)
+                        'menu' => ucwords(request()->menu),
+                        'jenis' => request()->jenis
                     ]);
                 })->name('laporankas');
 
