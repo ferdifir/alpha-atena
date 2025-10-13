@@ -96,13 +96,19 @@
       browse_data_lokasi('#txt_lokasi');
 
       $('#sb_bulan_awal').combobox('setValue', {{ date('m') }});
+      $('#sb_bulan_akhir').combobox('setValue', {{ date('m') }});
       tutupLoader();
     });
 
     function cetakLaporan(excel) {
       parent.buka_laporan(link_api.laporanLabaRugi, {
-        filename: "Laporan Laba Rugi",
         kode: "{{ $kodemenu }}",
+        bulan_awal: parseInt($('#sb_bulan_awal').combobox('getValue')),
+        tahun_awal: parseInt($('#txt_tahun_awal').numberspinner('getValue')),
+        bulan_akhir: parseInt($('#sb_bulan_akhir').combobox('getValue')),
+        tahun_akhir: parseInt($('#txt_tahun_akhir').numberspinner('getValue')),
+        tidak_tampil_nol: $('[name="tidak_tampil_nol"]').is(':checked') ? 1 : 0,
+        filename: "Laporan Laba Rugi",
         excel: excel,
         lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
       });

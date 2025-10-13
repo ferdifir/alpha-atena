@@ -8,8 +8,8 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td><label id="label_laporan">Tgl. Trans</label></td>
-          <td id="label_laporan"><input id="txt_tgl_aw" style="width:105px" name="txt_tgl_aw" class="date" /> - <input
-              id="txt_tgl_ak" style="width:105px" name="txt_tgl_ak" class="date" /></td>
+          <td id="label_laporan"><input id="txt_tgl_aw" style="width:{{ $jenis == 'giro' ? '105px' : '108px' }}" name="txt_tgl_aw" class="date" /> - <input
+              id="txt_tgl_ak" style="width:{{ $jenis == 'giro' ? '105px' : '108px' }}" name="txt_tgl_ak" class="date" /></td>
         </tr>
         @if ($jenis == 'giro')
           <tr>
@@ -79,8 +79,8 @@
 @push('js')
   <script>
     var counter = 0;
+    const jenisView = "{{ $jenis }}";
     $(document).ready(async function() {
-      $('#jenisview').val('{{ strtoupper($jenis) }}');
 
       $("#txt_tgl_awal_cair").datebox('disable');
       $("#txt_tgl_akhir_cair").datebox('disable');
@@ -108,6 +108,7 @@
         }
       });
 
+      // TODO: coba cek lagi cara mengatur lebar column datagrid
       $('#list_akun').datagrid({
         width: 280,
         height: 160,
@@ -120,10 +121,12 @@
             },
             {
               field: 'ck',
-              checkbox: true
+              checkbox: true,
+              width: 20
             },
             {
-              field: 'text'
+              field: 'text',
+              width: 260
             },
           ]
         ],
@@ -132,10 +135,10 @@
       try {
         const response = await fetch(
           link_api.browsePerkiraan, {
-            method: 'GET',
+            method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + token,
+              'Authorization': 'Bearer ' + '{{ session('TOKEN') }}',
             },
             body: JSON.stringify({
               "jenis": "kas_bank",
@@ -157,7 +160,7 @@
       }
 
       $('#cbJenis').combogrid({
-        width: 220,
+        width: jenisView == 'giro' ? 220 : 227,
         idField: 'value',
         textField: 'jenis',
         multiple: true,
@@ -177,7 +180,7 @@
 
       });
 
-      if ("{{ $jenis }}" == 'kas_bank') {
+      if (jenisView == 'kas_bank') {
         $('#cbJenis').combogrid("grid").datagrid("appendRow", {
           value: 'KAS MASUK',
           jenis: 'Kas Masuk'
@@ -196,7 +199,7 @@
         });
 
         $('#cbJenis').combogrid("setValues", ["KAS MASUK", "KAS KELUAR", "BANK MASUK", "BANK KELUAR"]);
-      } else if ("{{ $jenis }}" == 'giro') {
+      } else if (jenisView == 'giro') {
         $('#cbJenis').combogrid("grid").datagrid("appendRow", {
           value: 'GIRO MASUK',
           jenis: 'Giro Masuk'
@@ -207,7 +210,7 @@
         });
 
         $('#cbJenis').combogrid("setValues", ["GIRO MASUK", "GIRO KELUAR"]);
-      } else if ("{{ $jenis }}" == 'memorial') {
+      } else if (jenisView == 'memorial') {
         $('#cbJenis').combogrid("grid").datagrid("appendRow", {
           value: 'MEMORIAL',
           jenis: 'Memorial'
@@ -218,7 +221,7 @@
 
       //JENIS TAMPILAN LAPORAN
 
-      if ("{{ $jenis }}" == 'kas_bank') {
+      if (jenisView == 'kas_bank') {
         var arrayTampilLaporan = [{
             value: 'HARIAN',
             jenis: 'Harian'
@@ -257,13 +260,38 @@
       tutupLoader();
     });
 
+    function cetakLaporan(excel, tab_title) {
+      const payload = {
+        kode: "{{ $kodemenu }}",
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datalist('getChecked')),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        jenis_view: '{{ strtoupper($jenis) }}',
+        jeniskas: JSON.stringify($('#cbJenis').combogrid("getValues")),
+        excel: excel,
+        filename: tab_title,
+        data_akun: JSON.stringify([])
+      };
+      if (jenisView == 'giro') {
+        payload.tglcair = $('[name="cb_tglcair"]').is(':checked') ? 1 : 0;
+        payload.tglawal_cair = $("#txt_tgl_awal_cair").datebox('getValue');
+        payload.tglakhir_cair = $("#txt_tgl_akhir_cair").datebox('getValue');
+        payload.tglterima = $('[name="cb_tglterima"]').is(':checked') ? 1 : 0;
+        payload.tglawal_terima = $("#txt_tgl_awal_terima").datebox('getValue');
+        payload.tglakhir_terima = $("#txt_tgl_akhir_terima").datebox('getValue');
+      } else if (jenisView == 'kas_bank') {
+        payload.data_akun = JSON.stringify($('#list_akun').datalist('getChecked'));
+      }
+      parent.buka_laporan(link_api.laporanKas, payload);
+    }
+
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
       var jenistrans = $('#cbJenis').combogrid("getValues").length;
       var akunperkiraan;
       var cekJenis = false;
 
-      if ($('#jenisview').val() != 'MEMORIAL' && $('#jenisview').val() != 'GIRO') {
+      if (jenisView != 'memorial' && jenisView != 'giro') {
         akunperkiraan = $('#list_akun').datalist('getChecked').length;
         if (jenistrans == 0 || akunperkiraan == 0) {
           $.messager.alert('Warning', 'Harap Memilih Jenis Transaksi dan Akun Kas');
@@ -274,7 +302,8 @@
         cekJenis = true;
       }
       if (cekJenis) {
-        cetakLaporan('ya');
+        const tab_title = 'Laporan ' + "{{ ucwords(str_replace(['_'], ' ', $jenis)) }}";
+        cetakLaporan('ya', tab_title);
       }
     });
 
@@ -283,7 +312,7 @@
       var akunperkiraan;
       var cekJenis = false;
 
-      if ($('#jenisview').val() != 'MEMORIAL' && $('#jenisview').val() != 'GIRO') {
+      if (jenisView != 'memorial' && jenisView != 'giro') {
         akunperkiraan = $('#list_akun').datalist('getChecked').length;
         if (jenistrans == 0 || akunperkiraan == 0) {
           $.messager.alert('Warning', 'Harap Memilih Jenis Transaksi dan Akun Kas');
@@ -295,13 +324,7 @@
       }
 
       if (cekJenis == true) {
-        var tab_title = '';
-        if ($('#jenisview').val() == 'KAS_BANK') {
-          tab_title = 'Laporan Kas/Bank';
-        } else {
-          tab_title = 'Laporan ' + $('#jenisview').val().substr(0, 1).toUpperCase() + $('#jenisview').val()
-            .substr(1).toLowerCase();
-        }
+        const tab_title = 'Laporan ' + "{{ ucwords(str_replace(['_'], ' ', $jenis)) }}";
         cetakLaporan('tidak', tab_title);
       }
     });

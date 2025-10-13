@@ -8,12 +8,12 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td id="label_laporan" style="width:55px">Lokasi </td>
-          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:220px" /></td>
+          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:223px" /></td>
         </tr>
         <tr>
           <td id="label_laporan">Tgl. Trans </td>
-          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:105px;" class="date" /> -
-            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:105px;" class="date" />
+          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:106px;" class="date" /> -
+            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:106px;" class="date" />
           </td>
         </tr>
         <tr>
@@ -29,7 +29,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:223px;">
               <option value="tasetbeli.kodeasetbeli">Kode Pembelian Aset</option>
               <option value="msupplier.kodesupplier">Kode Supplier</option>
               <option value="msupplier.namasupplier">Nama Supplier</option>
@@ -44,12 +44,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:223px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:223px;">
 
               </select>
             </div>
@@ -59,17 +59,17 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:223px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_pembelian_aset">
-              <input id="txt_nilai_list_pembelian_aset" name="txt_nilai_list_pembelian_aset" style="width:220px"
+              <input id="txt_nilai_list_pembelian_aset" name="txt_nilai_list_pembelian_aset" style="width:223px"
                 prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_supplier" hidden>
-              <input id="txt_nilai_list_supplier" name="txt_nilai_list_supplier" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_supplier" name="txt_nilai_list_supplier" style="width:223px" prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_aset" hidden>
-              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:223px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -135,23 +135,7 @@
       browse_data_aset('#txt_nilai_list_aset');
       browse_data_pembelian_aset('#txt_nilai_list_pembelian_aset');
 
-      //SET SEMUA LOKASI
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.browseLokasi,
-        cache: false,
-        success: function(msg) {
-
-          var arrayLokasi = [];
-
-          for (var i = 0; i < msg.rows.length; i++) {
-            arrayLokasi.push(msg.rows[i].kode);
-          }
-
-          $('#txt_lokasi').combogrid("setValues", arrayLokasi);
-        }
-      });
+      setLokasiCombogrid('{{ session('TOKEN') }}', ['#txt_lokasi']);
 
       $('#list_filter_laporan').datagrid({
         width: 280,
@@ -233,7 +217,7 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
       $('#cbStatus').combogrid({
-        width: 220,
+        width: 223,
         idField: 'value',
         textField: 'status',
         multiple: true,
@@ -460,10 +444,6 @@
             text_laporan = kolom + " " + operator + " " + nilai + ", " + msg.badanusaha;
           }
         }
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
 
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
@@ -489,6 +469,20 @@
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
+
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanPembelianAset, {
+        kode: "{{ $kodemenu }}",
+        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+        status: JSON.stringify($('#cbStatus').combogrid('getValues')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $('#txt_tgl_aw').datebox('getValue'),
+        tglakhir: $('#txt_tgl_ak').datebox('getValue'),
+        excel: excel,
+        filename: "Laporan Pembelian Aset",
+      });
+    }
 
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
@@ -615,7 +609,7 @@
     function browse_data_aset(id) {
       $(id).combogrid({
         panelWidth: 420,
-        url: base_url + 'atena/Aset/Transaksi/PembelianAset/comboGridAsetLaporan',
+        url: link_api.browseAsetLaporan,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',
@@ -654,7 +648,7 @@
     function browse_data_pembelian_aset(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: base_url + 'atena/Aset/Transaksi/PembelianAset/comboGridAsetBeli',
+        url: link_api.browseAsetBeliPembelianAset,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',

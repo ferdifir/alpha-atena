@@ -8,15 +8,15 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td align="right"><label id="label_laporan">Tgl. Trans</label></td>
-          <td id="label_laporan"><input id="txt_tgl_aw" style="width:105px" name="txt_tgl_aw" class="date" /> - <input
-              id="txt_tgl_ak" style="width:105px" name="txt_tgl_ak" class="date" /></td>
+          <td id="label_laporan"><input id="txt_tgl_aw" style="width:108px" name="txt_tgl_aw" class="date" /> - <input
+              id="txt_tgl_ak" style="width:108px" name="txt_tgl_ak" class="date" /></td>
         </tr>
         <tr>
           <td id="label_laporan">
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:227px;">
               <option value="valueperkiraan.kodetrans">Kode Trans</option>
             </select>
           </td>
@@ -27,12 +27,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:227px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:227px;">
 
               </select>
             </div>
@@ -43,10 +43,10 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:227px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_jurnal">
-              <input id="txt_nilai_list_jurnal" name="txt_nilai_list_jurnal" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_jurnal" name="txt_nilai_list_jurnal" style="width:227px" prompt="Nilai" />
             </div>
           </td>
         </tr>

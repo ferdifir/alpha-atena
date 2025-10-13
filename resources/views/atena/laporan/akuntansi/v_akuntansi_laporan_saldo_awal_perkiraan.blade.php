@@ -331,6 +331,14 @@
       }
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanSaldoAwalPerkiraan, {
+        kode: "{{ $kodemenu }}",
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        excel: excel,
+        filename: 'Laporan Saldo Awal Perkiraan'
+      });
+    }
 
     $("#btn_export_excel").click(function() {
       cetakLaporan('ya');
@@ -343,7 +351,7 @@
     function browse_data_saldo_perkiraan(id) {
       $(id).combogrid({
         panelWidth: 330,
-        url: 'atena/Akuntansi/Transaksi/SaldoAwalPerkiraan/comboGridSaldoPerkiraan',
+        url: link_api.browseSaldoPerkiraan,
         idField: 'kode',
         textField: 'kode',
         mode: 'local',

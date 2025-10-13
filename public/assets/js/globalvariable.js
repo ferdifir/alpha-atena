@@ -602,6 +602,7 @@ var link_api = {
     ubahStatusjadiSlipSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/ubah-status-jadi-slip`,
     getStatusSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/get-status-trans`,
     browseJurnal: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/browse-jurnal`,
+    browseSaldoPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/browse-saldo-perkiraan`,
     //Tutup Periode Akuntansi
     simpanTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/simpan`,
     batalTutupPeriodeAkuntansi: `${base_url_api}atena/akuntansi/tutup-periode-akuntansi/batal-trans`,
@@ -791,6 +792,8 @@ var link_api = {
     loadSatuanSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-satuan`,
     loadDataHeaderSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/load-data-header`,
     simpanSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/simpan`,
+    browseSaldoAset: `${base_url_api}atena/aset/saldo-awal-aset/browse-saldo-aset`,
+    laporanSaldoAwalAset: `${base_url_api}atena/aset/saldo-awal-aset/laporan`,
     //Aset - Pembelian Aset
     loadConfigPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-config`,
     loadDataGridPembelianAset: `${base_url_api}atena/aset/pembelian-aset/load-data-grid`,
@@ -800,6 +803,8 @@ var link_api = {
     batalTransPembelianAset: `${base_url_api}atena/aset/pembelian-aset/batal-trans`,
     ubahStatusJadiInputPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-input`,
     ubahStatusJadiSlipPembelianAset: `${base_url_api}atena/aset/pembelian-aset/ubah-status-jadi-slip`,
+    browseAsetLaporan: `${base_url_api}atena/aset/pembelian-aset/browse-aset-laporan`,
+    laporanPembelianAset: `${base_url_api}atena/aset/pembelian-aset/laporan`,
     //Pelunasan Piutang
     loadConfigPelunasanPiutang: `${base_url_api}atena/keuangan/pelunasan-piutang/load-config`,
     loadDataGridPelunasanPiutang: `${base_url_api}atena/keuangan/pelunasan-piutang/load-data-grid`,
@@ -875,6 +880,8 @@ var link_api = {
     cetakReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/cetak/`,
     simpanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/simpan`,
     browseAsetReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset`,
+    browseAsetReturBeli: `${base_url_api}atena/aset/retur-pembelian-aset/browse-aset-retur-beli`,
+    laporanReturPembelianAset: `${base_url_api}atena/aset/retur-pembelian-aset/laporan`,
     //Aset - Transfer Aset
     getStatusTransTransferAset: `${base_url_api}atena/aset/transfer-aset/get-status-trans`,
     cetakTransferAset: `${base_url_api}atena/aset/transfer-aset/cetak/`,
@@ -887,6 +894,8 @@ var link_api = {
     simpanTransferAset: `${base_url_api}atena/aset/transfer-aset/simpan`,
     loadDataTransferAset: `${base_url_api}atena/aset/transfer-aset/load-data`,
     browseAsetTransferAset: `${base_url_api}atena/aset/transfer-aset/browse-aset`,
+    browseAsetTransfer: `${base_url_api}atena/aset/transfer-aset/browse-aset-transfer`,
+    laporanTransferAset: `${base_url_api}atena/aset/transfer-aset/laporan`,
     //Aset - Penghapusan Aset
     getStatusTransPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/get-status-trans`,
     loadDataGridPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/load-data-grid`,
@@ -899,6 +908,8 @@ var link_api = {
     simpanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/simpan`,
     browseAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/browse-aset`,
     hitungNilaiAsetPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/hitung-nilai-aset`,
+    browseAsetPenghapusan: `${base_url_api}atena/aset/penghapusan-aset/browse-aset-hapus`,
+    laporanPenghapusanAset: `${base_url_api}atena/aset/penghapusan-aset/laporan`,
     //Aset - Penjualan Aset
     getStatusTransPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/get-status-trans`,
     cetakPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/cetak/`,
@@ -911,6 +922,8 @@ var link_api = {
     loadDataHeaderPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/load-data-header`,
     simpanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/simpan`,
     browseAsetPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/browse-aset`,
+    browseAsetPenjualan: `${base_url_api}atena/aset/penjualan-aset/browse-aset-jual`,
+    laporanPenjualanAset: `${base_url_api}atena/aset/penjualan-aset/laporan`,
     //Aset - Penyusutan Aset
     loadDataGridPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-data-grid`,
     loadConfigPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/load-config`,
@@ -923,6 +936,8 @@ var link_api = {
     ubahStatusJadiSlipPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/ubah-status-jadi-slip`,
     hitungPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/hitung-aset`,
     simpanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/simpan`,
+    browseAsetPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/browse-aset-susut`,
+    laporanPenyusutanAset: `${base_url_api}atena/aset/penyusutan-aset/laporan`,
     // SETORAN PENJUALAN PER KASIR
     simpanSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/simpan`,
     tampilDataSetorPenjualanPerKasir: `${base_url_api}atena/keuangan/setoran-penjualan-per-kasir/tampil-data`,
@@ -987,12 +1002,15 @@ var link_api = {
     //Akuntansi Laporan
     laporanBukuBesar: `${base_url_api}atena/akuntansi/buku-besar/laporan`,
     laporanDaftarGiro: `${base_url_api}atena/akuntansi/giro/laporan`,
-    laporanJurnalTransaksi: `${base_url_api}atena/akuntansi/jurnal-transaksi/laporan`, // perlu dicek lagi
+    laporanJurnalTransaksi: `${base_url_api}atena/akuntansi/jurnal-transaksi/laporan`,
     laporanKas: `${base_url_api}atena/akuntansi/kas/laporan`,
     laporanLabaRugi: `${base_url_api}atena/akuntansi/laba-rugi/laporan`,
     laporanNeracaMutasi: `${base_url_api}atena/akuntansi/neraca-mutasi/laporan`,
-    laporanNeraca: `${base_url_api}atena/akuntansi/neraca/laporan`, // perlu dicek lagi
-    laporanSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/laporan`, // perlu dicek lagi
+    laporanNeraca: `${base_url_api}atena/akuntansi/neraca/laporan`,
+    laporanSaldoAwalPerkiraan: `${base_url_api}atena/akuntansi/saldo-awal-perkiraan/laporan`,
+    //Aset Laporan
+    laporanAset: `${base_url_api}atena/aset/aset/laporan`,
+
 };
 
 var modul_kode = {

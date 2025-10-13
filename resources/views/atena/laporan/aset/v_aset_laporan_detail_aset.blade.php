@@ -8,20 +8,20 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td id="label_laporan">Lokasi </td>
-          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:190px" /></td>
+          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:202px" /></td>
         </tr>
         <tr>
           <td align="left" id="label_laporan"><input type="checkbox" name="cbtgl[]" align="right" value="perolehan"
               checked> Perolehan </td>
-          <td id="label_laporan"> <input id="txt_tgl_aw" name="txt_tgl_aw" style="width:90px;" class="date" /> -
-            <input id="txt_tgl_ak" style="width:90px;" name="txt_tgl_ak" class="date" />
+          <td id="label_laporan"> <input id="txt_tgl_aw" name="txt_tgl_aw" style="width:95px;" class="date" /> -
+            <input id="txt_tgl_ak" style="width:95px;" name="txt_tgl_ak" class="date" />
           </td>
         </tr>
         <tr>
           <td align="left" id="label_laporan"><input type="checkbox" name="cbtgl[]" align="right" value="penyusutan"
               checked> Penyusutan </td>
-          <td id="label_laporan"> <input id="txt_tgl_aw_susut" name="txt_tgl_aw_susut" style="width:90px;"
-              class="date" /> - <input id="txt_tgl_ak_susut" style="width:90px;" name="txt_tgl_ak_susut"
+          <td id="label_laporan"> <input id="txt_tgl_aw_susut" name="txt_tgl_aw_susut" style="width:95px;"
+              class="date" /> - <input id="txt_tgl_ak_susut" style="width:95px;" name="txt_tgl_ak_susut"
               class="date" /></td>
         </tr>
         <tr>
@@ -45,8 +45,8 @@
               <option value="12">DESEMBER</option>
             </select>
 
-            <label id="label_form">Tahun</label>
-            <input name="txt_tahun" type="text" class="easyui-numberspinner" id="txt_tahun" style="width:60px"
+            <label id="label_form">&nbsp;Tahun</label>
+            <input name="txt_tahun" type="text" class="easyui-numberspinner" id="txt_tahun" style="width:71px"
               maxlength="4" data-options="min:1990" value="{{ date('Y') }}">
           </td>
         </tr>
@@ -55,7 +55,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:190px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:202px;">
               <option value="maset.kodeaset">Kode Aset</option>
               <option value="maset.namaaset">Nama Aset</option>
             </select>
@@ -67,13 +67,11 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:190px;">
-
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:202px;">
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:190px;">
-
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:202px;">
               </select>
             </div>
           </td>
@@ -82,10 +80,10 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:190px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:202px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_aset">
-              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:190px" prompt="Nilai" />
+              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:202px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -153,23 +151,7 @@
       browse_data_aset('#txt_aset_awal');
       browse_data_aset('#txt_aset_akhir');
 
-      //SET SEMUA LOKASI
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.browseLokasi,
-        cache: false,
-        success: function(msg) {
-
-          var arrayLokasi = [];
-
-          for (var i = 0; i < msg.rows.length; i++) {
-            arrayLokasi.push(msg.rows[i].kode);
-          }
-
-          $('#txt_lokasi').combogrid("setValues", arrayLokasi);
-        }
-      });
+      setLokasiCombogrid('{{ session('TOKEN') }}', ['#txt_lokasi']);
 
       $('#list_filter_laporan').datagrid({
         width: 289,
@@ -198,7 +180,8 @@
               checkbox: true
             },
             {
-              field: 'text'
+              field: 'text',
+              width: '96%',
             },
           ]
         ],
@@ -230,11 +213,8 @@
       //SET CHECK REKAP
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
-
-
       $('#txt_aset_awal, #txt_aset_akhir').combogrid('disable').combogrid('clear');
-      $('#txt_aset_awal_list,#txt_aset_akhir_list').combogrid('disable').combogrid('clear');
-      $('#txt_aset_akhir_list').combogrid('grid').datagrid('loadData', []);
+      $('#txt_aset_awal_list').combogrid('disable').combogrid('clear');
 
       $("[name=rd_aset]").change(function() {
         var text = $(this).val() == 1 ? 'enable' : 'disable';
@@ -243,9 +223,8 @@
 
         $('#txt_namaaset').textbox(text);
         $('#txt_aset_awal, #txt_aset_akhir').combogrid(range).combogrid('clear');
-        $('#txt_aset_awal_list, #txt_aset_akhir_list').combogrid(list).combogrid('clear');
+        $('#txt_aset_awal_list').combogrid(list).combogrid('clear');
 
-        $('#txt_aset_akhir_list').combogrid('grid').datagrid('loadData', []);
       });
       tutupLoader();
     });
@@ -382,11 +361,6 @@
       if (checknilai == 1) {
         var text_laporan = kolom + " " + operator + " " + nilai;
 
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
-
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
           kolom: kolomVal,
@@ -411,6 +385,27 @@
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
+
+    function cetakLaporan(excel) {
+      var checkedTgl = $('input[name="cbtgl[]"]:checked').map(function() {
+        return $(this).val();
+      }).get();
+      parent.buka_laporan(link_api.laporanAset, {
+        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+        excel: excel,
+        filename: "Laporan Detail Aset",
+        kode: "{{ $kodemenu }}",
+        tgl: JSON.stringify(checkedTgl),
+        tglawal: $("#txt_tgl_aw").datebox('getValue'),
+        tglakhir: $("#txt_tgl_ak").datebox('getValue'),
+        tglawal_susut: $("#txt_tgl_aw_susut").datebox('getValue'),
+        tglakhir_susut: $("#txt_tgl_ak_susut").datebox('getValue'),
+        bulan: $("#sb_bulan").combobox('getValue'),
+        tahun: $("#txt_tahun").numberspinner('getValue'),
+      });
+    }
 
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {
@@ -475,8 +470,8 @@
 
     function browse_data_aset(id) {
       $(id).combogrid({
-        panelWidth: 420,
-        url: base_url + 'atena/Aset/Transaksi/PembelianAset/comboGridAsetLaporan',
+        panelWidth: 430,
+        url: link_api.browseAsetLaporan,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',

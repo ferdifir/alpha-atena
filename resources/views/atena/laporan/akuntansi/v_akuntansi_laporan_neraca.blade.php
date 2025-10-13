@@ -66,6 +66,15 @@
       tutupLoader();
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanNeraca, {
+        kode: "{{ $kodemenu }}",
+        tahun: parseInt($('#txt_tahun').numberspinner('getValue')),
+        bulan: parseInt($('#sb_bulan').combobox('getValue')),
+        excel: excel,
+        filename: "Laporan Neraca",
+      });
+    }
 
     // PRINT LAPORAN
     $("#btn_export_excel").click(function() {

@@ -8,7 +8,7 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td id="label_laporan" style="width:55px">Lokasi </td>
-          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:220px" /></td>
+          <td><input id="txt_lokasi" name="txt_lokasi[]" style="width:223px" /></td>
         </tr>
         <tr>
           <td id="label_laporan">Status </td>
@@ -23,7 +23,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:223px;">
               <option value="saldoaset.kodesaldoaset">Kode Saldo Awal Aset</option>
               <option value="maset.kodeaset">Kode Aset</option>
               <option value="maset.namaaset">Nama Aset</option>
@@ -36,12 +36,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:223px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:223px;">
 
               </select>
             </div>
@@ -51,14 +51,14 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:223px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_saldo_awal_aset">
-              <input id="txt_nilai_list_saldo_awal_aset" name="txt_nilai_list_saldo_awal_aset" style="width:220px"
+              <input id="txt_nilai_list_saldo_awal_aset" name="txt_nilai_list_saldo_awal_aset" style="width:223px"
                 prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_aset" hidden>
-              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:223px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -123,22 +123,7 @@
       browse_data_saldo_awal_aset('#txt_nilai_list_saldo_awal_aset');
 
       //SET SEMUA LOKASI
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.browseLokasi,
-        cache: false,
-        success: function(msg) {
-
-          var arrayLokasi = [];
-
-          for (var i = 0; i < msg.rows.length; i++) {
-            arrayLokasi.push(msg.rows[i].kode);
-          }
-
-          $('#txt_lokasi').combogrid("setValues", arrayLokasi);
-        }
-      });
+      setLokasiCombogrid('{{ session('TOKEN') }}', ['#txt_lokasi']);
 
       $('#list_filter_laporan').datagrid({
         width: 280,
@@ -208,7 +193,7 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
       $('#cbStatus').combogrid({
-        width: 220,
+        width: 223,
         idField: 'value',
         textField: 'status',
         multiple: true,
@@ -403,11 +388,6 @@
       if (checknilai == 1) {
         var text_laporan = kolom + " " + operator + " " + nilai;
 
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
-
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
           kolom: kolomVal,
@@ -432,6 +412,17 @@
         $('#list_filter_laporan').datagrid('deleteRow', index);
       }
     });
+
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanSaldoAwalAset, {
+        kode: "{{ $kodemenu }}",
+        lokasi: JSON.stringify($('#txt_lokasi').combogrid('getValues')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        excel: excel,
+        filename: "Laporan Saldo Awal Aset",
+      });
+    }
 
     $("#btn_export_excel").click(function() {
       var getLokasi = $('#txt_lokasi').combogrid('grid');
@@ -496,7 +487,7 @@
     function browse_data_aset(id) {
       $(id).combogrid({
         panelWidth: 420,
-        url: base_url + 'atena/Aset/Transaksi/PembelianAset/comboGridAsetLaporan',
+        url: link_api.browseAsetLaporan,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',
@@ -535,7 +526,7 @@
     function browse_data_saldo_awal_aset(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: base_url + 'atena/Aset/Transaksi/SaldoAwalAset/comboGridSaldoAset',
+        url: link_api.browseSaldoAset,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',
@@ -548,10 +539,6 @@
         },
         columns: [
           [{
-              field: 'id',
-              hidden: true
-            },
-            {
               field: 'kode',
               title: 'Kode',
               width: 100,

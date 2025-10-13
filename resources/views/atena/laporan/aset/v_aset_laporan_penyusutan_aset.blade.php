@@ -8,8 +8,8 @@
         <!-- FILTER LAPORAN -->
         <tr>
           <td id="label_laporan">Tgl. Trans </td>
-          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:105px;" class="date" /> -
-            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:105px;" class="date" />
+          <td id="label_laporan"><input id="txt_tgl_aw" name="txt_tgl_aw" style="width:108px;" class="date" /> -
+            <input id="txt_tgl_ak" name="txt_tgl_ak" style="width:108px;" class="date" />
           </td>
         </tr>
         <tr>
@@ -25,7 +25,7 @@
             Kolom
           </td>
           <td>
-            <select id="kolom" class="easyui-combobox" name="kolom" style="width:220px;">
+            <select id="kolom" class="easyui-combobox" name="kolom" style="width:227px;">
               <option value="tasetsusut.kodeasetsusut">Kode Penyusutan Aset</option>
               <option value="maset.kodeaset">Kode Aset</option>
               <option value="maset.namaaset">Nama Aset</option>
@@ -38,12 +38,12 @@
           </td>
           <td>
             <div id="lap_operatorString">
-              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:220px;">
+              <select id="operatorString" class="easyui-combobox" name="operatorstring" style="width:227px;">
 
               </select>
             </div>
             <div id="lap_operatorNumber" hidden>
-              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:220px;">
+              <select id="operatorNumber" class="easyui-combobox" name="operatornumber" style="width:227px;">
 
               </select>
             </div>
@@ -53,13 +53,13 @@
           <td id="label_laporan" class="label_nilai">Nilai </td>
           <td>
             <div id="hide_nilai" hidden>
-              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:220px" prompt="Nilai">
+              <input class="label_input" id="txt_nilai" name="txt_nilai" style="width:227px" prompt="Nilai">
             </div>
             <div id="hide_nilai_list_aset_susut">
-              <input id="txt_nilai_list_aset_susut" name="txt_nilai_list_aset_susut" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_aset_susut" name="txt_nilai_list_aset_susut" style="width:227px" prompt="Nilai" />
             </div>
             <div id="hide_nilai_list_aset" hidden>
-              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:220px" prompt="Nilai" />
+              <input id="txt_nilai_list_aset" name="txt_nilai_list_aset" style="width:227px" prompt="Nilai" />
             </div>
           </td>
         </tr>
@@ -123,24 +123,6 @@
       browse_data_aset('#txt_nilai_list_aset');
       browse_data_aset_susut('#txt_nilai_list_aset_susut');
 
-      //SET SEMUA LOKASI
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        url: link_api.browseLokasi,
-        cache: false,
-        success: function(msg) {
-
-          var arrayLokasi = [];
-
-          for (var i = 0; i < msg.rows.length; i++) {
-            arrayLokasi.push(msg.rows[i].kode);
-          }
-
-          $('#txt_lokasi').combogrid("setValues", arrayLokasi);
-        }
-      });
-
       $('#list_filter_laporan').datagrid({
         width: 280,
         height: 160,
@@ -168,7 +150,8 @@
               checkbox: true
             },
             {
-              field: 'text'
+              field: 'text',
+              width: '96%',
             },
           ]
         ],
@@ -207,7 +190,7 @@
       $('#list_tampil_laporan').datalist('checkRow', 0);
 
       $('#cbStatus').combogrid({
-        width: 220,
+        width: 227,
         idField: 'value',
         textField: 'status',
         multiple: true,
@@ -413,11 +396,6 @@
       if (checknilai == 1) {
         var text_laporan = kolom + " " + operator + " " + nilai;
 
-        //PENGGANTI WIDTH SUPAYA TIDAK PENUH
-        for (var i = text_laporan.length; i <= 38; i++) {
-          text_laporan += "&nbsp;&nbsp;";
-        }
-
         $('#list_filter_laporan').datagrid('appendRow', {
           tipedata: tipedata,
           kolom: kolomVal,
@@ -443,6 +421,18 @@
       }
     });
 
+    function cetakLaporan(excel) {
+      parent.buka_laporan(link_api.laporanPenyusutanAset, {
+        kode: "{{ $kodemenu }}",
+        status: JSON.stringify($('#cbStatus').combogrid('getValues')),
+        data_tampil: JSON.stringify($("#list_tampil_laporan").datagrid('getChecked')),
+        data_filter: JSON.stringify($("#list_filter_laporan").datagrid('getChecked')),
+        tglawal: $('#txt_tgl_aw').datebox('getValue'),
+        tglakhir: $('#txt_tgl_ak').datebox('getValue'),
+        excel: excel,
+        filename: "Laporan Penyusutan Aset",
+      });
+    }
 
     $("#btn_export_excel").click(function() {
       cetakLaporan('ya');
@@ -455,7 +445,7 @@
     function browse_data_aset(id) {
       $(id).combogrid({
         panelWidth: 420,
-        url: base_url + 'atena/Aset/Transaksi/PembelianAset/comboGridAsetLaporan',
+        url: link_api.browseAsetLaporan,
         idField: 'nama',
         textField: 'nama',
         mode: 'remote',
@@ -495,7 +485,7 @@
     function browse_data_aset_susut(id) {
       $(id).combogrid({
         panelWidth: 230,
-        url: base_url + 'atena/Aset/Transaksi/PenyusutanAset/comboGridAsetSusut',
+        url: link_api.browseAsetPenyusutanAset,
         idField: 'kode',
         textField: 'kode',
         mode: 'remote',
