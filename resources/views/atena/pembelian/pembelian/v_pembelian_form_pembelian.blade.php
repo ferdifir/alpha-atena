@@ -2109,6 +2109,8 @@
             }
           }
 
+          var jenistransaksi = $('[name=jenistransaksi]:checked').val();
+
           if (jenistransaksi == "BELI LANGSUNG" && field == "kodebarang") {
             ed.combogrid('grid').datagrid('options').url = link_api.browseBarangAll;
             ed.combogrid('grid').datagrid('load', {
