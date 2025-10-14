@@ -71,13 +71,13 @@
                             style="width:300px; height:85px" data-options="validType:'length[0, 500]'"></textarea>
                         </td>
                       </tr>
-                      <tr>
+                      {{-- <tr>
                         <td>
                           <label id="label_form" style="font-size:17pt;margin:3px;">Barcode
                             <input name="BARCODE" class="label_input" id="BARCODE"
                               style="width:200px;height:30px;"></label>
                         </td>
-                      </tr>
+                      </tr> --}}
                     </table>
                   </td>
                 </tr>
@@ -503,6 +503,7 @@
             }
             return response.json();
           })
+          tutupLoaderSimpan();
           if (response.success) {
             if (mode == 'tambah') {
               $.messager.alert('Info', 'Simpan Data Sukses', 'info');
@@ -522,7 +523,6 @@
           var textError = getTextError(error);
           $.messager.alert('Error', getTextError(error), 'error');
         }
-        tutupLoaderSimpan();
       }
     }
 
