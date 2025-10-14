@@ -443,7 +443,7 @@
       });
 
       $("[name=pakaipph]").change(function() {
-        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22') }});
+        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22PERSEN') ?? 0 }});
         hitung_grandtotal();
       });
 
@@ -2197,7 +2197,7 @@
                 subtotal: subtotal,
                 pakaippn: pakaippn,
                 ppnpersen: ppnpersenaktif,
-                pph22persen: '{{ session('PPH22') }}',
+                pph22persen: '{{ session('PPH22PERSEN') ?? 0 }}',
               };
 
               if (!cekbarangnonstok && transaksiBBM == "HEADER") {
@@ -2535,7 +2535,7 @@
       $('.number').numberbox('setValue', 0);
 
       $("#PPNPERSEN").numberbox('setValue', ppnpersenaktif);
-      $("#PPHPERSEN").numberbox('setValue', {{ session('PPH22') }});
+      $("#PPHPERSEN").numberbox('setValue', {{ session('PPH22PERSEN') ?? 0 }});
       hitung_grandtotal();
 
       $("#TGLTRANS, #TGLKIRIM, #TGLJATUHTEMPO").datebox('setValue', date_format());
