@@ -2109,6 +2109,13 @@
             }
           }
 
+          if (jenistransaksi == "BELI LANGSUNG" && field == "kodebarang") {
+            ed.combogrid('grid').datagrid('options').url = link_api.browseBarangAll;
+            ed.combogrid('grid').datagrid('load', {
+              q: '',
+            });
+          }
+
           if (field == 'satuan') {
             ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
