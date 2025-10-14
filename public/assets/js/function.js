@@ -32,9 +32,9 @@ $(document).ready(function () {
 
             // jika terdapat variabel cekbtnsimpan (variabel ini digunakan
             // pada form transaksi), maka ubah nilainya menjadi true
-            if (cekbtnsimpan != undefined) {
-                cekbtnsimpan = true;
-            }
+            // if (cekbtnsimpan != undefined) {
+            //     cekbtnsimpan = true;
+            // }
         },
     });
     $(".number")
