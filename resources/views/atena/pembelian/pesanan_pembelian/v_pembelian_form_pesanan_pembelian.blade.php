@@ -461,7 +461,7 @@
       });
 
       $("[name=pakaipph]").change(function() {
-        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22') }});
+        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22PERSEN') ?? 0 }});
         hitung_grandtotal();
       });
 
@@ -2050,7 +2050,7 @@
                   subtotal: 0,
                   pakaippn: 0,
                   ppnpersen: ppnpersenaktif,
-                  pph22persen: {{ session('PPH22') }},
+                  pph22persen: {{ session('PPH22PERSEN') ?? 0 }},
                 };
                 break;
               case 'kodebarang':
@@ -2092,7 +2092,7 @@
                   subtotal: subtotal,
                   pakaippn: defaultpakaippn,
                   ppnpersen: ppnpersenaktif,
-                  pph22persen: {{ session('PPH22') }},
+                  pph22persen: {{ session('PPH22PERSEN') ?? 0 }},
                 };
                 if (configtranspr == 'HEADER') {
                   row_update.uuidpr = "";
@@ -2877,7 +2877,7 @@
       $('.number').numberbox('setValue', 0);
 
       $("#PPNPERSEN").numberbox('setValue', ppnpersenaktif);
-      $("#PPH22PERSEN").numberbox('setValue', {{ session('PPH22') }});
+      $("#PPH22PERSEN").numberbox('setValue', {{ session('PPH22PERSEN') ?? 0 }});
       hitung_grandtotal();
       $("#TGLTRANS, #TGLJATUHTEMPO").datebox('setValue', getDateMinusDays(0));
       $("#TGLJATUHTEMPO").datebox('readonly');

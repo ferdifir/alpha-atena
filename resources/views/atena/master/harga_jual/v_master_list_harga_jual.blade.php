@@ -692,6 +692,7 @@
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
   </script>
   <script>
+    var cekbtnsimpan = false;
     const loaderfitur = {
       supplier: false,
       merk: false,

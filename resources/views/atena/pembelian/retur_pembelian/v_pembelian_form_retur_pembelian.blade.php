@@ -341,7 +341,7 @@
       });
 
       $("[name=pakaipph]").change(function() {
-        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22') }});
+        $("#PPHPERSEN").numberbox('setValue', $(this).val() == 0 ? 0 : {{ session('PPH22PERSEN') ?? 0 }});
         hitung_grandtotal();
       });
 
@@ -1736,7 +1736,7 @@
                 subtotal: 0,
                 pakaippn: "TIDAK",
                 ppnpersen: ppnpersenaktif,
-                pph22persen: {{ session('PPH22') }}
+                pph22persen: {{ session('PPH22PERSEN') ?? 0 }}
               };
               break;
             case 'kodebarang':
@@ -1770,7 +1770,7 @@
                   disckurs = 0;
                   pakaippn = 0;
                   ppnpersen = ppnpersenaktif;
-                  pph22persen = {{ session('PPH22') }}
+                  pph22persen = {{ session('PPH22PERSEN') ?? 0 }}
                   uuidcurrency = '{{ session('UUIDCURRENCY') }}';
                   currency = '{{ session('SIMBOLCURRENCY') }}';
                   nilaikurs = 1;
@@ -1781,7 +1781,7 @@
                   disckurs = data ? data.disckurs : '';
                   pakaippn = data ? data.pakaippn : 0;
                   ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
-                  pph22persen = data ? data.pph22persen : {{ session('PPH22') }};
+                  pph22persen = data ? data.pph22persen : {{ session('PPH22PERSEN') ?? 0 }};
                   uuidcurrency = data.uuidcurrency;
                   currency = data.simbol;
                   nilaikurs = data.nilaikurs;
@@ -1794,7 +1794,7 @@
                   disckurs = 0;
                   pakaippn = 0;
                   ppnpersen = ppnpersenaktif;
-                  pph22persen = {{ session('PPH22') }};
+                  pph22persen = {{ session('PPH22PERSEN') ?? 0 }};
                   uuidcurrency = '{{ session('UUIDCURRENCY') }}';
                   currency = '{{ session('SIMBOLCURRENCY') }}';
                   nilaikurs = 1;
@@ -1805,7 +1805,7 @@
                   disckurs = data ? data.disckurs : '';
                   pakaippn = data ? data.pakaippn : 0;
                   ppnpersen = data ? data.ppnpersen : ppnpersenaktif;
-                  pph22persen = data ? data.pph22persen : {{ session('PPH22') }};
+                  pph22persen = data ? data.pph22persen : {{ session('PPH22PERSEN') ?? 0 }};
                   uuidcurrency = data.uuidcurrency;
                   currency = data.simbol;
                   nilaikurs = data.nilaikurs;
@@ -2084,7 +2084,7 @@
       $('.number').numberbox('setValue', 0);
 
       $("#PPNPERSEN").numberbox('setValue', ppnpersenaktif);
-      $("#PPHPERSEN").numberbox('setValue', {{ session('PPH22') }});
+      $("#PPHPERSEN").numberbox('setValue', {{ session('PPH22PERSEN') ?? 0 }});
       hitung_grandtotal();
 
       $("#TGLTRANS, #TGLKIRIM, #TGLJATUHTEMPO").datebox('setValue', date_format());
