@@ -163,8 +163,8 @@
 @endsection
 
 @push('js')
-  <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}">
-  </script>
+  <script type="text/javascript"
+    src="{{ asset('assets/jquery-easyui/extension/datagrid-cellediting/datagrid-cellediting.js') }}"></script>
   <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}">
   </script>
   <script>
@@ -267,7 +267,7 @@
             }
           ]
         ],
-        onExpandRow: function(index_header, row_header) {
+        onExpandRow: async function(index_header, row_header) {
           var ddv = $(this).datagrid('getRowDetail', index_header).find('table.ddv');
 
           ddv.datagrid({
@@ -309,26 +309,43 @@
             ]
           });
 
-          $.ajax({
-            url: link_api.loadHargaAktifTerakhir,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
+          //   $.ajax({
+          //     url: link_api.loadHargaAktifTerakhir,
+          //     type: 'POST',
+          //     dataType: 'JSON',
+          //     data: {
+          //       uuidbarang: row_header.uuidbarang,
+          //       uuidlokasi: row_header.uuidlokasi
+          //     },
+          //     beforeSend: function() {
+          //       ddv.datagrid('loading');
+          //     },
+          //     success: function(data) {
+          //       ddv.datagrid('loaded');
+
+          //       ddv.datagrid('loadData', data);
+          //       $('#table_data').datagrid('fixDetailRowHeight', index_header);
+          //     }
+          //   });
+          try {
+            ddv.datagrid('loading');
+            const res = await fetchData(link_api.loadHargaAktifTerakhir, {
               uuidbarang: row_header.uuidbarang,
               uuidlokasi: row_header.uuidlokasi
-            },
-            beforeSend: function() {
-              ddv.datagrid('loading');
-            },
-            success: function(data) {
-              ddv.datagrid('loaded');
+            });
+            ddv.datagrid('loaded');
+            if (res.success) {
 
-              ddv.datagrid('loadData', data);
+              ddv.datagrid('loadData', res.data);
               $('#table_data').datagrid('fixDetailRowHeight', index_header);
+            } else {
+              showErrorAlert(res.message);
             }
-          })
+          } catch (e) {
+            showErrorAlert(e);
+          }
         },
-        onDblClickRow: function(index, row) {
+        onDblClickRow: async function(index, row) {
           index_header = index;
 
           $('#IDBARANG').val(row.uuidbarang);
@@ -345,51 +362,88 @@
 
           //   ubah_url_combogrid($('#DAFTARTGLAKTIF'), link_api.browseTglAktif + '/' + row.uuidbarang + '/' + row
           //     .uuidlokasi, true);
-          $.ajax({
-            url: link_api.browseTglAktif,
-            type: 'POST',
-            data: {
+          //   $.ajax({
+          //     url: link_api.browseTglAktif,
+          //     type: 'POST',
+          //     data: {
+          //       uuidbarang: row.uuidbarang,
+          //       uuidlokasi: row.uuidlokasi
+          //     },
+          //     dataType: 'JSON',
+          //     success: function(data) {
+          //       var combogrid = $('#DAFTARTGLAKTIF').combogrid('grid');
+          //       combogrid.datagrid('loadData', data);
+          //     }
+          //   });
+          try {
+            const res = await fetchData(link_api.browseTglAktif, {
               uuidbarang: row.uuidbarang,
               uuidlokasi: row.uuidlokasi
-            },
-            dataType: 'JSON',
-            success: function(data) {
+            });
+            if (res.success) {
               var combogrid = $('#DAFTARTGLAKTIF').combogrid('grid');
-              combogrid.datagrid('loadData', data);
+              combogrid.datagrid('loadData', res.data);
+            } else {
+              showErrorAlert(res.message);
             }
-          })
+          } catch (e) {
+            showErrorAlert(e);
+          }
 
           $('#btn_tambah').linkbutton('enable');
           $('#btn_ubah').linkbutton('enable');
           $('#btn_hapus').linkbutton('disable');
 
-          $.ajax({
-            url: link_api.loadHargaAktifTerakhir,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
+          //   $.ajax({
+          //     url: link_api.loadHargaAktifTerakhir,
+          //     type: 'POST',
+          //     dataType: 'JSON',
+          //     data: {
+          //       uuidbarang: row.uuidbarang,
+          //       uuidlokasi: row.uuidlokasi
+          //     },
+          //     beforeSend: function() {
+          //       $('#table_detail_harga').datagrid('loading');
+          //     },
+          //     success: function(data) {
+          //       $('#table_detail_harga').datagrid('loaded');
+
+          //       $('#table_detail_harga').datagrid('loadData', data);
+
+          //       if (data.length > 0) {
+          //         $('#TGLAKTIF').datebox('setValue', data[0].tglaktif);
+          //         $('#DAFTARTGLAKTIF').combogrid('clear').combogrid('readonly', false).combogrid(
+          //           'setValue', data[0].tglaktif);
+
+          //         $('#btn_hapus').linkbutton('enable');
+          //       } else {
+          //         $('#btn_ubah').linkbutton('disable');
+          //       }
+          //     }
+          //   })
+          try {
+            const res = await fetchData(link_api.loadHargaAktifTerakhir, {
               uuidbarang: row.uuidbarang,
               uuidlokasi: row.uuidlokasi
-            },
-            beforeSend: function() {
-              $('#table_detail_harga').datagrid('loading');
-            },
-            success: function(data) {
-              $('#table_detail_harga').datagrid('loaded');
+            });
+            if (res.success) {
+              $('#table_detail_harga').datagrid('loadData', res.data);
 
-              $('#table_detail_harga').datagrid('loadData', data);
-
-              if (data.length > 0) {
-                $('#TGLAKTIF').datebox('setValue', data[0].tglaktif);
+              if (res.data.length > 0) {
+                $('#TGLAKTIF').datebox('setValue', res.data[0].tglaktif);
                 $('#DAFTARTGLAKTIF').combogrid('clear').combogrid('readonly', false).combogrid(
-                  'setValue', data[0].tglaktif);
+                  'setValue', res.data[0].tglaktif);
 
                 $('#btn_hapus').linkbutton('enable');
               } else {
                 $('#btn_ubah').linkbutton('disable');
               }
+            } else {
+              showErrorAlert(res.message);
             }
-          })
+          } catch (e) {
+            showErrorAlert(e);
+          }
 
           $('#window_harga').window({
             closed: false
@@ -676,27 +730,40 @@
             sortable: true
           }, ]
         ],
-        onSelect: function(index, row) {
+        onSelect: async function(index, row) {
           var row_barang = $('#table_data').datagrid('getRows')[index_header];
 
-          $.ajax({
-            url: link_api.loadHargaByTanggalAktif,
-            type: 'POST',
-            dataType: 'JSON',
-            data: {
+          //   $.ajax({
+          //     url: link_api.loadHargaByTanggalAktif,
+          //     type: 'POST',
+          //     dataType: 'JSON',
+          //     data: {
+          //       uuidbarang: row_barang.uuidbarang,
+          //       uuidlokasi: row_barang.uuidlokasi,
+          //       tglaktif: row.tglaktif
+          //     },
+          //     beforeSend: function() {},
+          //     success: function(data) {
+
+          //       $('#table_detail_harga').datagrid('loadData', data);
+          //     }
+          //   });
+          try {
+            $('#table_detail_harga').datagrid('loading');
+            const res = await fetchData(link_api.loadHargaByTanggalAktif, {
               uuidbarang: row_barang.uuidbarang,
               uuidlokasi: row_barang.uuidlokasi,
               tglaktif: row.tglaktif
-            },
-            beforeSend: function() {
-              $('#table_detail_harga').datagrid('loading');
-            },
-            success: function(data) {
-              $('#table_detail_harga').datagrid('loaded');
-
-              $('#table_detail_harga').datagrid('loadData', data);
+            });
+            $('#table_detail_harga').datagrid('loaded');
+            if (res.success) {
+              $('#table_detail_harga').datagrid('loadData', res.data);
+            } else {
+              showErrorAlert(res.message);
             }
-          })
+          } catch (e) {
+            showErrorAlert(e);
+          }
         }
       });
     }
@@ -718,7 +785,7 @@
       });
     }
 
-    function tampil_data_barang(event, page_number) {
+    async function tampil_data_barang(event, page_number) {
       if (event) {
         event.preventDefault();
       }
@@ -737,11 +804,35 @@
         return false;
       }
 
-      $.ajax({
-        url: link_api.loadDataBarang,
-        type: 'POST',
-        dataType: 'JSON',
-        data: {
+      //   $.ajax({
+      //     url: link_api.loadDataBarang,
+      //     type: 'POST',
+      //     dataType: 'JSON',
+      //     data: {
+      //       uuidsupplier: idsupplier,
+      //       uuidmerk: idmerk,
+      //       kategori: kategori,
+      //       kodebarangawal: kodebarangawal,
+      //       kodebarangakhir: kodebarangakhir,
+      //       uuidlokasi: idlokasi,
+      //       berisikata: berisikata,
+      //       pagenumber: page_number,
+      //       pagesize: $('#pagination').pagination('options').pageSize
+      //     },
+      //     beforeSend: function() {},
+      //     success: function(data) {
+      //       $('#table_data').datagrid('loaded');
+
+      //       $('#table_data').datagrid('loadData', data.rows);
+
+      //       $('#pagination').pagination({
+      //         total: data.total
+      //       });
+      //     }
+      //   });
+      try {
+        $('#table_data').datagrid('loading');
+        const res = await fetchData(link_api.loadDataBarang, {
           uuidsupplier: idsupplier,
           uuidmerk: idmerk,
           kategori: kategori,
@@ -751,20 +842,21 @@
           berisikata: berisikata,
           pagenumber: page_number,
           pagesize: $('#pagination').pagination('options').pageSize
-        },
-        beforeSend: function() {
-          $('#table_data').datagrid('loading');
-        },
-        success: function(data) {
-          $('#table_data').datagrid('loaded');
+        });
+        $('#table_data').datagrid('loaded');
+        if (res.success) {
 
-          $('#table_data').datagrid('loadData', data.rows);
+          $('#table_data').datagrid('loadData', res.data);
 
           $('#pagination').pagination({
-            total: data.total
+            total: res.data.total
           });
+        } else {
+          showErrorAlert(res.message);
         }
-      })
+      } catch (e) {
+        showErrorAlert(e);
+      }
     }
 
     function tambah() {

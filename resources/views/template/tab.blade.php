@@ -302,7 +302,7 @@
 
     <!-- EDIT PROFILE -->
     <form id="form_input_user" enctype="multipart/form-data" method="post" hidden>
-      <input type="hidden" name="iduser_profile" id="IDUSER_PROFILE">
+      <input type="hidden" name="uuiduser_profile" id="IDUSER_PROFILE">
       <input type="hidden" name="gambaruser_profile" id="GAMBARUSER_PROFILE">
 
       <!-- DATA USER DARI QUERY -->
@@ -338,7 +338,7 @@
         <tr>
           <td align="right" id="label_form">Old Password</td>
           <td><input name="old_pass_profile" id="OLD_PASS_PROFILE" type="password" class="label_input"
-              data-options="required:true,fontTransform:'normal'" validType='length[0,50]' style="width:150px" />
+              data-options="required:false,fontTransform:'normal'" validType='length[0,50]' style="width:150px" />
           </td>
         </tr>
         <tr>
@@ -506,6 +506,8 @@
 
     });
 
+    
+
     function edit_profile() {
       $('#form_input_user').dialog('open').dialog('setTitle', 'Edit Profil');
       $('#USERID_PROFILE').textbox('setValue', "{{ session('DATAUSER')['uuiduser'] }}");
@@ -515,24 +517,41 @@
       $('#NOHP_PROFILE').textbox('setValue', "{{ session('DATAUSER')['nohp'] }}");
       $('#GAMBARUSER_PROFILE').val("{{ session('DATAUSER')['gambar_url'] }}");
       $('#IDUSER_PROFILE').val("{{ session('DATAUSER')['uuiduser'] }}");
-
-      if ($('#GAMBARUSER_PROFILE').val() == "{{ session('DATAUSER')['gambar_url'] }}") {
-        $('#preview-image-profile').removeAttr('src').replaceWith($('#preview-image-profile').clone());
-        var image = $('#preview-image-profile')[0];
-        var downloadingImage = new Image();
-        downloadingImage.onload = function() {
-          image.src = this.src;
-        };
-
-        downloadingImage.src = base_url + "assets/foto_user/" + "{{ session('DATAUSER')['gambar_url'] }}";
-      }
+      $('#preview-image-profile').attr('src', "{{ session('DATAUSER')['gambar_url'] }}");
     }
 
-    function simpan_profile() {
+    async function simpan_profile() {
       var isValid = $('#form_input_user').form('validate');
 
       if (isValid) {
-        $('#form_input_user').submit();
+        const form = new FormData($('#form_input_user')[0]);
+        try {
+          const response = await fetch(link_api.simpanProfile, {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + '{{ session('TOKEN') }}'
+            },
+            body: form
+          });
+
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success) {
+              $.messager.show({
+                title: 'Info',
+                msg: 'Profil telah Berubah',
+                showType: 'show'
+              });
+            //   location.reload();
+            } else {
+              $.messager.alert('Error', result.message, 'error');
+            }
+          } else {
+            throw new Error('HTTP error! status: ' + response.status);
+          }
+        } catch (e) {
+          showErrorAlert(e);
+        }
       }
     }
 

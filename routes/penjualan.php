@@ -65,7 +65,7 @@ Route::prefix('atena/penjualan')
 
         // Penjualan - Uang Muka SO
         Route::prefix('uangmukaso')
-            ->name('uangmukaso.')
+            ->name('uangmuka.')
             ->group(function () {
                 Route::get('transaksi', function () {
                     return view('atena.penjualan.uang_muka.v_penjualan_list_uang_muka', [

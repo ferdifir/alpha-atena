@@ -186,7 +186,7 @@
         buat_table();
       });
 
-      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2)));
+      $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
 
     $("#form_cetak").window({
       collapsible: false,

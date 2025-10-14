@@ -45,6 +45,7 @@ var link_api = {
     headerFormUser: `${base_url_api}atena/master/user/load-data-header`,
     hapusUser: `${base_url_api}atena/master/user/hapus`,
     laporanUser: `${base_url_api}atena/master/user/laporan`,
+    simpanProfile: `${base_url_api}atena/master/user/simpan-profile`,
     //lokasi
     getLokasiAll: `${base_url_api}atena/master/lokasi/load-all`,
     getLokasiPerUser: `${base_url_api}atena/master/lokasi/load-lokasi-per-user`,
