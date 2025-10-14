@@ -29,6 +29,7 @@ $(document).ready(function () {
         error: function (msg) {
             $.messager.progress("close");
             $.messager.alert("Error", "Error While Process", "error");
+            console.log(msg);
 
             // jika terdapat variabel cekbtnsimpan (variabel ini digunakan
             // pada form transaksi), maka ubah nilainya menjadi true
