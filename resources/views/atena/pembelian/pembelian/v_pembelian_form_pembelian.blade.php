@@ -426,6 +426,7 @@
       $("#TGLTRANS").datebox({
         onChange: function(newVal, oldVal) {
           set_ppn_aktif(newVal, 'Bearer {{ session('TOKEN') }}', function(response) {
+            response = response.data;
             ppnpersenaktif = response.ppnpersen;
 
             update_ppn_table_detail($('#table_data_detail'), ppnpersenaktif, function(index, row) {
@@ -2150,14 +2151,16 @@
                 $(this).datagrid('deleteRow', index);
                 break;
               }
+              console.log(data);
+              var jenistransaksi = $('[name=jenistransaksi]:checked').val();
               var uuidbarang = data ? data.uuidbarang : '';
               var ppn = data ? data.ppn : '';
               var nama = data ? data.nama : '';
-              var satuan = data ? data.satuan : '';
+              var satuan = data ? data.satuan ?? data.satuanutama ?? "" : '';
               var satuanutama = data ? data.satuanutama : '';
               var konversi = data ? data.konversi : '';
               var harga = await get_harga_barang(uuidbarang);
-              var hargabeli = await get_harga_barangbeli(uuidbarang, satuan);
+              var hargabeli = await get_harga_barangbeli(uuidbarang, jenistransaksi ? satuanutama : satuan);
               var kodemerk = data ? data.kodemerk : 0;
               var subtotal = harga * 1;
               var kodebrg = data ? data.kode : '';
@@ -2328,7 +2331,7 @@
 
       var dpp = data.subtotalkurs;
       var dppasli = data.subtotalkurs;
-
+      console.log(row);
       if (row.ppn == 1) {
         if (row.pakaippn == 'TIDAK') {
           data.ppnrp = 0;
@@ -2349,6 +2352,7 @@
             data.ppnrp = Math.round(data.subtotalkurs * 11 / (100 + 11));
             data.dpp = Math.round((data.subtotalkurs - data.ppnrp) * 11 / row.ppnpersen);
           } else {
+            console.log(data);
             data.ppnrp = Math.floor(data.subtotalkurs * parseFloat(row.ppnpersen) / (100 + parseFloat(row.ppnpersen)));
             data.dpp = data.subtotalkurs - data.ppnrp;
           }

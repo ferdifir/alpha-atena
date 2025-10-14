@@ -313,6 +313,7 @@
       $("#TGLTRANS").datebox({
         onChange: function(newVal, oldVal) {
           set_ppn_aktif(newVal, 'bearer {{ session('TOKEN') }}', function(response) {
+            response = response.data;
             ppnpersenaktif = response.ppnpersen;
 
             var rows = $('#table_data_detail').datagrid('getRows');
