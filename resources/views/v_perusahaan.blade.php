@@ -32,8 +32,6 @@
                   @endif
                 </td>
                 <td class="label_form">
-                  <a target="_blank"><img src="{{ asset('assets/images/help.png') }}"
-                      style="width:35px; height:35px; object-fit: cover; object-position: 50% 0%;"></a>
                 </td>
                 <td style="padding-right: 35px">
                   <a href="javascript:void(0)" class="easyui-menubutton profile_btn"
@@ -41,12 +39,14 @@
                     <table>
                       <tr>
                         <td>
-                          @php
-                            $gambaruser = session('DATAUSER')['gambar'] ?? asset('assets/foto_user/NO_IMAGE.png');
-                          @endphp
-                          <img src="{{ $gambaruser }}"
-                            style="border-radius:100%; width:30px; height:30px; object-fit: cover; object-position: 50% 0%;"
-                            onerror="this.onerror=null;this.src='{{ asset('assets/foto_user/NO_IMAGE.png') }}';">
+                          <div style="height: 40px; padding-top:5px">
+                            @php
+                              $gambaruser = session('DATAUSER')['gambar'] ?? asset('assets/foto_user/NO_IMAGE.png');
+                            @endphp
+                            <img src="{{ $gambaruser }}"
+                              style="border-radius:100%; width:30px; height:30px; object-fit: cover; object-position: 50% 0%;"
+                              onerror="this.onerror=null;this.src='{{ asset('assets/foto_user/NO_IMAGE.png') }}';">
+                          </div>
                         </td>
                         <td>
                           <div id="user_entry" style="color:white;">
