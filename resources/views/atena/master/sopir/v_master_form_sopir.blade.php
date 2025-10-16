@@ -41,15 +41,15 @@
                   <td><input name="hp" style="width:350px" class="label_input" validType='length[0,50]'></td>
                 </tr>
                 <!--
-                                   <tr>
-                                    <td align="right" id="label_form">Jenis Kendaraan</td>
-                                    <td><input name="jeniskendaraan" style="width:250px" class="label_input" validType='length[0,50]'></td>
-                                   </tr>
-                                   <tr>
-                                    <td align="right" id="label_form">No Polisi</td>
-                                    <td><input name="nopolisi" style="width:250px" class="label_input" validType='length[0,50]'></td>
-                                   </tr>
-                                   -->
+                                     <tr>
+                                      <td align="right" id="label_form">Jenis Kendaraan</td>
+                                      <td><input name="jeniskendaraan" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                                     </tr>
+                                     <tr>
+                                      <td align="right" id="label_form">No Polisi</td>
+                                      <td><input name="nopolisi" style="width:250px" class="label_input" validType='length[0,50]'></td>
+                                     </tr>
+                                     -->
                 <tr>
                   <td align="right" id="label_form" valign="top">Catatan</td>
                   <td>
@@ -242,7 +242,7 @@
               tambah();
             } else {
               //tutup tab dan refresh data di function
-              $.messager.alert('Info', 'Transaksi Sukses', 'info');
+              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               await ubah();
             }
           } else {
