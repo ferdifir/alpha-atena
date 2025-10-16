@@ -607,7 +607,7 @@
       $('[name=authentication]').add($('[name=priority]'))
         .add($('[name=aksesutama]')).prop('checked', true)
 
-      $('#preview-image').attr('src', "{{ asset('assets/foto_user/NO_IMAGE.jpg') }}");
+      $('#preview-image').attr('src', "{{ asset('assets/foto_user/NO_IMAGE.png') }}");
     }
 
     async function ubah() {

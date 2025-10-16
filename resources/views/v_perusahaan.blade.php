@@ -42,11 +42,11 @@
                       <tr>
                         <td>
                           @php
-                            $gambaruser = session('DATAUSER')['gambar'] ?? 'assets/foto_user/NO_IMAGE.jpg';
+                            $gambaruser = session('DATAUSER')['gambar'] ?? asset('assets/foto_user/NO_IMAGE.png');
                           @endphp
                           <img src="{{ $gambaruser }}"
                             style="border-radius:100%; width:30px; height:30px; object-fit: cover; object-position: 50% 0%;"
-                            onerror="this.onerror=null;this.src='assets/foto_user/NO_IMAGE.jpg';">
+                            onerror="this.onerror=null;this.src='{{ asset('assets/foto_user/NO_IMAGE.png') }}';">
                         </td>
                         <td>
                           <div id="user_entry" style="color:white;">

@@ -127,9 +127,9 @@
         <div data-options="region:'center'">
           <div class="easyui-layout" fit="true" id="main_wrapper">
             <div data-options="region:'center',">
-  <div class="title-grid"> Riwayat Transaksi </div>
-  <table id="table_data"></table>
-</div>
+              <div class="title-grid"> Riwayat Transaksi </div>
+              <table id="table_data"></table>
+            </div>
             <div data-options="region: 'west', split:true,hideCollapsedContent:false,collapsed:true"
               title="Daftar Antrian Penerimaan" style="width: 25%;">
               <div id="table_pending"></div>
@@ -396,7 +396,7 @@
               }
             }
           } else if (statusTrans == 'S' || statusTrans == 'P') {
-            cetak(row.uuidpr);
+            cetak(row.uuidbeli);
           } else {
             $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
           }
