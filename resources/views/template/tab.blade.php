@@ -238,7 +238,7 @@
                       <td>
                         <div style="height: 40px; padding-top:5px">
                           @php
-                            $gambaruser = session('DATAUSER')['gambar'] ?? asset('assets/foto_user/NO_IMAGE.png');
+                            $gambaruser = session('DATAUSER')['gambar_url'] ?? asset('assets/foto_user/NO_IMAGE.png');
                           @endphp
                           <img src="{{ $gambaruser }}"
                             style="border-radius:100%; width:30px; height:30px; object-fit: cover; object-position: 50% 0%;"
@@ -374,7 +374,7 @@
       <div id="tab_menu" class="easyui-tabs" style="width:100%;height:100%;">
         <div title="Dashboard" id="Dashboard">
           <iframe src="{{ route('dashboard') }}" frameborder="0"
-                        style="width: 100%; height: calc(100% - 5px)"></iframe>
+            style="width: 100%; height: calc(100% - 5px)"></iframe>
         </div>
       </div>
     </div>
@@ -506,18 +506,23 @@
 
     });
 
-
+    let dataUser = {
+      uuiduser: "{{ session('DATAUSER')['uuiduser'] }}",
+      username: "{{ session('DATAUSER')['username'] }}",
+      email: "{{ session('DATAUSER')['email'] }}",
+      nohp: "{{ session('DATAUSER')['nohp'] }}",
+      gambar: "{{ session('DATAUSER')['gambar'] }}",
+      gambar_url: "{{ session('DATAUSER')['gambar_url'] }}"
+    }
 
     function edit_profile() {
       $('#form_input_user').dialog('open').dialog('setTitle', 'Edit Profil');
-      $('#USERID_PROFILE').textbox('setValue', "{{ session('DATAUSER')['uuiduser'] }}");
-      $('#USERID_PROFILE').textbox('readonly', true);
-      $('#USERNAME_PROFILE').textbox('setValue', "{{ session('DATAUSER')['username'] }}");
-      $('#EMAIL_PROFILE').textbox('setValue', "{{ session('DATAUSER')['email'] }}");
-      $('#NOHP_PROFILE').textbox('setValue', "{{ session('DATAUSER')['nohp'] }}");
-      $('#GAMBARUSER_PROFILE').val("{{ session('DATAUSER')['gambar_url'] }}");
-      $('#IDUSER_PROFILE').val("{{ session('DATAUSER')['uuiduser'] }}");
-      $('#preview-image-profile').attr('src', "{{ session('DATAUSER')['gambar_url'] }}");
+      $('#USERNAME_PROFILE').textbox('setValue', dataUser.username);
+      $('#EMAIL_PROFILE').textbox('setValue', dataUser.email);
+      $('#NOHP_PROFILE').textbox('setValue', dataUser.nohp);
+      $('#IDUSER_PROFILE').val(dataUser.uuiduser);
+      $('#GAMBARUSER_PROFILE').val(dataUser.gambar_url);
+      $('#preview-image-profile').attr('src', dataUser.gambar_url);
     }
 
     async function simpan_profile() {
@@ -542,7 +547,8 @@
                 msg: 'Profil telah Berubah',
                 showType: 'show'
               });
-              //   location.reload();
+              $('#form_input_user').dialog('close');
+              getLatestDataUser();
             } else {
               $.messager.alert('Error', result.message, 'error');
             }
@@ -552,6 +558,53 @@
         } catch (e) {
           showErrorAlert(e);
         }
+      }
+    }
+
+    async function getLatestDataUser() {
+      try {
+        const response = await fetch(link_api.headerFormUser, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + '{{ session('TOKEN') }}'
+          },
+          body: JSON.stringify({
+            uuiduser: "{{ session('DATAUSER')['uuiduser'] }}"
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const res = await response.json();
+        if (res.success) {
+          dataUser.username = res.data.username;
+          dataUser.email = res.data.email;
+          dataUser.nohp = res.data.hp;
+          dataUser.gambar = res.data.gambar;
+          dataUser.gambar_url = res.data.gambar_full_path;
+          updateDataUser();
+        }
+      } catch (e) {
+        showErrorAlert(e);
+      }
+    }
+
+    function updateDataUser() {
+      try {
+        fetch(
+          '/profile', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            body: JSON.stringify({data: dataUser})
+          }
+        );
+      } catch (e) {
+        showErrorAlert(e);
       }
     }
 

@@ -29,6 +29,13 @@ Route::get('/home', function () {
     return view('v_home');
 });
 
+Route::post('/profile', function () {
+    $oldUserData = session('DATAUSER', []);
+    $newUserData = array_merge($oldUserData, request('data'));
+    session(['DATAUSER' => $newUserData]);
+    return json_encode(['success' => true, 'message' => 'Berhasil update data user']);
+});
+
 Route::get('/session', function () {
     dd(session()->all());
     return view('v_home');
