@@ -41,7 +41,7 @@ Route::get('/session', function () {
     return view('v_home');
 });
 
-Route::get('/hompage-perusahaan', function () {
+Route::get('/homepage-perusahaan', function () {
     if (!session()->has('DATAUSER') && !session()->has('LISTPERUSAHAAN')) {
         return view('v_login');
     }
