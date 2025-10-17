@@ -399,7 +399,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
         $('#PEMBULATAN').numberbox({
           readonly: data.inputharga == 0
         });
-      });
+      }, false);
       await getSOConfig();
       $('#KODESO').textbox({
         readonly: kodeso.value == 'AUTO',
