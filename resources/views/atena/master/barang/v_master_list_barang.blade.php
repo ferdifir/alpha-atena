@@ -136,12 +136,12 @@
         };
         let requestBody = null;
 
-        // Cek apakah body adalah instance dari FormData
+
         if (body instanceof FormData) {
-          // Jika FormData, jangan set 'Content-Type'. Browser akan melakukannya secara otomatis.
+
           requestBody = body;
         } else {
-          // Default: Jika bukan FormData, asumsikan itu JSON.
+
           headers['Content-Type'] = 'application/json';
           requestBody = body ? JSON.stringify(body) : null;
         }
@@ -606,7 +606,49 @@
     }
 
     function downloadTemplateExcel() {
-      window.open(base_url + 'assets/files/excel/template_barang.xls');
+      const fetchUrl = link_api.templateExcelBarang;
+      bukaLoader();
+      $('#dialog_import').window('minimize');
+      setTimeout(() => {
+        
+      }, 1000);
+      //   fetch(fetchUrl, {
+      //       method: 'POST',
+      //       headers: {
+      //         'Authorization': 'Bearer ' + '{{ session('TOKEN') }}',
+      //         'Content-Type': 'application/json',
+      //       },
+      //     })
+      //     .then(response => {
+      //       if (!response.ok) {
+      //         return response.text().then(text => {
+      //           throw new Error(`Gagal mendapatkan link: ${response.status} ${response.statusText}`);
+      //         });
+      //       }
+      //       return response.json();
+      //     })
+      //     .then(data => {
+      //       tutupLoader();
+      //       if (data.success && data.data && data.data.path) {
+      //         const fileUrl = data.data.path;
+
+      //         const a = document.createElement('a');
+      //         a.href = fileUrl;
+      //         a.download = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+      //         a.style.display = 'none';
+
+      //         document.body.appendChild(a);
+      //         a.click();
+      //         document.body.removeChild(a);
+
+      //       } else {
+      //         throw new Error(`API tidak mengembalikan path file. Pesan: ${data.message}`);
+      //       }
+      //     })
+      //     .catch(error => {
+      //       tutupLoader();
+      //       $.messager.alert('Error', `Gagal memproses unduhan. Detail: ${error.message}`, 'error');
+      //     });
     }
   </script>
 @endpush

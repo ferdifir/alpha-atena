@@ -269,6 +269,7 @@ var link_api = {
     laporanBarcodeBarang: `${base_url_api}atena/master/barang/laporan-barcode-barang`,
     browseGridBarcodeBarang: `${base_url_api}atena/master/barang/browse-barcode`,
     browseGridPartNumber: `${base_url_api}atena/master/barang/browse-part-number`,
+    templateExcelBarang: `${base_url_api}atena/master/barang/template-excel`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,

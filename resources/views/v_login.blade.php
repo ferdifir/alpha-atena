@@ -484,7 +484,7 @@
           }
         } else if (dataPerusahaan.length > 1) {
           //go to pilih perusahaan page
-          window.location.replace("{{ url('hompage-perusahaan') }}");
+          window.location.replace("{{ url('homepage-perusahaan') }}");
         } else {
           Swal.close();
         }
