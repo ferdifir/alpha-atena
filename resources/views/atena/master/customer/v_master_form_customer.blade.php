@@ -23,158 +23,170 @@
               <div title="Customer Information">
                 <table style="padding:5px" border="0">
                   <tr>
-                    <td align="right" id="label_form" style='width: 100px'>Kode Customer</td>
-                    <td><input id="KODECUSTOMER" name="kodecustomer" style="width:100px" class="label_input"
-                        validType='length[0,20]'></input>
-                      <label id="label_form"><input type="checkbox" id="STATUS" name="status" value="1">
-                        Aktif</label>
-                      <!--<input type="hidden" name="idkategoribarang" style="width:250px" class="label_input" required="true" validType='length[0,100]' hidden>-->
+                    <td style="vertical-align: top;">
+                      <table border="0" style="width: 100%;">
+                        <tr>
+                          <td align="right" id="label_form" style='width: 100px'>Kode Customer</td>
+                          <td>
+                            <input id="KODECUSTOMER" name="kodecustomer" style="width:100px" class="label_input"
+                              validType='length[0,20]'></input>
+                            <label id="label_form"><input type="checkbox" id="STATUS" name="status" value="1">
+                              Aktif</label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Nama</td>
+                          <td>
+                            <input id="BADANUSAHA" name="badanusaha" style="width:100px" prompt="BADAN USAHA">
+                            <input id="NAMACUSTOMER" name="namacustomer" style="width:250px" class="label_input"
+                              validType='length[0,100]' required>
+                          </td>
+                        </tr>
+                        <tr hidden>
+                          <td align="right" id="label_form">Induk / Subinduk</td>
+                          <td>
+                            <select id="JENISCUSTOMER" name="jeniscustomer" style="width:100px"
+                              class="easyui-combobox label_input" data-options="panelHeight:'auto'">
+                              <option value="PARENT">INDUK</option>
+                              <option value="CHILD">SUBINDUK</option>
+                            </select>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Tipe Customer</td>
+                          <td>
+                            <input id="KODETIPECUSTOMERMASTER" name="kodetipecustomer" style="width: 100px;">
+                            <a id="tambah_tipe_customer" title="Input Tipe Customer Baru"
+                              class="easyui-linkbutton easyui-tooltip " plain="true" iconCls="icon-add"
+                              onclick="pilih_tipe_customer()"></a>
+                          </td>
+                        </tr>
+                        <tr id="v-cust-induk">
+                          <td align="right" id="label_form">Customer Induk</td>
+                          <td><input name="uuidinduk" id="IDINDUK" style="width:250px"></td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Alamat</td>
+                          <td id="label_form">
+                            <input name="alamat" style="width:355px" class="label_input" validType='length[0,300]'>
+                            &nbsp; Kode Pos
+                            <input name="kodepos" style="width:150px" class="label_input easyui-numberbox"
+                              validType='length[0,100]'>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Kota</td>
+                          <td id="label_form">
+                            <input name="kota" style="width:150px" class="label_input" validType='length[0,100]'>
+                            &nbsp; Propinsi
+                            <input name="propinsi" style="width:150px" class="label_input" validType='length[0,100]'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Negara
+                            <input name="negara" style="width:150px" class="label_input" validType='length[0,100]'>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Telp</td>
+                          <td id="label_form">
+                            <input name="telp" style="width:150px" class="label_input easyui-numberbox"
+                              validType='length[0,50]'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fax
+                            <input name="fax" style="width:150px" class="label_input easyui-numberbox"
+                              validType='length[0,50]'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HP
+                            <input name="hp" style="width:150px" class="label_input easyui-numberbox"
+                              validType='length[0,50]'>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">E-mail</td>
+                          <td id="label_form"><input name="email" style="width:225px" class="label_input"
+                              validType="email">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Website
+                            <input name="website" style="width:255px" class="label_input" validType='url'>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Syarat Bayar</td>
+                          <td align="left" id="label_form">
+                            <input name="uuidsyaratbayar" id="UUIDSYARATBAYAR" style="width:149px">
+                            &nbsp;&nbsp; Disc Min
+                            <input id="DISCOUNTMIN" name="discountmin" style="width:149px;"
+                              class="label_input easyui-numberbox" validType='length[0,14]'
+                              data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
+                            &nbsp;&nbsp;<span id="label_form">Disc Max</span>
+                            <input id="DISCOUNTMAX" name="discountmax" style="width:149px;"
+                              class="label_input easyui-numberbox" validType='length[0,14]'
+                              data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Marketing</td>
+                          <td id="label_form">
+                            <input name="uuidmarketing" id="IDMARKETING" style="width:150px">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Limit Piutang</td>
+                          <td id="label_form">
+                            <input name="maxcredit" style="width:150px;" class="number" validType='length[0,50]'
+                              data-options="required:true, min:'0', value:'0',precision:2,decimalSeparator:'.',prefix:'Rp.'">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jml Maksimum Nota Belum Terbayar
+                            <input name="maxnota" style="width:200px;" class="number" validType='length[0,18]'
+                              data-options="required:true, min:'0', value:'0'">
+                          <td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form"></td>
+                          <td id="label_form">
+                            <label id="label_form"><input type="checkbox" id="CEKNOTAJATUHTEMPO"
+                                name="ceknotajatuhtempo" value="1">Jika ada piutang atas pelanggan ini yang sudah
+                              lewat jatuh tempo, transaksi
+                              tidak dapat dilakukan</label>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">No Rekening</td>
+                          <td id="label_form">
+                            <input name="norek" style="width:150px;" class="label_input easyui-numberbox"
+                              validType='length[0,100]'>
+                            Virtual Acc
+                            <input name="virtualaccount" style="width:255px;" class="label_input easyui-numberbox"
+                              validType='length[0,100]'>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Latitude</td>
+                          <td id="label_form">
+                            <input name="latitude" class="label_input easyui-numberbox" style="width:150px;"
+                              type="text" data-options="precision:10">
+                            &nbsp; Longitude <input name="longitude" class="label_input easyui-numberbox"
+                              style="width:150px;" type="text" data-options="precision:10">
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form"></td>
+                          <td id="label_form">
+                            Informasi Latitude dan Longitude untuk keperluan penggunaan aplikasi Atena Distro
+                          </td>
+                        </tr>
+                        <tr>
+                          <td align="right" valign="top" id="label_form">Catatan</td>
+                          <td>
+                            <textarea name="catatan" style="width:360px; height:60px;  display: inline-block;" class="label_input"
+                              multiline='true' validType='length[0,300]'>
+                        </textarea>
+                          </td>
+                        </tr>
+                      </table>
                     </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Nama</td>
-                    <td><input id="BADANUSAHA" name="badanusaha" style="width:100px" prompt="BADAN USAHA">
-                      <input id="NAMACUSTOMER" name="namacustomer" style="width:250px" class="label_input"
-                        validType='length[0,100]' required>
-                    </td>
-                  </tr>
-                  <tr hidden>
-                    <td align="right" id="label_form">Induk / Subinduk</td>
-                    <td>
-                      <select id="JENISCUSTOMER" name="jeniscustomer" style="width:100px"
-                        class="easyui-combobox label_input" data-options="panelHeight:'auto'">
-                        <option value="PARENT">INDUK</option>
-                        <option value="CHILD">SUBINDUK</option>
-                      </select>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Tipe Customer</td>
-                    <td>
-                      <input id="KODETIPECUSTOMERMASTER" name="kodetipecustomer" style="width: 100px;">
-                      <a id="tambah_tipe_customer" title="Input Tipe Customer Baru"
-                        class="easyui-linkbutton easyui-tooltip " plain="true" iconCls="icon-add"
-                        onclick="pilih_tipe_customer()">
-                    </td>
-                  </tr>
-                  <tr id="v-cust-induk">
-                    <td align="right" id="label_form">Customer Induk</td>
-                    <td><input name="uuidinduk" id="IDINDUK" style="width:250px"></td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Alamat</td>
-                    <td id="label_form">
-                      <input name="alamat" style="width:355px" class="label_input" validType='length[0,300]'>
-                      &nbsp; Kode Pos
-                      <input name="kodepos" style="width:150px" class="label_input easyui-numberbox"
-                        validType='length[0,100]'>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Kota</td>
-                    <td id="label_form">
-                      <input name="kota" style="width:150px" class="label_input" validType='length[0,100]'>
-                      &nbsp; Propinsi
-                      <input name="propinsi" style="width:150px" class="label_input" validType='length[0,100]'>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Negara
-                      <input name="negara" style="width:150px" class="label_input" validType='length[0,100]'>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Telp</td>
-                    <td id="label_form">
-                      <input name="telp" style="width:150px" class="label_input easyui-numberbox"
-                        validType='length[0,50]'>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fax
-                      <input name="fax" style="width:150px" class="label_input easyui-numberbox"
-                        validType='length[0,50]'>
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HP
-                      <input name="hp" style="width:150px" class="label_input easyui-numberbox"
-                        validType='length[0,50]'>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">E-mail</td>
-                    <td id="label_form"><input name="email" style="width:225px" class="label_input"
-                        validType="email">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Website
-                      <input name="website" style="width:255px" class="label_input" validType='url'>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Syarat Bayar</td>
-                    <td align="left" id="label_form">
-                      <input name="uuidsyaratbayar" id="UUIDSYARATBAYAR" style="width:149px">
-                      &nbsp;&nbsp; Disc Min
-                      <input id="DISCOUNTMIN" name="discountmin" style="width:149px;"
-                        class="label_input easyui-numberbox" validType='length[0,14]'
-                        data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
-                      &nbsp;&nbsp;<span id="label_form">Disc Max</span>
-                      <input id="DISCOUNTMAX" name="discountmax" style="width:149px;"
-                        class="label_input easyui-numberbox" validType='length[0,14]'
-                        data-options="precision:2,decimalSeparator:'.',required:true,suffix:'%'">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Marketing</td>
-                    <td id="label_form">
-                      <input name="uuidmarketing" id="IDMARKETING" style="width:150px">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Limit Piutang</td>
-                    <td id="label_form">
-                      <input name="maxcredit" style="width:150px;" class="number" validType='length[0,50]'
-                        data-options="required:true, min:'0', value:'0',precision:2,decimalSeparator:'.',prefix:'Rp.'">
-                      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Jml Maksimum Nota Belum Terbayar
-                      <input name="maxnota" style="width:200px;" class="number" validType='length[0,18]'
-                        data-options="required:true, min:'0', value:'0'">
-                    <td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form"></td>
-                    <td id="label_form">
-
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form"></td>
-                    <td>
-                      <label id="label_form"><input type="checkbox" id="CEKNOTAJATUHTEMPO" name="ceknotajatuhtempo"
-                          value="1">Jika ada piutang atas pelanggan ini yang sudah lewat jatuh tempo, transaksi
-                        tidak dapat dilakukan</label>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">No Rekening</td>
-                    <td id="label_form">
-                      <input name="norek" style="width:150px;" class="label_input easyui-numberbox"
-                        validType='length[0,100]'>
-                      Virtual Acc
-                      <input name="virtualaccount" style="width:2150px25px;" class="label_input easyui-numberbox"
-                        validType='length[0,100]'>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Latitude</td>
-                    <td id="label_form">
-                      <input name="latitude" class="label_input easyui-numberbox" style="width:150px;" type="text"
-                        data-options="precision:10">
-                      &nbsp; Longitude <input name="longitude" class="label_input easyui-numberbox"
-                        style="width:150px;" type="text" data-options="precision:10">
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form"></td>
-                    <td id="label_form">
-                      Informasi Latitude dan Longitude untuk keperluan penggunaan aplikasi Atena Distro
-                    </td>
-                  </tr>
-                  <tr>
-                    <td align="right" valign="top" id="label_form">Catatan</td>
-                    <td>
-                      <textarea name="catatan" style="width:360px; height:60px;  display: inline-block;" class="label_input"
-                        multiline='true' validType='length[0,300]'></textarea>
+                    <td style="vertical-align: top; padding-left: 20px;">
+                      <div style="width:100px; height:100px; margin-bottom: 5px;">
+                        <img id="preview-image" src="{{ asset('assets/foto_user/NO_IMAGE.png') }}"
+                          style="width:100%; height:100%; border: 1px solid #ccc; object-fit: cover;"
+                          alt="Preview Foto Pelanggan" />
+                      </div>
+                      <input id="FILEGAMBAR" name="filegambar" class="easyui-filebox"
+                        data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:100px">
                     </td>
                   </tr>
                 </table>
@@ -182,40 +194,57 @@
               <div title="Pajak">
                 <table style="padding:5px" border="0">
                   <tr>
-                    <td align="right" id="label_form">Nama di Faktur Pajak</td>
-                    <td><input name="namafakturpajak" style="width:400px" class="label_input"
-                        validType='length[0,300]'></td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">Alamat di Faktur Pajak</td>
-                    <td><input name="alamatfakturpajak" style="width:400px" class="label_input"
-                        validType='length[0,500]'></td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">No. KTP</td>
-                    <td><input name="noktp" style="width:400px" class="label_input easyui-numberbox"
-                        validType='length[0,100]'></td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">NPWP</td>
-                    <td><input name="npwp" id="NPWP" style="width:400px" class="label_input"
-                        validType='length[0,100]'></td>
-                  </tr>
-                  <tr>
-                    <td align="right" id="label_form">NITKU</td>
-                    <td><input name="nitku" id="NITKU" style="width:400px" class="label_input"
-                        validType='length[0,100]'></td>
-                  </tr>
-                  <tr hidden>
-                    <td align="right" id="label_form">NPWP</td>
-                    <td><input type="checkbox" id="ADANPWP" name="adanpwp" value="1"></td>
-                  </tr>
-                  <tr hidden>
-                    <td></td>
-                    <td>
-                      <div style="width:100%;height:200px">
-                        <table id="table_data_custnpwp" name="table_data_custnpwp" fit="true"></table>
+                    <td style="vertical-align: top;">
+                      <table border="0">
+                        <tr>
+                          <td align="right" id="label_form" style="width: 150px;">Nama di Faktur Pajak</td>
+                          <td><input name="namafakturpajak" style="width:400px" class="label_input"
+                              validType='length[0,300]'></td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">Alamat di Faktur Pajak</td>
+                          <td><input name="alamatfakturpajak" style="width:400px" class="label_input"
+                              validType='length[0,500]'></td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">No. KTP</td>
+                          <td><input name="noktp" style="width:400px" class="label_input easyui-numberbox"
+                              validType='length[0,100]'></td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">NPWP</td>
+                          <td><input name="npwp" id="NPWP" style="width:400px" class="label_input"
+                              validType='length[0,100]'></td>
+                        </tr>
+                        <tr>
+                          <td align="right" id="label_form">NITKU</td>
+                          <td><input name="nitku" id="NITKU" style="width:400px" class="label_input"
+                              validType='length[0,100]'></td>
+                        </tr>
+                        <tr hidden>
+                          <td align="right" id="label_form">NPWP</td>
+                          <td><input type="checkbox" id="ADANPWP" name="adanpwp" value="1"></td>
+                        </tr>
+                        <tr hidden>
+                          <td></td>
+                          <td>
+                            <div style="width:100%;height:200px">
+                              <table id="table_data_custnpwp" name="table_data_custnpwp" fit="true"></table>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+
+                    <td style="vertical-align: top; padding-left: 20px;padding-top: 2px">
+                      <div style="width:115px; height:100px; margin-bottom: 5px;">
+                        <img id="preview-image-faktur" src="{{ asset('assets/images/ID_NO_IMG.png') }}"
+                          style="width:100%; height:100%; border: 1px solid #ccc; object-fit: center;"
+                          alt="Preview Gambar Faktur Pajak" />
                       </div>
+                      <input id="FILEGAMBARFAKTUR" name="filegambar_faktur" class="easyui-filebox"
+                        data-options="required:false,buttonIcon:'icon-man',buttonText:'Upload Foto'"
+                        style="width:115px">
                     </td>
                   </tr>
                 </table>
