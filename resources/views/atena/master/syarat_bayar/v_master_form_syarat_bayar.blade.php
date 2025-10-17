@@ -216,7 +216,7 @@
               tambah();
             } else {
               //tutup tab dan refresh data di function
-              $.messager.alert('Info', 'Transaksi Sukses', 'info');
+              $.messager.alert('Info', 'Simpan Data Sukses', 'info');
               await ubah();
             }
           } else {
