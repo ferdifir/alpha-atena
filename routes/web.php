@@ -20,7 +20,7 @@ Route::post('save-session', function () {
 
 Route::get('/dashboard', function () {
     return view('v_dashboard');
-});
+})->name('dashboard');
 
 Route::get('/home', function () {
     if (!session()->has('TOKEN')) {

@@ -46,6 +46,17 @@ var link_api = {
     hapusUser: `${base_url_api}atena/master/user/hapus`,
     laporanUser: `${base_url_api}atena/master/user/laporan`,
     simpanProfile: `${base_url_api}atena/master/user/simpan-profile`,
+    //dashboard
+    loadOmzetBulanan: `${base_url_api}atena/dashboard/load-omzet-bulanan`,
+    loadOmzetTahunan: `${base_url_api}atena/dashboard/load-omzet-tahunan`,
+    loadDataChartPenjualan: `${base_url_api}atena/dashboard/load-data-chart-penjualan`,
+    loadPesananPenjualanBelumTuntas: `${base_url_api}atena/dashboard/load-pesanan-penjualan-belum-tuntas`,
+    loadPesananPembelianBelumTuntas: `${base_url_api}atena/dashboard/load-pesanan-pembelian-belum-tuntas`,
+    loadJumlahBBKBelumLanjut: `${base_url_api}atena/dashboard/load-jumlah-bukti-pengeluaran-barang-belum-berlanjut`,
+    loadJumlahBBMBelumLanjut: `${base_url_api}atena/dashboard/load-jumlah-bukti-penerimaan-barang-belum-berlanjut`,
+    loadPiutangCustJatuhTempo: `${base_url_api}atena/dashboard/load-daftar-piutang-customer-jatuh-tempo`,
+    loadHutangJatuhTempo: `${base_url_api}atena/dashboard/load-daftar-hutang-jatuh-tempo`,
+    loadBarangStokBawahLimit: `${base_url_api}atena/dashboard/load-barang-stok-dibawah-limit`,
     //lokasi
     getLokasiAll: `${base_url_api}atena/master/lokasi/load-all`,
     getLokasiPerUser: `${base_url_api}atena/master/lokasi/load-lokasi-per-user`,

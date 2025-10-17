@@ -373,8 +373,8 @@
     <div class="easyui-layout" style="width:100%;height:100%;padding-left: 50px;">
       <div id="tab_menu" class="easyui-tabs" style="width:100%;height:100%;">
         <div title="Dashboard" id="Dashboard">
-          {{-- <iframe src="{{ route('dashboard') }}" frameborder="0"
-                        style="width: 100%; height: calc(100% - 5px)"></iframe> --}}
+          <iframe src="{{ route('dashboard') }}" frameborder="0"
+                        style="width: 100%; height: calc(100% - 5px)"></iframe>
         </div>
       </div>
     </div>
