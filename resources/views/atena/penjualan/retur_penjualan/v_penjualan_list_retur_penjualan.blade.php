@@ -12,7 +12,11 @@
       <a id="btn_batal" title="Batalkan Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_delete()">
         <img src="{{ asset('assets/images/cancel.png') }}">
       </a>
-      <a id="btn_cetak" title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print()">
+      <a id="btn_cetak" title="Cetak" class="easyui-linkbutton easyui-tooltip" onclick="before_print('besar')">
+        <img src="{{ asset('assets/images/view.png') }}">
+      </a>
+      <a id="btn_cetak_kecil" title="Cetak Kecil" class="easyui-linkbutton easyui-tooltip"
+        onclick="before_print('kecil')">
         <img src="{{ asset('assets/images/view.png') }}">
       </a>
       <a id="btn_batal_cetak" title="Batal Cetak" class="easyui-linkbutton easyui-tooltip"
@@ -109,6 +113,10 @@
     <div id="area_cetak"></div>
   </div>
 
+  <div id="form_cetak_kecil" title="Preview" style="width:300px; height:450px">
+    <div id="area_cetak_kecil"></div>
+  </div>
+
   <div id="alasan_pembatalan" title="Alasan Pembatalan">
     <table style="padding:5px">
       <tr>
@@ -181,18 +189,31 @@
       $("#txt_tgl_aw_filter").datebox('setValue', getDateMinusDays(2));
       $("#TGLTRANS").datebox();
 
-      $("#form_cetak").window({
+      init_form_cetak('#form_cetak', '#area_cetak');
+      init_form_cetak('#form_cetak_kecil', '#area_cetak_kecil');
+
+      $("#alasan_pembatalan").dialog({
+        onOpen: function() {
+          $('#alasan_pembatalan').form('clear');
+        },
+        buttons: '#alasan_pembatalan-buttons',
+      }).dialog('close');
+      tutupLoader();
+    });
+
+    function init_form_cetak(id, id_area) {
+      $(id).window({
         collapsible: false,
         minimizable: false,
         tools: [{
           text: '',
           iconCls: 'icon-print',
           handler: function() {
-            $("#area_cetak").printArea({
+            $(id_area).printArea({
               mode: 'iframe'
             });
 
-            $("#form_cetak").window({
+            $(id).window({
               closed: true
             });
           }
@@ -205,15 +226,7 @@
           }
         }]
       }).window('close');
-
-      $("#alasan_pembatalan").dialog({
-        onOpen: function() {
-          $('#alasan_pembatalan').form('clear');
-        },
-        buttons: '#alasan_pembatalan-buttons',
-      }).dialog('close');
-      tutupLoader();
-    });
+    }
 
     shortcut.add('F2', function() {
       before_add();
@@ -342,7 +355,7 @@
       }
     }
 
-    function before_print() {
+    function before_print(bentukCetak) {
       $('#mode').val('cetak');
       if (row) {
         get_akses_user('{{ $kodemenu }}', 'bearer {{ session('TOKEN') }}', function(data) {
@@ -355,6 +368,10 @@
             row.uuidreturjual,
             function(data) {
               data = data.data;
+              let urlCetak = link_api.cetakReturPenjualan + row.uuidreturjual;
+              if (bentukCetak == 'kecil') {
+                urlCetak = link_api.cetakKecilReturPenjualan + row.uuidreturjual;
+              }
               if (data.status == 'S' || data.status == 'P') {
                 const kodemenu = modul_kode['penjualan'];
                 get_akses_user(
@@ -365,8 +382,8 @@
                     if (data.hakakses == 1) {
                       const doc = await getCetakDocument(
                         '{{ session('TOKEN') }}',
-                        link_api.cetakReturPenjualan +
-                        row.uuidreturjual);
+                        urlCetak
+                      );
                       if (doc == null) {
                         $.messager.alert(
                           'Warning',
@@ -389,7 +406,7 @@
                     'warning'
                   );
                 } else {
-                  cetak();
+                  cetak(urlCetak, bentukCetak);
                 }
               } else {
                 $.messager.alert('Error', 'Transaksi telah Diproses', 'error');
@@ -466,7 +483,7 @@
       }
     }
 
-    async function cetak() {
+    async function cetak(url, bentuk_cetak) {
       try {
         const res = await fetchData(
           '{{ session('TOKEN') }}',
@@ -483,7 +500,7 @@
           });
           const doc = await getCetakDocument(
             '{{ session('TOKEN') }}',
-            link_api.cetakReturPenjualan + row.uuidreturjual
+            url
           );
           if (doc == null) {
             $.messager.alert(
@@ -493,8 +510,14 @@
             );
             return false;
           }
-          $("#area_cetak").html(doc);
-          $("#form_cetak").window('open');
+          let idArea = '#area_cetak';
+          let idForm = '#form_cetak';
+          if (bentuk_cetak == 'kecil') {
+            idArea = '#area_cetak_kecil';
+            idForm = '#form_cetak_kecil';
+          }
+          $(idArea).html(doc);
+          $(idForm).window('open');
           reload();
         } else {
           $.messager.alert('Error', res.message, 'error');

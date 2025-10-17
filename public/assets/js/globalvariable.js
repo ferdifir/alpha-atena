@@ -709,6 +709,7 @@ var link_api = {
     ubahStatusJadiInputReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-input`,
     ubahStatusJadiSlipReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/ubah-status-jadi-slip`,
     cetakReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cetak/`,
+    cetakKecilReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/cetak-kecil/`,
     loadConfigReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-config`,
     loadDataTagihanReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data-tagihan`,
     loadDataReturPenjualan: `${base_url_api}atena/penjualan/retur-penjualan/load-data`,
