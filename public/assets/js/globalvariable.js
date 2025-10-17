@@ -89,6 +89,8 @@ var link_api = {
     simpanSupplier: `${base_url_api}atena/master/supplier/simpan`,
     headerFormSupplier: `${base_url_api}atena/master/supplier/load-data-header`,
     laporanSupplier: `${base_url_api}atena/master/supplier/laporan`,
+    templateExcelSupplier: `${base_url_api}atena/master/supplier/template-excel`,
+    importExcelSupplier: `${base_url_api}atena/master/supplier/import-excel`,
     //customer
     loadDataGridMasterCustomer: `${base_url_api}atena/master/customer/load-data-grid`,
     browseBadanUsahaCustomer: `${base_url_api}atena/master/customer/browse-badan-usaha`,
@@ -270,6 +272,7 @@ var link_api = {
     browseGridBarcodeBarang: `${base_url_api}atena/master/barang/browse-barcode`,
     browseGridPartNumber: `${base_url_api}atena/master/barang/browse-part-number`,
     templateExcelBarang: `${base_url_api}atena/master/barang/template-excel`,
+    importExcelBarang: `${base_url_api}atena/master/barang/import-excel`,
     //Promo
     loadDataGridPromo: `${base_url_api}atena/master/promo/load-data-grid`,
     simpanPromo: `${base_url_api}atena/master/promo/simpan`,

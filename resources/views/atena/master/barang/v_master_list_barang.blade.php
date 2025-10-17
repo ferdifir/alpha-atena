@@ -29,7 +29,7 @@
     title="Import Data Barang">
     <input id="btn_import" id="fileexcel" name="fileexcel" class="easyui-filebox"
       data-options="required: false,buttonIcon: 'icon-excel',buttonText: 'Pilih File Excel'"
-      style="width: 300px; height: 30px" accept=".xls">
+      style="width: 300px; height: 30px" accept=".xlsx, .xls">
 
     <br><br>
 
@@ -568,40 +568,38 @@
     function importData() {
       var el = $('input[name=fileexcel]').eq(0);
 
-      // mendapatkan file dari inputan
       var file = el.prop('files')[0];
+      if (!file) {
+        $.messager.alert('Gagal', 'Pilih file excel terlebih dahulu', 'warning');
+        return;
+      }
+      
       var form_data = new FormData();
-
-      // mereset input file
       el.val(null);
-
       el.prev().val('');
-
-      // menyisipkan data untuk dikirim
       form_data.append('fileexcel', file);
 
-      $.ajax({
-        type: 'POST',
-        url: base_url + 'atena/Master/Data/Barang/importData',
-        data: form_data,
-        contentType: false,
-        processData: false,
-        beforeSend: function(xhr) {
-          $.messager.progress();
+      fetch(link_api.importExcelBarang, {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + '{{ session('TOKEN') }}',
         },
-        success: function(response) {
-          $.messager.progress('close');
-
-          if (response.success) {
-            $.messager.alert('Berhasil', 'Berhasil mengimpor data barang');
-
-            refresh_data();
-
-            $('#dialog_import').window('close');
-          } else {
-            $.messager.alert('Gagal', response.message);
-          }
+        body: form_data
+      }).then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        return response.json();
+      }).then(response => {
+        if (response.success) {
+          $.messager.alert('Berhasil', 'Berhasil mengimpor data barang');
+          refresh_data();
+          $('#dialog_import').window('close');
+        } else {
+          $.messager.alert('Gagal', response.message, 'error');
+        }
+      }).catch(error => {
+        showErrorAlert(error);
       });
     }
 
@@ -609,46 +607,47 @@
       const fetchUrl = link_api.templateExcelBarang;
       bukaLoader();
       $('#dialog_import').window('minimize');
-      setTimeout(() => {
-        
-      }, 1000);
-      //   fetch(fetchUrl, {
-      //       method: 'POST',
-      //       headers: {
-      //         'Authorization': 'Bearer ' + '{{ session('TOKEN') }}',
-      //         'Content-Type': 'application/json',
-      //       },
-      //     })
-      //     .then(response => {
-      //       if (!response.ok) {
-      //         return response.text().then(text => {
-      //           throw new Error(`Gagal mendapatkan link: ${response.status} ${response.statusText}`);
-      //         });
-      //       }
-      //       return response.json();
-      //     })
-      //     .then(data => {
-      //       tutupLoader();
-      //       if (data.success && data.data && data.data.path) {
-      //         const fileUrl = data.data.path;
+      fetch(fetchUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + '{{ session('TOKEN') }}',
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => {
+          if (!response.ok) {
+            return response.text().then(text => {
+              throw new Error(`Gagal mendapatkan link: ${response.status} ${response.statusText}`);
+            });
+          }
+          return response.json();
+        })
+        .then(data => {
+          tutupLoader();
+          $('#dialog_import').window('maximize');
+          $('#dialog_import').window('restore');
+          if (data.success && data.data && data.data.path) {
+            const fileUrl = data.data.path;
 
-      //         const a = document.createElement('a');
-      //         a.href = fileUrl;
-      //         a.download = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
-      //         a.style.display = 'none';
+            const a = document.createElement('a');
+            a.href = fileUrl;
+            a.download = fileUrl.substring(fileUrl.lastIndexOf('/') + 1);
+            a.style.display = 'none';
 
-      //         document.body.appendChild(a);
-      //         a.click();
-      //         document.body.removeChild(a);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
 
-      //       } else {
-      //         throw new Error(`API tidak mengembalikan path file. Pesan: ${data.message}`);
-      //       }
-      //     })
-      //     .catch(error => {
-      //       tutupLoader();
-      //       $.messager.alert('Error', `Gagal memproses unduhan. Detail: ${error.message}`, 'error');
-      //     });
+          } else {
+            throw new Error(`API tidak mengembalikan path file. Pesan: ${data.message}`);
+          }
+        })
+        .catch(error => {
+          tutupLoader();
+          $('#dialog_import').window('maximize');
+          $('#dialog_import').window('restore');
+          $.messager.alert('Error', `Gagal memproses unduhan. Detail: ${error.message}`, 'error');
+        });
     }
   </script>
 @endpush
