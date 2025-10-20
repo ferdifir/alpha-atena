@@ -43,6 +43,25 @@ Route::prefix('atena/master')
                 })->name('form');
             });
 
+        // Master - Depo
+        Route::prefix('depo')
+            ->name('depo.')
+            ->group(function () {
+                Route::get('data', function () {
+                    return view('atena.master.depo.v_master_list_depo', [
+                        'kodemenu' => request()->kode,
+                    ]);
+                })->name('data');
+
+                Route::get('form', function () {
+                    return view('atena.master.depo.v_master_form_depo', [
+                        'kodemenu' => request()->kode,
+                        'data' => request()->data,
+                        'mode' => request()->mode,
+                    ]);
+                })->name('form');
+            });
+
         // Master - Currency
         Route::prefix('currency')
             ->name('currency.')
