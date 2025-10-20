@@ -73,23 +73,17 @@
 </head>
 
 <body onLoad="window.history.forward()" class="skin-blue fixed-layout">
-  <!-- ============================================================== -->
-  <!-- Preloader - style you can find in spinners.css -->
-  <!-- ============================================================== -->
+
   <div class="preloader">
     <div class="loader">
       <div class="loader__figure"></div>
     </div>
   </div>
-  <!-- ============================================================== -->
-  <!-- Main wrapper - style you can find in pages.scss -->
-  <!-- ============================================================== -->
-  <div id="main-wrapper">
 
+  <div id="main-wrapper">
     <div class="page-wrapper m-0 p-0">
       <div class="container-fluid p-2">
-
-        <div class="card" id="lokasi_wrapper">
+        <div class="card" id="lokasi_wrapper" style="display:none">
           <div class="card body">
             <div class="row">
               <div class="col-lg-4">
@@ -104,7 +98,7 @@
 
         <div class="row">
           <div class="col-lg-4">
-            <div class="card p-2 mb-2 J9433" id="card-omzet-bulanan">
+            <div class="card p-2 mb-2 J9433" id="card-omzet-bulanan" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -161,7 +155,7 @@
             </div>
 
 
-            <div class="card p-2 OU954" id="card-stok-dibawah-limit">
+            <div class="card p-2 OU954" id="card-stok-dibawah-limit" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -195,7 +189,7 @@
           </div>
 
           <div class="col-lg-4 p-0">
-            <div class="K984K card p-2 mb-2" id="card-omzet-tahunan">
+            <div class="K984K card p-2 mb-2" id="card-omzet-tahunan" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -250,7 +244,7 @@
               </div>
             </div>
 
-            <div class="card mb-2 O9843" id="card-piutang-jatuh-tempo">
+            <div class="card mb-2 O9843" id="card-piutang-jatuh-tempo" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -284,7 +278,7 @@
               </div>
             </div>
 
-            <div class="card K895J" id="card-hutang-jatuh-tempo">
+            <div class="card K895J" id="card-hutang-jatuh-tempo" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -319,7 +313,7 @@
           </div>
 
           <div class="col-lg-4">
-            <div class="card p-2 mb-2 K08K3" id="card-chart-penjualan">
+            <div class="card p-2 mb-2 K08K3" id="card-chart-penjualan" style="display:none">
               <div class="skeleton-loading card-body">
                 <div class="title-block">
                   <div class="loading title"></div>
@@ -348,7 +342,7 @@
             </div>
 
 
-            <div class="card p-2 mb-2 G9K43" id="card-so-belum-tuntas">
+            <div class="card p-2 mb-2 G9K43" id="card-so-belum-tuntas" style="display:none">
               <div class="card-body">
                 <h5 class="font-weight-bold">Jumlah Transaksi Pesanan Penjualan Belum Tuntas</h4>
                   <span style="font-size: 30px" class="jumlah-transaksi"></span>
@@ -356,23 +350,21 @@
             </div>
 
 
-            <div class="card p-2 mb-2 L95K4" id="card-po-belum-tuntas">
+            <div class="card p-2 mb-2 L95K4" id="card-po-belum-tuntas" style="display:none">
               <div class="card-body">
                 <h5 class="font-weight-bold">Jumlah Transaksi Pesanan Pembelian Belum Tuntas</h4>
                   <span style="font-size: 30px" class="jumlah-transaksi"></span>
               </div>
             </div>
 
-
-            <div class="card p-2 mb-2 I854G" id="card-bbk-belum-berlanjut">
+            <div class="card p-2 mb-2 I854G" id="card-bbk-belum-berlanjut" style="display:none">
               <div class="card-body">
                 <h5 class="font-weight-bold">Jumlah Transaksi Pengeluaran Belum Berlanjut</h4>
                   <span style="font-size: 30px" class="jumlah-transaksi"></span>
               </div>
             </div>
 
-
-            <div class="card p-2 LO094" id="card-bbm-belum-berlanjut">
+            <div class="card p-2 LO094" id="card-bbm-belum-berlanjut" style="display:none">
               <div class="card-body">
                 <h5 class="font-weight-bold">Jumlah Transaksi Penerimaan Belum Berlanjut</h4>
                   <span style="font-size: 30px" class="jumlah-transaksi"></span>
@@ -443,10 +435,10 @@
 
     $(document).ready(function() {
       loadAksesDashboard();
-      tutupLoader();
     });
 
     async function loadAksesDashboard() {
+      bukaLoader();
       try {
         const response = await fetch(
           link_api.getDahboardAksesUser, {
@@ -467,86 +459,98 @@
           }
 
           data = res.data;
-          if (data.length > 0) {
-            initLokasi();
-          }
-          const isChartPenjualanAkses = data.find((item) => item.kodedashboard == 'K08K3' && item.hakakses == 1);
-          if (isChartPenjualanAkses) {
-            $('#tglchartjual').datepicker({
-                format: {
-                  language: 'id',
-                  toDisplay: function(date, format, language) {
-                    var d = new Date(date);
-
-                    return daftar_bulan[d.getMonth()] + ' ' + d.getFullYear();
-                  },
-                  toValue: function(date, format, language) {
-                    return date;
-                  }
-                },
-                startView: "months",
-                minViewMode: "months",
-                autoclose: true
-              })
-              .datepicker('setDate', tanggalHariIni)
-              .on('changeDate', function(e) {
-                renderChartPenjualan();
-              });
-
-            $('#tglchartjual-trigger').click(function(e) {
-              $('#tglchartjual').datepicker('show');
-            });
-          }
-
-          const isOmzetBulananAkses = data.find((item) => item.kodedashboard == 'J9433' && item.hakakses == 1);
-          if (isOmzetBulananAkses) {
-            $('#tglomzetbulanan').datepicker({
-                format: {
-                  language: 'id',
-                  toDisplay: function(date, format, language) {
-                    var d = new Date(date);
-
-                    return daftar_bulan[d.getMonth()] + ' ' + d.getFullYear();
-                  },
-                  toValue: function(date, format, language) {
-                    return date;
-                  }
-                },
-                startView: "months",
-                minViewMode: "months",
-                autoclose: true
-              })
-              .datepicker('setDate', tanggalHariIni)
-              .on('changeDate', function(e) {
-                renderOmzetBulanan();
-              });
-
-            $('#tglomzetbulanan-trigger').click(function(e) {
-              $('#tglomzetbulanan').datepicker('show');
-            });
-          }
-
-          $.ajax({
-            url: link_api.browseLokasi,
-            type: 'POST',
-            dataType: 'JSON',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer {{ session('TOKEN') }}'
-            },
-            success: function(res) {
-              const response = res.data;
-              for (var i = 0; i < response.length; i++) {
-                var newOption = $("<option selected='selected'></option>")
-                  .val(response[i].uuidlokasi)
-                  .text(response[i].nama);
-
-                $('#idlokasi').append(newOption).trigger('change');
-              }
-
-              initRenderDashboard();
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].hakakses == 1) {
+              $('.' + data[i].kodedashboard).show();
+            } else {
+              $('.' + data[i].kodedashboard).hide();
             }
-          });
+          }
+
+          const punya_akses = data.filter((item) => item.hakakses == 1).length > 0;
+          if (punya_akses) {
+            $('#lokasi_wrapper').show();
+            initLokasi();
+            const isChartPenjualanAkses = data.find((item) => item.kodedashboard == 'K08K3' && item.hakakses == 1);
+            if (isChartPenjualanAkses) {
+              $('#tglchartjual').datepicker({
+                  format: {
+                    language: 'id',
+                    toDisplay: function(date, format, language) {
+                      var d = new Date(date);
+
+                      return daftar_bulan[d.getMonth()] + ' ' + d.getFullYear();
+                    },
+                    toValue: function(date, format, language) {
+                      return date;
+                    }
+                  },
+                  startView: "months",
+                  minViewMode: "months",
+                  autoclose: true
+                })
+                .datepicker('setDate', tanggalHariIni)
+                .on('changeDate', function(e) {
+                  renderChartPenjualan();
+                });
+
+              $('#tglchartjual-trigger').click(function(e) {
+                $('#tglchartjual').datepicker('show');
+              });
+            }
+
+            const isOmzetBulananAkses = data.find((item) => item.kodedashboard == 'J9433' && item.hakakses == 1);
+            if (isOmzetBulananAkses) {
+              $('#tglomzetbulanan').datepicker({
+                  format: {
+                    language: 'id',
+                    toDisplay: function(date, format, language) {
+                      var d = new Date(date);
+
+                      return daftar_bulan[d.getMonth()] + ' ' + d.getFullYear();
+                    },
+                    toValue: function(date, format, language) {
+                      return date;
+                    }
+                  },
+                  startView: "months",
+                  minViewMode: "months",
+                  autoclose: true
+                })
+                .datepicker('setDate', tanggalHariIni)
+                .on('changeDate', function(e) {
+                  renderOmzetBulanan();
+                });
+
+              $('#tglomzetbulanan-trigger').click(function(e) {
+                $('#tglomzetbulanan').datepicker('show');
+              });
+            }
+
+            $.ajax({
+              url: link_api.browseLokasi,
+              type: 'POST',
+              dataType: 'JSON',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer {{ session('TOKEN') }}'
+              },
+              success: function(res) {
+                const response = res.data;
+                for (var i = 0; i < response.length; i++) {
+                  var newOption = $("<option selected='selected'></option>")
+                    .val(response[i].uuidlokasi)
+                    .text(response[i].nama);
+
+                  $('#idlokasi').append(newOption).trigger('change');
+                }
+
+                initRenderDashboard();
+              }
+            });
+          } else {
+            $('#lokasi_wrapper').hide();
+          }
         } else {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
