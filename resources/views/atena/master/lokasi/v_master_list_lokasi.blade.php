@@ -170,6 +170,10 @@
               hidden: true
             },
             {
+              field: 'uuidjenislokasi',
+              hidden: true
+            },
+            {
               field: 'kodelokasi',
               title: 'Kode',
               width: 80,
@@ -178,6 +182,12 @@
             {
               field: 'namalokasi',
               title: 'Nama',
+              width: 200,
+              sortable: true,
+            },
+            {
+              field: 'namajenislokasi',
+              title: 'Jenis Lokasi',
               width: 200,
               sortable: true,
             },
@@ -404,14 +414,14 @@
       }, ]);
     }
 
-        function refresh_data() {
-            let pager = $('#table_data').datagrid('getPager');
-            let pageOptions = pager.pagination('options');
-            let currentPage = pageOptions.pageNumber;
-            $('#table_data').datagrid('reload', {
-                page: currentPage
-            });
-        }
+    function refresh_data() {
+      let pager = $('#table_data').datagrid('getPager');
+      let pageOptions = pager.pagination('options');
+      let currentPage = pageOptions.pageNumber;
+      $('#table_data').datagrid('reload', {
+        page: currentPage
+      });
+    }
 
     function reload() {
       $('#table_data').datagrid('reload');

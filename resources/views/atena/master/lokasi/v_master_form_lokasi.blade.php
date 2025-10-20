@@ -34,6 +34,11 @@
                             validType='length[0,100]'></td>
                       </tr>
                       <tr>
+                        <td style="width:75px" align="right" id="label_form">Jenis Lokasi</td>
+                        <td><input id="JENISLOKASI" name="jenislokasi" style="width:350px" class="label_input"
+                            required="true" validType='length[0,100]'></td>
+                      </tr>
+                      <tr>
                         <td style="width:75px" align="right" id="label_form">Alamat</td>
                         <td><input name="alamat" style="width:350px" class="label_input" validType='length[0,100]'></td>
                       </tr>
@@ -184,6 +189,7 @@
         });
       if (!check) return;
 
+      browse_data_jenis_lokasi('#JENISLOKASI');
       browse_data_perkiraan('#IDPERKIRAAN');
       browse_data_perkiraan('#IDPERKIRAANSETORANKASIR');
 
@@ -415,6 +421,34 @@
         $.messager.alert("error", getTextError(error), "error");
       }
       tutupLoaderSimpan();
+    }
+
+    function browse_data_jenis_lokasi(id) {
+      $(id).combogrid({
+        required: false,
+        panelWidth: 330,
+        mode: 'remote',
+        idField: 'uuidjenislokasi',
+        textField: 'namajenislokasi',
+        sortName: 'namajenislokasi',
+        sortOrder: 'asc',
+        url: link_api.browseJenisLokasi,
+        queryParams: {
+          aktif: 1
+        },
+        columns: [
+          [{
+              field: 'uuidjenislokasi',
+              hidden: true
+            },
+            {
+              field: 'namajenislokasi',
+              title: 'Jenis Lokasi',
+              width: 235
+            }
+          ]
+        ]
+      })
     }
 
     function browse_data_perkiraan(id) {
