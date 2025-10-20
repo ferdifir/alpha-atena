@@ -143,7 +143,7 @@ $(document).ready(async function(){
 		} else {
 			$('#simpan_cetak').css('filter', 'grayscale(100%)');$('#simpan_cetak').removeAttr('onclick');
 		}
-	})
+	}, false);
 
 	$("#form_cetak").window({
 		collapsible: false,
