@@ -46,6 +46,12 @@ var link_api = {
     hapusUser: `${base_url_api}atena/master/user/hapus`,
     laporanUser: `${base_url_api}atena/master/user/laporan`,
     simpanProfile: `${base_url_api}atena/master/user/simpan-profile`,
+    //depo
+    loadDataGridDepo: `${base_url_api}atena/master/depo/load-data-grid`,
+    browseDepo: `${base_url_api}atena/master/depo/browse`,
+    headerFormDepo: `${base_url_api}atena/master/depo/load-data-header`,
+    simpanDepo: `${base_url_api}atena/master/depo/simpan`,
+    hapusDepo: `${base_url_api}atena/master/depo/hapus`,
     //dashboard
     loadOmzetBulanan: `${base_url_api}atena/dashboard/load-omzet-bulanan`,
     loadOmzetTahunan: `${base_url_api}atena/dashboard/load-omzet-tahunan`,

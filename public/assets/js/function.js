@@ -1,5 +1,8 @@
 $(document).ready(function () {
-    $(".label_input").textbox();
+    const isDashboard = window.location.pathname.includes("dashboard");
+    if (!isDashboard) {
+        $(".label_input").textbox();
+    }
     $.extend($.fn.validatebox.defaults.rules, {
         equals: {
             validator: function (value, param) {
