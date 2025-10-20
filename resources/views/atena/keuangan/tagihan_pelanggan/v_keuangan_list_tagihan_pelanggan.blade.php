@@ -1,7 +1,7 @@
 @extends('template.app')
 
 @section('content')
-<div class="easyui-layout" fit="true">	
+<div class="easyui-layout" fit="true">
 	<div class="btn-group-transaksi" data-options="region: 'west'" style="width: 50px">
 		<a id="btn_tambah"  title="Tambah Transaksi" class="easyui-linkbutton easyui-tooltip" onclick="before_add()">
 			<img src="{{ asset('assets/images/add.png') }}">
@@ -55,7 +55,7 @@
 					</div>
 			</div>
 	</div>
-	</div>	
+	</div>
 </div>
 
 <div id="form_cetak" title="Cetak Tagihan" style="width:660px; height:500px">
@@ -95,7 +95,7 @@ $(document).ready(function(){
 			row = $('#table_data').datagrid('getSelected');
 		}
 	});
-	
+
 	create_form_login();
 	buat_table();
 
@@ -448,7 +448,8 @@ function buat_table() {
 			{field:'tgltrans',title:'Tgl. Trans',width:70,sortable:true,formatter:ubah_tgl_indo, align:'center',},
 			{field:'kodetagihan',title:'No. Trans',width:140,sortable:true},
 			{field:'tgljatuhtempo',title:'Jth Tempo',width:70,sortable:true,formatter:ubah_tgl_indo, align:'center',},
-			{field:'namacustomer',title:'Customer',width:250,sortable:true},
+			{field:'namacustomer',title:'Customer',width:200,sortable:true},
+			{field:'namakaryawan',title:'Karyawan',width:200,sortable:true},
 		]],
 		columns: [[
 			{field:'grandtotal',title:'Grand Total',width:100,formatter:format_amount,align:'right'},
@@ -465,7 +466,7 @@ function buat_table() {
 
 function reload()
 {
-	$('#table_data').datagrid('reload');	
+	$('#table_data').datagrid('reload');
 }
 </script>
 @endpush

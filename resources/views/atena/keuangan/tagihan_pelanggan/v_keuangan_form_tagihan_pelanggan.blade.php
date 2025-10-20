@@ -9,7 +9,7 @@
 					<script>
 						if(screen.height < 450) $("#trans_layout").css('height',"450px");
 					</script>
-					<div data-options="region:'north',border:false" style="width:100%; height:210px;">
+					<div data-options="region:'north',border:false" style="width:100%; height:250px;">
 						<div class="form_status" style="position:absolute; margin-top:10px; margin-left:85%;z-index:2;" ></div>
 						<input type="hidden" id="mode" name="mode">
 						<input type="hidden" id="UUIDTAGIHAN" name="uuidtagihan">
@@ -46,6 +46,10 @@
 														<td id="label_form"><input id="UUIDCUSTOMER" name="uuidcustomer" class="label_input" style="width:190px" required="true"></td>
 													</tr>
 													<tr>
+														<td id="label_form">Karyawan</td>
+														<td id="label_form"><input id="UUIDKARYAWAN" name="uuidkaryawan" class="label_input" style="width:190px" required="true"></td>
+													</tr>
+													<tr>
 														<td valign="top" id="label_form">Keterangan</td>
 														<td valign="top" id="label_form"><textarea rows="3" name="keterangan" class="label_input" id="KETERANGAN" multiline="true" style="width:300px; height:50px" validType='length[0,300]' ></textarea></td>
 													</tr>
@@ -54,7 +58,7 @@
 									</table>
 								</td>
 							</tr>
-						</table>	
+						</table>
 					</div>
 					<div data-options="region:'center',border:false" >
 						<div class="easyui-tabs"  plain='true' fit="true" >
@@ -101,7 +105,7 @@
 
         <br><br>
         <a  title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false" onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
-    </div>	
+    </div>
 </div>
 
 <div id="window_button_simpan" class="easyui-window" title="Konfirmasi" data-options="modal:true,closed:true" style="height:164cm;padding:15px 10px 10px 10px;top:20px">
@@ -181,7 +185,7 @@ $(document).ready(async function(){
         draggable  : true,
         left       : left
     });
-	
+
 	$('#UUIDCUSTOMER').combogrid({
 		panelWidth: 550,
 		url       : link_api.browseCustomer,
@@ -206,6 +210,19 @@ $(document).ready(async function(){
 		}
 	});
 
+	$('#UUIDKARYAWAN').combogrid({
+		panelWidth: 550,
+		url       : link_api.browseKaryawan,
+		idField   : 'uuidkaryawan',
+		textField : 'nama',
+		mode      : 'remote',
+		columns   : [[
+			{field:'kode',title:'Kode',width:70, sortable:true},
+			{field:'nama',title:'Nama',width:200, sortable:true},
+			{field:'alamat',title:'Alamat',width:250, sortable:true},
+		]],
+	});
+
 	$('#PAKAIFILTERLOKASI').change(function() {
 		tampil_piutang();
 	})
@@ -214,13 +231,13 @@ $(document).ready(async function(){
 
 	buat_table_uang_muka();
 	buat_table_piutang();
-	
+
 	@if ($mode == 'tambah')
 		await tambah();
 	@elseif ($mode == 'ubah')
 		await ubah();
 	@endif
-	
+
 	tutupLoader()
 
 })
@@ -285,7 +302,7 @@ async function ubah() {
 	} else {
 		$.messager.alert('Error', response.message, 'error');
 	}
-	 
+
 	if (row) {
 
 		get_akses_user('<?= $kodemenu ?>', 'bearer {{ session('TOKEN') }}', async function(data) {
@@ -296,10 +313,10 @@ async function ubah() {
 					$('#btn_simpan_modal').css('filter', '');
 					$('#mode').val('ubah');
 				} else {
-					document.getElementById('btn_simpan_modal').onclick = ''; 
+					document.getElementById('btn_simpan_modal').onclick = '';
 					$('#btn_simpan_modal').css('filter', 'grayscale(100%)');$('#btn_simpan_modal').removeAttr('onclick');
 				}
-				
+
 				$('#form_input').form('load', row);
 
 				$('#UUIDCUSTOMER').combogrid('setValue',{uuidcustomer:row.uuidcustomer, nama:row.namacustomer});
@@ -331,7 +348,7 @@ async function simpan(jenis_simpan) {
 		}
 	});
 
-	$('#window_button_simpan').window('close');	
+	$('#window_button_simpan').window('close');
 
 	if (!isValid) {
 		$.messager.alert('Warning','Kelengkapan Dokumen Harus dilengkapi semua','warning');
