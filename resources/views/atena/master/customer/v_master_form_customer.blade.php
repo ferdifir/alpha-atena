@@ -6,7 +6,7 @@
       text-align: left !important;
     }
   </style>
-  <div id="form_input" class="easyui-layout" fit="true">
+  <form id="form_input" class="easyui-layout" fit="true">
     <div data-options="region:'center',border:false">
       <div class="easyui-layout" fit="true">
         <div data-options="region:'center',border:false ">
@@ -15,12 +15,14 @@
             <input type="hidden" name="mode" id="mode">
             <input type="hidden" name="uuidcustomer" id="IDCUSTOMER">
             <input type="hidden" name="tglentry" id="tglentry">
+            <input type="hidden" name="gambar" id="gambar">
+            <input type="hidden" name="gambarpajak" id="gambarpajak">
             <input type="hidden" id="data_custlokasi" name="data_custlokasi">
             <input type="hidden" id="data_custbarang" name="data_custbarang">
             <input type="hidden" id="data_custnpwp" name="data_custnpwp">
 
             <div id="tabs" class="easyui-tabs" style="width:100%;height:550px;" plain='true'>
-              <div title="Customer Information">
+              <div title="Informasi Pelanggan">
                 <table style="padding:5px" border="0">
                   <tr>
                     <td style="vertical-align: top;">
@@ -37,8 +39,8 @@
                         <tr>
                           <td align="right" id="label_form">Nama</td>
                           <td>
-                            <input id="BADANUSAHA" name="badanusaha" style="width:100px" prompt="BADAN USAHA">
-                            <input id="NAMACUSTOMER" name="namacustomer" style="width:250px" class="label_input"
+                            <input id="BADANUSAHA" name="badanusaha" style="width:150px" prompt="BADAN USAHA">
+                            <input id="NAMACUSTOMER" name="namacustomer" style="width:410px" class="label_input"
                               validType='length[0,100]' required>
                           </td>
                         </tr>
@@ -54,11 +56,13 @@
                         </tr>
                         <tr>
                           <td align="right" id="label_form">Tipe Customer</td>
-                          <td>
-                            <input id="KODETIPECUSTOMERMASTER" name="kodetipecustomer" style="width: 100px;">
+                          <td id="label_form">
+                            <input id="KODETIPECUSTOMERMASTER" name="uuidtipecustomer" style="width: 117px;">
                             <a id="tambah_tipe_customer" title="Input Tipe Customer Baru"
                               class="easyui-linkbutton easyui-tooltip " plain="true" iconCls="icon-add"
                               onclick="pilih_tipe_customer()"></a>
+                            Marketing
+                            <input name="uuidmarketing" id="IDMARKETING" style="width:355px">
                           </td>
                         </tr>
                         <tr id="v-cust-induk">
@@ -99,10 +103,10 @@
                         </tr>
                         <tr>
                           <td align="right" id="label_form">E-mail</td>
-                          <td id="label_form"><input name="email" style="width:225px" class="label_input"
+                          <td id="label_form"><input name="email" style="width:250px" class="label_input"
                               validType="email">
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Website
-                            <input name="website" style="width:255px" class="label_input" validType='url'>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Website
+                            <input name="website" style="width:250px" class="label_input" validType='url'>
                           </td>
                         </tr>
                         <tr>
@@ -120,10 +124,10 @@
                           </td>
                         </tr>
                         <tr>
-                          <td align="right" id="label_form">Marketing</td>
+                          {{-- <td align="right" id="label_form">Marketing</td>
                           <td id="label_form">
                             <input name="uuidmarketing" id="IDMARKETING" style="width:150px">
-                          </td>
+                          </td> --}}
                         </tr>
                         <tr>
                           <td align="right" id="label_form">Limit Piutang</td>
@@ -139,28 +143,31 @@
                           <td align="right" id="label_form"></td>
                           <td id="label_form">
                             <label id="label_form"><input type="checkbox" id="CEKNOTAJATUHTEMPO"
-                                name="ceknotajatuhtempo" value="1">Jika ada piutang atas pelanggan ini yang sudah
+                                name="ceknotajatuhtempo" value="1">
+                              Jika ada piutang atas pelanggan ini yang sudah
                               lewat jatuh tempo, transaksi
-                              tidak dapat dilakukan</label>
+                              tidak dapat dilakukan
+                            </label>
                           </td>
                         </tr>
                         <tr>
                           <td align="right" id="label_form">No Rekening</td>
                           <td id="label_form">
-                            <input name="norek" style="width:150px;" class="label_input easyui-numberbox"
+                            <input name="norek" style="width:245px;" class="label_input easyui-numberbox"
                               validType='length[0,100]'>
-                            Virtual Acc
-                            <input name="virtualaccount" style="width:255px;" class="label_input easyui-numberbox"
+                            &nbsp;&nbsp;&nbsp; Virtual Acc
+                            <input name="virtualaccount" style="width:245px;" class="label_input easyui-numberbox"
                               validType='length[0,100]'>
                           </td>
                         </tr>
                         <tr>
                           <td align="right" id="label_form">Latitude</td>
                           <td id="label_form">
-                            <input name="latitude" class="label_input easyui-numberbox" style="width:150px;"
+                            <input name="latitude" class="label_input easyui-numberbox" style="width:245px;"
                               type="text" data-options="precision:10">
-                            &nbsp; Longitude <input name="longitude" class="label_input easyui-numberbox"
-                              style="width:150px;" type="text" data-options="precision:10">
+                            &nbsp;&nbsp;&nbsp;&nbsp; Longitude <input name="longitude"
+                              class="label_input easyui-numberbox" style="width:245px;" type="text"
+                              data-options="precision:10">
                           </td>
                         </tr>
                         <tr>
@@ -172,7 +179,7 @@
                         <tr>
                           <td align="right" valign="top" id="label_form">Catatan</td>
                           <td>
-                            <textarea name="catatan" style="width:360px; height:60px;  display: inline-block;" class="label_input"
+                            <textarea name="catatan" style="width:565px; height:60px;  display: inline-block;" class="label_input"
                               multiline='true' validType='length[0,300]'>
                         </textarea>
                           </td>
@@ -237,14 +244,13 @@
                     </td>
 
                     <td style="vertical-align: top; padding-left: 20px;padding-top: 2px">
-                      <div style="width:115px; height:100px; margin-bottom: 5px;">
-                        <img id="preview-image-faktur" src="{{ asset('assets/images/ID_NO_IMG.png') }}"
+                      <div style="width:100px; height:100px; margin-bottom: 5px;">
+                        <img id="preview-image-pajak" src="{{ asset('assets/images/ID_NO_IMG.png') }}"
                           style="width:100%; height:100%; border: 1px solid #ccc; object-fit: center;"
-                          alt="Preview Gambar Faktur Pajak" />
+                          alt="Preview Gambar Pajak" />
                       </div>
-                      <input id="FILEGAMBARFAKTUR" name="filegambar_faktur" class="easyui-filebox"
-                        data-options="required:false,buttonIcon:'icon-man',buttonText:'Upload Foto'"
-                        style="width:115px">
+                      <input id="FILEGAMBARPAJAK" name="filegambarpajak" class="easyui-filebox"
+                        data-options="required:false,buttonIcon:'icon-man',buttonText:'Foto'" style="width:100px">
                     </td>
                   </tr>
                 </table>
@@ -300,7 +306,7 @@
       <a title="Tutup" class="easyui-tooltip " iconCls="" data-options="plain:false"
         onclick="javascript:tutup()"><img src="{{ asset('assets/images/cancel.png') }}"></a>
     </div>
-  </div>
+  </form>
 
 
   <div id="form_tipe_customer" title="Input Tipe Customer Baru">
@@ -437,6 +443,18 @@
     <a href="#" class="easyui-linkbutton" onclick="tampilFormUbahStatusPiutang()">Tambah</a>
     <a href="#" class="easyui-linkbutton" onclick="batal_trans_ubah_status_trans()">Batal</a>
   </div>
+
+  <div id="window-preview-image" class="easyui-window" title="Preview" data-options="modal:true,closed:true"
+    style="width:660px;height:450px;padding:5px;">
+    <img id="zoom-image" src="{{ asset('assets/foto_user/NO_IMAGE.png') }}"
+      style="width:100%; height:100%; border: 1px solid #ccc; object-fit: center;" alt="Preview Foto Pelanggan" />
+  </div>
+
+  <div id="window-preview-image-pajak" class="easyui-window" title="Preview" data-options="modal:true,closed:true"
+    style="width:660px;height:450px;padding:5px;">
+    <img id="zoom-image-pajak" src="{{ asset('assets/images/ID_NO_IMG.png') }}"
+      style="width:100%; height:100%; border: 1px solid #ccc; object-fit: center;" alt="Preview Gambar Pajak" />
+  </div>
 @endsection
 
 @push('js')
@@ -543,6 +561,56 @@
           } else if (newVal == "CHILD") {
             $("#v-cust-induk").show();
             //$("IDINDUK").combogrid().required = true;
+          }
+        }
+      });
+
+      $('#FILEGAMBAR').filebox({
+        accept: 'image/*',
+        onChange: function(newVal, oldVal) {
+          var input = $(this).next().find('.textbox-value')[0];
+          $('#gambar').val(newVal);
+
+          if (input.files && input.files[0]) {
+            fileGambar = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+              $('#preview-image').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
+          }
+        }
+      });
+
+      openImagePreviewWindow(
+        '#preview-image',
+        '#window-preview-image',
+        '#zoom-image',
+        "{{ asset('assets/images/NO_IMAGE.png') }}"
+      );
+
+      openImagePreviewWindow(
+        '#preview-image-pajak',
+        '#window-preview-image-pajak',
+        '#zoom-image-pajak',
+        "{{ asset('assets/images/ID_NO_IMG.png') }}"
+      );
+
+      $('#FILEGAMBARPAJAK').filebox({
+        accept: 'image/*',
+        onChange: function(newVal, oldVal) {
+          var input = $(this).next().find('.textbox-value')[0];
+          $('#gambarpajak').val(newVal);
+
+          if (input.files && input.files[0]) {
+            fileGambarPajak = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(e) {
+              $('#preview-image-pajak').attr('src', e.target.result);
+            }
+            reader.readAsDataURL(input.files[0]);
           }
         }
       });
@@ -755,7 +823,60 @@
       } else if ("{{ $mode }}" == "ubah") {
         ubah();
       }
-    })
+    });
+
+    function openImagePreviewWindow(triggerSelector, windowSelector, zoomImgSelector, noImagePath) {
+      $(triggerSelector).click(function() {
+        const $img = $(this);
+        const imgSrc = $img.attr('src');
+
+        if (imgSrc === noImagePath) {
+          return;
+        }
+
+        const $zoomImg = $(zoomImgSelector);
+        const $window = $(windowSelector);
+
+        $zoomImg.attr('src', imgSrc);
+
+        const tempImage = new Image();
+        tempImage.onload = function() {
+          const naturalWidth = this.naturalWidth;
+          const naturalHeight = this.naturalHeight;
+
+          const maxWidth = $(window).width() * 0.9;
+          const maxHeight = $(window).height() * 0.9;
+
+          let newWidth = naturalWidth;
+          let newHeight = naturalHeight;
+
+          const widthRatio = maxWidth / naturalWidth;
+          const heightRatio = maxHeight / naturalHeight;
+          const ratio = Math.min(widthRatio, heightRatio);
+
+          if (ratio < 1) {
+            newWidth = naturalWidth * ratio;
+            newHeight = naturalHeight * ratio;
+          }
+
+          const finalWidth = newWidth + 10;
+          const finalHeight = newHeight + 10 + 30;
+
+          $zoomImg.css({
+            'width': newWidth + 'px',
+            'height': newHeight + 'px',
+          });
+
+          $window.window({
+            width: finalWidth,
+            height: finalHeight,
+          }).window('open');
+
+          $window.window('center');
+        };
+        tempImage.src = imgSrc;
+      });
+    }
 
     shortcut.add('F8', function() {
       simpan();
@@ -839,12 +960,14 @@
         $('#lbl_tanggal').html(row.tglentry);
         $('#KODECUSTOMER').textbox('readonly', true);
 
-        $('#KODETIPECUSTOMERMASTER').combogrid('setValue', row.kodetipecustomer);
+        $('#KODETIPECUSTOMERMASTER').combogrid('setValue', row.uuidtipecustomer);
         $('#KODETIPECUSTOMER').textbox({
           prompt: "Auto Generate",
           readonly: true,
           required: false
         });
+        $('#preview-image').attr('src', row.gambar_full_path);
+        $('#preview-image-pajak').attr('src', row.gambar_pajak_full_path);
 
         $('#IDMARKETING').combogrid('setValue', {
           uuidkaryawan: row.uuidmarketing,
@@ -911,8 +1034,6 @@
     }
 
     async function simpan() {
-      $('#data_custnpwp').val(JSON.stringify($('#table_data_custnpwp').datagrid('getRows')));
-
       var cekDiskon = cek_format($('#DISCOUNTMIN').textbox('getValue'));
 
       if (cekDiskon == "error") {
@@ -941,16 +1062,18 @@
         mode = $('[name=mode]').val();
         try {
           tampilLoaderSimpan();
-          const data = $('#form_input :input').serializeArray();
-          const num = ['maxnota'];
-          const payload = {};
-          for (let i = 0; i < data.length; i++) {
-            if (num.includes(data[i].name)) {
-              payload[data[i].name] = parseInt(data[i].value);
-            } else {
-              payload[data[i].name] = data[i].value;
-            }
-          }
+          //   const data = $('#form_input :input').serializeArray();
+          //   const num = ['maxnota'];
+          //   const payload = {};
+          //   for (let i = 0; i < data.length; i++) {
+          //     if (num.includes(data[i].name)) {
+          //       payload[data[i].name] = parseInt(data[i].value);
+          //     } else {
+          //       payload[data[i].name] = data[i].value;
+          //     }
+          //   }
+          const payload = new FormData($('#form_input')[0]);
+          payload.set('maxnota', parseInt(payload.get('maxnota')));
           const response = await fetchData(link_api.simpanCustomer, payload);
           tutupLoaderSimpan();
           if (response.success) {
@@ -1081,13 +1204,17 @@
       $(id).combogrid({
         panelWidth: 200,
         url: link_api.browseTipeCustomer,
-        idField: 'kode',
+        idField: 'uuidtipecustomer',
         textField: 'nama',
         mode: 'local',
         editable: false,
         required: true,
         columns: [
           [{
+              field: 'uuidtipecustomer',
+              hidden: true
+            },
+            {
               field: 'kode',
               title: 'Kode'
             },
@@ -1096,7 +1223,7 @@
               title: 'Nama Tipe Customer'
             }
           ]
-        ]
+        ],
       });
     }
 
