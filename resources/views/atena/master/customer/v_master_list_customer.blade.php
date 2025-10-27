@@ -159,9 +159,9 @@
           if (r) {
             try {
               bukaLoader();
-              const response = await fetchData(link_api.hapusCustomer, {
-                uuidcustomer: row.uuidcustomer
-              });
+            const response = await fetchData(link_api.master.customer.hapus, {
+              uuidcustomer: row.uuidcustomer
+            });
               tutupLoader();
               if (!response.success) {
                 $.messager.alert('Error', response.message, 'error');
@@ -191,7 +191,7 @@
         pageSize: 20,
         sortName: 'namacustomer',
         sortOrder: 'asc',
-        url: link_api.loadDataGridMasterCustomer,
+        url: link_api.master.customer.loadDataGrid,
         detailFormatter: function(index, row) {
           return '<div style="padding:2px;position:relative;"><table class="ddv"></table></div>';
         },

@@ -184,6 +184,7 @@
   <script src="{{ asset('assets/js/auth/bootstrap.min.js') }}"></script>
   <script src="{{ asset('assets/js/auth/sweetalert2.all.min.js') }}"></script>
   <script src="{{ asset('assets/js/globalvariable.js') }}"></script>
+  <script src="{{ asset('assets/js/api-url.js') }}"></script>
   <script>
     var csrf_token = '{{ csrf_token() }}';
     var base_url = '{{ url('') }}/';
@@ -225,7 +226,7 @@
       try {
         await $.ajax({
           type: 'POST',
-          url: link_api.login,
+          url: link_api.auth.login,
           async: false,
           data: {
             credential: $('#email').val(),
@@ -295,7 +296,7 @@
           try {
             await $.ajax({
               type: 'POST',
-              url: link_api.loginPerusahaan,
+              url: link_api.auth.loginPerusahaan,
               async: false,
               data: {
                 uuid_user: dataUser.uuiduser,
@@ -357,9 +358,9 @@
             ];
             try {
               const urls = [
-                link_api.getDetailPerusahaan,
-                link_api.getConfigGlobal,
-                link_api.getDaftarMenu,
+                link_api.auth.getPerusahaan,
+                link_api.master.config.getConfigGlobal,
+                link_api.master.user.getDaftarMenu,
               ];
               const promises = urls.map(url =>
                 fetch(url, {

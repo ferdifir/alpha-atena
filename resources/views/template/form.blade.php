@@ -57,6 +57,7 @@
         <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-view/datagrid-detailview.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>
         <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
+        <script src="{{ asset('assets/js/api-url.js') }}"></script>
         <script>
             const originalOpen = XMLHttpRequest.prototype.open;
             const originalSend = XMLHttpRequest.prototype.send;

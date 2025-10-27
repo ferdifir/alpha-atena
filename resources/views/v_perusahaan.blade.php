@@ -224,7 +224,7 @@
       if (isValid) {
         const form = new FormData($('#form_input_user')[0]);
         try {
-          const response = await fetch(link_api.simpanProfile, {
+          const response = await fetch(link_api.master.user.simpanProfile, {
             method: 'POST',
             headers: {
               'Authorization': 'Bearer ' + '{{ session('TOKEN') }}'
@@ -256,7 +256,7 @@
 
     async function getLatestDataUser() {
       try {
-        const response = await fetch(link_api.headerFormUser, {
+        const response = await fetch(link_api.master.user.loadDataHeader, {
           method: 'POST',
           headers: {
             'Authorization': 'Bearer ' + '{{ session('TOKEN') }}'
@@ -318,7 +318,7 @@
       Swal.showLoading();
       $.ajax({
         type: 'POST',
-        url: link_api.loginPerusahaan,
+        url: link_api.auth.loginPerusahaan,
         data: {
           uuid_user: '{{ session('DATAUSER')['uuiduser'] }}',
           uuid_perusahaan: perusahaan
@@ -355,9 +355,9 @@
             ];
             try {
               const urls = [
-                link_api.getDetailPerusahaan,
-                link_api.getConfigGlobal,
-                link_api.getDaftarMenu,
+                link_api.auth.getPerusahaan,
+                link_api.master.config.getConfigGlobal,
+                link_api.master.user.getDaftarMenu,
               ];
               const promises = urls.map(url =>
                 fetch(url, {

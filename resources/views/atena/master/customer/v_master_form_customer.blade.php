@@ -481,7 +481,7 @@
         textField: 'nama',
         sortName: 'kode',
         sortOrder: 'asc',
-        url: link_api.browseSyaratBayar,
+        url: link_api.master.syaratbayar.browse,
         columns: [
           [{
               field: 'uuidsyaratbayar',
@@ -510,7 +510,7 @@
         textField: 'badanusaha',
         sortName: 'badanusaha',
         sortOrder: 'asc',
-        url: link_api.browseBadanUsahaCustomer,
+        url: link_api.master.badanusaha.browse,
         columns: [
           [{
             field: 'badanusaha',
@@ -528,7 +528,7 @@
         textField: 'nama',
         sortName: 'kode',
         sortOrder: 'asc',
-        url: link_api.browseKaryawanMarketing,
+        url: link_api.master.karyawan.browseMarketing,
         onBeforeLoad: function(param) {
           param.divisi = "marketing";
         },
@@ -1203,7 +1203,7 @@
     function browse_tipe_customer(id) {
       $(id).combogrid({
         panelWidth: 200,
-        url: link_api.browseTipeCustomer,
+        url: link_api.master.customer.tipecustomer.browse,
         idField: 'uuidtipecustomer',
         textField: 'nama',
         mode: 'local',

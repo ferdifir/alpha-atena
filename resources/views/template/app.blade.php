@@ -79,6 +79,7 @@
     <script type="text/javascript" src="{{ asset('assets/js/accounting.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.PrintArea.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/js/globalvariable.js') }}"></script>
+    <script src="{{ asset('assets/js/api-url.js') }}"></script>
     <script type="text/javascript" src="{{ asset('assets/jquery-easyui/extension/datagrid-filter/datagrid-filter.js') }}">
     </script>
     <script type="text/javascript" src="{{ asset('assets/js/jquery.mask.js') }}"></script>

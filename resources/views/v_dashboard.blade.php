@@ -394,6 +394,7 @@
   <script src="{{ asset('assets/eliteadmin/js/chart.min.js') }}"></script>
   <script src="{{ asset('assets/js/function.js') }}"></script>
   <script src="{{ asset('assets/js/globalvariable.js') }}"></script>
+  <script src="{{ asset('assets/js/api-url.js') }}"></script>
 
   <script>
     let daftar_bulan = [
@@ -441,7 +442,7 @@
       bukaLoader();
       try {
         const response = await fetch(
-          link_api.getDahboardAksesUser, {
+          link_api.master.user.getDahboardAksesUser, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -528,7 +529,7 @@
             }
 
             $.ajax({
-              url: link_api.browseLokasi,
+              url: link_api.master.lokasi.browse,
               type: 'POST',
               dataType: 'JSON',
               headers: {
@@ -562,7 +563,7 @@
     function initLokasi() {
       $('#idlokasi').select2({
         ajax: {
-          url: link_api.browseLokasi,
+          url: link_api.master.lokasi.browse,
           type: 'POST',
           dataType: 'JSON',
           headers: {
