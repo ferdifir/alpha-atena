@@ -479,7 +479,7 @@
                     if ($jenis == "harga") {
                       const document = await getCetakDocument(
                         '{{ session('TOKEN') }}',
-                        link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                        link_api.atena.penjualan.pesananPenjualan.cetak + row.uuidso, {
                           harga: "ya"
                         }
                       );
@@ -492,7 +492,7 @@
                     } else if ($jenis == "landscape") {
                       const document = await getCetakDocument(
                         '{{ session('TOKEN') }}',
-                        link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
+                        link_api.atena.penjualan.pesananPenjualan.cetakLandscape + row.uuidso
                       );
                       if (document == null) {
                         $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
@@ -503,7 +503,7 @@
                     } else {
                       const document = await getCetakDocument(
                         '{{ session('TOKEN') }}',
-                        link_api.cetakPenjualanSalesOrder + row.uuidso, {
+                        link_api.atena.penjualan.pesananPenjualan.cetak + row.uuidso, {
                           harga: "tidak"
                         }
                       );
@@ -614,7 +614,7 @@
     async function cetak($harga) {
       try {
         bukaLoader();
-        const res = await fetchData('{{ session('TOKEN') }}', link_api.ubahStatusJadiSlipPenjualanSalesOrder, {
+        const res = await fetchData('{{ session('TOKEN') }}', link_api.atena.penjualan.pesananPenjualan.ubahStatusJadiSlip, {
           uuidso: row.uuidso,
           kodeso: row.kodeso
         });
@@ -629,7 +629,7 @@
         if ($harga == "harga") {
           const document = await getCetakDocument(
             '{{ session('TOKEN') }}',
-            link_api.cetakPenjualanSalesOrder + row.uuidso, {
+            link_api.atena.penjualan.pesananPenjualan.cetak + row.uuidso, {
               harga: "ya"
             }
           );
@@ -642,7 +642,7 @@
         } else if ($harga == "landscape") {
           const document = await getCetakDocument(
             '{{ session('TOKEN') }}',
-            link_api.cetakLandscapePenjualanSalesOrder + row.uuidso
+            link_api.atena.penjualan.pesananPenjualan.cetakLandscape + row.uuidso
           );
           if (document == null) {
             $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data', 'warning');
@@ -653,7 +653,7 @@
         } else {
           const document = await getCetakDocument(
             '{{ session('TOKEN') }}',
-            link_api.cetakPenjualanSalesOrder + row.uuidso, {
+            link_api.atena.penjualan.pesananPenjualan.cetak + row.uuidso, {
               harga: "tidak"
             }
           );
@@ -724,7 +724,7 @@
         pageSize: 20,
         pagination: true,
         clientPaging: false,
-        url: link_api.loadDataGridPenjualanSalesOrder,
+        url: link_api.atena.penjualan.pesananPenjualan.loadDataGrid,
         rowStyler: function(index, row) {
           if (row.status == 'S') return 'background-color:{{ session('WARNA_STATUS_S') }}';
           else if (row.status == 'P') return 'background-color:{{ session('WARNA_STATUS_P') }}';
@@ -1030,7 +1030,7 @@
 
     function browse_data_toko_sinkronisasi() {
       $('#tokentokosinkronisasi').combogrid({
-        url: link_api.browseTokoSinkronisasi,
+        url: link_api.atena.penjualan.penjualan.browseTokoSinkronisasi,
         idField: 'token',
         textField: 'namatoko',
         panelWidth: 270,
@@ -1054,7 +1054,7 @@
     function browse_data_customer_sinkronisasi() {
       $('#idcustomersinkronisasi').combogrid({
         panelWidth: 600,
-        url: link_api.browseCustomer,
+        url: link_api.atena.master.customer.browse,
         idField: 'uuidcustomer',
         textField: 'nama',
         mode: 'remote',
@@ -1108,7 +1108,7 @@
     function browse_data_lokasi_sinkronisasi() {
       $('#idlokasisinkronisasi').combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
@@ -1135,7 +1135,7 @@
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'kode',
         textField: 'nama',
         mode: 'local',
@@ -1179,7 +1179,7 @@
         sortName: 'nama',
         sortOrder: 'asc',
         multiple: true,
-        url: link_api.browseKaryawanMarketing,
+        url: link_api.atena.master.karyawan.browse,
         onBeforeLoad: function(param) {
           param.divisi = 'marketing';
         },
@@ -1248,7 +1248,7 @@
       var token = $('#tokentokosinkronisasi').combogrid('grid').datagrid('getSelected').token;
       try {
         $('#table_data_sinkronisasi').datagrid('loading');
-        const response = await fetchData('{{ session('TOKEN') }}', link_api.tampilDataSinkronisasiSO, {
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.atena.penjualan.sinkronisasiPenjualan.tampilData, {
           token: token,
           tglawal: $('#TGLAWALSINKRONISASI').datebox('getValue'),
           tglakhir: $('#TGLAKHIRSINKRONISASI').datebox('getValue')
@@ -1277,7 +1277,7 @@
 
       try {
         bukaLoader();
-        const response = await fetchData('{{ session('TOKEN') }}', link_api.simpanDataSinkronisasiSO, {
+        const response = await fetchData('{{ session('TOKEN') }}', link_api.atena.penjualan.sinkronisasiPenjualan.simpanData, {
           uuidlokasi: lokasi,
           uuidcustomer: customer,
           detail: detail

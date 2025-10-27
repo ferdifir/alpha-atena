@@ -509,7 +509,7 @@
             $("#table_data_cetak").datagrid('loading');
             const res = await fetchData(
               jwt,
-              link_api.loadDataCetakPenjualanPenjualan, {
+              link_api.atena.penjualan.penjualan.loadDataCetakPenjualanPenjualan, {
                 tglawaltrans: tglawaltrans,
                 tglakhirtrans: tglakhirtrans,
               }
@@ -588,7 +588,7 @@
           bukaLoader();
           const res = await fetchData(
             jwt,
-            link_api.loadDataTagihanPenjualanPenjualan, {
+            link_api.atena.penjualan.penjualan.loadDataTagihanPenjualanPenjualan, {
               uuidjual: row.uuidjual
             }
           );
@@ -681,7 +681,7 @@
 
                     if (bentuk_cetak == "kecil") {
                       if (row.jenistransaksi == 'JUAL LANGSUNG') {
-                        const doc = await getCetakDocument(jwt, link_api.cetakKecilPenjualanPenjualan + row
+                        const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakKecilPenjualanPenjualan + row
                           .uuidjual);
                         if (doc) {
                           $("#area_cetak_kecil").html(doc);
@@ -697,7 +697,7 @@
                           'warning');
                       }
                     } else {
-                      const doc = await getCetakDocument(jwt, link_api.cetakPenjualanPenjualan + row
+                      const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakPenjualanPenjualan + row
                         .uuidjual);
                       if (doc) {
                         $("#area_cetak").html(doc);
@@ -738,7 +738,7 @@
               try {
                 const res = await fetchData(
                   jwt,
-                  link_api.batalTransaksiPenjualanPenjualan, {
+                  link_api.atena.penjualan.penjualan.batalTransaksiPenjualanPenjualan, {
                     uuidjual: row.uuidjual,
                     kodejual: row.kodejual,
                     alasan: alasan
@@ -774,7 +774,7 @@
                   bukaLoader();
                   const res = await fetchData(
                     jwt,
-                    link_api.ubahStatusJadiInputPenjualanPenjualan, {
+                    link_api.atena.penjualan.penjualan.ubahStatusJadiInputPenjualanPenjualan, {
                       uuidjual: row.uuidjual,
                       kodejual: row.kodejual
                     }
@@ -809,7 +809,7 @@
         bukaLoader();
         const res = await fetchData(
           jwt,
-          link_api.ubahStatusJadiSlipPenjualanPenjualan, {
+          link_api.atena.penjualan.penjualan.ubahStatusJadiSlipPenjualanPenjualan, {
             uuidjual: row.uuidjual,
             kodejual: row.kodejual
           }
@@ -828,7 +828,7 @@
           }
 
           if (bentuk_cetak == "kecil") {
-            const doc = await getCetakDocument(jwt, link_api.cetakKecilPenjualanPenjualan + row.uuidjual);
+            const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakKecilPenjualanPenjualan + row.uuidjual);
             if (doc) {
               $("#area_cetak_kecil").html(doc);
               $("#form_cetak_kecil").window('open');
@@ -836,7 +836,7 @@
               $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
             }
           } else {
-            const doc = await getCetakDocument(jwt, link_api.cetakPenjualanPenjualan + row.uuidjual, {
+            const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakPenjualanPenjualan + row.uuidjual, {
               npwp: npwp
             });
             if (doc) {
@@ -870,7 +870,7 @@
         bukaLoader();
         const res = await fetchData(
           jwt,
-          link_api.ubahStatusJadiSlipFilterPenjualanPenjualan, {
+          link_api.atena.penjualan.penjualan.ubahStatusJadiSlipFilterPenjualanPenjualan, {
             data: data
           }
         );
@@ -885,7 +885,7 @@
           }
           if (bentuk_cetak == "kecil") {
             cetak_banyak_SJ(payloadCetak);
-            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan, payloadCetak);
+            const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakBanyakPenjualanPenjualan, payloadCetak);
             if (doc) {
               $("#area_cetak_kecil").html(doc);
               $("#form_cetak_kecil").window('open');
@@ -895,7 +895,7 @@
             }
           } else {
             cetak_banyak_SJ(payloadCetak);
-            const doc = await getCetakDocument(jwt, link_api.cetakBanyakPenjualanPenjualan, payloadCetak);
+            const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakBanyakPenjualanPenjualan, payloadCetak);
             if (doc) {
               $("#area_cetak").html(doc);
               $("#form_cetak").window('open');
@@ -938,7 +938,7 @@
         bentuk_cetak: bentuk_cetak,
       };
       try {
-        const url = link_api.cetakSJPenjualanPenjualan + row.uuidjual;
+        const url = link_api.atena.penjualan.penjualan.cetakSJPenjualanPenjualan + row.uuidjual;
         const doc = await getCetakDocument(jwt, url, payload);
 
         if (!doc) {
@@ -959,7 +959,7 @@
       const formCetak = isBesar ? "#form_cetak_sj" : "#form_cetak_sj_kecil";
 
       try {
-        const doc = await getCetakDocument(jwt, link_api.cetakBanyakSJPenjualanPenjualan, payload);
+        const doc = await getCetakDocument(jwt, link_api.atena.penjualan.penjualan.cetakBanyakSJPenjualanPenjualan, payload);
 
         if (!doc) {
           $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
@@ -1025,7 +1025,7 @@
         pageSize: 20,
         pagination: true,
         clientPaging: false,
-        url: link_api.loadDataGridPenjualanPenjualan,
+        url: link_api.atena.penjualan.penjualan.loadDataGridPenjualanPenjualan,
         onLoadSuccess: function() {
           $('#table_data').datagrid('unselectAll');
         },
@@ -1329,7 +1329,7 @@
         multiSort: true,
         striped: true,
         rownumbers: true,
-        url: link_api.loadDataGridPendingPenjualanPenjualan,
+        url: link_api.atena.penjualan.penjualan.loadDataGridPendingPenjualanPenjualan,
         columns: [
           [{
               field: 'tgltrans',
@@ -1360,7 +1360,7 @@
             bukaLoader();
             const res = await fetchData(
               jwt,
-              link_api.cekBisaBerlanjutInventoryBarangKeluar, {
+              link_api.atena.inventori.buktiPengeluaranBarang.cekBisaBerlanjut, {
                 uuidbbk: data.uuidbbk
               }
             );
@@ -1477,7 +1477,7 @@
 
     function browse_data_toko_sinkronisasi() {
       $('#tokentokosinkronisasi').combogrid({
-        url: link_api.browseTokoSinkronisasi,
+        url: link_api.atena.penjualan.penjualan.browseTokoSinkronisasi,
         idField: 'token',
         textField: 'namatoko',
         panelWidth: 270,
@@ -1501,7 +1501,7 @@
     function browse_data_customer_sinkronisasi() {
       $('#idcustomersinkronisasi').combogrid({
         panelWidth: 600,
-        url: link_api.browseCustomer,
+        url: link_api.atena.master.customer.browse,
         idField: 'uuidcustomer',
         textField: 'nama',
         mode: 'remote',
@@ -1555,7 +1555,7 @@
     function browse_data_lokasi_sinkronisasi() {
       $('#idlokasisinkronisasi').combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
@@ -1582,7 +1582,7 @@
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'kode',
         textField: 'nama',
         mode: 'local',
@@ -1626,7 +1626,7 @@
         sortName: 'nama',
         sortOrder: 'asc',
         multiple: true,
-        url: link_api.browseKaryawanMarketing,
+        url: link_api.atena.master.karyawan.browse,
         onBeforeLoad: function(param) {
           param.divisi = 'marketing';
         },
@@ -1712,7 +1712,7 @@
         $('#table_data_sinkronisasi').datagrid('loading');
         const res = await fetchData(
           jwt,
-          link_api.tampilDataSinkronisasiPenjualan, {
+          link_api.atena.penjualan.sinkronisasiPenjualan.tampilData,
             token: token,
             tglawal: $('#TGLAWALSINKRONISASI').datebox('getValue'),
             tglakhir: $('#TGLAKHIRSINKRONISASI').datebox('getValue')
@@ -1770,7 +1770,7 @@
         bukaLoader();
         const res = await fetchData(
           jwt,
-          link_api.simpanDataSinkronisasiPenjualan, {
+          link_api.atena.penjualan.sinkronisasiPenjualan.simpanData,
             uuidlokasi: lokasi,
             uuidcustomer: customer,
             detail: detail
@@ -1806,7 +1806,7 @@
       try {
         const res = await fetchData(
           jwt,
-          link_api.loadConfigPenjualan, {
+          link_api.atena.penjualan.penjualan.loadConfig,
             kodemenu: '{{ $kodemenu }}'
           }
         );

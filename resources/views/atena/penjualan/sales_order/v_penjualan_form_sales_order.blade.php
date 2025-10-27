@@ -617,7 +617,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
     async function cetak(id) {
       $("#window_button_cetak").window('close');
-      const doc = await getCetakDocument('{{ session('TOKEN') }}', link_api.cetakPenjualanSalesOrder + id);
+      const doc = await getCetakDocument('{{ session('TOKEN') }}', link_api.atena.penjualan.pesananPenjualan.cetak + id);
       if (doc == null) {
         $.messager.alert('Warning', 'Terjadi kesalahan dalam mengambil data untuk cetak transaksi', 'warning');
         return false;
@@ -642,7 +642,7 @@ Tekan 'esc' untuk tutup dialog " name="catatanbarang"
 
       fetchData(
         '{{ session('TOKEN') }}',
-        link_api.getLokasiDefault,
+        link_api.atena.master.lokasi.getLokasiDefault,
       ).then(res => {
         if (!res.success) {
           $.messager.alert('Warning', res.message, 'warning');

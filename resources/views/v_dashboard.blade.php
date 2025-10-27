@@ -619,7 +619,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadOmzetBulanan,
+        url: link_api.atena.dashboard.loadOmzetBulanan,
         data: {
           bulan: bulan,
           tahun: tahun,
@@ -673,7 +673,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadPesananPenjualanBelumTuntas,
+        url: link_api.atena.dashboard.loadPesananPenjualanBelumTuntas,
         headers: {
           'Authorization': 'Bearer {{ session('TOKEN') }}'
         },
@@ -694,7 +694,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadPesananPembelianBelumTuntas,
+        url: link_api.atena.dashboard.loadPesananPembelianBelumTuntas,
         data: {
           uuidlokasi: idlokasi
         },
@@ -712,7 +712,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadJumlahBBKBelumLanjut,
+        url: link_api.atena.dashboard.loadJumlahBBKBelumLanjut,
         data: {
           uuidlokasi: idlokasi
         },
@@ -730,7 +730,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadJumlahBBMBelumLanjut,
+        url: link_api.atena.dashboard.loadJumlahBBMBelumLanjut,
         data: {
           uuidlokasi: idlokasi
         },
@@ -751,7 +751,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadPiutangCustJatuhTempo,
+        url: link_api.atena.dashboard.loadPiutangCustJatuhTempo,
         data: {
           uuidlokasi: idlokasi,
           page: 1,
@@ -806,7 +806,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadHutangJatuhTempo,
+        url: link_api.atena.dashboard.loadHutangJatuhTempo,
         data: {
           uuidlokasi: idlokasi,
           page: 1,
@@ -861,7 +861,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadBarangStokBawahLimit,
+        url: link_api.atena.dashboard.loadBarangStokBawahLimit,
         data: {
           uuidlokasi: idlokasi,
           page: 1,
@@ -925,7 +925,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadOmzetTahunan,
+        url: link_api.atena.dashboard.loadOmzetTahunan,
         data: {
           uuidlokasi: idlokasi
         },
@@ -977,7 +977,7 @@
 
       $.ajax({
         type: 'POST',
-        url: link_api.loadDataChartPenjualan,
+        url: link_api.atena.dashboard.loadDataChartPenjualan,
         headers: {
           'Authorization': 'Bearer {{ session('TOKEN') }}'
         },

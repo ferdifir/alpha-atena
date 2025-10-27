@@ -457,7 +457,7 @@
         onOpen: function() {
           if ($("#mode").val() == "tambah") {
             //ubah url jual sesuai dengan jenis transaksi
-            ubah_url_combogrid($("#KODEORDERJUAL"), link_api.browseOrderJual, true);
+            ubah_url_combogrid($("#KODEORDERJUAL"), link_api.atena.penjualan.orderJual.browseOrderJual, true);
           }
         },
       }).dialog('close');
@@ -466,7 +466,7 @@
         onOpen: function() {
           var idlokasi = $('#IDLOKASI').combogrid('getValue');
 
-          var url = link_api.browsePenjualanLangsungRepacking;
+          var url = link_api.atena.inventori.repacking.browsePenjualanLangsung;
 
           //   ubah_url_combogrid($('#IDREPACKING'), url, true);
           $('#IDREPACKING').combogrid('grid').datagrid('options').url = url;
@@ -734,7 +734,7 @@
     async function cetak(id, npwp) {
       //SURAT JALAN
       const docSJ = await getCetakDocument(
-        jwt, link_api.cetakSJPenjualanPenjualan + id, {
+        jwt, link_api.atena.penjualan.penjualan.cetakSJPenjualanPenjualan + id, {
           bentuk_cetak: "besar"
         }
       );
@@ -750,7 +750,7 @@
       //NOTA
       $("#window_button_cetak").window('close');
       const doc = await getCetakDocument(
-        jwt, link_api.cetakPenjualanPenjualan + id, {
+        jwt, link_api.atena.penjualan.penjualan.cetakPenjualanPenjualan + id, {
           npwp: npwp
         }
       );
@@ -783,10 +783,10 @@
       $('#jenislangsung').prop('disabled', false);
 
       idtrans = "";
-      urlbbk = link_api.browsePenjualanBarangKeluar;
+      urlbbk = link_api.atena.inventori.buktiPengeluaranBarang.browsePenjualan;
 
       fetchData(
-        jwt, link_api.getLokasiDefault
+        jwt, link_api.atena.master.lokasi.getLokasiDefault
       ).then(res => {
         if (res.success && res.data.uuidlokasi != null) {
           $('#IDLOKASI').combogrid('setValue', res.data.uuidlokasi);
@@ -811,7 +811,7 @@
       if (idref) {
         try {
           const res = await fetchData(
-            jwt, link_api.loadDataHeaderInventoryBarangKeluar, {
+            jwt, link_api.atena.inventori.buktiPengeluaranBarang.loadDataHeader, {
               uuidbbk: idref
             }
           );
@@ -857,7 +857,7 @@
 
         if (transreferensi.uuidsyaratbayar != null) {
           fetchData(
-            jwt, link_api.getHeaderSyaratBayar, {
+            jwt, link_api.atena.master.syaratbayar.loadDataHeader, {
               uuidsyaratbayar: transreferensi.uuidsyaratbayar
             }
           ).then(res => {
@@ -916,7 +916,7 @@
         $('#TGLDO').datebox('setValue', transreferensi.tgldo);
 
         fetchData(
-          jwt, link_api.loadDataUangMukaSO, {
+          jwt, link_api.atena.penjualan.uangMukaPesananPenjualan.loadDaftarUangMuka, {
             uuidbbk: transreferensi.uuidbbk
           }
         ).then(res => {
@@ -947,7 +947,7 @@
 
       try {
         const res = await fetchData(
-          jwt, link_api.loadDataHeaderPenjualanPenjualan, {
+          jwt, link_api.atena.penjualan.penjualan.loadDataHeader, {
             uuidjual: '{{ $data }}'
           }
         );
@@ -1092,7 +1092,7 @@
           }
           payload['jenis_simpan'] = jenis_simpan;
           const res = await fetchData(
-            jwt, link_api.simpanPenjualanPenjualan, payload
+            jwt, link_api.atena.penjualan.penjualan.simpan, payload
           );
           cekbtnsimpan = true;
           if (res.success) {
@@ -1149,13 +1149,13 @@
     async function load_data(idtrans) {
       try {
         bukaLoader();
-        const res = await fetchData(jwt, link_api.loadDataPenjualanPenjualan, {
+        const res = await fetchData(jwt, link_api.atena.penjualan.penjualan.loadData, {
           uuidjual: idtrans
         });
 
         if (res.success) {
           for (var x = 0; x < res.data.length; x++) {
-            const res2 = await fetchData(jwt, link_api.loadSatuanBarang, {
+            const res2 = await fetchData(jwt, link_api.atena.master.barang.loadSatuanBarang, {
               uuidbarang: res.data[x].uuidbarang
             });
             if (res2.success) {
@@ -1183,7 +1183,7 @@
     async function load_data_rekap(idtrans) {
       try {
         const res = await fetchData(
-          jwt, link_api.loadDataRekapPenjualanPenjualan, {
+          jwt, link_api.atena.penjualan.penjualan.loadDataRekap, {
             uuidjual: idtrans
           }
         );
@@ -1203,7 +1203,7 @@
       try {
         if (showloader) bukaLoader();
         const res = await fetchData(
-          jwt, link_api.loadDataPenjualanBarangKeluar, {
+          jwt, link_api.atena.inventori.buktiPengeluaranBarang.loadDataPenjualan, {
             uuidbbk: idtrans,
             tgltrans: $('#TGLTRANS').datebox('getValue')
           }
@@ -1265,7 +1265,7 @@
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'uuidlokasi',
         textField: 'nama',
         mode: 'local',
@@ -1297,7 +1297,7 @@
     function browse_data_syaratbayar(id) {
       $(id).combogrid({
         panelWidth: 300,
-        url: link_api.browseSyaratBayar,
+        url: link_api.atena.master.syaratbayar.browse,
         idField: 'uuidsyaratbayar',
         textField: 'nama',
         mode: 'local',
@@ -1342,7 +1342,7 @@
         sortName: 'nama',
         sortOrder: 'asc',
         required: true,
-        url: link_api.browseKaryawanMarketing,
+        url: link_api.atena.master.karyawan.browse,
         onBeforeLoad: function(param) {
           param.divisi = 'marketing';
         },
@@ -1385,7 +1385,7 @@
     function browse_data_customer(id) {
       $(id).combogrid({
         panelWidth: 600,
-        url: link_api.browseCustomer,
+        url: link_api.atena.master.customer.browse,
         idField: 'uuidcustomer',
         textField: 'kode',
         mode: 'remote',
@@ -1478,7 +1478,7 @@
         idField: 'uuidbbk',
         textField: 'kodebbk',
         mode: 'remote',
-        url: link_api.browsePenjualanBarangKeluar,
+        url: link_api.atena.inventori.buktiPengeluaranBarang.browsePenjualan,
         required: TRANSAKSI == 'HEADER',
         columns: [
           [{
@@ -1551,7 +1551,7 @@
 
             try {
               const res = await fetchData(
-                jwt, link_api.loadDataUangMukaSO, {
+                jwt, link_api.atena.penjualan.uangMukaPesananPenjualan.loadDaftarUangMuka, {
                   uuidbbk: row.uuidbbk
                 }
               );
@@ -1658,7 +1658,7 @@
     async function load_data_repacking(idrepacking) {
       try {
         const res = await fetchData(
-          jwt, link_api.loadDataPenjualanLangsung, {
+          jwt, link_api.atena.inventori.repacking.loadDataPenjualanLangsung, {
             uuidrepacking: idrepacking,
             uuidcustomer: $('#IDCUSTOMER').val(),
             uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
@@ -1668,7 +1668,7 @@
         if (res.success) {
           for (var x = 0; x < res.data.length; x++) {
             const res2 = await fetchData(
-              jwt, link_api.loadSatuanBarang, {
+              jwt, link_api.atena.master.barang.loadSatuanBarang, {
                 uuidbarang: res.data[x].uuidbarang
               }
             );
@@ -1697,14 +1697,14 @@
     async function load_data_order_jual(idtrans) {
       try {
         const res = await fetchData(
-          jwt, link_api.loadDataOrderPenjualanPenjualan, {
+          jwt, link_api.atena.penjualan.pesananPenjualan.loadData, {
             uuidorderjual: idtrans
           }
         );
         if (res.success) {
           for (var x = 0; x < res.data.length; x++) {
             const res2 = await fetchData(
-              jwt, link_api.loadSatuanBarang, {
+              jwt, link_api.atena.master.barang.loadSatuanBarang, {
                 uuidbarang: res.data[x].uuidbarang
               }
             );
@@ -2144,7 +2144,7 @@
                     required: false,
                     idField: 'simbol',
                     textField: 'simbol',
-                    url: link_api.browseCurrency,
+                    url: link_api.atena.master.currency.browse,
                     columns: [
                       [{
                           field: 'uuidcurrency',
@@ -2340,7 +2340,7 @@
             var lokasi = $("#IDLOKASI").combogrid('getValue');
             var ref = $("#IDCUSTOMER").combogrid('getValue');
 
-            urlbbk = link_api.browsePenjualanBarangKeluar;
+            urlbbk = link_api.atena.inventori.buktiPengeluaranBarang.browsePenjualan;
 
             ed.combogrid('grid').datagrid('options').url = base_url + urlbbk + '/' + lokasi + '/' + ref;
             ed.combogrid('grid').datagrid('load', {
@@ -2356,7 +2356,7 @@
               var idlokasi = $('#IDLOKASI').combogrid('getValue');
               if (idcustomer != null && idcustomer != "") {
                 // urlbarang = 'atena/Master/Data/Barang/comboGridJualAll/' + idcustomer + '/' + idlokasi;
-                urlbarang = link_api.browseBarangJualAll;
+                urlbarang = link_api.atena.inventori.barang.browseAll;
               } else {
                 $.messager.show({
                   title: 'Warning',
@@ -2378,7 +2378,7 @@
               }
 
               if (idbbk == "") {
-                urlbarang = link_api.browseBarangNonStok;
+                urlbarang = link_api.atena.master.barang.browseNonStok;
               }
               // tidak dipakai
               //   else {
@@ -2392,7 +2392,7 @@
             });
             ed.combogrid('showPanel');
           } else if (field == 'satuan') {
-            ed.combogrid('grid').datagrid('options').url = link_api.loadSatuanBarang;
+            ed.combogrid('grid').datagrid('options').url = link_api.atena.master.barang.loadSatuanBarang;
             ed.combogrid('grid').datagrid('load', {
               q: '',
               uuidbarang: row.uuidbarang
@@ -2598,7 +2598,7 @@
 
               try {
                 const res = await fetchData(
-                  jwt, link_api.getStokBarangSatuan, {
+                  jwt, link_api.atena.master.barang.getStokBarangSatuan, {
                     uuidbarang: row.uuidbarang,
                     uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                     satuan: changes.satuan,
@@ -2675,8 +2675,8 @@
           if (cell.field == 'kodebarang') {
             if ($('#IDLOKASI').combogrid('getValue') != '') {
               try {
-                const res = await fetchData(
-                  jwt, link_api.getStokBarangSatuan, {
+                  const res = await fetchData(
+                    jwt, link_api.atena.master.barang.getStokBarangSatuan, {
                     uuidbarang: row.uuidbarang,
                     uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                     satuan: row.satuan,
@@ -3571,7 +3571,7 @@
 
       try {
         const res = await fetchData(
-          jwt, link_api.getStokBarang, {
+          jwt, link_api.atena.master.barang.getStokBarang, {
             uuidbarang: selected.uuidbarang,
             uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
             tgl: $('#TGLTRANS').datebox('getValue')
@@ -3585,7 +3585,7 @@
 
           try {
             const res = await fetchData(
-              jwt, link_api.getDaftarBarangDiskon, {
+              jwt, link_api.atena.master.barang.getDaftarBarangDiskon, {
                 uuidmerk: selected.uuidmerk,
                 uuidcustomer: $('#IDCUSTOMER').val()
               }
@@ -3729,7 +3729,7 @@
 
       try {
         const res = await fetchData(
-          jwt, link_api.loadDataBarangBarcode, {
+          jwt, link_api.atena.master.barang.loadDataBarangBarcode, {
             barcode: barcodesatuan1string,
             uuidcustomer: idcustomer,
           }
@@ -3827,7 +3827,7 @@
               if (!ada) {
                 if ($('#IDLOKASI').combogrid('getValue') != '') {
                   const res2 = await fetchData(
-                    jwt, link_api.getStokBarangSatuan, {
+                    jwt, link_api.atena.master.barang.getStokBarangSatuan, {
                       uuidbarang: id,
                       uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
                       tgl: $('#TGLTRANS').datebox('getValue'),
@@ -3926,7 +3926,7 @@
       } else {
         try {
           const res = await fetchData(
-            jwt, link_api.getHargaBarang, {
+            jwt, link_api.atena.master.barang.getHargaBarang, {
               uuidbarang: idbarang,
               uuidcustomer: idcustomer,
               tgltrans: tgltrans,
@@ -3954,7 +3954,7 @@
       var idcustomer = $("#IDCUSTOMER").val();
       try {
         const res = await fetchData(
-          jwt, link_api.hargaJualTerakhir, {
+          jwt, link_api.atena.master.barang.hargaJualTerakhir, {
             uuidbarang: idbarang,
             uuidcustomer: idcustomer,
           }
@@ -3976,7 +3976,7 @@
       var harga = 0;
       try {
         const res = await fetchData(
-          jwt, link_api.hargaBeliTerakhir, {
+          jwt, link_api.atena.master.barang.hargaBeliTerakhir, {
             uuidbarang: idbarang,
             satuan: satuan,
             hargatertinggi: 1
@@ -4009,7 +4009,7 @@
       try {
         bukaLoader();
         const res = await fetchData(
-          jwt, link_api.hitungStokTransaksiBarang, {
+          jwt, link_api.atena.master.barang.hitungStokTransaksiBarang, {
             uuidlokasi: $('#IDLOKASI').combogrid('getValue'),
             tgltrans: $('#TGLTRANS').datebox('getValue'),
             data_detail: rows
@@ -4045,7 +4045,7 @@
     async function getConfigPenjualan() {
       try {
         const res = await fetchData(
-          jwt, link_api.loadConfigPenjualan, {
+          jwt, link_api.atena.penjualan.penjualan.loadConfig, {
             kodemenu: '{{ $kodemenu }}'
           }
         );

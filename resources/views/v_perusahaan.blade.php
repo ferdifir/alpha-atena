@@ -318,7 +318,7 @@
       Swal.showLoading();
       $.ajax({
         type: 'POST',
-        url: link_api.auth.loginPerusahaan,
+          url: link_api.auth.loginPerusahaan,
         data: {
           uuid_user: '{{ session('DATAUSER')['uuiduser'] }}',
           uuid_perusahaan: perusahaan

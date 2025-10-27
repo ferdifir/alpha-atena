@@ -271,7 +271,7 @@
                 kode + ', Sebelum Dicetak ', 'warning');
             } else {
               try {
-                let url = link_api.ubahStatusJadiSlipAnalisiPesananPembelian;
+                let url = link_api.atena.pembelian.analisisPesananPembelian.ubahStatusJadiSlip;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -397,7 +397,7 @@
             if (r) {
               bukaLoader();
               try {
-                let url = link_api.ubahStatusJadiInputAnalisiPesananPembelian;
+                let url = link_api.atena.pembelian.analisisPesananPembelian.ubahStatusJadiInput;
                 const response = await fetch(url, {
                   method: 'POST',
                   headers: {
@@ -441,7 +441,7 @@
       bukaLoader();
       if (row) {
         try {
-          let url = link_api.cetakAnalisiPesananPembelian + uuidtrans;
+          let url = link_api.atena.pembelian.analisisPesananPembelian.cetak + uuidtrans;
           const response = await fetch(url, {
             method: 'POST',
             headers: {
@@ -508,7 +508,7 @@
         striped: true,
         rownumbers: true,
         pageSize: 20,
-        url: link_api.loadDataGridAnalisisPesananPembelian,
+        url: link_api.atena.pembelian.analisisPesananPembelian.loadDataGrid,
         pagination: true,
         clientPaging: false,
         onLoadSuccess: function() {
@@ -638,7 +638,7 @@
     function browse_data_lokasi(id) {
       $(id).combogrid({
         panelWidth: 380,
-        url: link_api.browseLokasi,
+        url: link_api.atena.master.lokasi.browse,
         idField: 'kode',
         textField: 'nama',
         mode: 'local',
